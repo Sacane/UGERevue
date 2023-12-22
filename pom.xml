@@ -104,6 +104,15 @@
 							</resources>
 						</configuration>
 					</execution>
+					<execution>
+						<id>clean-frontend-resources</id>
+						<goals>
+							<goal>clean</goal>
+						</goals>
+						<configuration>
+							<arguments>clean</arguments>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
