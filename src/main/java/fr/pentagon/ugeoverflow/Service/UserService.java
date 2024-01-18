@@ -50,5 +50,4 @@ public class UserService {
         }
         return ResponseEntity.ok(new UserConnectedDTO(userData.getId(), userData.getUsername(), "ToDo"));
     }
-
 }
