@@ -15,13 +15,13 @@ public final class User {
     private Long id;
     private String username;
     private String login;
-    private byte[] password;
+    private String password;
 
     public User(){}
-    public User(String username, String login, byte[] password){
+    public User(String username, String login, String password){
         this.username = Objects.requireNonNull(username);
         this.login = Objects.requireNonNull(login);
-        this.password = Objects.requireNonNull(Arrays.copyOf(password, password.length));
+        this.password = Objects.requireNonNull(password);
     }
 
     public Long getId() {
@@ -48,11 +48,11 @@ public final class User {
         this.login = login;
     }
 
-    public byte[] getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(byte[] password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 }
