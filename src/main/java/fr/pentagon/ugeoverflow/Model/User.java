@@ -3,7 +3,6 @@ package fr.pentagon.ugeoverflow.Model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import org.hibernate.type.descriptor.jdbc.ObjectNullResolvingJdbcType;
 
 import java.util.Objects;
 
