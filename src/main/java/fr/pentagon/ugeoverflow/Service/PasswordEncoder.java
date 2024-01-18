@@ -11,7 +11,7 @@ import java.security.SecureRandom;
 public final class PasswordEncoder {
 
     private static final String ENCODING = "SHA-256";
-    private static final int ENCODING_LENGTH = 64;
+    private static final int ENCODING_LENGTH = 64; //Encoding => 32 bytes | Hexadecimal conversion => 32*2 = 64
 
 
     private byte[] generateSalt() {
