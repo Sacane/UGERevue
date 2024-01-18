@@ -10,7 +10,6 @@ import fr.pentagon.ugeoverflow.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Objects;
 
