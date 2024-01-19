@@ -5,7 +5,6 @@ import fr.pentagon.ugeoverflow.dto.CredentialsDTO;
 import fr.pentagon.ugeoverflow.dto.UserConnectedDTO;
 import fr.pentagon.ugeoverflow.dto.UserIdDTO;
 import fr.pentagon.ugeoverflow.dto.UserRegisterDTO;
-import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,5 +65,4 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.accessToken").value("toDo"))
                 .andDo(print());
     }
-
 }
