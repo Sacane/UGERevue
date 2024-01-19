@@ -24,13 +24,13 @@ public final class UserController {
         this.service = Objects.requireNonNull(service);
     }
 
-    @PostMapping()
+    @PostMapping("/register")
     public ResponseEntity<UserIdDTO> registerUser(@RequestBody UserRegisterDTO userRegisterDTO){
         LOGGER.info("Register a new User");
         return service.register(userRegisterDTO);
     }
 
-    @PostMapping()
+    @PostMapping("/auth")
     public ResponseEntity<UserConnectedDTO> checkAccess(@RequestBody CredentialsDTO credentialsDTO){
         LOGGER.info("Checking credentials");
         return service.check(credentialsDTO);
