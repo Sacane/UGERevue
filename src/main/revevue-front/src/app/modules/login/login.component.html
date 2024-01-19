@@ -1,0 +1,24 @@
+<div style="width: 250px; height: 250px; box-shadow: 0px 0px 2px black; padding: 20px;">
+    <form [formGroup]="loginForm" (ngSubmit)="login()" style="display: flex; flex-direction: column;">
+        <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput type="text" formControlName="email">
+            @if (loginForm.controls.email.hasError('required')) {
+            <mat-error>Required</mat-error>
+            }
+        </mat-form-field>
+
+        <mat-form-field>
+            <mat-label>Password</mat-label>
+            <input matInput type="password" formControlName="password">
+            @if (loginForm.controls.password.hasError('required')) {
+            <mat-error>Required</mat-error>
+            }
+        </mat-form-field>
+        <button mat-raised-button type="submit" color="primary">Log in</button>
+    </form>
+</div>
+
+<span>
+    Don't have an account ?
+</span>
