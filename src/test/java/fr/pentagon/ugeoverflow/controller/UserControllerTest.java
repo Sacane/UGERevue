@@ -1,8 +1,11 @@
 package fr.pentagon.ugeoverflow.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.pentagon.ugeoverflow.dto.CredentialsDTO;
+import fr.pentagon.ugeoverflow.dto.UserConnectedDTO;
 import fr.pentagon.ugeoverflow.dto.UserIdDTO;
 import fr.pentagon.ugeoverflow.dto.UserRegisterDTO;
+import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,6 +49,21 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("verestah"))
+                .andDo(print());
+    }
+
+    @Test
+    void testAuthUser() throws Exception {
+        var credentialsDTO = new CredentialsDTO("login", "password");
+        userService.register(new UserRegisterDTO("verestah1","verestah@gmail.com","login","password"));
+        when(userService.check(credentialsDTO)).thenReturn(ResponseEntity.ok(new UserConnectedDTO(1L, "verestah1", "toDo")));
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/auth")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(credentialsDTO)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("verestah1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.accessToken").value("toDo"))
                 .andDo(print());
     }
 
