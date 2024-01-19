@@ -1,4 +1,4 @@
-package fr.pentagon.ugeoverflow.Model;
+package fr.pentagon.ugeoverflow.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

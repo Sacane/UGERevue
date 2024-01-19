@@ -1,6 +1,6 @@
-package fr.pentagon.ugeoverflow.Repository;
+package fr.pentagon.ugeoverflow.repository;
 
-import fr.pentagon.ugeoverflow.Model.User;
+import fr.pentagon.ugeoverflow.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

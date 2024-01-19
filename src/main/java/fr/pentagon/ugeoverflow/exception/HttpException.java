@@ -1,4 +1,4 @@
-package fr.pentagon.ugeoverflow.Exception;
+package fr.pentagon.ugeoverflow.exception;
 
 import org.springframework.http.HttpStatus;
 

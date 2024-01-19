@@ -1,12 +1,12 @@
-package fr.pentagon.ugeoverflow.Service;
+package fr.pentagon.ugeoverflow.service;
 
-import fr.pentagon.ugeoverflow.DTO.CredentialsDTO;
-import fr.pentagon.ugeoverflow.DTO.UserConnectedDTO;
-import fr.pentagon.ugeoverflow.DTO.UserIdDTO;
-import fr.pentagon.ugeoverflow.DTO.UserRegisterDTO;
-import fr.pentagon.ugeoverflow.Exception.HttpException;
-import fr.pentagon.ugeoverflow.Model.User;
-import fr.pentagon.ugeoverflow.Repository.UserRepository;
+import fr.pentagon.ugeoverflow.dto.CredentialsDTO;
+import fr.pentagon.ugeoverflow.dto.UserConnectedDTO;
+import fr.pentagon.ugeoverflow.dto.UserIdDTO;
+import fr.pentagon.ugeoverflow.dto.UserRegisterDTO;
+import fr.pentagon.ugeoverflow.exception.HttpException;
+import fr.pentagon.ugeoverflow.model.User;
+import fr.pentagon.ugeoverflow.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package fr.pentagon.ugeoverflow.Service;
+package fr.pentagon.ugeoverflow.service;
 
 import org.springframework.stereotype.Component;
 
