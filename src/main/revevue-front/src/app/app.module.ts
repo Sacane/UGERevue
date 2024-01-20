@@ -5,7 +5,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { RouterOutlet } from "@angular/router";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LoginModule } from "./modules";
+import { LoginModule, SignupModule } from "./modules";
 
 @NgModule({
     declarations: [
@@ -17,6 +17,7 @@ import { LoginModule } from "./modules";
         RouterOutlet,
         AppRoutingModule,
         LoginModule,
+        SignupModule,
         SharedModule
     ],
     bootstrap: [AppComponent]
