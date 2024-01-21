@@ -8,7 +8,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class HttpExceptionHandler extends ResponseEntityExceptionHandler {
-    @ExceptionHandler
+    @ExceptionHandler(HttpException.class)
     public ResponseEntity<?> handleHttpException(HttpException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatusCode.valueOf(ex.getStatusCode()));
     }

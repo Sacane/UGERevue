@@ -67,7 +67,7 @@ public class UserControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/api/users/register")
                     .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                //.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("User with this username already exist")) //TODO Body censé contenir le msg null
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("User with this username already exist")) //TODO Body censé contenir le msg null
                 .andDo(print());;
     }
 
@@ -94,8 +94,8 @@ public class UserControllerTest {
         when(userService.check(credentialsDTO)).thenThrow(HttpException.notFound("User with this login is not found"));
         mockMvc.perform(MockMvcRequestBuilders.post("/api/users/auth")
                         .contentType(MediaType.APPLICATION_JSON))
-                //.andExpect(MockMvcResultMatchers.status().isNotFound())
-                //.andExpect(MockMvcResultMatchers.jsonPath("$.messsage").value("User with this login is not found"))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.messsage").value("User with this login is not found"))
                 .andDo(print());
     }
 
