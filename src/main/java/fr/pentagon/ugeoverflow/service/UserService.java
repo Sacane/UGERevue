@@ -9,20 +9,21 @@ import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.Objects;
+import java.util.logging.Logger;
 
 @Service
 public class UserService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
-
     public UserService(UserRepository repository, PasswordEncoder passwordEncoder){
         this.repository = Objects.requireNonNull(repository);
         this.passwordEncoder = Objects.requireNonNull(passwordEncoder);
     }
-
 
     @Transactional
     public ResponseEntity<UserIdDTO> register(UserRegisterDTO userDTO){

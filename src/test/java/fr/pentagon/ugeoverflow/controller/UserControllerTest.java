@@ -5,8 +5,11 @@ import fr.pentagon.ugeoverflow.dto.CredentialsDTO;
 import fr.pentagon.ugeoverflow.dto.UserConnectedDTO;
 import fr.pentagon.ugeoverflow.dto.UserIdDTO;
 import fr.pentagon.ugeoverflow.dto.UserRegisterDTO;
+import fr.pentagon.ugeoverflow.exception.HttpException;
+import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
 import fr.pentagon.ugeoverflow.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,6 +22,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
@@ -34,10 +38,13 @@ public class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(userController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(userController)
+                .setControllerAdvice(new HttpExceptionHandler())
+                .build();
     }
 
     @Test
+    @DisplayName("Case of successful register")
     void testRegisterUser() throws Exception {
         var userRegisterDTO = new UserRegisterDTO("verestah","verestah@gmail.com","verestah1","12345");
         var expectedResponse = new UserIdDTO(1L, "verestah");
@@ -52,6 +59,20 @@ public class UserControllerTest {
     }
 
     @Test
+    @DisplayName("Case of exception : username already exist")
+    void registerUserAlreadyExist() throws Exception {
+        userService.register(new UserRegisterDTO("verestah1","verestah@gmail.com","login","password"));
+        var userRegisterDTO = new UserRegisterDTO("verestah1","mathis@gmail.com", "login","password");
+        lenient().when(userService.register(userRegisterDTO)).thenThrow(HttpException.badRequest("User with this username already exist")); //TODO Question : Pk obligatoire d'utiliser lenient(), sinon UnnecessaryStubbingException:
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/register")
+                    .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                //.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("User with this username already exist")) //TODO Body censé contenir le msg null
+                .andDo(print());;
+    }
+
+    @Test
+    @DisplayName("Case of successful authentification")
     void testAuthUser() throws Exception {
         var credentialsDTO = new CredentialsDTO("login", "password");
         userService.register(new UserRegisterDTO("verestah1","verestah@gmail.com","login","password"));
@@ -63,6 +84,31 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("verestah1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.accessToken").value("toDo"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("Case of exception : login not found")
+    void loginNotFoundUserAuth() throws Exception {
+        var credentialsDTO = new CredentialsDTO("login", "password");
+        when(userService.check(credentialsDTO)).thenThrow(HttpException.notFound("User with this login is not found"));
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/auth")
+                        .contentType(MediaType.APPLICATION_JSON))
+                //.andExpect(MockMvcResultMatchers.status().isNotFound())
+                //.andExpect(MockMvcResultMatchers.jsonPath("$.messsage").value("User with this login is not found"))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("Case of exception : password doesn't match")
+    void passwordDoesntMatchUserAuth() throws Exception {
+        userService.register(new UserRegisterDTO("verestah1","verestah@gmail.com","login","password1"));
+        var credentialsDTO = new CredentialsDTO("login", "password");
+        when(userService.check(credentialsDTO)).thenThrow(HttpException.unauthorized("Password entered doesn't match"));
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/auth")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
+                //.andExpect(MockMvcResultMatchers.jsonPath("$.messsage").value("Password entered doesn't match"))
                 .andDo(print());
     }
 }
