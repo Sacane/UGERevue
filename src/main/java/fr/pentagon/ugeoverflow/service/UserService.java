@@ -9,12 +9,9 @@ import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.Objects;
-import java.util.logging.Logger;
 
 @Service
 public class UserService {
@@ -38,11 +35,10 @@ public class UserService {
         return ResponseEntity.ok(new UserIdDTO(newUser.getId(), newUser.getUsername()));
     }
 
-    @Transactional
     public ResponseEntity<UserConnectedDTO> check(CredentialsDTO credentialsDTO){
         var user = repository.findByLogin(credentialsDTO.login());
         if(user.isEmpty()){
-            throw HttpException.notFound("User with this login is not found");
+            throw HttpException.notFound("Bad logging used");
         }
         var userData = user.get();
         if(!passwordEncoder.verifyPassword(credentialsDTO.password(), userData.getPassword())){

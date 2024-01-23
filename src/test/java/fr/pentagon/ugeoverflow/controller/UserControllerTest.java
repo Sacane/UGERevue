@@ -7,6 +7,8 @@ import fr.pentagon.ugeoverflow.dto.UserIdDTO;
 import fr.pentagon.ugeoverflow.dto.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
+import fr.pentagon.ugeoverflow.model.User;
+import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +17,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,8 +32,8 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
-
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class UserControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
     @Mock
@@ -38,6 +44,7 @@ public class UserControllerTest {
 
     @BeforeEach
     void setUp() {
+        userController = new UserController(userService);
         mockMvc = MockMvcBuilders.standaloneSetup(userController)
                 .setControllerAdvice(new HttpExceptionHandler())
                 .build();
@@ -65,9 +72,10 @@ public class UserControllerTest {
         var userRegisterDTO = new UserRegisterDTO("verestah1","mathis@gmail.com", "login","password");
         lenient().when(userService.register(userRegisterDTO)).thenThrow(HttpException.badRequest("User with this username already exist")); //TODO Question : Pk obligatoire d'utiliser lenient(), sinon UnnecessaryStubbingException:
         mockMvc.perform(MockMvcRequestBuilders.post("/api/users/register")
-                    .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRegisterDTO)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("User with this username already exist")) //TODO Body censé contenir le msg null
+                .andExpect(MockMvcResultMatchers.content().string("User with this username already exist")) //TODO Body censé contenir le msg null
                 .andDo(print());;
     }
 
@@ -93,9 +101,10 @@ public class UserControllerTest {
         var credentialsDTO = new CredentialsDTO("login", "password");
         when(userService.check(credentialsDTO)).thenThrow(HttpException.notFound("User with this login is not found"));
         mockMvc.perform(MockMvcRequestBuilders.post("/api/users/auth")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(credentialsDTO)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.messsage").value("User with this login is not found"))
+                .andExpect(MockMvcResultMatchers.content().string("User with this login is not found"))
                 .andDo(print());
     }
 
@@ -106,9 +115,10 @@ public class UserControllerTest {
         var credentialsDTO = new CredentialsDTO("login", "password");
         when(userService.check(credentialsDTO)).thenThrow(HttpException.unauthorized("Password entered doesn't match"));
         mockMvc.perform(MockMvcRequestBuilders.post("/api/users/auth")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(credentialsDTO)))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized())
-                //.andExpect(MockMvcResultMatchers.jsonPath("$.messsage").value("Password entered doesn't match"))
+                .andExpect(MockMvcResultMatchers.content().string("Password entered doesn't match"))
                 .andDo(print());
     }
 }
