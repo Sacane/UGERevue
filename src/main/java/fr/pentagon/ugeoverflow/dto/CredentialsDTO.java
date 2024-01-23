@@ -1,3 +1,6 @@
 package fr.pentagon.ugeoverflow.dto;
 
-public record CredentialsDTO(String login, String password) { }
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+public record CredentialsDTO(@NotNull @NotBlank String login, @NotNull @NotBlank String password) { }

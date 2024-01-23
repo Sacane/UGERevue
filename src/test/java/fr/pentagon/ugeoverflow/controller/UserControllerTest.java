@@ -44,7 +44,6 @@ public class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        userController = new UserController(userService);
         mockMvc = MockMvcBuilders.standaloneSetup(userController)
                 .setControllerAdvice(new HttpExceptionHandler())
                 .build();

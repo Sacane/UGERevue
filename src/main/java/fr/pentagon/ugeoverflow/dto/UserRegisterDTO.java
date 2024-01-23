@@ -1,3 +1,6 @@
 package fr.pentagon.ugeoverflow.dto;
 
-public record UserRegisterDTO(String username, String email, String login, String password) { }
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+public record UserRegisterDTO(@NotNull @NotBlank String username, @NotNull @NotBlank String email, @NotNull @NotBlank String login, @NotNull @NotBlank String password) { }
