@@ -21,7 +21,7 @@ public final class UserController {
         this.service = Objects.requireNonNull(service);
     }
 
-    @PostMapping("/register")
+    @PostMapping()
     public ResponseEntity<UserIdDTO> registerUser(@RequestBody UserRegisterDTO userRegisterDTO){
         LOGGER.info("Register a new User");
         return service.register(userRegisterDTO);

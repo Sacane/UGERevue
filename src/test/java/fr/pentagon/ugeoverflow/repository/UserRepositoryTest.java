@@ -14,14 +14,7 @@ public class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
-
     private User userTest;
-
-   /* private final UserRepository userRepository;
-
-    public UserRepositoryTest(UserRepository repository) {
-        this.userRepository = repository;
-    }*/
 
     @BeforeEach
     void setup(){

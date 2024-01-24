@@ -21,7 +21,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
@@ -47,7 +46,7 @@ public class UserControllerTest {
         var userRegisterDTO = new UserRegisterDTO("verestah","verestah@gmail.com","verestah1","12345");
         var expectedResponse = new UserIdDTO(1L, "verestah");
         when(userService.register(userRegisterDTO)).thenReturn(ResponseEntity.ok(expectedResponse));
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/register")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRegisterDTO)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -61,13 +60,13 @@ public class UserControllerTest {
     void registerUserAlreadyExist() throws Exception {
         userService.register(new UserRegisterDTO("verestah1","verestah@gmail.com","login","password"));
         var userRegisterDTO = new UserRegisterDTO("verestah1","mathis@gmail.com", "login","password");
-        lenient().when(userService.register(userRegisterDTO)).thenThrow(HttpException.badRequest("User with this username already exist")); //TODO Question : Pk obligatoire d'utiliser lenient(), sinon UnnecessaryStubbingException:
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/register")
+        when(userService.register(userRegisterDTO)).thenThrow(HttpException.badRequest("User with this username already exist"));
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/")
                     .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRegisterDTO)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.content().string("User with this username already exist")) //TODO Body censé contenir le msg null
-                .andDo(print());;
+                .andExpect(MockMvcResultMatchers.content().string("User with this username already exist"))
+                .andDo(print());
     }
 
     @Test
