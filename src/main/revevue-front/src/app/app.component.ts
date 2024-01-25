@@ -7,4 +7,26 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'revevue-front';
+  navs: any[] = [
+    {
+      name: 'Home',
+      url: '/home',
+      icon: 'home'
+    },
+    {
+      name: 'Questions',
+      url: '/questions',
+      icon: 'chat'
+    },
+    {
+      name: 'Tags',
+      url: '/tags',
+      icon: 'tags'
+    },
+    {
+      name: 'Users',
+      url: '/users',
+      icon: 'account_circle'
+    }
+  ];
 }
