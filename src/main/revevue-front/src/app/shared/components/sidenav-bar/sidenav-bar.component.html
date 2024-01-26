@@ -1,7 +1,7 @@
 <div stlye="width: 100%">
     @for (nav of navs; track nav.name) {
     @if (!isSelected(nav)) {
-    <button mat-button color="primary" style="width: 100%;">
+    <button mat-button color="primary" style="width: 100%;" (click)="navigateTo(nav.url)">
         <mat-icon>{{ nav.icon }}</mat-icon>
         {{ nav.name }}
     </button>

@@ -24,7 +24,10 @@ export class SideNavBarComponent implements AfterViewInit {
     }
 
     isSelected(nav: any): boolean {
-        console.log('ICI');
         return this.router && this.router.url.includes(nav.url);
+    }
+
+    navigateTo(url: string): void {
+        this.router.navigateByUrl(url);
     }
 }
