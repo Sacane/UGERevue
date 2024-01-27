@@ -4,24 +4,23 @@ import fr.pentagon.ugeoverflow.config.auth.CustomUserDetailsService;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-
-import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-  private String activeProfile;
   @Bean
   public PasswordEncoder passwordEncoder() {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -42,20 +41,29 @@ public class SecurityConfig {
   }
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http, Environment environment) throws Exception {
+  @Profile("prod")
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     // Source CSRF: https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#csrf-integration-javascript-spa
-    return http
-            .csrf((csrf) ->
-                    csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                            .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
+    var config = http
             .authorizeHttpRequests(authorize -> {
-              if(Arrays.asList(environment.getActiveProfiles()).contains("dev")){
-                  authorize.requestMatchers("/api/login", "/h2-console/**").permitAll();
-              } else {
-                authorize.requestMatchers("/api/login").permitAll();
-              }
-              authorize.anyRequest().authenticated();
-            })
-            .build();
+                authorize.requestMatchers("/**", "/api/login").permitAll(); //TODO turn "/**" matching to every front root
+                authorize.anyRequest().authenticated();
+            });
+    config.csrf((csrf) ->
+            csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                    .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
+            .addFilterBefore(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
+    return config.build();
   }
+    @Bean
+    @Profile("dev")
+    public SecurityFilterChain securityFilterChainDev(HttpSecurity http) throws Exception {
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authorize -> authorize.requestMatchers("/**", "/api/login", "/h2-console/**").permitAll()
+                        .anyRequest().authenticated())
+                .build();
+    }
+
 }
