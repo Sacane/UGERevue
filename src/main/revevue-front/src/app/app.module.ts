@@ -5,7 +5,7 @@ import { AppRoutingModule } from "./app-routing.module";
 import { RouterOutlet } from "@angular/router";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HomeModule, LoginModule, QuestionsModule, SignupModule, TagsModule, UsersModule } from "./modules";
+import { HomeModule, LoginModule, QuestionsMenuModule, SignupModule, TagsModule, UsersModule } from "./modules";
 
 @NgModule({
     declarations: [
@@ -20,7 +20,7 @@ import { HomeModule, LoginModule, QuestionsModule, SignupModule, TagsModule, Use
         LoginModule,
         SignupModule,
         HomeModule,
-        QuestionsModule,
+        QuestionsMenuModule,
         TagsModule,
         UsersModule
     ],

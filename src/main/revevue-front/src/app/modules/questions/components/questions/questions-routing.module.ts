@@ -5,10 +5,7 @@ import { QuestionsComponent } from "./questions.component";
 const routes: Routes = [
     {
         path: '',
-        component: QuestionsComponent,
-        children: [
-            { path: ':id', component: QuestionsComponent } //TODO FAIRE PAGE ID
-        ]
+        component: QuestionsComponent
     }
 ];
 

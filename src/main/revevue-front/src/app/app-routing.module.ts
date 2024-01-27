@@ -20,7 +20,7 @@ export const routes: Routes = [
             },
             {
                 path: 'questions',
-                loadChildren: () => import('./modules').then(m => m.QuestionsModule)
+                loadChildren: () => import('./modules').then(m => m.QuestionsMenuModule)
             },
             {
                 path: 'tags',
