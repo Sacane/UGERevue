@@ -3,10 +3,11 @@ import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { MaterialModule } from "./modules/material.module";
-import { NavBarComponent } from "./components";
+import { NavBarComponent, SideNavBarComponent } from "./components";
 
 const COMPONENTS: any[] = [
-    NavBarComponent
+    NavBarComponent,
+    SideNavBarComponent
 ];
 
 @NgModule({

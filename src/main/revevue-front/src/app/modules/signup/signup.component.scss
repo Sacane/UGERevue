@@ -1,0 +1,17 @@
+app-signup {
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    background-color: whitesmoke;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+.mat-mdc-form-field-required-marker {
+    display: none;
+}
