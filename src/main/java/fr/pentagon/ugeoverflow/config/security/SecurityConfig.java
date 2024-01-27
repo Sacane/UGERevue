@@ -1,9 +1,10 @@
 package fr.pentagon.ugeoverflow.config.security;
 
 import fr.pentagon.ugeoverflow.config.auth.CustomUserDetailsService;
-import fr.pentagon.ugeoverflow.repositories.UserRepository;
+import fr.pentagon.ugeoverflow.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -15,9 +16,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
+import java.util.Arrays;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+  private String activeProfile;
   @Bean
   public PasswordEncoder passwordEncoder() {
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -38,17 +42,20 @@ public class SecurityConfig {
   }
 
   @Bean
-  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain securityFilterChain(HttpSecurity http, Environment environment) throws Exception {
     // Source CSRF: https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#csrf-integration-javascript-spa
-    http.csrf((csrf) -> csrf
-        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-        .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
-    );
-
-    http.authorizeHttpRequests(authorize -> authorize
-        .requestMatchers("/login").permitAll()
-        .anyRequest().authenticated());
-
-    return http.build();
+    return http
+            .csrf((csrf) ->
+                    csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                            .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
+            .authorizeHttpRequests(authorize -> {
+              if(Arrays.asList(environment.getActiveProfiles()).contains("dev")){
+                  authorize.requestMatchers("/api/login", "/h2-console/**").permitAll();
+              } else {
+                authorize.requestMatchers("/api/login").permitAll();
+              }
+              authorize.anyRequest().authenticated();
+            })
+            .build();
   }
 }

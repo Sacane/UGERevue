@@ -1,4 +1,4 @@
-package fr.pentagon.ugeoverflow.controller;
+package fr.pentagon.ugeoverflow.controllers;
 
 import fr.pentagon.ugeoverflow.dto.CredentialsDTO;
 import fr.pentagon.ugeoverflow.dto.UserConnectedDTO;
@@ -21,7 +21,7 @@ public final class UserController {
         this.service = Objects.requireNonNull(service);
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<UserIdDTO> registerUser(@RequestBody UserRegisterDTO userRegisterDTO){
         LOGGER.info("Register a new User");
         return service.register(userRegisterDTO);
