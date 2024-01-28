@@ -1,6 +1,7 @@
 import {Component, inject, ViewEncapsulation} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {UserService} from "../../shared/HttpServices";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-signup',
@@ -16,6 +17,7 @@ export class SignupComponent {
         accountName: new FormControl('', [Validators.required])
     });
     userService = inject(UserService)
+    private router = inject(Router)
 
     signup(): void {
         if (this.signupForm.valid) {
@@ -24,7 +26,10 @@ export class SignupComponent {
                 login: this.signupForm.value.accountName as string,
                 password: this.signupForm.value.password as string,
                 email: this.signupForm.value.email as string
-            }).subscribe(response => console.log("User has been created : " + response.username))
+            }).subscribe(response => {
+                console.log("User has been created : " + response.username);
+                this.router.navigateByUrl("/login").then()
+            })
         }
     }
 }
