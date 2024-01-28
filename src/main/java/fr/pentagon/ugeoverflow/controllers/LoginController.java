@@ -4,6 +4,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.requests.LoginRequestDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.LoginResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,9 +17,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.logging.Logger;
+
 @RestController
 @RequestMapping("/api")
 public class LoginController {
+    private static final Logger LOGGER = Logger.getLogger(LoginController.class.getName());
     private final AuthenticationManager authenticationManager;
     private final SecurityContextHolderStrategy contextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
     private final HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
@@ -27,22 +31,32 @@ public class LoginController {
         this.authenticationManager = authenticationManager;
     }
 
-    @PostMapping("/login")
-    public LoginResponseDTO login(@RequestBody LoginRequestDTO loginRequestDTO, HttpServletRequest request, HttpServletResponse response) {
-        var token = UsernamePasswordAuthenticationToken.unauthenticated(loginRequestDTO.email(), loginRequestDTO.password());
+    @PostMapping("/log")
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO, HttpServletRequest request, HttpServletResponse response) {
+        LOGGER.info("try to login");
+        var token = UsernamePasswordAuthenticationToken.unauthenticated(loginRequestDTO.login(), loginRequestDTO.password());
         var authentication = authenticationManager.authenticate(token);
         if (authentication.isAuthenticated()) {
             var securityContext = this.contextHolderStrategy.createEmptyContext();
             securityContext.setAuthentication(authentication);
             this.securityContextRepository.saveContext(securityContext, request, response);
         }
-        return new LoginResponseDTO(authentication.getName());
+        return ResponseEntity.ok(new LoginResponseDTO(authentication.getName()));
     }
     @PostMapping("/logout")
-    public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        LOGGER.info("try to logout");
         if (authentication != null) {
             SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
             logoutHandler.logout(request, response, authentication);
+            if(SecurityContextHolder.getContext().getAuthentication() == null) {
+                LOGGER.info("logout successfully");
+            } else {
+                System.out.println(SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
+            }
+        } else {
+            System.out.println("NOT LOGGED ??");
         }
     }
 }
