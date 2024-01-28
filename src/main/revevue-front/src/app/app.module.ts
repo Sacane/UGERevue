@@ -6,14 +6,14 @@ import {RouterOutlet} from "@angular/router";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HomeModule, LoginModule, QuestionsMenuModule, SignupModule, TagsModule, UsersModule} from "./modules";
-import {provideHttpClient} from "@angular/common/http";
+import {provideHttpClient, withFetch} from "@angular/common/http";
 
 @NgModule({
   declarations: [
     AppComponent
   ],
   providers: [
-    provideHttpClient(),
+    provideHttpClient(withFetch()),
   ],
   imports: [
     BrowserModule,

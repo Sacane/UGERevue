@@ -1,5 +1,6 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import {Component, inject, ViewEncapsulation} from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {UserService} from "../../shared/HttpServices";
 
 @Component({
     selector: 'app-login',
@@ -12,10 +13,14 @@ export class LoginComponent {
         email: new FormControl('', [Validators.required]),
         password: new FormControl('', [Validators.required])
     });
+    userService = inject(UserService)
 
     login(): void {
         if (this.loginForm.valid) {
-            console.log("LOGIN");
+
         }
+    }
+    logout(): void {
+
     }
 }

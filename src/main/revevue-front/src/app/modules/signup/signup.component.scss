@@ -6,12 +6,24 @@ app-signup {
     justify-content: center;
     align-items: center;
     background-color: whitesmoke;
+    .signup-title {
+        font-size: 24px;
+        color: #333;
+        text-align: center;
+    }
+    mat-form-field {
+        width: 100%;
+    }
+    .mat-mdc-form-field-required-marker {
+        display: none;
+    }
+    .form-signup{
+        background-color: white;
+        min-width: 30%;
+        min-height: 35%;
+        box-shadow: 0 0 2px black;
+        padding: 20px;
+    }
 }
 
-mat-form-field {
-    width: 100%;
-}
 
-.mat-mdc-form-field-required-marker {
-    display: none;
-}

@@ -11,6 +11,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,7 +47,7 @@ public class SecurityConfig {
     // Source CSRF: https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#csrf-integration-javascript-spa
     var config = http
             .authorizeHttpRequests(authorize -> {
-                authorize.requestMatchers("/**", "/api/login").permitAll(); //TODO turn "/**" matching to every front root
+                authorize.requestMatchers("/**", "/api/login", "/h2-console/**").permitAll(); //TODO turn "/**" matching to every front root
                 authorize.anyRequest().authenticated();
             });
     config.csrf((csrf) ->
@@ -63,6 +64,8 @@ public class SecurityConfig {
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize.requestMatchers("/**", "/api/login", "/h2-console/**").permitAll()
                         .anyRequest().authenticated())
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .headers(configurer -> configurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .build();
     }
 

@@ -19,31 +19,30 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 public class LoginController {
-  private final AuthenticationManager authenticationManager;
-  private final SecurityContextHolderStrategy contextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
-  private final HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
+    private final AuthenticationManager authenticationManager;
+    private final SecurityContextHolderStrategy contextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
+    private final HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
 
-  public LoginController(AuthenticationManager authenticationManager) {
-    this.authenticationManager = authenticationManager;
-  }
+    public LoginController(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
+    }
 
-  @PostMapping("/login")
-  public LoginResponseDTO login(@RequestBody LoginRequestDTO loginRequestDTO, HttpServletRequest request, HttpServletResponse response) {
-    var token = UsernamePasswordAuthenticationToken.unauthenticated(loginRequestDTO.email(), loginRequestDTO.password());
-    var authentication = authenticationManager.authenticate(token);
-    // The authentication must be manually saved into the SecurityContext
-    if (authentication.isAuthenticated()) {
-      var securityContext = this.contextHolderStrategy.createEmptyContext();
-      securityContext.setAuthentication(authentication);
-      this.securityContextRepository.saveContext(securityContext, request, response);
+    @PostMapping("/login")
+    public LoginResponseDTO login(@RequestBody LoginRequestDTO loginRequestDTO, HttpServletRequest request, HttpServletResponse response) {
+        var token = UsernamePasswordAuthenticationToken.unauthenticated(loginRequestDTO.email(), loginRequestDTO.password());
+        var authentication = authenticationManager.authenticate(token);
+        if (authentication.isAuthenticated()) {
+            var securityContext = this.contextHolderStrategy.createEmptyContext();
+            securityContext.setAuthentication(authentication);
+            this.securityContextRepository.saveContext(securityContext, request, response);
+        }
+        return new LoginResponseDTO(authentication.getName());
     }
-    return new LoginResponseDTO(authentication.getName());
-  }
-  @PostMapping("/logout")
-  public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-    if (authentication != null) {
-      SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
-      logoutHandler.logout(request, response, authentication);
+    @PostMapping("/logout")
+    public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
+        if (authentication != null) {
+            SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+            logoutHandler.logout(request, response, authentication);
+        }
     }
-  }
 }

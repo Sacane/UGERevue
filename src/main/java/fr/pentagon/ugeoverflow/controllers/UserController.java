@@ -23,7 +23,7 @@ public final class UserController {
 
     @PostMapping
     public ResponseEntity<UserIdDTO> registerUser(@RequestBody UserRegisterDTO userRegisterDTO){
-        LOGGER.info("Register a new User");
+        LOGGER.info("Register a new User " + userRegisterDTO);
         return service.register(userRegisterDTO);
     }
 
