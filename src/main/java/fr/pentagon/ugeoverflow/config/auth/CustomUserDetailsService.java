@@ -1,6 +1,7 @@
 package fr.pentagon.ugeoverflow.config.auth;
 
-import fr.pentagon.ugeoverflow.repositories.UserRepository;
+import fr.pentagon.ugeoverflow.exception.HttpException;
+import fr.pentagon.ugeoverflow.repository.UserRepository;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,14 +13,15 @@ public class CustomUserDetailsService implements UserDetailsService {
     this.userRepository = userRepository;
   }
 
-  // TODO adapter avec le vrai userRepository
   @Override
-  public UserDetails loadUserByUsername(String email) {
-    var user = userRepository.findUserByEmail(email);
+  public UserDetails loadUserByUsername(String login) {
+    var userResponse = userRepository.findByLogin(login);
+    if(userResponse.isEmpty()) throw HttpException.notFound("User with login " + login + " does not exists");
+    var user = userResponse.get();
     return User.builder()
-        .username(user.getEmail())
-        .password(user.getPassword())
-        .roles("USER")
-        .build();
+            .username(user.getUsername())
+            .password(user.getPassword())
+            //TODO add roles
+            .build();
   }
 }

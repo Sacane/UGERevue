@@ -2,8 +2,8 @@ package fr.pentagon.ugeoverflow.controllers.dtos.responses;
 
 import java.util.Objects;
 
-public record LoginResponseDTO(String email) {
+public record LoginResponseDTO(String login) {
   public LoginResponseDTO {
-    Objects.requireNonNull(email);
+    Objects.requireNonNull(login);
   }
 }
