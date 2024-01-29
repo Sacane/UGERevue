@@ -44,3 +44,5 @@ Thumbs.db
 
 # unecessary config file
 .editorconfig
+.angular
+node_modules
