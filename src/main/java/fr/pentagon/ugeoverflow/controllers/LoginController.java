@@ -2,41 +2,61 @@ package fr.pentagon.ugeoverflow.controllers;
 
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.LoginRequestDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.LoginResponseDTO;
-import fr.pentagon.ugeoverflow.repositories.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.logging.Logger;
+
 @RestController
+@RequestMapping("/api")
 public class LoginController {
-  private final AuthenticationManager authenticationManager;
-  private final UserRepository userRepository;
-  private final SecurityContextHolderStrategy contextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
-  private final HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
+    private static final Logger LOGGER = Logger.getLogger(LoginController.class.getName());
+    private final AuthenticationManager authenticationManager;
+    private final SecurityContextHolderStrategy contextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
+    private final HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
 
-  public LoginController(AuthenticationManager authenticationManager, UserRepository userRepository) {
-    this.authenticationManager = authenticationManager;
-    this.userRepository = userRepository;
-  }
-
-  @PostMapping("/login")
-  public LoginResponseDTO login(@RequestBody LoginRequestDTO loginRequestDTO, HttpServletRequest request, HttpServletResponse response) {
-    var token = UsernamePasswordAuthenticationToken.unauthenticated(loginRequestDTO.email(), loginRequestDTO.password());
-    var authentication = authenticationManager.authenticate(token);
-
-    // The authentication must be manually saved into the SecurityContext
-    if (authentication.isAuthenticated()) {
-      var securityContext = this.contextHolderStrategy.createEmptyContext();
-      securityContext.setAuthentication(authentication);
-      this.securityContextRepository.saveContext(securityContext, request, response);
+    public LoginController(AuthenticationManager authenticationManager) {
+        this.authenticationManager = authenticationManager;
     }
-    return new LoginResponseDTO(authentication.getName());
-  }
+
+    @PostMapping("/log")
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO, HttpServletRequest request, HttpServletResponse response) {
+        LOGGER.info("try to login");
+        var token = UsernamePasswordAuthenticationToken.unauthenticated(loginRequestDTO.login(), loginRequestDTO.password());
+        var authentication = authenticationManager.authenticate(token);
+        if (authentication.isAuthenticated()) {
+            var securityContext = this.contextHolderStrategy.createEmptyContext();
+            securityContext.setAuthentication(authentication);
+            this.securityContextRepository.saveContext(securityContext, request, response);
+        }
+        return ResponseEntity.ok(new LoginResponseDTO(authentication.getName()));
+    }
+    @PostMapping("/logout")
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        LOGGER.info("try to logout");
+        if (authentication != null) {
+            SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+            logoutHandler.logout(request, response, authentication);
+            if(SecurityContextHolder.getContext().getAuthentication() == null) {
+                LOGGER.info("logout successfully");
+            } else {
+                System.out.println(SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
+            }
+        } else {
+            System.out.println("NOT LOGGED ??");
+        }
+    }
 }

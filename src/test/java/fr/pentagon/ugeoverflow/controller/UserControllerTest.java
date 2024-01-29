@@ -1,6 +1,7 @@
 package fr.pentagon.ugeoverflow.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.pentagon.ugeoverflow.controllers.UserController;
 import fr.pentagon.ugeoverflow.dto.CredentialsDTO;
 import fr.pentagon.ugeoverflow.dto.UserConnectedDTO;
 import fr.pentagon.ugeoverflow.dto.UserIdDTO;

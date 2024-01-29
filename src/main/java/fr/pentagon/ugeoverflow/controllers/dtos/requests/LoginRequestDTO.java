@@ -2,9 +2,9 @@ package fr.pentagon.ugeoverflow.controllers.dtos.requests;
 
 import java.util.Objects;
 
-public record LoginRequestDTO(String email, String password) {
+public record LoginRequestDTO(String login, String password) {
   public LoginRequestDTO {
-    Objects.requireNonNull(email);
+    Objects.requireNonNull(login);
     Objects.requireNonNull(password);
   }
 }

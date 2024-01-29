@@ -7,6 +7,11 @@
         <mat-label>Search</mat-label>
         <input matInput>
     </mat-form-field>
-    <button mat-stroked-button color="primary" (click)="login()">Log in</button>
-    <button mat-raised-button color="primary" (click)="signup()">Sign up</button>
+    @if(userService.isLogin()) {
+        <button mat-stroked-button color="primary" (click)="logout()">Logout</button>
+    } @else {
+        <button mat-stroked-button color="primary" (click)="login()">Log in</button>
+        <button mat-raised-button color="primary" (click)="signup()">Sign up</button>
+    }
+
 </mat-toolbar>

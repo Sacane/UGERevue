@@ -9,6 +9,7 @@ import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -29,7 +30,7 @@ public class UserService {
         }
         var newUser = repository.save(new User(userDTO.username(),
                 userDTO.login(),
-                passwordEncoder.encodePassword(userDTO.password()),
+                passwordEncoder.encode(userDTO.password()),
                 userDTO.email()
                 ));
         return ResponseEntity.ok(new UserIdDTO(newUser.getId(), newUser.getUsername()));
@@ -41,7 +42,7 @@ public class UserService {
             throw HttpException.notFound("Bad logging used");
         }
         var userData = user.get();
-        if(!passwordEncoder.verifyPassword(credentialsDTO.password(), userData.getPassword())){
+        if(!passwordEncoder.matches(credentialsDTO.password(), userData.getPassword())){
             throw HttpException.unauthorized("Password entered doesn't match");
         }
         return ResponseEntity.ok(new UserConnectedDTO(userData.getId(), userData.getUsername(), "ToDo"));
