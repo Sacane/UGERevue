@@ -1,7 +1,7 @@
 package fr.pentagon.ugeoverflow.controllers;
 
-import fr.pentagon.ugeoverflow.dto.UserIdDTO;
-import fr.pentagon.ugeoverflow.dto.UserRegisterDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

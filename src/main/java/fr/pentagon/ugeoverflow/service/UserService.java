@@ -1,9 +1,9 @@
 package fr.pentagon.ugeoverflow.service;
 
-import fr.pentagon.ugeoverflow.dto.CredentialsDTO;
-import fr.pentagon.ugeoverflow.dto.UserConnectedDTO;
-import fr.pentagon.ugeoverflow.dto.UserIdDTO;
-import fr.pentagon.ugeoverflow.dto.UserRegisterDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserConnectedDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
