@@ -2,14 +2,17 @@ package fr.pentagon.ugeoverflow.controllers;
 
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.LoginRequestDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.LoginResponseDTO;
+import fr.pentagon.ugeoverflow.exception.HttpException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,13 +38,17 @@ public class LoginController {
     public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO, HttpServletRequest request, HttpServletResponse response) {
         LOGGER.info("try to login");
         var token = UsernamePasswordAuthenticationToken.unauthenticated(loginRequestDTO.login(), loginRequestDTO.password());
-        var authentication = authenticationManager.authenticate(token);
-        if (authentication.isAuthenticated()) {
-            var securityContext = this.contextHolderStrategy.createEmptyContext();
-            securityContext.setAuthentication(authentication);
-            this.securityContextRepository.saveContext(securityContext, request, response);
+        try {
+            var authentication = authenticationManager.authenticate(token);
+            if (authentication.isAuthenticated()) {
+                var securityContext = this.contextHolderStrategy.createEmptyContext();
+                securityContext.setAuthentication(authentication);
+                this.securityContextRepository.saveContext(securityContext, request, response);
+            }
+            return ResponseEntity.ok(new LoginResponseDTO(((UserDetails) authentication.getPrincipal()).getUsername()));
+        }catch (AuthenticationException e) {
+            throw HttpException.unauthorized("Bad credentails");
         }
-        return ResponseEntity.ok(new LoginResponseDTO(authentication.getName()));
     }
     @PostMapping("/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
@@ -52,11 +59,7 @@ public class LoginController {
             logoutHandler.logout(request, response, authentication);
             if(SecurityContextHolder.getContext().getAuthentication() == null) {
                 LOGGER.info("logout successfully");
-            } else {
-                System.out.println(SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
             }
-        } else {
-            System.out.println("NOT LOGGED ??");
         }
     }
 }
