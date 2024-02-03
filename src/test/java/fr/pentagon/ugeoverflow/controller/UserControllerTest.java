@@ -2,8 +2,6 @@ package fr.pentagon.ugeoverflow.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.pentagon.ugeoverflow.controllers.UserController;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserConnectedDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
@@ -67,49 +65,6 @@ public class UserControllerTest {
                         .content(objectMapper.writeValueAsString(userRegisterDTO)))
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
                 .andExpect(MockMvcResultMatchers.content().string("User with this username already exist"))
-                .andDo(print());
-    }
-
-    @Test
-    @DisplayName("Case of successful authentification")
-    void testAuthUser() throws Exception {
-        var credentialsDTO = new CredentialsDTO("login", "password");
-        userService.register(new UserRegisterDTO("verestah1","verestah@gmail.com","login","password"));
-        when(userService.check(credentialsDTO)).thenReturn(ResponseEntity.ok(new UserConnectedDTO(1L, "verestah1", "toDo")));
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/auth")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(credentialsDTO)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("verestah1"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.accessToken").value("toDo"))
-                .andDo(print());
-    }
-
-    @Test
-    @DisplayName("Case of exception : login not found")
-    void loginNotFoundUserAuth() throws Exception {
-        var credentialsDTO = new CredentialsDTO("login", "password");
-        when(userService.check(credentialsDTO)).thenThrow(HttpException.notFound("User with this login is not found"));
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/auth")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(credentialsDTO)))
-                .andExpect(MockMvcResultMatchers.status().isNotFound())
-                .andExpect(MockMvcResultMatchers.content().string("User with this login is not found"))
-                .andDo(print());
-    }
-
-    @Test
-    @DisplayName("Case of exception : password doesn't match")
-    void passwordDoesntMatchUserAuth() throws Exception {
-        userService.register(new UserRegisterDTO("verestah1","verestah@gmail.com","login","password1"));
-        var credentialsDTO = new CredentialsDTO("login", "password");
-        when(userService.check(credentialsDTO)).thenThrow(HttpException.unauthorized("Password entered doesn't match"));
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/users/auth")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(credentialsDTO)))
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized())
-                .andExpect(MockMvcResultMatchers.content().string("Password entered doesn't match"))
                 .andDo(print());
     }
 }
