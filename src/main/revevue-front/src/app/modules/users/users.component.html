@@ -1,1 +1,14 @@
-users
+<!-- card-list.component.html -->
+
+<mat-form-field>
+    <mat-label>Filtrer vos followers</mat-label>
+    <input matInput (input)="filter($event)" placeholder="Rechercher">
+</mat-form-field>
+
+<div *ngFor="let userInfo of usersFiltered">
+    <mat-card>
+        <mat-card-content>
+            {{ userInfo.username }}
+        </mat-card-content>
+    </mat-card>
+</div>
