@@ -5,7 +5,7 @@ import {UserFollowInfo} from "./models-in";
     providedIn: 'root'
 })
 export class FakeUserInfoService {
-    getFakeUserInfos(): UserFollowInfo[] {
+    getALotFakeUserInfos(): UserFollowInfo[] {
         return [
             { username: 'Mathis', isFollowing: true},
             { username: 'Johan', isFollowing: true},
@@ -16,6 +16,25 @@ export class FakeUserInfoService {
             { username: 'Remi', isFollowing: true},
             { username: 'Drake', isFollowing: true},
             { username: 'Kylian', isFollowing: true},
+            { username: 'Kylian', isFollowing: true},
+            { username: 'Kylian', isFollowing: true},
+            { username: 'Kylian', isFollowing: true},
+            { username: 'Kylian', isFollowing: true},
+            { username: 'Kylian', isFollowing: true},
+            { username: 'Yohann', isFollowing: true},
+            { username: 'Yohann', isFollowing: true},
+            { username: 'Yohann', isFollowing: true},
+            { username: 'Yohann', isFollowing: true},
+            { username: 'Yohann', isFollowing: true},
+        ];
+    }
+    getFewFakeUserInfos(): UserFollowInfo[] {
+        return [
+            { username: 'Mathis', isFollowing: true},
+            { username: 'Johan', isFollowing: true},
+            { username: 'Yohann', isFollowing: true},
+            { username: 'Quentin', isFollowing: true},
+            { username: 'Clement', isFollowing: true},
         ];
     }
 }

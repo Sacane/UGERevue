@@ -5,10 +5,12 @@
     <input matInput (input)="filter($event)" placeholder="Rechercher">
 </mat-form-field>
 
-<div *ngFor="let userInfo of usersFiltered">
+<div *ngFor="let userInfo of getPagedUserFollowedInfos()">
     <mat-card>
         <mat-card-content>
             {{ userInfo.username }}
         </mat-card-content>
     </mat-card>
 </div>
+
+<mat-paginator [length]="usersFiltered.length" [pageSize]="pageSize" (page)="onPageChange($event)"></mat-paginator>
