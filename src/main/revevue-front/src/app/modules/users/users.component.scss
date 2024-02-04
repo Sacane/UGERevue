@@ -4,8 +4,22 @@
     align-items: center;
 }
 
-.card-item {
+.card-size {
     flex: 0 0 calc(33.33% - 10px); /* Pour laisser un petit espace entre les cartes */
     margin-bottom: 10px; /* Ajustez cet espace selon vos besoins */
+}
+
+.container {
+    width: 100%;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.col {
+    flex-basis: calc(33.33% - 10px);
+    margin-bottom: 10px;
 }
 
