@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "answers")
-public class Answer {
+@Table(name = "comments")
+public class Comment {
     @Id
     @GeneratedValue
     private long id;
@@ -14,10 +14,10 @@ public class Answer {
     @ManyToOne
     private User author;
     @ManyToOne
-    private Comment comment;
+    private Review review;
     private Date createdAt;
 
-    public Answer() {}
+    public Comment() {}
 
     public long getId() {
         return id;
@@ -43,12 +43,12 @@ public class Answer {
         this.author = author;
     }
 
-    public Comment getComment() {
-        return comment;
+    public Review getReview() {
+        return review;
     }
 
-    public void setComment(Comment comment) {
-        this.comment = comment;
+    public void setReview(Review review) {
+        this.review = review;
     }
 
     public Date getCreatedAt() {
