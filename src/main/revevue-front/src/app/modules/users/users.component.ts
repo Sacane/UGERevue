@@ -18,13 +18,14 @@ export class UsersComponent implements OnInit {
     readonly pageSize = 9;
     private currentPage = 0;
 
-    ngOnInit() {
+    ngOnInit(): void {
         //this.inputDatas = this.userFollowedInfos.slice();
-        this.inputDatas = this.fakesService.getALotFakeUserInfos()//Using fake data
-        this.paginator.pageSize = this.pageSize
+        this.inputDatas = this.fakesService.getALotFakeUserInfos();//Using fake data
+        this.usersFiltered = this.inputDatas;
+        this.paginator.pageSize = this.pageSize;
     }
 
-    filter(event: Event) {
+    filter(event: Event): void {
         const query = (event.target as HTMLInputElement).value;
         this.usersFiltered = this.inputDatas.filter(infos => infos.username.toLowerCase().includes(query.toLowerCase()));
         this.paginator.firstPage();
@@ -35,7 +36,17 @@ export class UsersComponent implements OnInit {
         return this.usersFiltered.slice(startIndex, startIndex + this.pageSize);
     }
 
-    onPageChange(event: any) {
+    onPageChange(event: any) : void {
         this.currentPage = event.pageIndex;
+    }
+
+    onFollow(user: UserFollowInfo): void {
+        console.log('Followed:', user.username);
+        user.isFollowing = true;
+    }
+
+    onUnfollow(user: UserFollowInfo): void {
+        console.log('Unfollowed:', user.username);
+        user.isFollowing = false;
     }
 }

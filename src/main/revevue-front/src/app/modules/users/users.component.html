@@ -1,14 +1,21 @@
-<!-- card-list.component.html -->
-
+<div style="display: flex; justify-content: space-between; align-items: center;">
+    <span style="font-size: 25px; font-weight: 500;">All Questions</span>
+</div>
 <mat-form-field>
     <mat-label>Filtrer vos followers</mat-label>
     <input matInput (input)="filter($event)" placeholder="Rechercher">
 </mat-form-field>
 
-<div *ngFor="let userInfo of getPagedUserFollowedInfos()">
+<div *ngFor="let userInfo of getPagedUserFollowedInfos()" class="card-item">
     <mat-card>
-        <mat-card-content>
-            {{ userInfo.username }}
+        <mat-card-content class="card-content-container">
+            <div>
+                {{ userInfo.username }}
+            </div>
+            <div>
+                <button *ngIf="userInfo.isFollowing" mat-button color="warn" (click)="onUnfollow(userInfo)">Unfollow</button>
+                <button *ngIf="!userInfo.isFollowing" mat-button color="primary" (click)="onFollow(userInfo)">Follow</button>
+            </div>
         </mat-card-content>
     </mat-card>
 </div>

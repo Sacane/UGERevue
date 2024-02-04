@@ -1,0 +1,11 @@
+.card-content-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-item {
+    flex: 0 0 calc(33.33% - 10px); /* Pour laisser un petit espace entre les cartes */
+    margin-bottom: 10px; /* Ajustez cet espace selon vos besoins */
+}
+
