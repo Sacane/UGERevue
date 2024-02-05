@@ -9,7 +9,8 @@
         </mat-form-field>
     </div>
     <div class="row">
-        <div *ngFor="let userInfo of getPagedUserFollowedInfos()" class="col">
+        @for (userInfo of getPagedUserFollowedInfos(); track userInfo){
+        <div class="col">
             <mat-card class="card-size">
                 <mat-card-content class="card-content-container">
                     <div>
@@ -22,6 +23,7 @@
                 </mat-card-content>
             </mat-card>
         </div>
+        }
     </div>
 </div>
 
