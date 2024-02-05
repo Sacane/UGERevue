@@ -11,9 +11,9 @@ public class Answer {
     @GeneratedValue
     private long id;
     private String content;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User author;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Comment comment;
     private Date createdAt;
 

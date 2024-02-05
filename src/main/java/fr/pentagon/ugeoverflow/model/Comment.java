@@ -3,6 +3,7 @@ package fr.pentagon.ugeoverflow.model;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "comments")
@@ -11,10 +12,12 @@ public class Comment {
     @GeneratedValue
     private long id;
     private String content;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User author;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Review review;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "comment")
+    private List<Answer> answers;
     private Date createdAt;
 
     public Comment() {}
@@ -49,6 +52,14 @@ public class Comment {
 
     public void setReview(Review review) {
         this.review = review;
+    }
+
+    public List<Answer> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(List<Answer> answers) {
+        this.answers = answers;
     }
 
     public Date getCreatedAt() {

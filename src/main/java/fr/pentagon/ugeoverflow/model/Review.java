@@ -18,11 +18,14 @@ public class Review {
     private byte[] testFile;
     private boolean isOpen;
     private String status;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "review")
     private List<Comment> comments;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User author;
     private Date createdAt;
 
-    public Review() {}
+    public Review() {
+    }
 
     public long getId() {
         return id;
@@ -79,6 +82,14 @@ public class Review {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     public Date getCreatedAt() {
