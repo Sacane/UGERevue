@@ -6,3 +6,56 @@ app-question {
     flex-grow: 1;
     background-color: white;
 }
+
+.title {
+    font-size: 25px;
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.questionLayout {
+    display: flex;
+    justify-content: space-around;
+    width: 80%;
+    gap: 10px;
+}
+
+.main {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.section {
+    background-color: rgb(240, 240, 240);
+    border-radius: 5px;
+    padding: 20px;
+    border: solid black 1px;
+}
+
+.reviewSection {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.review {
+    border-radius: 5px;
+    padding: 20px;
+    border: solid black 1px;
+}
+
+.stats {
+    width: 20%;
+    min-width: 200px;
+    background-color: rgb(230, 230, 230);
+    border-radius: 5px;
+    border: solid black 1px;
+    padding: 20px;
+}
+
+code {
+    max-height: 1000px;
+    overflow: scroll;
+}
