@@ -6,6 +6,5 @@ import org.springframework.context.annotation.Profile;
 
 @Configuration
 @ComponentScan
-@Profile(value = "test")
 public class TestConfiguration {
 }

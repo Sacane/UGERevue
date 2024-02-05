@@ -3,6 +3,7 @@ package fr.pentagon.ugeoverflow.service;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.NewReviewDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.Charset;
@@ -11,6 +12,7 @@ import java.time.Instant;
 import java.util.*;
 
 @Service
+@Profile("test")
 public final class FakeDataManager implements DataManagerAdapter {
 
     private static final Charset CHARSET = StandardCharsets.UTF_8;

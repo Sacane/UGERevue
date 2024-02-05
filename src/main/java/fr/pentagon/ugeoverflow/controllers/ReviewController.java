@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.controllers;
 
+import fr.pentagon.ugeoverflow.config.security.RevevueUserDetail;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.NewReviewDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewDTO;
 import fr.pentagon.ugeoverflow.service.DataManagerAdapter;
@@ -32,10 +33,7 @@ public final class ReviewController {
     @PostMapping
     public ResponseEntity<String> createReview(@RequestBody NewReviewDTO newReviewDTO) {
         LOGGER.info("POST performed on /api/reviews");
-        SecurityContextHolder.getContext().getAuthentication().getDetails();
+        var user = (RevevueUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok("");
     }
-
-
-
 }
