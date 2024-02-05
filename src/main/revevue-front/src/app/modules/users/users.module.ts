@@ -3,7 +3,6 @@ import { SharedModule } from "../../shared/shared.module";
 import { UsersComponent } from "./users.component";
 import { UsersRoutingModule } from "./users-routing.module";
 import {NgForOf, NgIf} from "@angular/common";
-import {FakeUserInfoService} from "../../shared/FakeUserFollowInfoService";
 
 @NgModule({
     declarations: [
@@ -14,9 +13,6 @@ import {FakeUserInfoService} from "../../shared/FakeUserFollowInfoService";
         SharedModule,
         NgForOf,
         NgIf,
-    ],
-    providers: [
-        FakeUserInfoService,
     ],
     exports: [UsersComponent],
     bootstrap: [UsersComponent]
