@@ -1,1 +1,14 @@
-question with id {{ id }}
+<mat-grid-list cols="4" rowHeight="100px">
+    <mat-grid-tile colspan="4">
+        <h1>{{title}}</h1>
+    </mat-grid-tile>
+    <mat-grid-tile colspan="3">
+        {{content}}
+    </mat-grid-tile>
+    <mat-grid-tile colspan="1" rowspan="2">
+        {{author}}
+    </mat-grid-tile>
+    <mat-grid-tile colspan="3">
+        Comments go here
+    </mat-grid-tile>
+</mat-grid-list>
