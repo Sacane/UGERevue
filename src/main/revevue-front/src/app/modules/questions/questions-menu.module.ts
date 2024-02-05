@@ -8,6 +8,8 @@ import {DatePipe} from "@angular/common";
 import {HIGHLIGHT_OPTIONS, HighlightModule} from "ngx-highlightjs";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatListModule} from "@angular/material/list";
+import {ReviewComponent} from "./components/review/review.component";
+import {ReviewsComponent} from "./components/reviews/reviews.component";
 
 @NgModule({
     providers: [
@@ -34,6 +36,8 @@ import {MatListModule} from "@angular/material/list";
         HighlightModule,
         MatDividerModule,
         MatListModule,
+        ReviewComponent,
+        ReviewsComponent,
     ],
     exports: [QuestionsMenuComponent],
     bootstrap: [QuestionsMenuComponent]
