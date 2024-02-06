@@ -1,8 +1,8 @@
 package fr.pentagon.ugeoverflow.config.auth;
 
+import fr.pentagon.ugeoverflow.config.security.RevevueUserDetail;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
@@ -18,10 +18,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     var userResponse = userRepository.findByLogin(login);
     if(userResponse.isEmpty()) throw HttpException.notFound("User with login " + login + " does not exists");
     var user = userResponse.get();
-    return User.builder()
-            .username(user.getUsername())
-            .password(user.getPassword())
-            //TODO add roles
-            .build();
+    return new RevevueUserDetail(user.getId(), user.getPassword(), user.getUsername()); //TODO add roles
   }
 }
