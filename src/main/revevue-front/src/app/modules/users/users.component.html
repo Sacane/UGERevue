@@ -17,8 +17,11 @@
                         {{ userInfo.username }}
                     </div>
                     <div>
-                        <button *ngIf="userInfo.isFollowing" mat-button color="warn" (click)="onUnfollow(userInfo)">Unfollow</button>
-                        <button *ngIf="!userInfo.isFollowing" mat-button color="primary" (click)="onFollow(userInfo)">Follow</button>
+                        @if (userInfo.isFollowing){
+                            <button mat-button color="warn" (click)="onUnfollow(userInfo)">Unfollow</button>
+                        } @else {
+                            <button mat-button color="primary" (click)="onFollow(userInfo)">Follow</button>
+                        }
                     </div>
                 </mat-card-content>
             </mat-card>

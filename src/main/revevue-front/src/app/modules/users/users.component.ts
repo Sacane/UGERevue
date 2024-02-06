@@ -23,7 +23,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit(): void {
-        this.userService.getFewFakeUserInfos().subscribe(  //Fake data
+        this.userService.getALotFakeUserInfos().subscribe(  //Fake data
             (data: UserFollowInfo[]) => this.usersFiltered = data.slice()
         );
     }
