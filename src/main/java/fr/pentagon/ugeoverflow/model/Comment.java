@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "comments")
@@ -21,6 +22,17 @@ public class Comment {
     private Date createdAt;
 
     public Comment() {}
+
+    public Comment(String content, User author, Review review, Date createdAt) {
+        Objects.requireNonNull(content);
+        Objects.requireNonNull(author);
+        Objects.requireNonNull(review);
+        Objects.requireNonNull(createdAt);
+        this.content = content;
+        this.author = author;
+        this.review = review;
+        this.createdAt = createdAt;
+    }
 
     public long getId() {
         return id;

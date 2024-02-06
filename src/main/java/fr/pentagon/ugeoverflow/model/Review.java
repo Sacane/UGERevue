@@ -19,7 +19,7 @@ public class Review {
     private byte[] testFile;
     private boolean isOpen;
     private String status;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "review")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "review")
     private List<Comment> comments;
     @ManyToOne(fetch = FetchType.LAZY)
     private User author;
