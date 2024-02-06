@@ -12,6 +12,7 @@ import {Review} from "../../models/review";
 export class QuestionComponent {
     question: Question = {
         author: "sebdu93",
+        tags: ['java', 'spring', 'jesuisnul'],
         classContent: "package fr.pentagon.ugeoverflow.repository;\n" +
             "\n" +
             "import fr.pentagon.ugeoverflow.model.User;\n" +
@@ -25,6 +26,26 @@ export class QuestionComponent {
             "    boolean existsByUsername(String username);\n" +
             "    Optional<User> findByLogin(String login)\n" +
             "}\n",
+        testClassContent: 'package fr.uge.fifo;\n' +
+            '\n' +
+            'import static org.junit.jupiter.api.Assertions.assertEquals;\n' +
+            '\n' +
+            'import org.junit.jupiter.api.Test;\n' +
+            '\n' +
+            '@SuppressWarnings("static-method")\n' +
+            'public class ResizeableFifoTest {\n' +
+            '  @Test\n' +
+            '  public void shouldResizeWhenAddingMoreThanCapacityElements() {\n' +
+            '    var fifo = new ResizeableFifo<String>(1);\n' +
+            '    fifo.offer("foo");\n' +
+            '    fifo.offer("bar");\n' +
+            '    assertEquals(2, fifo.size());\n' +
+            '    assertEquals("foo", fifo.poll());\n' +
+            '    assertEquals("bar", fifo.poll());\n' +
+            '    assertEquals(0, fifo.size());\n' +
+            '  }\n' +
+            '}',
+        testResults: 'Tests passed: 1 of 1 test - 23ms',
         commentCount: 2,
         creationDate: new Date(),
         id: 12,
@@ -35,21 +56,33 @@ export class QuestionComponent {
     reviews: Array<Review> = [
         {
             author: "seblafrite",
+            creationDate: new Date(),
             content: "tu pourrais au moins faire l'effort d'expliquer ton problème...",
             upvotes: 23,
             downvotes: 5,
             reviews: [
                 {
                     author: "teletubbies",
+                    creationDate: new Date(),
                     content: "c'est pas très gentil de dire ça",
                     upvotes: 7,
                     downvotes: 9,
-                    reviews: []
+                    reviews: [
+                        {
+                            author: "noob",
+                            creationDate: new Date(),
+                            content: "osef mon gars",
+                            upvotes: 0,
+                            downvotes: 15,
+                            reviews: []
+                        },
+                    ]
                 },
             ]
         },
         {
             author: "jesaispasquoimettreici",
+            creationDate: new Date(),
             content: "il manque un point virgule là",
             citedCode: "Optional<User> findByLogin(String login)",
             upvotes: 245,

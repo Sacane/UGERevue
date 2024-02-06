@@ -10,6 +10,7 @@ import {MatDividerModule} from "@angular/material/divider";
 import {MatListModule} from "@angular/material/list";
 import {ReviewComponent} from "./components/review/review.component";
 import {ReviewsComponent} from "./components/reviews/reviews.component";
+import {MatChipsModule} from "@angular/material/chips";
 
 @NgModule({
     providers: [
@@ -27,7 +28,9 @@ import {ReviewsComponent} from "./components/reviews/reviews.component";
     declarations: [
         QuestionsMenuComponent,
         QuestionComponent,
-        QuestionsComponent
+        QuestionsComponent,
+        ReviewComponent,
+        ReviewsComponent
     ],
     imports: [
         QuestionsMenuRoutingModule,
@@ -36,8 +39,7 @@ import {ReviewsComponent} from "./components/reviews/reviews.component";
         HighlightModule,
         MatDividerModule,
         MatListModule,
-        ReviewComponent,
-        ReviewsComponent,
+        MatChipsModule,
     ],
     exports: [QuestionsMenuComponent],
     bootstrap: [QuestionsMenuComponent]

@@ -1,5 +1,6 @@
 export interface Review {
     author: string;
+    creationDate: Date;
     content: string;
     citedCode?: string;
     upvotes: number;
