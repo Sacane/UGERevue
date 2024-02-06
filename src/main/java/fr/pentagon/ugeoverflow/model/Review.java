@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "reviews")
@@ -25,6 +26,21 @@ public class Review {
     private Date createdAt;
 
     public Review() {
+    }
+
+    public Review(String title, byte[] javaFile, byte[] testFile, boolean isOpen, String status, User author, Date createdAt) {
+        Objects.requireNonNull(title);
+        Objects.requireNonNull(javaFile);
+        Objects.requireNonNull(status);
+        Objects.requireNonNull(author);
+        Objects.requireNonNull(createdAt);
+        this.title = title;
+        this.javaFile = javaFile;
+        this.testFile = testFile;
+        this.isOpen = isOpen;
+        this.status = status;
+        this.author = author;
+        this.createdAt = createdAt;
     }
 
     public long getId() {
