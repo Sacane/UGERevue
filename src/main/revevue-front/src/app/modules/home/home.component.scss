@@ -1,0 +1,67 @@
+.container {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    .topdiv {
+        height: 50%;
+        width: 100vw;
+        position: relative;
+        background-color: rgba(102, 178, 255, 0.3);
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+
+        .three {
+            justify-content: flex-end; /* Aligner le contenu en bas de la .topdiv */
+            h1 {
+                font-size: 90px;
+                font-weight: 500;
+                letter-spacing: 0;
+                line-height: 1.5em;
+                padding-bottom: 50px;
+                margin: 0; /* Pour supprimer les marges par défaut du h1 */
+                position: absolute;
+                bottom: 0;
+            }
+        }
+
+        margin-bottom: 10px; /* Ajouter la hauteur de la balise h1 à la marge basse */
+    }
+
+    .bottomdiv {
+        height: 50%;
+        display: flex;
+        flex-direction: row; /* Aligner les cartes côte à côte */
+
+        .card {
+            flex-grow: 1;
+            height: 80%;
+            width: 80%;
+            margin: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ajoutez une ombre pour une meilleure apparence */
+            border-radius: 40px;
+            justify-content: center; /* Centre le contenu verticalement */
+            align-items: center;
+
+            .card-text {
+                text-align: center;
+                font-family: Roboto, sans-serif; /* Remplacez 'VotrePolice' par le nom de la police souhaitée */
+                font-size: 22px; /* Ajustez la taille de la police selon vos préférences */
+                line-height: 1.4; /* Ajustez la hauteur de ligne selon vos préférences */
+                color: #333; /* Ajustez la couleur du texte selon vos préférences */
+                margin: 15px; /* Supprime les marges par défaut pour un aspect plus propre */
+            }
+
+            .card-title {
+                font-family: Roboto, sans-serif; /* Remplacez 'VotrePolice' par le nom de la police souhaitée */
+                font-size: 28px; /* Ajustez la taille de la police selon vos préférences */
+                line-height: 1.4; /* Ajustez la hauteur de ligne selon vos préférences */
+                color: #333; /* Ajustez la couleur du texte selon vos préférences */
+                margin-top: -30px;
+            }
+        }
+    }
+}

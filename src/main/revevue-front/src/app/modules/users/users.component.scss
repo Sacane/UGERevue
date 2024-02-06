@@ -5,22 +5,18 @@ app-users {
     row-gap: 30px;
     flex-grow: 1;
     background-color: white;
-
     .container {
         width: 100%;
         height: 100%;
         display: flex;
         flex-direction: column;
         flex-grow: 1;
-
         .row {
             display: flex;
             flex-wrap: wrap;
-
             .col {
                 flex-basis: calc(33.33% - 10px);
                 margin-bottom: 10px;
-
                 .card-size {
                     flex: 0 0 calc(33.33% - 10px);
                     margin-bottom: 10px;
@@ -28,8 +24,8 @@ app-users {
                         display: flex;
                         justify-content: space-between;
                         align-items: center;
+                        padding: 40px;
                     }
-
                 }
             }
         }
