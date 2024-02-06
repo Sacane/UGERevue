@@ -10,6 +10,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Service
@@ -30,8 +31,8 @@ public class ReviewService {
             throw HttpException.notFound("User not exist");
         }
         var user = userFind.get();
-        reviewRepository.save(new Review(reviewCreateDTO.title(), reviewCreateDTO.javaFile(), reviewCreateDTO.testFile(), true, "OPEN", user, new Date()));
+        var review = reviewRepository.save(new Review(reviewCreateDTO.title(), reviewCreateDTO.javaFile(), reviewCreateDTO.testFile(), true, "OPEN", user, new Date()));
 
-        return null;
+        return ResponseEntity.ok(new ReviewDTO(review.getId(), review.getTitle(), new String(review.getJavaFile(), StandardCharsets.UTF_8), new String(review.getTestFile() == null ? new byte[0] : review.getTestFile(), StandardCharsets.UTF_8), user.getId(), review.getCreatedAt()));
     }
 }
