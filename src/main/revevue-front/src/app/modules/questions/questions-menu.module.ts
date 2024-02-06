@@ -11,6 +11,7 @@ import {MatListModule} from "@angular/material/list";
 import {ReviewComponent} from "./components/review/review.component";
 import {ReviewsComponent} from "./components/reviews/reviews.component";
 import {MatChipsModule} from "@angular/material/chips";
+import {CreateQuestionComponent} from "./components/create-question/create-question.component";
 
 @NgModule({
     providers: [
@@ -30,7 +31,8 @@ import {MatChipsModule} from "@angular/material/chips";
         QuestionComponent,
         QuestionsComponent,
         ReviewComponent,
-        ReviewsComponent
+        ReviewsComponent,
+        CreateQuestionComponent
     ],
     imports: [
         QuestionsMenuRoutingModule,
