@@ -1,1 +1,42 @@
-<p>create-question works!</p>
+<div class="main">
+    <div class="section">
+        <div class="title">Poser une question</div>
+        <form (ngSubmit)="onSubmit()" [formGroup]="form">
+            <mat-form-field>
+                <mat-label>Titre</mat-label>
+                <input formControlName="questionTitle" matInput required>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Question</mat-label>
+                <textarea formControlName="questionContent" matInput required rows="10"></textarea>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Java Class</mat-label>
+                <input [value]="form.value.javaClass?.name" matInput readonly required>
+                <button (click)="javaClassUpload.click()" mat-icon-button matPrefix>
+                    <mat-icon>folder</mat-icon>
+                </button>
+                @if (form.value.javaClass !== null) {
+                    <button (click)="onJavaClassWipe()" mat-icon-button matSuffix>
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                }
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Test Class</mat-label>
+                <input [value]="form.value.testClass?.name" matInput readonly>
+                <button (click)="testClassUpload.click()" mat-icon-button matPrefix>
+                    <mat-icon>folder</mat-icon>
+                </button>
+                @if (form.value.testClass !== null) {
+                    <button (click)="onTestClassWipe()" mat-icon-button matSuffix>
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                }
+            </mat-form-field>
+            <button [disabled]="!form.valid" color="primary" mat-raised-button type="submit">Poster</button>
+            <input #javaClassUpload (change)="onJavaClassPicked($event)" style="display: none" type="file">
+            <input #testClassUpload (change)="onTestClassPicked($event)" style="display: none" type="file">
+        </form>
+    </div>
+</div>
