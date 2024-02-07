@@ -15,51 +15,51 @@
         flex-grow: 1;
 
         .three {
-            justify-content: flex-end; /* Aligner le contenu en bas de la .topdiv */
+            justify-content: flex-end;
             h1 {
                 font-size: 90px;
                 font-weight: 500;
                 letter-spacing: 0;
                 line-height: 1.5em;
                 padding-bottom: 50px;
-                margin: 0; /* Pour supprimer les marges par défaut du h1 */
+                margin: 0;
                 position: absolute;
                 bottom: 0;
             }
         }
 
-        margin-bottom: 10px; /* Ajouter la hauteur de la balise h1 à la marge basse */
+        margin-bottom: 10px;
     }
 
     .bottomdiv {
         height: 50%;
         display: flex;
-        flex-direction: row; /* Aligner les cartes côte à côte */
+        flex-direction: row;
 
         .card {
             flex-grow: 1;
             height: 80%;
             width: 80%;
             margin: 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ajoutez une ombre pour une meilleure apparence */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 40px;
-            justify-content: center; /* Centre le contenu verticalement */
+            justify-content: center;
             align-items: center;
 
             .card-text {
                 text-align: center;
-                font-family: Roboto, sans-serif; /* Remplacez 'VotrePolice' par le nom de la police souhaitée */
-                font-size: 22px; /* Ajustez la taille de la police selon vos préférences */
-                line-height: 1.4; /* Ajustez la hauteur de ligne selon vos préférences */
-                color: #333; /* Ajustez la couleur du texte selon vos préférences */
-                margin: 15px; /* Supprime les marges par défaut pour un aspect plus propre */
+                font-family: Roboto, sans-serif;
+                font-size: 22px;
+                line-height: 1.4;
+                color: #333;
+                margin: 15px;
             }
 
             .card-title {
-                font-family: Roboto, sans-serif; /* Remplacez 'VotrePolice' par le nom de la police souhaitée */
-                font-size: 28px; /* Ajustez la taille de la police selon vos préférences */
-                line-height: 1.4; /* Ajustez la hauteur de ligne selon vos préférences */
-                color: #333; /* Ajustez la couleur du texte selon vos préférences */
+                font-family: Roboto, sans-serif;
+                font-size: 28px;
+                line-height: 1.4;
+                color: #333;
                 margin-top: -30px;
             }
         }
