@@ -1,8 +1,8 @@
 import {inject, Injectable} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {catchError, Observable, tap, throwError} from 'rxjs';
+import {catchError, Observable, Observer, of, tap, throwError} from 'rxjs';
 import {environment} from "../environment";
-import {UserCredentials, UserRegister} from "./models-in";
+import {UserCredentials, UserFollowInfo, UserRegister} from "./models-in";
 import {UserConnectedDTO, UserIdDTO} from "./models-out";
 
 @Injectable({
@@ -43,5 +43,38 @@ export class UserService {
 
     public isLogin() : boolean {
         return this.isLoggedIn
+    }
+
+    public getALotFakeUserInfos(): Observable<UserFollowInfo[]> {
+        return of([
+            { username: 'Mathis', isFollowing: true},
+            { username: 'Johan', isFollowing: true},
+            { username: 'Yohann', isFollowing: true},
+            { username: 'Quentin', isFollowing: true},
+            { username: 'Clement', isFollowing: true},
+            { username: 'Arnaud', isFollowing: true},
+            { username: 'Remi', isFollowing: true},
+            { username: 'Drake', isFollowing: true},
+            { username: 'Kylian', isFollowing: true},
+            { username: 'Kylian', isFollowing: true},
+            { username: 'Kylian', isFollowing: true},
+            { username: 'Kylian', isFollowing: true},
+            { username: 'Kylian', isFollowing: true},
+            { username: 'Kylian', isFollowing: true},
+            { username: 'Yohann', isFollowing: true},
+            { username: 'Yohann', isFollowing: true},
+            { username: 'Yohann', isFollowing: true},
+            { username: 'Yohann', isFollowing: true},
+            { username: 'Yohann', isFollowing: true},
+        ]);
+    }
+    public getFewFakeUserInfos(): Observable<UserFollowInfo[]> {
+        return of([
+            { username: 'Mathis', isFollowing: true},
+            { username: 'Johan', isFollowing: true},
+            { username: 'Yohann', isFollowing: true},
+            { username: 'Quentin', isFollowing: true},
+            { username: 'Clement', isFollowing: true},
+        ]);
     }
 }

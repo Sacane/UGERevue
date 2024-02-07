@@ -11,4 +11,8 @@ export class HomeComponent implements OnInit{
     ngOnInit(): void {
         console.log("is connected => " + this.userService.isLogin())
     }
+
+    isLogged(): boolean {
+        return this.userService.isLogin();
+    }
 }
