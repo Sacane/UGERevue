@@ -1,5 +1,6 @@
 .container {
     height: 100%;
+    width: 100%;
     margin: 0;
     display: flex;
     flex-direction: column;
@@ -7,9 +8,8 @@
 
     .topdiv {
         height: 50%;
-        width: 100vw;
         position: relative;
-        background-color: rgba(102, 178, 255, 0.3);
+        background-color: rgba(63, 81, 181, 0.3);
         display: flex;
         flex-direction: column;
         flex-grow: 1;
