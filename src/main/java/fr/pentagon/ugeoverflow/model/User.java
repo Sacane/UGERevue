@@ -16,6 +16,8 @@ public final class User {
     private String password;
     private String email;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
+    private List<Question> questions;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
     private List<Review> reviews;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
     private List<Comment> comments;
@@ -70,6 +72,19 @@ public final class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void addQuestion(Question question) {
+        questions.add(question);
+        question.setAuthor(this);
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
     }
 
     public List<Review> getReviews() {
