@@ -4,6 +4,7 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -22,6 +23,8 @@ public class Question {
     private boolean open;
     @ManyToOne(fetch = FetchType.LAZY)
     private User author;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
+    private List<Review> reviews;
     private Date createdAt;
 
     public Question() {
@@ -105,6 +108,19 @@ public class Question {
 
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.setQuestion(this);
     }
 
     public Date getCreatedAt() {

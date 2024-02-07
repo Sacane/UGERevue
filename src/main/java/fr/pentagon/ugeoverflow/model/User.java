@@ -19,10 +19,6 @@ public final class User {
     private List<Question> questions;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
     private List<Review> reviews;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
-    private List<Comment> comments;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
-    private List<Answer> answers;
 
     public User() {
     }
@@ -91,23 +87,8 @@ public final class User {
         return reviews;
     }
 
-    public void setReviews(List<Review> reviews) {
-        this.reviews = reviews;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
-
-    public List<Answer> getAnswers() {
-        return answers;
-    }
-
-    public void setAnswers(List<Answer> answers) {
-        this.answers = answers;
+    public void addReview(Review review) {
+        this.reviews.add(review);
+        review.setAuthor(this);
     }
 }

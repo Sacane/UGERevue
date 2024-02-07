@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    @Query(value = "SELECT r FROM Review r LEFT JOIN FETCH r.comments WHERE r.id = ?1")
-    Optional<Review> findByIdWithComments(long id);
+    @Query(value = "SELECT r FROM Review r LEFT JOIN FETCH r.reviews LEFT JOIN FETCH r.parentReview WHERE r.id = ?1")
+    Optional<Review> findByIdWithReviews(long id);
 }

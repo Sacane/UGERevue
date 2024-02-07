@@ -13,33 +13,31 @@ public class Review {
     @Id
     @GeneratedValue
     private long id;
-    private String title;
-    private byte[] javaFile;
-    @Nullable
-    private byte[] testFile;
-    private boolean isOpen;
-    private String status;
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "review")
-    private List<Comment> comments;
+    private String content;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Question question;
     @ManyToOne(fetch = FetchType.LAZY)
     private User author;
+    @Nullable
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Review parentReview;
+    @OneToMany(mappedBy = "parentReview")
+    private List<Review> reviews;
+    @Nullable
+    private Integer lineStart;
+    @Nullable
+    private Integer lineEnd;
     private Date createdAt;
 
     public Review() {
     }
 
-    public Review(String title, byte[] javaFile, byte[] testFile, boolean isOpen, String status, User author, Date createdAt) {
-        Objects.requireNonNull(title);
-        Objects.requireNonNull(javaFile);
-        Objects.requireNonNull(status);
-        Objects.requireNonNull(author);
+    public Review(String content, @Nullable Integer lineStart, @Nullable Integer lineEnd, Date createdAt) {
+        Objects.requireNonNull(content);
         Objects.requireNonNull(createdAt);
-        this.title = title;
-        this.javaFile = javaFile;
-        this.testFile = testFile;
-        this.isOpen = isOpen;
-        this.status = status;
-        this.author = author;
+        this.content = content;
+        this.lineStart = lineStart;
+        this.lineEnd = lineEnd;
         this.createdAt = createdAt;
     }
 
@@ -51,53 +49,20 @@ public class Review {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getContent() {
+        return content;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public byte[] getJavaFile() {
-        return javaFile;
+    public Question getQuestion() {
+        return question;
     }
 
-    public void setJavaFile(byte[] javaFile) {
-        this.javaFile = javaFile;
-    }
-
-    @Nullable
-    public byte[] getTestFile() {
-        return testFile;
-    }
-
-    public void setTestFile(@Nullable byte[] testFile) {
-        this.testFile = testFile;
-    }
-
-    public boolean isOpen() {
-        return isOpen;
-    }
-
-    public void setOpen(boolean open) {
-        isOpen = open;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+    public void setQuestion(Question question) {
+        this.question = question;
     }
 
     public User getAuthor() {
@@ -106,6 +71,45 @@ public class Review {
 
     public void setAuthor(User author) {
         this.author = author;
+    }
+
+    public Review getParentReview() {
+        return parentReview;
+    }
+
+    public void setParentReview(@Nullable Review parentReview) {
+        this.parentReview = parentReview;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.setParentReview(this);
+    }
+
+    @Nullable
+    public Integer getLineStart() {
+        return lineStart;
+    }
+
+    public void setLineStart(@Nullable Integer lineStart) {
+        this.lineStart = lineStart;
+    }
+
+    @Nullable
+    public Integer getLineEnd() {
+        return lineEnd;
+    }
+
+    public void setLineEnd(@Nullable Integer lineEnd) {
+        this.lineEnd = lineEnd;
     }
 
     public Date getCreatedAt() {
