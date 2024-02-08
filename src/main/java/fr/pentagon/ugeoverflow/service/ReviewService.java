@@ -1,6 +1,7 @@
 package fr.pentagon.ugeoverflow.service;
 
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewOnReviewDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Review;
 import fr.pentagon.ugeoverflow.repository.ReviewRepository;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class ReviewService {
@@ -19,6 +21,19 @@ public class ReviewService {
     public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository) {
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
+    }
+
+    @Transactional
+    public List<ReviewResponseDTO> getReviews(long reviewId) {
+        var reviewOptional = reviewRepository.findByIdWithReviews(reviewId);
+        if (reviewOptional.isEmpty()) {
+            throw HttpException.notFound("Review not exist");
+        }
+        var review = reviewOptional.get();
+        var author = review.getAuthor();
+
+        return review.getReviews().stream().map(r ->
+                new ReviewResponseDTO(author.getId(), author.getUsername(), r.getId(), r.getContent())).toList();
     }
 
     @Transactional

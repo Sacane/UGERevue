@@ -2,7 +2,7 @@ package fr.pentagon.ugeoverflow.service;
 
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionCreateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseChildrenDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.Review;
@@ -37,7 +37,7 @@ public class QuestionService {
     }
 
     @Transactional
-    public ResponseEntity<List<ReviewResponseDTO>> getReviews(long questionId) {
+    public ResponseEntity<List<ReviewResponseChildrenDTO>> getReviews(long questionId) {
         var questionOptional = questionRepository.findByIdWithReviews(questionId);
         if (questionOptional.isEmpty()) {
             throw HttpException.notFound("Question not exist");
@@ -51,7 +51,7 @@ public class QuestionService {
                     .mapToObj(i -> lineContent[i])
                     .collect(Collectors.joining("\n"));
 
-            return new ReviewResponseDTO(author.getId(), author.getUsername(), review.getId(), review.getContent(), citedCode, List.of());
+            return new ReviewResponseChildrenDTO(author.getId(), author.getUsername(), review.getId(), review.getContent(), citedCode, List.of());
         }).toList());
     }
 

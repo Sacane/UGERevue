@@ -66,4 +66,28 @@ public class ReviewServiceTest {
         assertNotNull(review.getParentReview());
         assertEquals(reviewParent.getId(), review.getParentReview().getId());
     }
+
+    @Test
+    @DisplayName("Get reviews from review")
+    void reviewsFromReview() {
+        var quentinResponse = userService.register(new UserRegisterDTO("qtdrake", "qt@email.com", "qtellier", "123"));
+        assertSame(quentinResponse.getStatusCode(), HttpStatus.OK);
+        var quentin = quentinResponse.getBody();
+        var questionResponse = questionService.create(new QuestionCreateDTO(quentin.id(), "TITLE", "DESCRIPTION", new byte[0], null));
+        assertSame(questionResponse.getStatusCode(), HttpStatus.OK);
+        var questionId = questionResponse.getBody();
+
+        var reviewParentResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.id(), questionId, "CONTENT", null, null));
+        assertSame(reviewParentResponse.getStatusCode(), HttpStatus.OK);
+        assertNotNull(reviewParentResponse.getBody());
+        var reviewParentId = reviewParentResponse.getBody();
+
+        for(var i = 0; i < 10; i++) {
+            var reviewResponse = reviewService.addReview(new ReviewOnReviewDTO(quentin.id(), reviewParentId, "CONTENT CHILD REVIEW:" + i));
+            assertSame(reviewResponse.getStatusCode(), HttpStatus.OK);
+            assertNotNull(reviewResponse.getBody());
+        }
+
+        assertEquals(10, reviewService.getReviews(reviewParentId).size());
+    }
 }
