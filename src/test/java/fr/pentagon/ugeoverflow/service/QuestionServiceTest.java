@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -263,5 +264,35 @@ public class QuestionServiceTest {
 
         user = userRepository.findByIdWithQuestions(quentin.getId());
         assertTrue(user.isPresent() && user.get().getQuestions().size() == 0);
+    }
+
+    @Test
+    @DisplayName("Remove a question with review on review")
+    void removeWithReviewOnReview() {
+        var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123"));
+        var responseQuestion = questionService.create(new QuestionCreateDTO(quentin.getId(), "TITLE", "DESCRIPTION", new byte[0], null));
+        assertSame(responseQuestion.getStatusCode(), HttpStatus.OK);
+
+        var questionId = responseQuestion.getBody();
+        assertNotNull(questionId);
+        assertEquals(1, questionRepository.findAll().size());
+
+        var reviewParentIdResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), questionId, "CONTENT", null, null));
+        assertSame(reviewParentIdResponse.getStatusCode(), HttpStatus.OK);
+        var reviewParentId = reviewParentIdResponse.getBody();
+        assertNotNull(reviewParentId);
+
+        reviewService.addReview(new ReviewOnReviewDTO(quentin.getId(), reviewParentId, "CONTENT"));
+
+        assertEquals(2, reviewRepository.findAll().size());
+
+        questionService.remove(new QuestionRemoveDTO(quentin.getId(), questionId));
+
+        assertEquals(0, reviewRepository.findAll().size());
+
+        var userOptional = userRepository.findByIdWithReviews(quentin.getId());
+        assertTrue(userOptional.isPresent());
+        var user = userOptional.get();
+        assertEquals(0, user.getReviews().size());
     }
 }
