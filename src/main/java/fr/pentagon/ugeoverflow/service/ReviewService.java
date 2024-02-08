@@ -1,13 +1,10 @@
 package fr.pentagon.ugeoverflow.service;
 
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionRemoveDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewOnReviewDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewRemoveDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Review;
-import fr.pentagon.ugeoverflow.model.User;
-import fr.pentagon.ugeoverflow.model.vote.QuestionVote;
 import fr.pentagon.ugeoverflow.model.vote.ReviewVote;
 import fr.pentagon.ugeoverflow.model.vote.ReviewVoteId;
 import fr.pentagon.ugeoverflow.repository.QuestionRepository;
@@ -15,7 +12,6 @@ import fr.pentagon.ugeoverflow.repository.ReviewRepository;
 import fr.pentagon.ugeoverflow.repository.ReviewVoteRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -49,7 +45,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public ResponseEntity<Long> addReview(ReviewOnReviewDTO reviewOnReviewDTO) {
+    public long addReview(ReviewOnReviewDTO reviewOnReviewDTO) {
         var userFind = userRepository.findById(reviewOnReviewDTO.userId());
         if (userFind.isEmpty()) {
             throw HttpException.notFound("User not exist");
@@ -65,7 +61,7 @@ public class ReviewService {
         user.addReview(newReview);
         review.addReview(newReview);
 
-        return ResponseEntity.ok(newReview.getId());
+        return newReview.getId();
     }
 
     @Transactional
