@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.config.security;
 
+import fr.pentagon.ugeoverflow.AuthTestUtils;
 import fr.pentagon.ugeoverflow.DatasourceTestConfig;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class AuthFilterTest {
     @Autowired
     private RequestMappingHandlerMapping requireScanner;
+    @Autowired
+    private AuthTestUtils authTestUtils;
     @Test
     @DisplayName("Should throw when controller has annotation but user is not authenticated")
     public void annotationTest() {
@@ -104,13 +107,7 @@ public class AuthFilterTest {
             }
         });
 
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setServletPath("/api/reviews");
-        request.setMethod("POST");
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        var filter = new AuthFilter(requireScanner);
-        var mockFilterChain = new MockFilterChain();
-        assertDoesNotThrow(() -> filter.doFilter(request, response, mockFilterChain));
+        authTestUtils.assertUserIsConnected("/api/reviews", "POST");
     }
 
 }
