@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 @Configuration
 @EnableWebSecurity
@@ -58,15 +59,18 @@ public class SecurityConfig {
   }
     @Bean
     @Profile("dev")
-    public SecurityFilterChain securityFilterChainDev(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChainDev(HttpSecurity http, RequestMappingHandlerMapping requireScanner) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize -> authorize.requestMatchers("/**", "/api/login", "/h2-console/**").permitAll()
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests(authorize ->
+                        authorize.requestMatchers("/**", "/api/login", "/h2-console/**")
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated())
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .headers(configurer -> configurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+                .addFilterBefore(new AuthFilter(requireScanner), BasicAuthenticationFilter.class)
                 .build();
     }
-
 }
