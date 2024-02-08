@@ -21,7 +21,7 @@ public class Review {
     @Nullable
     @ManyToOne(fetch = FetchType.LAZY)
     private Review parentReview;
-    @OneToMany(mappedBy = "parentReview")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "parentReview")
     private List<Review> reviews;
     @Nullable
     private Integer lineStart;
@@ -92,6 +92,10 @@ public class Review {
     public void addReview(Review review) {
         reviews.add(review);
         review.setParentReview(this);
+    }
+
+    public void removeReview(Review review) {
+        reviews.remove(review);
     }
 
     @Nullable

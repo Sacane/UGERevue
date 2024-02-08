@@ -1,25 +1,28 @@
 package fr.pentagon.ugeoverflow.service;
 
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionCreateDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewOnReviewDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
+import fr.pentagon.ugeoverflow.DatasourceTestConfig;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
+import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.repository.QuestionRepository;
 import fr.pentagon.ugeoverflow.repository.ReviewRepository;
 import fr.pentagon.ugeoverflow.repository.ReviewVoteRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Import(DatasourceTestConfig.class)
 public class ReviewServiceTest {
     @Autowired
     private ReviewService reviewService;
@@ -35,6 +38,14 @@ public class ReviewServiceTest {
     private UserRepository userRepository;
     @Autowired
     private ReviewVoteRepository reviewVoteRepository;
+
+    @AfterEach
+    void purge() {
+        reviewVoteRepository.deleteAll();
+        reviewRepository.deleteAll();
+        questionRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("Review on review")
@@ -137,6 +148,7 @@ public class ReviewServiceTest {
         assertEquals(2, reviewVoteRepository.findUpvoteNumberByReviewId(id.reviewId));
         assertEquals(1, reviewVoteRepository.findDownvoteNumberByReviewId(id.reviewId));
     }
+
     @Test
     @DisplayName("cancel vote on Review")
     void cancelVoteOnReviewTest() {
@@ -149,4 +161,149 @@ public class ReviewServiceTest {
         assertEquals(0, reviewVoteRepository.findDownvoteNumberByReviewId(id.reviewId));
     }
 
+    @Test
+    @DisplayName("Remove a review from a question")
+    void removeQuestionReview() {
+        var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123"));
+        var question = questionRepository.save(new Question("TITLE", "DESCRIPTION", new byte[0], null, null, true, new Date()));
+
+        var responseParentReview = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT", 1, 2));
+        assertSame(responseParentReview.getStatusCode(), HttpStatus.OK);
+
+        var reviewParentId = responseParentReview.getBody();
+        assertEquals(1, reviewRepository.findAll().size());
+        assertNotNull(reviewParentId);
+
+        reviewService.remove(new ReviewRemoveDTO(quentin.getId(), reviewParentId));
+
+        assertEquals(0, reviewRepository.findAll().size());
+        var userOptional = userRepository.findByIdWithReviews(quentin.getId());
+        assertTrue(userOptional.isPresent());
+        var user = userOptional.get();
+        assertEquals(0, user.getReviews().size());
+        var questionOptional = questionRepository.findByIdWithReviews(question.getId());
+        assertTrue(questionOptional.isPresent());
+        question = questionOptional.get();
+        assertEquals(0, question.getReviews().size());
+    }
+
+    @Test
+    @DisplayName("Remove a review from a question with children reviews")
+    void removeQuestionReviewWithChildren() {
+        var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123"));
+        var question = questionRepository.save(new Question("TITLE", "DESCRIPTION", new byte[0], null, null, true, new Date()));
+
+        var responseParentReview = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT", 1, 2));
+        assertSame(responseParentReview.getStatusCode(), HttpStatus.OK);
+
+        var reviewParentId = responseParentReview.getBody();
+        assertEquals(1, reviewRepository.findAll().size());
+        assertNotNull(reviewParentId);
+
+        var reviewResponse = reviewService.addReview(new ReviewOnReviewDTO(quentin.getId(), reviewParentId, "CONTENT"));
+        assertSame(reviewResponse.getStatusCode(), HttpStatus.OK);
+
+        var reviewId = reviewResponse.getBody();
+        assertEquals(2, reviewRepository.findAll().size());
+        assertNotNull(reviewId);
+
+        var rResponse = reviewService.addReview(new ReviewOnReviewDTO(quentin.getId(), reviewId, "CONTENT"));
+        assertSame(reviewResponse.getStatusCode(), HttpStatus.OK);
+
+        var rId = rResponse.getBody();
+        assertEquals(3, reviewRepository.findAll().size());
+        assertNotNull(rId);
+
+        reviewService.remove(new ReviewRemoveDTO(quentin.getId(), reviewParentId));
+
+        assertEquals(0, reviewRepository.findAll().size());
+        var userOptional = userRepository.findByIdWithReviews(quentin.getId());
+        assertTrue(userOptional.isPresent());
+        var user = userOptional.get();
+        assertEquals(0, user.getReviews().size());
+        var questionOptional = questionRepository.findByIdWithReviews(question.getId());
+        assertTrue(questionOptional.isPresent());
+        question = questionOptional.get();
+        assertEquals(0, question.getReviews().size());
+    }
+
+    @Test
+    @DisplayName("Remove review on review with no children")
+    void removeReviewOnReviewWithNoChildren() {
+        var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123"));
+        var question = questionRepository.save(new Question("TITLE", "DESCRIPTION", new byte[0], null, null, true, new Date()));
+
+        var responseParentReview = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT", 1, 2));
+        assertSame(responseParentReview.getStatusCode(), HttpStatus.OK);
+
+        var reviewParentId = responseParentReview.getBody();
+        assertEquals(1, reviewRepository.findAll().size());
+        assertNotNull(reviewParentId);
+
+        var reviewResponse = reviewService.addReview(new ReviewOnReviewDTO(quentin.getId(), reviewParentId, "CONTENT"));
+        assertSame(reviewResponse.getStatusCode(), HttpStatus.OK);
+
+        var reviewId = reviewResponse.getBody();
+        assertEquals(2, reviewRepository.findAll().size());
+        assertNotNull(reviewId);
+
+        var rResponse = reviewService.addReview(new ReviewOnReviewDTO(quentin.getId(), reviewId, "CONTENT"));
+        assertSame(reviewResponse.getStatusCode(), HttpStatus.OK);
+
+        var rId = rResponse.getBody();
+        assertEquals(3, reviewRepository.findAll().size());
+        assertNotNull(rId);
+
+        reviewService.remove(new ReviewRemoveDTO(quentin.getId(), rId));
+
+        assertEquals(2, reviewRepository.findAll().size());
+        var userOptional = userRepository.findByIdWithReviews(quentin.getId());
+        assertTrue(userOptional.isPresent());
+        var user = userOptional.get();
+        assertEquals(2, user.getReviews().size());
+        var questionOptional = questionRepository.findByIdWithReviews(question.getId());
+        assertTrue(questionOptional.isPresent());
+        question = questionOptional.get();
+        assertEquals(1, question.getReviews().size());
+    }
+
+    @Test
+    @DisplayName("Remove review on review with children")
+    void removeReviewOnReviewWithChildren() {
+        var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123"));
+        var question = questionRepository.save(new Question("TITLE", "DESCRIPTION", new byte[0], null, null, true, new Date()));
+
+        var responseParentReview = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT", 1, 2));
+        assertSame(responseParentReview.getStatusCode(), HttpStatus.OK);
+
+        var reviewParentId = responseParentReview.getBody();
+        assertEquals(1, reviewRepository.findAll().size());
+        assertNotNull(reviewParentId);
+
+        var reviewResponse = reviewService.addReview(new ReviewOnReviewDTO(quentin.getId(), reviewParentId, "CONTENT"));
+        assertSame(reviewResponse.getStatusCode(), HttpStatus.OK);
+
+        var reviewId = reviewResponse.getBody();
+        assertEquals(2, reviewRepository.findAll().size());
+        assertNotNull(reviewId);
+
+        var rResponse = reviewService.addReview(new ReviewOnReviewDTO(quentin.getId(), reviewId, "CONTENT"));
+        assertSame(reviewResponse.getStatusCode(), HttpStatus.OK);
+
+        var rId = rResponse.getBody();
+        assertEquals(3, reviewRepository.findAll().size());
+        assertNotNull(rId);
+
+        reviewService.remove(new ReviewRemoveDTO(quentin.getId(), reviewId));
+
+        assertEquals(1, reviewRepository.findAll().size());
+        var userOptional = userRepository.findByIdWithReviews(quentin.getId());
+        assertTrue(userOptional.isPresent());
+        var user = userOptional.get();
+        assertEquals(1, user.getReviews().size());
+        var questionOptional = questionRepository.findByIdWithReviews(question.getId());
+        assertTrue(questionOptional.isPresent());
+        question = questionOptional.get();
+        assertEquals(1, question.getReviews().size());
+    }
 }

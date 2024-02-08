@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.service;
 
+import fr.pentagon.ugeoverflow.DatasourceTestConfig;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
@@ -8,10 +9,12 @@ import fr.pentagon.ugeoverflow.repository.QuestionRepository;
 import fr.pentagon.ugeoverflow.repository.QuestionVoteRepository;
 import fr.pentagon.ugeoverflow.repository.ReviewRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 
 import java.nio.charset.StandardCharsets;
@@ -20,6 +23,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Import(DatasourceTestConfig.class)
 public class QuestionServiceTest {
     @Autowired
     private QuestionService questionService;
@@ -31,11 +35,18 @@ public class QuestionServiceTest {
     private UserRepository userRepository;
     @Autowired
     private ReviewRepository reviewRepository;
-
     @Autowired
     private UserService userService;
     @Autowired
     private QuestionVoteRepository questionVoteRepository;
+
+    @AfterEach
+    void purge() {
+        reviewRepository.deleteAll();
+        questionVoteRepository.deleteAll();
+        questionRepository.deleteAll();
+        userRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("Create a question with non-existent user")
@@ -51,8 +62,7 @@ public class QuestionServiceTest {
         var responseQuestion = questionService.create(new QuestionCreateDTO(quentin.getId(), "TITLE", "DESCRIPTION", new byte[0], null));
         assertSame(responseQuestion.getStatusCode(), HttpStatus.OK);
 
-        var questionId = responseQuestion.getBody();
-        assertEquals(1, questionId);
+        assertEquals(1, questionRepository.findAll().size());
 
         var user = userRepository.findByIdWithQuestions(quentin.getId());
         assertTrue(user.isPresent() && user.get().getQuestions().size() == 1);
@@ -86,7 +96,7 @@ public class QuestionServiceTest {
         assertSame(responseReview.getStatusCode(), HttpStatus.OK);
 
         var reviewId = responseReview.getBody();
-        assertEquals(1, reviewId);
+        assertEquals(1, reviewRepository.findAll().size());
 
         var userOptional = userRepository.findByIdWithReviews(quentin.getId());
         assertTrue(userOptional.isPresent());
@@ -231,15 +241,25 @@ public class QuestionServiceTest {
         assertSame(responseQuestion.getStatusCode(), HttpStatus.OK);
 
         var questionId = responseQuestion.getBody();
-        assertEquals(1, questionId);
+        assertEquals(1, questionRepository.findAll().size());
+
+        for(var i = 0; i < 3; i++) {
+            questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), questionId, "CONTENT:" + i, i + 1, i + 1));
+        }
 
         var user = userRepository.findByIdWithQuestions(quentin.getId());
         assertTrue(user.isPresent() && user.get().getQuestions().size() == 1);
+
+        var reviews = reviewRepository.findAll();
+        assertEquals(3, reviews.size());
 
         questionService.remove(new QuestionRemoveDTO(quentin.getId(), questionId));
 
         var questions = questionRepository.findAll();
         assertEquals(0, questions.size());
+
+        reviews = reviewRepository.findAll();
+        assertEquals(0, reviews.size());
 
         user = userRepository.findByIdWithQuestions(quentin.getId());
         assertTrue(user.isPresent() && user.get().getQuestions().size() == 0);

@@ -23,7 +23,7 @@ public class Question {
     private boolean open;
     @ManyToOne(fetch = FetchType.LAZY)
     private User author;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "question")
     private List<Review> reviews;
     private Date createdAt;
 
@@ -121,6 +121,10 @@ public class Question {
     public void addReview(Review review) {
         reviews.add(review);
         review.setQuestion(this);
+    }
+
+    public void removeReview(Review review) {
+        reviews.remove(review);
     }
 
     public Date getCreatedAt() {
