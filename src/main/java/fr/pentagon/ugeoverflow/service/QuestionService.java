@@ -1,6 +1,7 @@
 package fr.pentagon.ugeoverflow.service;
 
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionCreateDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionRemoveDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseChildrenDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
@@ -24,12 +25,14 @@ import java.util.stream.IntStream;
 
 @Service
 public class QuestionService {
+    private final ReviewService reviewService;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final QuestionVoteRepository questionVoteRepository;
 
-    public QuestionService(QuestionRepository questionRepository, UserRepository userRepository, ReviewRepository reviewRepository, QuestionVoteRepository questionVoteRepository) {
+    public QuestionService(ReviewService reviewService, QuestionRepository questionRepository, UserRepository userRepository, ReviewRepository reviewRepository, QuestionVoteRepository questionVoteRepository) {
+        this.reviewService = reviewService;
         this.questionRepository = questionRepository;
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
@@ -37,7 +40,7 @@ public class QuestionService {
     }
 
     @Transactional
-    public ResponseEntity<List<ReviewResponseChildrenDTO>> getReviews(long questionId) {
+    public List<ReviewResponseChildrenDTO> getReviews(long questionId) {
         var questionOptional = questionRepository.findByIdWithReviews(questionId);
         if (questionOptional.isEmpty()) {
             throw HttpException.notFound("Question not exist");
@@ -45,14 +48,16 @@ public class QuestionService {
         var question = questionOptional.get();
         var author = question.getAuthor();
 
-        return ResponseEntity.ok(question.getReviews().stream().map(review -> {
-            var lineContent = new String(question.getFile(), StandardCharsets.UTF_8).split("\n");
-            var citedCode = IntStream.range(review.getLineStart() - 1, review.getLineEnd())
-                    .mapToObj(i -> lineContent[i])
+        return question.getReviews().stream().map(review -> {
+            var fileContent = new String(question.getFile(), StandardCharsets.UTF_8).split("\n");
+            var lineStart = review.getLineStart();
+            var lineEnd = review.getLineEnd();
+            var citedCode = (lineStart == null || lineEnd == null) ? null : IntStream.range(lineStart - 1, lineEnd)
+                    .mapToObj(i -> fileContent[i])
                     .collect(Collectors.joining("\n"));
 
-            return new ReviewResponseChildrenDTO(author.getId(), author.getUsername(), review.getId(), review.getContent(), citedCode, List.of());
-        }).toList());
+            return new ReviewResponseChildrenDTO(author.getId(), author.getUsername(), review.getId(), review.getContent(), citedCode, reviewService.getReviews(review.getId()));
+        }).toList();
     }
 
     @Transactional
@@ -87,6 +92,26 @@ public class QuestionService {
         user.addReview(review);
 
         return ResponseEntity.ok(review.getId());
+    }
+
+    @Transactional
+    public void remove(QuestionRemoveDTO questionRemoveDTO) {
+        var userFind = userRepository.findById(questionRemoveDTO.userId());
+        if (userFind.isEmpty()) {
+            throw HttpException.notFound("User not exist");
+        }
+        var questionFind = questionRepository.findById(questionRemoveDTO.questionId());
+        if (questionFind.isEmpty()) {
+            throw HttpException.notFound("Question not exist");
+        }
+        var user = userFind.get();
+        var question = questionFind.get();
+
+        if (!userRepository.containsQuestion(user.getId(), question)) {
+            throw HttpException.unauthorized("Not your question");
+        }
+        user.removeQuestion(question);
+        questionRepository.delete(question);
     }
 
     @Transactional

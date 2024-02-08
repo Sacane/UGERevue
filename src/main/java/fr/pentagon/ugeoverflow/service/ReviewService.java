@@ -4,7 +4,11 @@ import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewOnReviewDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Review;
+import fr.pentagon.ugeoverflow.model.vote.QuestionVote;
+import fr.pentagon.ugeoverflow.model.vote.ReviewVote;
+import fr.pentagon.ugeoverflow.model.vote.ReviewVoteId;
 import fr.pentagon.ugeoverflow.repository.ReviewRepository;
+import fr.pentagon.ugeoverflow.repository.ReviewVoteRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +21,12 @@ import java.util.List;
 public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
+    private final ReviewVoteRepository reviewVoteRepository;
 
-    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository) {
+    public ReviewService(ReviewRepository reviewRepository, UserRepository userRepository, ReviewVoteRepository reviewVoteRepository) {
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
+        this.reviewVoteRepository = reviewVoteRepository;
     }
 
     @Transactional
@@ -55,4 +61,22 @@ public class ReviewService {
 
         return ResponseEntity.ok(newReview.getId());
     }
+
+    @Transactional
+    public void vote(long authorId, long reviewId, boolean isUpVote) {
+        var user = userRepository.findById(authorId).orElseThrow(() -> HttpException.notFound("The user does not exists"));
+        var review = reviewRepository.findById(reviewId).orElseThrow(() -> HttpException.notFound("the review does not exists"));
+        var vote = (isUpVote) ? ReviewVote.upvote(user, review) : ReviewVote.downvote(user, review);
+        reviewVoteRepository.save(vote);
+    }
+    @Transactional
+    public void cancelVote(long authorId, long reviewId){
+        var user = userRepository.findById(authorId).orElseThrow(() -> HttpException.notFound("The user does not exists"));
+        var review = reviewRepository.findById(reviewId).orElseThrow(() -> HttpException.notFound("the review does not exists"));
+        var reviewVoteId = new ReviewVoteId();
+        reviewVoteId.setAuthor(user);
+        reviewVoteId.setReview(review);
+        reviewVoteRepository.deleteById(reviewVoteId);
+    }
+
 }

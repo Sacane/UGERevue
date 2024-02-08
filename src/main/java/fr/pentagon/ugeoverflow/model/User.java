@@ -75,6 +75,10 @@ public final class User {
         question.setAuthor(this);
     }
 
+    public void removeQuestion(Question question) {
+        questions.remove(question);
+    }
+
     public List<Question> getQuestions() {
         return questions;
     }

@@ -16,6 +16,19 @@ public class ReviewVote {
     @Column(name = "is_up")
     private boolean isUp;
 
+    public static ReviewVote upvote(User user, Review review) {
+        var res = new ReviewVote();
+        res.setReviewVoteId(new ReviewVoteId(user, review));
+        res.setUp(true);
+        return res;
+    }
+    public static ReviewVote downvote(User user, Review review) {
+        var res = new ReviewVote();
+        res.setReviewVoteId(new ReviewVoteId(user, review));
+        res.setUp(false);
+        return res;
+    }
+
 
     public User getAuthor() {
         return reviewVoteId.getAuthor();

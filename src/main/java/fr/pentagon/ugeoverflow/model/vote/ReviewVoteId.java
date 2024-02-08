@@ -18,6 +18,8 @@ public class ReviewVoteId implements Serializable {
     @JoinColumn(name = "review_id")
     private Review review;
 
+    public ReviewVoteId(){}
+
     public ReviewVoteId(User user, Review review) {
         this.author = user;
         this.review = review;

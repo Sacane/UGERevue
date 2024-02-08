@@ -1,8 +1,6 @@
 package fr.pentagon.ugeoverflow.service;
 
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionCreateDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.User;
@@ -18,8 +16,6 @@ import org.springframework.http.HttpStatus;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,6 +23,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class QuestionServiceTest {
     @Autowired
     private QuestionService questionService;
+    @Autowired
+    private ReviewService reviewService;
     @Autowired
     private QuestionRepository questionRepository;
     @Autowired
@@ -164,8 +162,86 @@ public class QuestionServiceTest {
             questionService.addReview(new QuestionReviewCreateDTO(quentin.id(), questionId, "CONTENT:" + i, i + 1, i + 1));
         }
 
-        var reviewsResponse = questionService.getReviews(questionId);
-        assertSame(reviewsResponse.getStatusCode(), HttpStatus.OK);
-        System.out.println(reviewsResponse.getBody());
+        var reviews = questionService.getReviews(questionId);
+        assertEquals(3, reviews.size());
+    }
+
+    @Test
+    @DisplayName("Get reviews from question with children reviews")
+    void getReviewsFromQuestionWithChildrenReviews() {
+        var quentinResponse = userService.register(new UserRegisterDTO("qtdrake", "qt@email.com", "qtellier", "123"));
+        assertSame(quentinResponse.getStatusCode(), HttpStatus.OK);
+        var quentin = quentinResponse.getBody();
+        var questionResponse = questionService.create(new QuestionCreateDTO(quentin.id(), "TITLE", "DESCRIPTION", "LINE1\nLINE2\nLINE3\n".getBytes(StandardCharsets.UTF_8), null));
+        assertSame(questionResponse.getStatusCode(), HttpStatus.OK);
+        var questionId = questionResponse.getBody();
+
+        for(var i = 0; i < 3; i++) {
+            var reviewIdResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.id(), questionId, "CONTENT:" + i, i + 1, i + 1));
+            assertSame(reviewIdResponse.getStatusCode(), HttpStatus.OK);
+            var reviewId = reviewIdResponse.getBody();
+            assertNotNull(reviewId);
+
+            reviewService.addReview(new ReviewOnReviewDTO(quentin.id(), reviewId, "SUPER CONTENT"));
+        }
+
+        var reviews = questionService.getReviews(questionId);
+        assertEquals(3, reviews.size());
+
+        for(var review: reviews) {
+            assertEquals(1, review.reviews().size());
+        }
+    }
+
+    @Test
+    @DisplayName("Remove non-existent question")
+    void removeNonExistentQuestion() {
+        var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123"));
+        assertThrows(HttpException.class, () -> questionService.remove(new QuestionRemoveDTO(quentin.getId(), 1)));
+    }
+
+    @Test
+    @DisplayName("Remove a question with non-existent user")
+    void removeNonExistentUser() {
+        var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123"));
+        var responseQuestion = questionService.create(new QuestionCreateDTO(quentin.getId(), "TITLE", "DESCRIPTION", new byte[0], null));
+        assertSame(responseQuestion.getStatusCode(), HttpStatus.OK);
+        var questionId = responseQuestion.getBody();
+
+        assertThrows(HttpException.class, () -> questionService.remove(new QuestionRemoveDTO(50, questionId)));
+    }
+
+    @Test
+    @DisplayName("Remove with unauthorized user")
+    void removeUnauthorizedUser() {
+        var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123"));
+        var quentin2 = userRepository.save(new User("qtdrake2", "qt@email.com", "qtellier", "123"));
+        var responseQuestion = questionService.create(new QuestionCreateDTO(quentin.getId(), "TITLE", "DESCRIPTION", new byte[0], null));
+        assertSame(responseQuestion.getStatusCode(), HttpStatus.OK);
+        var questionId = responseQuestion.getBody();
+
+        assertThrows(HttpException.class, () -> questionService.remove(new QuestionRemoveDTO(quentin2.getId(), questionId)));
+    }
+
+    @Test
+    @DisplayName("Remove a question")
+    void remove() {
+        var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123"));
+        var responseQuestion = questionService.create(new QuestionCreateDTO(quentin.getId(), "TITLE", "DESCRIPTION", new byte[0], null));
+        assertSame(responseQuestion.getStatusCode(), HttpStatus.OK);
+
+        var questionId = responseQuestion.getBody();
+        assertEquals(1, questionId);
+
+        var user = userRepository.findByIdWithQuestions(quentin.getId());
+        assertTrue(user.isPresent() && user.get().getQuestions().size() == 1);
+
+        questionService.remove(new QuestionRemoveDTO(quentin.getId(), questionId));
+
+        var questions = questionRepository.findAll();
+        assertEquals(0, questions.size());
+
+        user = userRepository.findByIdWithQuestions(quentin.getId());
+        assertTrue(user.isPresent() && user.get().getQuestions().size() == 0);
     }
 }
