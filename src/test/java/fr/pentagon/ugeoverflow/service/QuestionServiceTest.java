@@ -18,7 +18,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -65,6 +67,28 @@ public class QuestionServiceTest {
 
         var user = userRepository.findByIdWithQuestions(quentin.getId());
         assertTrue(user.isPresent() && user.get().getQuestions().size() == 1);
+    }
+
+    @Test
+    @DisplayName("Update a question")
+    void update() {
+        var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123"));
+
+        var questionId = questionService.create(new QuestionCreateDTO(quentin.getId(), "TITLE", "DESCRIPTION", new byte[0], null));
+        assertEquals(1, questionRepository.findAll().size());
+        var questionOptional = questionRepository.findById(questionId);
+        assertTrue(questionOptional.isPresent());
+        var question = questionOptional.get();
+        assertEquals("TITLE", question.getTitle());
+        assertEquals("DESCRIPTION", question.getDescription());
+
+        questionService.update(new QuestionUpdateDTO(quentin.getId(), questionId, "NEW TITLE", "NEW DESCRIPTION"));
+
+        questionOptional = questionRepository.findById(questionId);
+        assertTrue(questionOptional.isPresent());
+        question = questionOptional.get();
+        assertEquals("NEW TITLE", question.getTitle());
+        assertEquals("NEW DESCRIPTION", question.getDescription());
     }
 
     @Test

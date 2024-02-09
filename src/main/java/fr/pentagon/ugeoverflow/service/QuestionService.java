@@ -3,6 +3,7 @@ package fr.pentagon.ugeoverflow.service;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionCreateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionRemoveDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseChildrenDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
@@ -70,6 +71,31 @@ public class QuestionService {
         user.addQuestion(question);
 
         return question.getId();
+    }
+
+    @Transactional
+    public void update(QuestionUpdateDTO questionUpdateDTO) {
+        var userFind = userRepository.findById(questionUpdateDTO.userId());
+        if (userFind.isEmpty()) {
+            throw HttpException.notFound("User not exist");
+        }
+        var questionFind = questionRepository.findById(questionUpdateDTO.questionId());
+        if (questionFind.isEmpty()) {
+            throw HttpException.notFound("Question not exist");
+        }
+        var user = userFind.get();
+        var question = questionFind.get();
+
+        if (!userRepository.containsQuestion(user.getId(), question)) {
+            throw HttpException.unauthorized("Not your question");
+        }
+
+        if (questionUpdateDTO.title() != null) {
+            question.setTitle(questionUpdateDTO.title());
+        }
+        if (questionUpdateDTO.description() != null) {
+            question.setDescription(questionUpdateDTO.description());
+        }
     }
 
     @Transactional
