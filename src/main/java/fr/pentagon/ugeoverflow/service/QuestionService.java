@@ -14,14 +14,13 @@ import fr.pentagon.ugeoverflow.repository.QuestionVoteRepository;
 import fr.pentagon.ugeoverflow.repository.ReviewRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 public class QuestionService {
@@ -52,8 +51,7 @@ public class QuestionService {
             var fileContent = new String(question.getFile(), StandardCharsets.UTF_8).split("\n");
             var lineStart = review.getLineStart();
             var lineEnd = review.getLineEnd();
-            var citedCode = (lineStart == null || lineEnd == null) ? null : IntStream.range(lineStart - 1, lineEnd)
-                    .mapToObj(i -> fileContent[i])
+            var citedCode = (lineStart == null || lineEnd == null) ? null : Arrays.stream(fileContent, lineStart - 1, lineEnd)
                     .collect(Collectors.joining("\n"));
 
             return new ReviewResponseChildrenDTO(author.getId(), author.getUsername(), review.getId(), review.getContent(), citedCode, reviewService.getReviews(review.getId()));
@@ -61,7 +59,7 @@ public class QuestionService {
     }
 
     @Transactional
-    public ResponseEntity<Long> create(QuestionCreateDTO questionCreateDTO) {
+    public long create(QuestionCreateDTO questionCreateDTO) {
         var userFind = userRepository.findById(questionCreateDTO.userId());
 
         if (userFind.isEmpty()) {
@@ -71,11 +69,11 @@ public class QuestionService {
         var question = questionRepository.save(new Question(questionCreateDTO.title(), questionCreateDTO.descrition(), questionCreateDTO.file(), questionCreateDTO.testFile(), "TEST RESULT", true, new Date()));
         user.addQuestion(question);
 
-        return ResponseEntity.ok(question.getId());
+        return question.getId();
     }
 
     @Transactional
-    public ResponseEntity<Long> addReview(QuestionReviewCreateDTO questionReviewCreateDTO) {
+    public long addReview(QuestionReviewCreateDTO questionReviewCreateDTO) {
         var userFind = userRepository.findById(questionReviewCreateDTO.userId());
         if (userFind.isEmpty()) {
             throw HttpException.notFound("User not exist");
@@ -91,7 +89,7 @@ public class QuestionService {
         question.addReview(review);
         user.addReview(review);
 
-        return ResponseEntity.ok(review.getId());
+        return review.getId();
     }
 
     @Transactional
@@ -115,22 +113,20 @@ public class QuestionService {
     }
 
     @Transactional
-    public ResponseEntity<Void> vote(long authorId, long questionId, boolean isUpVote) {
+    public void vote(long authorId, long questionId, boolean isUpVote) {
         var user = userRepository.findById(authorId).orElseThrow(() -> HttpException.notFound("User does not exists"));
         var question = questionRepository.findById(questionId).orElseThrow(() -> HttpException.notFound("Question does not exists"));
         var vote = (isUpVote) ? QuestionVote.upvote(user, question) : QuestionVote.downVote(user, question);
         questionVoteRepository.save(vote);
-        return ResponseEntity.ok().build();
     }
 
     @Transactional
-    public ResponseEntity<Void> cancelVote(long authorId, long questionId) {
+    public void cancelVote(long authorId, long questionId) {
         var user = userRepository.findById(authorId).orElseThrow(() -> HttpException.notFound("User does not exists"));
         var question = questionRepository.findById(questionId).orElseThrow(() -> HttpException.notFound("Question does not exists"));
         var questionVoteId = new QuestionVoteId();
         questionVoteId.setQuestion(question);
         questionVoteId.setAuthor(user);
         questionVoteRepository.deleteById(questionVoteId);
-        return ResponseEntity.ok().build();
     }
 }
