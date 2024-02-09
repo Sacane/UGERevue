@@ -26,6 +26,8 @@ public class Question {
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "question")
     private List<Review> reviews;
     private Date createdAt;
+    @Version
+    Long version;
 
     public Question() {
     }

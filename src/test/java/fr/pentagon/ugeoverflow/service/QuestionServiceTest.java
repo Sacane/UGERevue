@@ -92,6 +92,45 @@ public class QuestionServiceTest {
     }
 
     @Test
+    @DisplayName("Update a lot the same question")
+    void updateALot() {
+        var threads = new ArrayList<Thread>();
+        var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123"));
+
+        var questionId = questionService.create(new QuestionCreateDTO(quentin.getId(), "TITLE", "DESCRIPTION", new byte[0], null));
+        assertEquals(1, questionRepository.findAll().size());
+        var questionOptional = questionRepository.findById(questionId);
+        assertTrue(questionOptional.isPresent());
+        var question = questionOptional.get();
+        assertEquals("TITLE", question.getTitle());
+        assertEquals("DESCRIPTION", question.getDescription());
+
+        for (int i = 0; i < 10; i++) {
+            var thread = new Thread(() -> {
+                for (int j = 0; j < 10; j++) {
+                    questionService.update(new QuestionUpdateDTO(quentin.getId(), questionId, "NEW TITLE", "NEW DESCRIPTION"));
+                }
+            });
+            threads.add(thread);
+            thread.start();
+        }
+
+        for (var thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        questionOptional = questionRepository.findById(questionId);
+        assertTrue(questionOptional.isPresent());
+        question = questionOptional.get();
+        assertEquals("NEW TITLE", question.getTitle());
+        assertEquals("NEW DESCRIPTION", question.getDescription());
+    }
+
+    @Test
     @DisplayName("Review a non-existent question")
     void reviewNonExistentQuestion() {
         var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123"));

@@ -25,13 +25,15 @@ import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
+    private final QuestionServiceWithFailure questionServiceWithFailure;
     private final ReviewService reviewService;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final QuestionVoteRepository questionVoteRepository;
 
-    public QuestionService(ReviewService reviewService, QuestionRepository questionRepository, UserRepository userRepository, ReviewRepository reviewRepository, QuestionVoteRepository questionVoteRepository) {
+    public QuestionService(QuestionServiceWithFailure questionServiceWithFailure, ReviewService reviewService, QuestionRepository questionRepository, UserRepository userRepository, ReviewRepository reviewRepository, QuestionVoteRepository questionVoteRepository) {
+        this.questionServiceWithFailure = questionServiceWithFailure;
         this.reviewService = reviewService;
         this.questionRepository = questionRepository;
         this.userRepository = userRepository;
@@ -73,28 +75,17 @@ public class QuestionService {
         return question.getId();
     }
 
-    @Transactional
     public void update(QuestionUpdateDTO questionUpdateDTO) {
-        var userFind = userRepository.findById(questionUpdateDTO.userId());
-        if (userFind.isEmpty()) {
-            throw HttpException.notFound("User not exist");
-        }
-        var questionFind = questionRepository.findById(questionUpdateDTO.questionId());
-        if (questionFind.isEmpty()) {
-            throw HttpException.notFound("Question not exist");
-        }
-        var user = userFind.get();
-        var question = questionFind.get();
+        var retry = true;
 
-        if (!userRepository.containsQuestion(user.getId(), question)) {
-            throw HttpException.unauthorized("Not your question");
-        }
+        while (retry) {
+            retry = false;
 
-        if (questionUpdateDTO.title() != null) {
-            question.setTitle(questionUpdateDTO.title());
-        }
-        if (questionUpdateDTO.description() != null) {
-            question.setDescription(questionUpdateDTO.description());
+            try {
+                questionServiceWithFailure.update(questionUpdateDTO);
+            } catch (org.springframework.orm.ObjectOptimisticLockingFailureException e) {
+                retry = true;
+            }
         }
     }
 
