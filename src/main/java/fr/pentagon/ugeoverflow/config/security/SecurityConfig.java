@@ -47,30 +47,31 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     // Source CSRF: https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#csrf-integration-javascript-spa
     var config = http
-            .authorizeHttpRequests(authorize -> {
-                authorize.requestMatchers("/**", "/api/login", "/h2-console/**").permitAll(); //TODO turn "/**" matching to every front root
-                authorize.anyRequest().authenticated();
-            });
+        .authorizeHttpRequests(authorize -> {
+          authorize.requestMatchers("/**", "/api/login", "/h2-console/**").permitAll(); //TODO turn "/**" matching to every front root
+          authorize.anyRequest().authenticated();
+        });
     config.csrf((csrf) ->
             csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                    .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
-            .addFilterBefore(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
+                .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
+        .addFilterBefore(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
     return config.build();
   }
-    @Bean
-    @Profile("dev")
-    public SecurityFilterChain securityFilterChainDev(HttpSecurity http, RequestMappingHandlerMapping requireScanner) throws Exception {
-        return http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers("/**", "/api/login", "/h2-console/**")
-                                .permitAll()
-                                .anyRequest()
-                                .authenticated())
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .headers(configurer -> configurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-                .addFilterBefore(new AuthFilter(requireScanner), BasicAuthenticationFilter.class)
-                .build();
-    }
+
+  @Bean
+  @Profile("dev")
+  public SecurityFilterChain securityFilterChainDev(HttpSecurity http, RequestMappingHandlerMapping requireScanner) throws Exception {
+    return http
+        .csrf(AbstractHttpConfigurer::disable)
+        .cors(AbstractHttpConfigurer::disable)
+        .authorizeHttpRequests(authorize ->
+            authorize.requestMatchers("/api/login", "/h2-console/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated())
+        .httpBasic(AbstractHttpConfigurer::disable)
+        .headers(configurer -> configurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+        .addFilterBefore(new AuthFilter(requireScanner), BasicAuthenticationFilter.class)
+        .build();
+  }
 }
