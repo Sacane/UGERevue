@@ -18,3 +18,5 @@ On veut uniquement afficher les reviews du niveau 2 maximum par rapport à la qu
 - En tant qu'utilisateur, je souhaite récupérer facilement des commentaires que j'ai déjà poster dans des reviews précédents qui concordent avec celle en cours.
 
 Faire les tests des controllers
+
+Faire la page Home pour les utilisateurs connecté
