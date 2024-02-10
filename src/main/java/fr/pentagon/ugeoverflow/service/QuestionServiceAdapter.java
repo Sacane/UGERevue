@@ -19,6 +19,4 @@ public interface QuestionServiceAdapter {
 
     Optional<QuestionDTO> question(long questionId);
 
-    Optional<VoteDTO> votes(long questionId);
-
 }

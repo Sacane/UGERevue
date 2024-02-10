@@ -9,7 +9,6 @@ public final class SecurityContext {
         throw new AssertionError("Cannot instantiate this class.");
     }
 
-
     public static RevevueUserDetail checkAuthentication() throws HttpException {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated()) {
@@ -17,4 +16,5 @@ public final class SecurityContext {
         }
         return (RevevueUserDetail) auth.getPrincipal();
     }
+
 }

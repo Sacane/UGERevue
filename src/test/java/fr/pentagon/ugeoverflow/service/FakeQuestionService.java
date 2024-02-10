@@ -14,8 +14,6 @@ import java.util.*;
 @Profile("test")
 public final class FakeQuestionService implements QuestionServiceAdapter {
 
-    private record Question(QuestionDTO questionDTO, VoteDTO vote){}
-
     private static final Set<Long> KNOWN_USERS = new HashSet<>(Set.of(118218L, 3630L, 17L));
 
     private static final List<QuestionDTO> INITIAL_QUESTIONS = List.of(
@@ -45,20 +43,19 @@ public final class FakeQuestionService implements QuestionServiceAdapter {
             )
     );
 
-    private final Map<Long, Question> questions;
+    private final Map<Long, QuestionDTO> questions;
 
     public FakeQuestionService(){
-        var questions = new HashMap<Long, Question>();
+        var questions = new HashMap<Long, QuestionDTO>();
         INITIAL_QUESTIONS.forEach(q -> {
-            var question = new Question(q, new VoteDTO(0, 0));
-            questions.put(q.id(), question);
+            questions.put(q.id(), q);
         });
         this.questions = questions;
     }
 
     @Override
     public List<QuestionDTO> allQuestions() {
-        return questions.values().stream().map(q -> q.questionDTO).toList();
+        return questions.values().stream().toList();
     }
 
     @Override
@@ -76,7 +73,7 @@ public final class FakeQuestionService implements QuestionServiceAdapter {
                 new String(newQuestionDTO.testFile()),
                 authorId, Date.from(Instant.now())
         );
-        questions.put(questionDTO.id(), new Question(questionDTO, new VoteDTO(0, 0)));
+        questions.put(questionDTO.id(), questionDTO);
         return questionDTO;
     }
 
@@ -92,15 +89,7 @@ public final class FakeQuestionService implements QuestionServiceAdapter {
     @Override
     public Optional<QuestionDTO> question(long questionId) {
         if(questions.containsKey(questionId)){
-            return Optional.of(questions.get(questionId).questionDTO);
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<VoteDTO> votes(long questionId) {
-        if(questions.containsKey(questionId)){
-            return Optional.of(questions.get(questionId).vote);
+            return Optional.of(questions.get(questionId));
         }
         return Optional.empty();
     }

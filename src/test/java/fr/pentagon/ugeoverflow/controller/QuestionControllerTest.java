@@ -116,16 +116,12 @@ class QuestionControllerTest {
         @DisplayName("Check security")
         void requestAsUnknown() throws Exception {
             var question = new NewQuestionDTO("New", "WOW".getBytes(StandardCharsets.UTF_8), new byte[]{});
-            assertThrows(HttpException.class, () ->
-                    questionMVC.perform(MockMvcRequestBuilders
-                            .post(DEFAULT_ROUTE)
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(question))
-                    )
-            );
-
+            questionMVC.perform(MockMvcRequestBuilders
+                    .post(DEFAULT_ROUTE)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(question))
+            ).andExpect(MockMvcResultMatchers.status().is(401));
         }
-
 
     }
 
