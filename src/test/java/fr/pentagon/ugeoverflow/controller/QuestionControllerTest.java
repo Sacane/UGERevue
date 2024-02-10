@@ -6,8 +6,7 @@ import fr.pentagon.ugeoverflow.DatasourceTestConfig;
 import fr.pentagon.ugeoverflow.controllers.LoginController;
 import fr.pentagon.ugeoverflow.controllers.QuestionController;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
-import fr.pentagon.ugeoverflow.exception.HttpException;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailDTO;
 import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
 import fr.pentagon.ugeoverflow.service.FakeQuestionService;
 import fr.pentagon.ugeoverflow.service.UserService;
@@ -61,14 +60,14 @@ class QuestionControllerTest {
     @DisplayName("Get all questions")
     final class GetAllQuestions {
 
-        private final List<QuestionDTO> results;
+        private final List<QuestionDetailDTO> results;
 
         private final ResultActions request;
 
         GetAllQuestions() throws Exception {
             request = questionMVC.perform(MockMvcRequestBuilders.get(DEFAULT_ROUTE).contentType(MediaType.APPLICATION_JSON));
             var responseBody = request.andReturn().getResponse().getContentAsString();
-            var typeReference = new TypeReference<List<QuestionDTO>>() {
+            var typeReference = new TypeReference<List<QuestionDetailDTO>>() {
             };
             this.results = objectMapper.readValue(responseBody, typeReference);
         }

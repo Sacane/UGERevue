@@ -1,8 +1,7 @@
 package fr.pentagon.ugeoverflow.service;
 
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.VoteDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -16,8 +15,8 @@ public final class FakeQuestionService implements QuestionServiceAdapter {
 
     private static final Set<Long> KNOWN_USERS = new HashSet<>(Set.of(118218L, 3630L, 17L));
 
-    private static final List<QuestionDTO> INITIAL_QUESTIONS = List.of(
-            new QuestionDTO(
+    private static final List<QuestionDetailDTO> INITIAL_QUESTIONS = List.of(
+            new QuestionDetailDTO(
                     0L,
                     "How to concat string in for statement",
                     "StringBuilder",
@@ -25,7 +24,7 @@ public final class FakeQuestionService implements QuestionServiceAdapter {
                     118218L,
                     Date.from(Instant.now())
             ),
-            new QuestionDTO(
+            new QuestionDetailDTO(
                     7L,
                     "Should I use C++",
                     "Maybe not",
@@ -33,7 +32,7 @@ public final class FakeQuestionService implements QuestionServiceAdapter {
                     3630L,
                     Date.from(Instant.parse("2007-12-03T10:15:30.00Z"))
             ),
-            new QuestionDTO(
+            new QuestionDetailDTO(
                     14L,
                     "Should I use C++",
                     "Maybe not",
@@ -43,10 +42,10 @@ public final class FakeQuestionService implements QuestionServiceAdapter {
             )
     );
 
-    private final Map<Long, QuestionDTO> questions;
+    private final Map<Long, QuestionDetailDTO> questions;
 
     public FakeQuestionService(){
-        var questions = new HashMap<Long, QuestionDTO>();
+        var questions = new HashMap<Long, QuestionDetailDTO>();
         INITIAL_QUESTIONS.forEach(q -> {
             questions.put(q.id(), q);
         });
@@ -54,12 +53,12 @@ public final class FakeQuestionService implements QuestionServiceAdapter {
     }
 
     @Override
-    public List<QuestionDTO> allQuestions() {
+    public List<QuestionDetailDTO> allQuestions() {
         return questions.values().stream().toList();
     }
 
     @Override
-    public QuestionDTO registerQuestion(NewQuestionDTO newQuestionDTO, long authorId) throws HttpException {
+    public QuestionDetailDTO registerQuestion(NewQuestionDTO newQuestionDTO, long authorId) throws HttpException {
         Objects.requireNonNull(newQuestionDTO);
         var random = new Random();
         long questionId = random.nextLong();
@@ -67,7 +66,7 @@ public final class FakeQuestionService implements QuestionServiceAdapter {
             questionId = random.nextLong();
         }
         if(!KNOWN_USERS.contains(authorId)) throw new HttpException(404, "User not found");
-        var questionDTO = new QuestionDTO(questionId,
+        var questionDTO = new QuestionDetailDTO(questionId,
                 newQuestionDTO.title(),
                 new String(newQuestionDTO.javaFile()),
                 new String(newQuestionDTO.testFile()),
@@ -87,7 +86,7 @@ public final class FakeQuestionService implements QuestionServiceAdapter {
     }
 
     @Override
-    public Optional<QuestionDTO> question(long questionId) {
+    public Optional<QuestionDetailDTO> question(long questionId) {
         if(questions.containsKey(questionId)){
             return Optional.of(questions.get(questionId));
         }

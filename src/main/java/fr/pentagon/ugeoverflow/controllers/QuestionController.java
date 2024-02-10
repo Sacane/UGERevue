@@ -2,7 +2,7 @@ package fr.pentagon.ugeoverflow.controllers;
 
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.service.QuestionServiceAdapter;
 import org.springframework.http.ResponseEntity;
@@ -26,13 +26,13 @@ public final class QuestionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<QuestionDTO>> allQuestions() {
+    public ResponseEntity<List<QuestionDetailDTO>> allQuestions() {
         LOGGER.info("GET performed on /api/questions");
         return ResponseEntity.ok(questionService.allQuestions());
     }
 
     @PostMapping
-    public ResponseEntity<QuestionDTO> createQuestion(@Valid @RequestBody NewQuestionDTO newQuestionDTO) {
+    public ResponseEntity<QuestionDetailDTO> createQuestion(@Valid @RequestBody NewQuestionDTO newQuestionDTO) {
         LOGGER.info("POST performed on /api/questions");
         var userDetail = SecurityContext.checkAuthentication();
         var registeredQuestionDTO = questionService.registerQuestion(newQuestionDTO, userDetail.id());
@@ -53,7 +53,7 @@ public final class QuestionController {
     // TODO : Use commentaries and responses to create a "CompleteQuestionInfoDTO".
 
     @GetMapping("/{questionId}")
-    public ResponseEntity<QuestionDTO> getQuestion(@PathVariable long questionId) {
+    public ResponseEntity<QuestionDetailDTO> getQuestion(@PathVariable long questionId) {
         LOGGER.info("GET performed on /api/questions/" + questionId);
         var question = questionService.question(questionId);
         if(question.isPresent()){
