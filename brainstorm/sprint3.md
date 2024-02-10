@@ -20,3 +20,15 @@ On veut uniquement afficher les reviews du niveau 2 maximum par rapport à la qu
 Faire les tests des controllers
 
 Faire la page Home pour les utilisateurs connecté
+
+Quand on est pas connecté on enlève le bouton "ask question"
+
+Pouvoir liker une question général
+
+Ne pas pouvoir liker une question / revue sans etre connecté
+
+Afficher le profil d'un utilisateur
+
+Ne pas pouvoir unfollow / follow un utilisateur si on est pas connecté
+
+Si on est pas connecté, 
