@@ -35,9 +35,4 @@ public final class QuestionService implements QuestionServiceAdapter {
         return Optional.empty();
     }
 
-    @Override
-    public Optional<VoteDTO> votes(long questionId) {
-        return Optional.empty();
-    }
-
 }
