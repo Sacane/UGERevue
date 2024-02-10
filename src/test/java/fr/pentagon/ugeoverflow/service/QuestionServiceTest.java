@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -61,12 +62,17 @@ public class QuestionServiceTest {
     void create() {
         var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123"));
 
-        questionService.create(new QuestionCreateDTO(quentin.getId(), "TITLE", "DESCRIPTION", new byte[0], null));
+        byte[] file = "FILE CONTENT".getBytes(StandardCharsets.UTF_8);
+        var questionId = questionService.create(new QuestionCreateDTO(quentin.getId(), "TITLE", "DESCRIPTION", file, null));
 
         assertEquals(1, questionRepository.findAll().size());
 
         var user = userRepository.findByIdWithQuestions(quentin.getId());
         assertTrue(user.isPresent() && user.get().getQuestions().size() == 1);
+        var questionOptional = questionRepository.findById(questionId);
+        assertTrue(questionOptional.isPresent());
+        var question = questionOptional.get();
+        assertArrayEquals(file, question.getFile());
     }
 
     @Test
@@ -82,7 +88,7 @@ public class QuestionServiceTest {
         assertEquals("TITLE", question.getTitle());
         assertEquals("DESCRIPTION", question.getDescription());
 
-        questionService.update(new QuestionUpdateDTO(quentin.getId(), questionId, "NEW TITLE", "NEW DESCRIPTION"));
+        questionService.update(new QuestionUpdateDTO(quentin.getId(), questionId, "NEW TITLE", "NEW DESCRIPTION", null, null));
 
         questionOptional = questionRepository.findById(questionId);
         assertTrue(questionOptional.isPresent());
@@ -105,10 +111,12 @@ public class QuestionServiceTest {
         assertEquals("TITLE", question.getTitle());
         assertEquals("DESCRIPTION", question.getDescription());
 
+        byte[] file = "FILE CONTENT".getBytes(StandardCharsets.UTF_8);
+        byte[] testFile = "TEST CONTENT".getBytes(StandardCharsets.UTF_8);
         for (int i = 0; i < 10; i++) {
             var thread = new Thread(() -> {
                 for (int j = 0; j < 10; j++) {
-                    questionService.update(new QuestionUpdateDTO(quentin.getId(), questionId, "NEW TITLE", "NEW DESCRIPTION"));
+                    questionService.update(new QuestionUpdateDTO(quentin.getId(), questionId, "NEW TITLE", "NEW DESCRIPTION", file, testFile));
                 }
             });
             threads.add(thread);
@@ -128,6 +136,8 @@ public class QuestionServiceTest {
         question = questionOptional.get();
         assertEquals("NEW TITLE", question.getTitle());
         assertEquals("NEW DESCRIPTION", question.getDescription());
+        assertArrayEquals(file, question.getFile());
+        assertArrayEquals(testFile, question.getTestFile());
     }
 
     @Test

@@ -69,7 +69,7 @@ public class QuestionService {
             throw HttpException.notFound("User not exist");
         }
         var user = userFind.get();
-        var question = questionRepository.save(new Question(questionCreateDTO.title(), questionCreateDTO.descrition(), questionCreateDTO.file(), questionCreateDTO.testFile(), "TEST RESULT", true, new Date()));
+        var question = questionRepository.save(new Question(questionCreateDTO.title(), questionCreateDTO.descrition(), questionCreateDTO.file(), questionCreateDTO.testFile(), "TEST RESULT", true, new Date())); //TODO test
         user.addQuestion(question);
 
         return question.getId();

@@ -40,5 +40,12 @@ public class QuestionServiceWithFailure {
         if (questionUpdateDTO.description() != null) {
             question.setDescription(questionUpdateDTO.description());
         }
+        if (questionUpdateDTO.file() != null) {
+            question.setFile(questionUpdateDTO.file());
+        }
+        if (questionUpdateDTO.testFile() != null) {
+            question.setTestFile(questionUpdateDTO.testFile());
+            question.setTestResult("TEST RESULT"); //TODO test
+        }
     }
 }
