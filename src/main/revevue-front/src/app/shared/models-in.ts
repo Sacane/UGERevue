@@ -9,3 +9,8 @@ export interface UserCredentials {
     login : string,
     password : string
 }
+
+export interface UserFollowInfo {
+    username : string,
+    isFollowing : boolean
+}

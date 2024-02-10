@@ -1,0 +1,7 @@
+<div class="reviewSection">
+    @for (review of reviews; track review.author) {
+        <app-review [review]="review"></app-review>
+    } @empty {
+    <p> Aucun revue </p>
+    }
+</div>

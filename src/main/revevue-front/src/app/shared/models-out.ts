@@ -6,5 +6,5 @@ export interface UserIdDTO {
 export interface UserConnectedDTO {
     id : number,
     username : string,
-    accesToken : string
+    accessToken : string
 }
