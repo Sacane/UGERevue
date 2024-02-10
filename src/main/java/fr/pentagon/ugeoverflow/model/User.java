@@ -2,6 +2,7 @@ package fr.pentagon.ugeoverflow.model;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -16,6 +17,11 @@ public final class User {
   private String login;
   private String password;
   private String email;
+
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(name = "userRoles")
+  private Set<Role> roles;
+
   @ManyToMany
   @JoinTable(name = "follows",
       joinColumns = @JoinColumn(name = "follows"),
@@ -32,6 +38,7 @@ public final class User {
     this.login = Objects.requireNonNull(login);
     this.password = Objects.requireNonNull(password);
     this.email = Objects.requireNonNull(email);
+    this.roles = new HashSet<>();
   }
 
   public void follows(User followed) {
@@ -42,6 +49,10 @@ public final class User {
   public void unfollows(User followed) {
     follows.remove(followed);
     followed.followers.remove(this);
+  }
+
+  public void addRole(Role role) {
+    roles.add(role);
   }
 
   public Set<User> getFollows() {
@@ -98,5 +109,13 @@ public final class User {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  public Set<Role> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(Set<Role> roles) {
+    this.roles = roles;
   }
 }

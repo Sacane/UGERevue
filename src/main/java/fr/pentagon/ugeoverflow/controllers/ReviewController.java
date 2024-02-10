@@ -1,7 +1,7 @@
 package fr.pentagon.ugeoverflow.controllers;
 
+import fr.pentagon.ugeoverflow.config.auth.RevevueUserDetail;
 import fr.pentagon.ugeoverflow.config.security.RequireAuthentication;
-import fr.pentagon.ugeoverflow.config.security.RevevueUserDetail;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.NewReviewDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewDTO;
 import fr.pentagon.ugeoverflow.service.DataManagerAdapter;
@@ -17,25 +17,25 @@ import java.util.logging.Logger;
 @RequestMapping("api/reviews")
 public final class ReviewController {
 
-    private static final Logger LOGGER = Logger.getLogger(ReviewController.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(ReviewController.class.getName());
 
-    private final DataManagerAdapter dataManager;
+  private final DataManagerAdapter dataManager;
 
-    public ReviewController(DataManagerAdapter dataManagerAdapter){
-        this.dataManager = Objects.requireNonNull(dataManagerAdapter);
-    }
+  public ReviewController(DataManagerAdapter dataManagerAdapter) {
+    this.dataManager = Objects.requireNonNull(dataManagerAdapter);
+  }
 
-    @GetMapping
-    public ResponseEntity<List<ReviewDTO>> openReviews(){
-        LOGGER.info("GET performed on /api/reviews");
-        return ResponseEntity.ok(dataManager.openReviews());
-    }
+  @GetMapping
+  public ResponseEntity<List<ReviewDTO>> openReviews() {
+    LOGGER.info("GET performed on /api/reviews");
+    return ResponseEntity.ok(dataManager.openReviews());
+  }
 
-    @PostMapping
-    @RequireAuthentication
-    public ResponseEntity<String> createReview(@RequestBody NewReviewDTO newReviewDTO) {
-        LOGGER.info("POST performed on /api/reviews");
-        var user = (RevevueUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok("");
-    }
+  @PostMapping
+  @RequireAuthentication
+  public ResponseEntity<String> createReview(@RequestBody NewReviewDTO newReviewDTO) {
+    LOGGER.info("POST performed on /api/reviews");
+    var user = (RevevueUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return ResponseEntity.ok("");
+  }
 }
