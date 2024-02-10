@@ -9,26 +9,26 @@ import {HomeModule, LoginModule, QuestionsMenuModule, SignupModule, TagsModule, 
 import {provideHttpClient, withFetch} from "@angular/common/http";
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
-  providers: [
-    provideHttpClient(withFetch()),
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    RouterOutlet,
-    AppRoutingModule,
-    SharedModule,
-    LoginModule,
-    SignupModule,
-    HomeModule,
-    QuestionsMenuModule,
-    TagsModule,
-    UsersModule
-  ],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent
+    ],
+    providers: [
+        provideHttpClient(withFetch()),
+    ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        RouterOutlet,
+        AppRoutingModule,
+        SharedModule,
+        LoginModule,
+        SignupModule,
+        HomeModule,
+        QuestionsMenuModule,
+        TagsModule,
+        UsersModule
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule {
 }
