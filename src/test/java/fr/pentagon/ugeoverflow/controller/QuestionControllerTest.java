@@ -2,16 +2,21 @@ package fr.pentagon.ugeoverflow.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fr.pentagon.ugeoverflow.controllers.ReviewController;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewDTO;
+import fr.pentagon.ugeoverflow.DatasourceTestConfig;
+import fr.pentagon.ugeoverflow.controllers.LoginController;
+import fr.pentagon.ugeoverflow.controllers.QuestionController;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
+import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
-import fr.pentagon.ugeoverflow.service.FakeDataManager;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import fr.pentagon.ugeoverflow.service.FakeQuestionService;
+import fr.pentagon.ugeoverflow.service.UserService;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -19,33 +24,52 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ReviewControllerTest {
+@SpringBootTest
+@Import(DatasourceTestConfig.class)
+class QuestionControllerTest {
+
+    private static final String DEFAULT_ROUTE = "/api/questions/";
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final MockMvc mvc = MockMvcBuilders.standaloneSetup(new ReviewController(new FakeDataManager()))
+    @Autowired
+    private UserService userService;
+
+    private final MockMvc questionMVC = MockMvcBuilders.standaloneSetup(new QuestionController(new FakeQuestionService()))
             .setControllerAdvice(new HttpExceptionHandler())
             .build();
 
+    @Autowired
+    private LoginController loginController;
+
+    private MockMvc loginMVC;
+
+    @BeforeEach
+    void setUp() {
+        loginMVC = MockMvcBuilders.standaloneSetup(loginController)
+                .setControllerAdvice(new HttpExceptionHandler())
+                .build();
+    }
+
     @Nested
     @Tag("GET")
-    @DisplayName("Get all reviews")
-    final class GetAllReviews {
+    @DisplayName("Get all questions")
+    final class GetAllQuestions {
 
-        private static final String DEFAULT_ROUTE = "/api/reviews/";
-
-        private final List<ReviewDTO> results;
+        private final List<QuestionDTO> results;
 
         private final ResultActions request;
 
-        GetAllReviews() throws Exception {
-            request = mvc.perform(MockMvcRequestBuilders.get(DEFAULT_ROUTE).contentType(MediaType.APPLICATION_JSON));
+        GetAllQuestions() throws Exception {
+            request = questionMVC.perform(MockMvcRequestBuilders.get(DEFAULT_ROUTE).contentType(MediaType.APPLICATION_JSON));
             var responseBody = request.andReturn().getResponse().getContentAsString();
-            var typeReference = new TypeReference<List<ReviewDTO>>() {};
+            var typeReference = new TypeReference<List<QuestionDTO>>() {
+            };
             this.results = objectMapper.readValue(responseBody, typeReference);
         }
 
@@ -69,7 +93,7 @@ class ReviewControllerTest {
 
         @Test
         @DisplayName("Complex test")
-        void allValuesAllOpenReviews(){
+        void allValuesAllOpenReviews() {
             assertAll(
                     () -> assertEquals("How to concat string in for statement", results.get(0).title()),
                     () -> assertEquals("StringBuilder", results.get(0).javaFile()),
@@ -83,7 +107,27 @@ class ReviewControllerTest {
 
     }
 
+    @Nested
+    @Tag("POST")
+    @DisplayName("Post a new question")
+    final class PostQuestion {
 
+        @Test
+        @DisplayName("Check security")
+        void requestAsUnknown() throws Exception {
+            var question = new NewQuestionDTO("New", "WOW".getBytes(StandardCharsets.UTF_8), new byte[]{});
+            assertThrows(HttpException.class, () ->
+                    questionMVC.perform(MockMvcRequestBuilders
+                            .post(DEFAULT_ROUTE)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(question))
+                    )
+            );
+
+        }
+
+
+    }
 
 
 }
