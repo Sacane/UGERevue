@@ -118,4 +118,21 @@ public final class User {
   public void setRoles(Set<Role> roles) {
     this.roles = roles;
   }
+
+  // Logic: if entity is persisted, compare id, else use default implementation
+  @Override
+  public int hashCode() {
+    if (id != 0) {
+      return Objects.hash(id);
+    }
+    return super.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (id != 0) {
+      return obj instanceof User other && other.id == id;
+    }
+    return super.equals(obj);
+  }
 }

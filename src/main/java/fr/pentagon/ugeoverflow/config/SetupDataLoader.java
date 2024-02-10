@@ -33,8 +33,18 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     if (alreadySetup) {
       return;
     }
-    var adminRole = createRoleIfNotFound(Roles.ADMIN.roleName());
-    var userRole = createRoleIfNotFound(Roles.USER.roleName());
+    createRoleIfNotFound(Roles.ADMIN.roleName());
+    createRoleIfNotFound(Roles.USER.roleName());
+
+    createAdminIfNotFound();
+
+    alreadySetup = true;
+  }
+
+  @Transactional
+  public void createAdminIfNotFound() {
+    var adminRole = roleRepository.findByName(Roles.ADMIN.roleName()).orElseThrow();
+    var userRole = roleRepository.findByName(Roles.USER.roleName()).orElseThrow();
 
     var admin = userRepository.findByLogin("admin").orElse(null);
     if (admin == null) {
@@ -43,18 +53,14 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
       admin.addRole(userRole);
       userRepository.save(admin);
     }
-
-    alreadySetup = true;
   }
 
   @Transactional
-  Role createRoleIfNotFound(String name) {
-
+  public void createRoleIfNotFound(String name) {
     var role = roleRepository.findByName(name).orElse(null);
     if (role == null) {
       role = new Role(name);
       roleRepository.save(role);
     }
-    return role;
   }
 }

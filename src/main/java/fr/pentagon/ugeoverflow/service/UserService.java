@@ -8,7 +8,6 @@ import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.repository.RoleRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +27,7 @@ public class UserService {
   }
 
   @Transactional
-  public ResponseEntity<UserIdDTO> register(UserRegisterDTO userDTO) {
+  public UserIdDTO register(UserRegisterDTO userDTO) {
     if (userRepository.existsByUsername(userDTO.username())) {
       throw HttpException.badRequest("User with this username already exist");
     }
@@ -40,7 +39,7 @@ public class UserService {
     );
     user.addRole(userRole);
     var newUser = userRepository.save(user);
-    return ResponseEntity.ok(new UserIdDTO(newUser.getId(), newUser.getUsername()));
+    return new UserIdDTO(newUser.getId(), newUser.getUsername());
   }
 
   @Transactional

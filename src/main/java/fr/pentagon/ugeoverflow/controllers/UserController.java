@@ -26,7 +26,7 @@ public final class UserController {
 
   @PostMapping
   public ResponseEntity<UserIdDTO> registerUser(@RequestBody UserRegisterDTO userRegisterDTO) {
-    return userService.register(userRegisterDTO);
+    return ResponseEntity.ok(userService.register(userRegisterDTO));
   }
 
   @PostMapping("/follow/{id}")

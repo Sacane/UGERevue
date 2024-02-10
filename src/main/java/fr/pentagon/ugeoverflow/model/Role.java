@@ -1,9 +1,6 @@
 package fr.pentagon.ugeoverflow.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
@@ -13,6 +10,8 @@ public class Role {
   @Id
   @GeneratedValue
   private long id;
+
+  @Column(unique = true)
   private String name;
 
   public Role() {
@@ -36,5 +35,15 @@ public class Role {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  @Override
+  public int hashCode() {
+    return name.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    return obj instanceof Role role && name.equals(role.name);
   }
 }
