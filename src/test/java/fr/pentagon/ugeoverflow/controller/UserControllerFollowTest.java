@@ -1,0 +1,120 @@
+package fr.pentagon.ugeoverflow.controller;
+
+import fr.pentagon.ugeoverflow.DatasourceTestConfig;
+import fr.pentagon.ugeoverflow.controllers.UserController;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
+import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
+import fr.pentagon.ugeoverflow.repository.UserRepository;
+import fr.pentagon.ugeoverflow.service.UserService;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
+@SpringBootTest
+@Import(DatasourceTestConfig.class)
+public class UserControllerFollowTest {
+  @Autowired
+  private UserController userController;
+  @Autowired
+  private UserRepository userRepository;
+  private MockMvc mockMvc;
+
+  @Autowired
+  private UserService userService;
+
+  @BeforeEach
+  void setUp() {
+    mockMvc = MockMvcBuilders.standaloneSetup(userController)
+        .setControllerAdvice(new HttpExceptionHandler())
+        .build();
+  }
+
+  @AfterEach
+  void clean() {
+    userRepository.deleteAll();
+  }
+
+  @Test
+  @DisplayName("Successful follow")
+  void testSuccessfulFollow() throws Exception {
+    var userDTO = userService.register(new UserRegisterDTO("test1", "test@gmail.com", "test1", "password"));
+    var principal = new TestingAuthenticationToken(userDTO.username(), null);
+    var userToFollowId = userService.register(new UserRegisterDTO("test2", "test@gmail.com", "test2", "password")).id();
+
+    mockMvc.perform(post("/api/users/follow/" + userToFollowId)
+            .principal(principal))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+
+    var user = userRepository.findById(userDTO.id()).orElseThrow();
+    var userToFollow = userRepository.findById(userToFollowId).orElseThrow();
+    assertTrue(userRepository.findFollowers(userToFollow).contains(user));
+    assertTrue(userRepository.findFollowing(user).contains(userToFollow));
+  }
+
+  @Test
+  @DisplayName("Following user that doesn't exist")
+  void testFollowNonExistingUser() throws Exception {
+    var userDTO = userService.register(new UserRegisterDTO("test1", "test@gmail.com", "test1", "password"));
+    var principal = new TestingAuthenticationToken(userDTO.username(), null);
+
+    mockMvc.perform(post("/api/users/follow/" + 12315631)
+            .principal(principal))
+        .andExpect(MockMvcResultMatchers.status().isNotFound());
+  }
+
+  @Test
+  @DisplayName("Following while not connected")
+  void testFollowNotConnected() throws Exception {
+    mockMvc.perform(post("/api/users/follow/" + 1))
+        .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+  }
+
+  @Test
+  @DisplayName("Successful unfollow")
+  void testSuccessfulUnfollow() throws Exception {
+    var userDTO = userService.register(new UserRegisterDTO("test1", "test@gmail.com", "test1", "password"));
+    var principal = new TestingAuthenticationToken(userDTO.username(), null);
+    var userToFollowId = userService.register(new UserRegisterDTO("test2", "test@gmail.com", "test2", "password")).id();
+
+    userService.follow(userDTO.id(), userToFollowId);
+
+    mockMvc.perform(post("/api/users/unfollow/" + userToFollowId)
+            .principal(principal))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+
+    var user = userRepository.findById(userDTO.id()).orElseThrow();
+    var userToFollow = userRepository.findById(userToFollowId).orElseThrow();
+    assertEquals(false, userRepository.findFollowers(userToFollow).contains(user));
+    assertEquals(false, userRepository.findFollowing(user).contains(userToFollow));
+  }
+
+  @Test
+  @DisplayName("Following user that doesn't exist")
+  void testUnfollowNonExistingUser() throws Exception {
+    var userDTO = userService.register(new UserRegisterDTO("test1", "test@gmail.com", "test1", "password"));
+    var principal = new TestingAuthenticationToken(userDTO.username(), null);
+
+    mockMvc.perform(post("/api/users/unfollow/" + 12315631)
+            .principal(principal))
+        .andExpect(MockMvcResultMatchers.status().isNotFound());
+  }
+
+  @Test
+  @DisplayName("Following while not connected")
+  void testUnfollowNotConnected() throws Exception {
+    mockMvc.perform(post("/api/users/unfollow/" + 1))
+        .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+  }
+}

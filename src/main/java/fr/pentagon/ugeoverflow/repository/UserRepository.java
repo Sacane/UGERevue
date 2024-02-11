@@ -8,11 +8,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    boolean existsByUsername(String username);
-    Optional<User> findByLogin(String login);
     @Query(value = "SELECT u FROM User u LEFT JOIN FETCH u.questions WHERE u.id = ?1")
     Optional<User> findByIdWithQuestions(long id);
     @Query(value = "SELECT u FROM User u LEFT JOIN FETCH u.reviews WHERE u.id = ?1")
@@ -21,4 +20,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean containsQuestion(long userId, Question question);
     @Query(value = "SELECT EXISTS (SELECT u FROM User u LEFT JOIN u.reviews WHERE u.id = ?1 AND ?2 MEMBER OF u.reviews)")
     boolean containsReview(long userId, Review review);
+    boolean existsByUsername(String username);
+    Optional<User> findByLogin(String login);
+    @Query("SELECT u.followers FROM User u WHERE u = :user")
+    Set<User> findFollowers(User user);
+    @Query("SELECT u.follows FROM User u WHERE u = :user")
+    Set<User> findFollowing(User user);
 }

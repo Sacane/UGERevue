@@ -45,7 +45,7 @@ public class LoginControllerTest {
     void testAuthUser() throws Exception {
         var credentialsDTO = new LoginRequestDTO("login", "password");
         userService.register(new UserRegisterDTO("Verestah1", "verestah.fake@gmail.com", "login", "password"));
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/log")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(credentialsDTO)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -57,7 +57,7 @@ public class LoginControllerTest {
     @DisplayName("Case of exception : login not found")
     void loginNotFoundUserAuth() throws Exception {
         var credentialsDTO = new CredentialsDTO("login", "password");
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/log")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(credentialsDTO)))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized())
@@ -69,7 +69,7 @@ public class LoginControllerTest {
     void passwordDoesntMatchUserAuth() throws Exception {
         userService.register(new UserRegisterDTO("verestah1","verestah@gmail.com","login1231","password1"));
         var credentialsDTO = new CredentialsDTO("login", "passwordfazdfa");
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/log")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(credentialsDTO)))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized())

@@ -15,13 +15,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpStatus;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -227,13 +224,11 @@ public class QuestionServiceTest {
     @DisplayName("Get reviews from question")
     void getReviewsFromQuestion() {
         var quentinResponse = userService.register(new UserRegisterDTO("qtdrake", "qt@email.com", "qtellier", "123"));
-        assertSame(quentinResponse.getStatusCode(), HttpStatus.OK);
-        var quentin = quentinResponse.getBody();
-        assertNotNull(quentin);
-        var questionId = questionService.create(new QuestionCreateDTO(quentin.id(), "TITLE", "DESCRIPTION", "LINE1\nLINE2\nLINE3\n".getBytes(StandardCharsets.UTF_8), null));
+        assertNotNull(quentinResponse);
+        var questionId = questionService.create(new QuestionCreateDTO(quentinResponse.id(), "TITLE", "DESCRIPTION", "LINE1\nLINE2\nLINE3\n".getBytes(StandardCharsets.UTF_8), null));
 
         for(var i = 0; i < 3; i++) {
-            questionService.addReview(new QuestionReviewCreateDTO(quentin.id(), questionId, "CONTENT:" + i, i + 1, i + 1));
+            questionService.addReview(new QuestionReviewCreateDTO(quentinResponse.id(), questionId, "CONTENT:" + i, i + 1, i + 1));
         }
 
         var reviews = questionService.getReviews(questionId);
@@ -243,9 +238,7 @@ public class QuestionServiceTest {
     @Test
     @DisplayName("Get reviews from question with children reviews")
     void getReviewsFromQuestionWithChildrenReviews() {
-        var quentinResponse = userService.register(new UserRegisterDTO("qtdrake", "qt@email.com", "qtellier", "123"));
-        assertSame(quentinResponse.getStatusCode(), HttpStatus.OK);
-        var quentin = quentinResponse.getBody();
+        var quentin = userService.register(new UserRegisterDTO("qtdrake", "qt@email.com", "qtellier", "123"));
         assertNotNull(quentin);
         var questionId = questionService.create(new QuestionCreateDTO(quentin.id(), "TITLE", "DESCRIPTION", "LINE1\nLINE2\nLINE3\n".getBytes(StandardCharsets.UTF_8), null));
 

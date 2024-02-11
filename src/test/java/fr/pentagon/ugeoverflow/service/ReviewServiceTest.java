@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpStatus;
 
 import java.util.Date;
 import java.util.List;
@@ -50,9 +49,7 @@ public class ReviewServiceTest {
     @Test
     @DisplayName("Review on review")
     void reviewOnReview() {
-        var quentinResponse = userService.register(new UserRegisterDTO("qtdrake", "qt@email.com", "qtellier", "123"));
-        assertSame(quentinResponse.getStatusCode(), HttpStatus.OK);
-        var quentin = quentinResponse.getBody();
+        var quentin = userService.register(new UserRegisterDTO("qtdrake", "qt@email.com", "qtellier", "123"));
         assertNotNull(quentin);
         var questionId = questionService.create(new QuestionCreateDTO(quentin.id(), "TITLE", "DESCRIPTION", new byte[0], null));
 
@@ -82,9 +79,7 @@ public class ReviewServiceTest {
     @Test
     @DisplayName("Get reviews from review")
     void reviewsFromReview() {
-        var quentinResponse = userService.register(new UserRegisterDTO("qtdrake", "qt@email.com", "qtellier", "123"));
-        assertSame(quentinResponse.getStatusCode(), HttpStatus.OK);
-        var quentin = quentinResponse.getBody();
+        var quentin = userService.register(new UserRegisterDTO("qtdrake", "qt@email.com", "qtellier", "123"));
         assertNotNull(quentin);
         var questionId = questionService.create(new QuestionCreateDTO(quentin.id(), "TITLE", "DESCRIPTION", new byte[0], null));
 
