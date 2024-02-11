@@ -2,10 +2,7 @@ package fr.pentagon.ugeoverflow.model;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -20,47 +17,50 @@ public final class User {
     private String email;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "userRoles")
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
     private List<Question> questions;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
-    private List<Review> reviews;
+    private List<Review> reviews = new ArrayList<>();
     @ManyToMany
     @JoinTable(name = "follows",
             joinColumns = @JoinColumn(name = "follows"),
             inverseJoinColumns = @JoinColumn(name = "isFollowed"))
-    private Set<User> follows;
+    private Set<User> follows = new HashSet<>();
     @ManyToMany(mappedBy = "follows")
-    private Set<User> followers;
-    public User(){}
-    public User(String username, String login, String password, String email){
+    private Set<User> followers = new HashSet<>();
+
+    public User() {
+    }
+
+    public User(String username, String login, String password, String email) {
         this.username = Objects.requireNonNull(username);
         this.login = Objects.requireNonNull(login);
         this.password = Objects.requireNonNull(password);
         this.email = Objects.requireNonNull(email);
     }
 
-  public long getId() {
-    return id;
-  }
+    public long getId() {
+        return id;
+    }
 
-  public void setId(long id) {
-    this.id = id;
-  }
+    public void setId(long id) {
+        this.id = id;
+    }
 
-  public String getUsername() {
-    return username;
-  }
+    public String getUsername() {
+        return username;
+    }
 
-  public void setUsername(String username) {
-    this.username = username;
-  }
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-  public String getLogin() {
-    return login;
-  }
+    public String getLogin() {
+        return login;
+    }
 
-  public void setLogin(String login) {
+    public void setLogin(String login) {
     this.login = login;
   }
 
@@ -94,6 +94,7 @@ public final class User {
         if (id != 0) {
           return Objects.hash(id);
         }
+        return super.hashCode();
     }
     public void addQuestion(Question question) {
         questions.add(question);
