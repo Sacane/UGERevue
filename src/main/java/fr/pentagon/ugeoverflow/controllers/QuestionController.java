@@ -5,6 +5,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.service.QuestionServiceAdapter;
+import fr.pentagon.ugeoverflow.utils.Routes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +15,6 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("api/questions")
 public final class QuestionController {
 
     private static final Logger LOGGER = Logger.getLogger(QuestionController.class.getName());
@@ -25,13 +25,13 @@ public final class QuestionController {
         this.questionService = Objects.requireNonNull(questionService);
     }
 
-    @GetMapping
+    @GetMapping(Routes.Question.ROOT)
     public ResponseEntity<List<QuestionDetailDTO>> allQuestions() {
         LOGGER.info("GET performed on /api/questions");
         return ResponseEntity.ok(questionService.allQuestions());
     }
 
-    @PostMapping
+    @PostMapping(Routes.Question.ROOT)
     public ResponseEntity<QuestionDetailDTO> createQuestion(@Valid @RequestBody NewQuestionDTO newQuestionDTO) {
         LOGGER.info("POST performed on /api/questions");
         var userDetail = SecurityContext.checkAuthentication();
@@ -39,7 +39,7 @@ public final class QuestionController {
         return ResponseEntity.ok(registeredQuestionDTO);
     }
 
-    @DeleteMapping("/{questionId}")
+    @DeleteMapping(Routes.Question.WITH_QUESTION_ID)
     public ResponseEntity<String> removeQuestion(@PathVariable long questionId) {
         LOGGER.info("DELETE performed on /api/questions/" + questionId);
         SecurityContext.checkAuthentication();
@@ -52,7 +52,7 @@ public final class QuestionController {
 
     // TODO : Use commentaries and responses to create a "CompleteQuestionInfoDTO".
 
-    @GetMapping("/{questionId}")
+    @GetMapping(Routes.Question.WITH_QUESTION_ID)
     public ResponseEntity<QuestionDetailDTO> getQuestion(@PathVariable long questionId) {
         LOGGER.info("GET performed on /api/questions/" + questionId);
         var question = questionService.question(questionId);

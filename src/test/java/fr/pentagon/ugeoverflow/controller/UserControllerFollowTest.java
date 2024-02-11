@@ -18,8 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @SpringBootTest
@@ -96,8 +95,8 @@ public class UserControllerFollowTest {
 
     var user = userRepository.findById(userDTO.id()).orElseThrow();
     var userToFollow = userRepository.findById(userToFollowId).orElseThrow();
-    assertEquals(false, userRepository.findFollowers(userToFollow).contains(user));
-    assertEquals(false, userRepository.findFollowing(user).contains(userToFollow));
+    assertFalse(userRepository.findFollowers(userToFollow).contains(user));
+    assertFalse(userRepository.findFollowing(user).contains(userToFollow));
   }
 
   @Test
