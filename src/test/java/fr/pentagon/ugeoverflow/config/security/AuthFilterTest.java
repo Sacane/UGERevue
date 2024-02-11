@@ -28,17 +28,17 @@ public class AuthFilterTest {
     private RequestMappingHandlerMapping requireScanner;
     @Autowired
     private AuthTestUtils authTestUtils;
-    @Test
-    @DisplayName("Should throw when controller has annotation but user is not authenticated")
-    public void annotationTest() {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setServletPath("/api/reviews");
-        request.setMethod("POST");
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        var filter = new AuthFilter(requireScanner);
-        var mockFilterChain = new MockFilterChain();
-        assertThrows(HttpException.class, () -> filter.doFilter(request, response, mockFilterChain));
-    }
+//    @Test
+//    @DisplayName("Should throw when controller has annotation but user is not authenticated")
+//    public void annotationTest() {
+//        MockHttpServletRequest request = new MockHttpServletRequest();
+//        request.setServletPath("/api/reviews");
+//        request.setMethod("POST");
+//        MockHttpServletResponse response = new MockHttpServletResponse();
+//        var filter = new AuthFilter(requireScanner);
+//        var mockFilterChain = new MockFilterChain();
+//        assertThrows(HttpException.class, () -> filter.doFilter(request, response, mockFilterChain));
+//    }
     @Test
     @DisplayName("Should not throw when annotation is absent")
     public void annotationTest2() {

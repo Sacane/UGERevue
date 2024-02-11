@@ -3,6 +3,7 @@ package fr.pentagon.ugeoverflow.model;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -10,66 +11,34 @@ import java.util.Set;
 @Table(name = "users")
 public final class User {
 
-  @Id
-  @GeneratedValue()
-  private long id;
-  private String username;
-  private String login;
-  private String password;
-  private String email;
-
-  @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(name = "userRoles")
-  private Set<Role> roles;
-
-  @ManyToMany
-  @JoinTable(name = "follows",
-      joinColumns = @JoinColumn(name = "follows"),
-      inverseJoinColumns = @JoinColumn(name = "isFollowed"))
-  private Set<User> follows;
-  @ManyToMany(mappedBy = "follows")
-  private Set<User> followers;
-
-  public User() {
-  }
-
-  public User(String username, String login, String password, String email) {
-    this.username = Objects.requireNonNull(username);
-    this.login = Objects.requireNonNull(login);
-    this.password = Objects.requireNonNull(password);
-    this.email = Objects.requireNonNull(email);
-    this.roles = new HashSet<>();
-  }
-
-  public void follows(User followed) {
-    follows.add(followed);
-    followed.followers.add(this);
-  }
-
-  public void unfollows(User followed) {
-    follows.remove(followed);
-    followed.followers.remove(this);
-  }
-
-  public void addRole(Role role) {
-    roles.add(role);
-  }
-
-  public Set<User> getFollows() {
-    return follows;
-  }
-
-  public void setFollows(Set<User> follows) {
-    this.follows = follows;
-  }
-
-  public Set<User> getFollowers() {
-    return followers;
-  }
-
-  public void setFollowers(Set<User> followers) {
-    this.followers = followers;
-  }
+    @Id
+    @GeneratedValue()
+    private long id;
+    private String username;
+    private String login;
+    private String password;
+    private String email;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "userRoles")
+    private Set<Role> roles;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
+    private List<Question> questions;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
+    private List<Review> reviews;
+    @ManyToMany
+    @JoinTable(name = "follows",
+            joinColumns = @JoinColumn(name = "follows"),
+            inverseJoinColumns = @JoinColumn(name = "isFollowed"))
+    private Set<User> follows;
+    @ManyToMany(mappedBy = "follows")
+    private Set<User> followers;
+    public User(){}
+    public User(String username, String login, String password, String email){
+        this.username = Objects.requireNonNull(username);
+        this.login = Objects.requireNonNull(login);
+        this.password = Objects.requireNonNull(password);
+        this.email = Objects.requireNonNull(email);
+    }
 
   public long getId() {
     return id;
@@ -120,19 +89,76 @@ public final class User {
   }
 
   // Logic: if entity is persisted, compare id, else use default implementation
-  @Override
-  public int hashCode() {
-    if (id != 0) {
-      return Objects.hash(id);
+    @Override
+    public int hashCode() {
+        if (id != 0) {
+          return Objects.hash(id);
+        }
     }
-    return super.hashCode();
-  }
+    public void addQuestion(Question question) {
+        questions.add(question);
+        question.setAuthor(this);
+    }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (id != 0) {
-      return obj instanceof User other && other.id == id;
+    public void removeQuestion(Question question) {
+        questions.remove(question);
     }
-    return super.equals(obj);
-  }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void addReview(Review review) {
+        reviews.add(review);
+        review.setAuthor(this);
+    }
+
+    public void removeReview(Review review) {
+        reviews.remove(review);
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (id != 0) {
+            return obj instanceof User other && other.id == id;
+        }
+        return super.equals(obj);
+    }
+    public void follows(User followed) {
+        follows.add(followed);
+        followed.followers.add(this);
+    }
+
+    public void unfollows(User followed) {
+        follows.remove(followed);
+        followed.followers.remove(this);
+    }
+
+    public void addRole(Role role) {
+        roles.add(role);
+    }
+
+    public Set<User> getFollows() {
+        return follows;
+    }
+
+    public void setFollows(Set<User> follows) {
+        this.follows = follows;
+    }
+
+    public Set<User> getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(Set<User> followers) {
+        this.followers = followers;
+    }
 }
+
