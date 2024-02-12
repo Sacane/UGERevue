@@ -7,7 +7,6 @@ import fr.pentagon.ugeoverflow.config.authorization.Role;
 import fr.pentagon.ugeoverflow.controllers.UserController;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
-import fr.pentagon.ugeoverflow.repository.RoleRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.UserService;
 import org.junit.jupiter.api.AfterEach;
@@ -23,6 +22,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @SpringBootTest
@@ -37,8 +37,6 @@ public class UserControllerRegisterTest {
   private UserController userController;
   @Autowired
   private UserRepository userRepository;
-  @Autowired
-  private RoleRepository roleRepository;
   private MockMvc mockMvc;
 
   @BeforeEach
@@ -54,16 +52,14 @@ public class UserControllerRegisterTest {
     userRepository.deleteAll();
   }
 
-  void assertUserHasRole(String login, Role roleName) {
+  void assertUserHasRole(String login, Role role) {
     var user = userRepository.findByLogin(login).orElseThrow();
-    var role = new Role(roleName.roleName());
-    assertTrue(user.getRoles().contains(role));
+    assertEquals(role, user.getRole());
   }
 
   @Test
   @DisplayName("Check roles of admin account")
   void testAdminUser() {
-    assertUserHasRole("admin", Role.USER);
     assertUserHasRole("admin", Role.ADMIN);
   }
 
