@@ -46,7 +46,7 @@ public class LoginController {
       }
       return ResponseEntity.ok(new LoginResponseDTO(((UserDetails) authentication.getPrincipal()).getUsername()));
     } catch (AuthenticationException e) {
-      throw HttpException.unauthorized("Bad credentails");
+      throw HttpException.unauthorized("Bad credentials");
     }
   }
 

@@ -1,29 +1,25 @@
-package fr.pentagon.ugeoverflow.config.auth;
+package fr.pentagon.ugeoverflow.config.authentication;
 
-import fr.pentagon.ugeoverflow.model.Role;
+import fr.pentagon.ugeoverflow.config.authorization.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public class RevevueUserDetail implements UserDetails {
 
   private final long id;
   private final String password;
   private final String username;
-  private final List<GrantedAuthority> authorities = new ArrayList<>();
+  private final List<GrantedAuthority> authorities;
 
-  public RevevueUserDetail(long id, String password, String username, Set<Role> roles) {
+  public RevevueUserDetail(long id, String password, String username, Role role) {
     this.id = id;
     this.password = password;
     this.username = username;
-    roles.forEach(role ->
-        authorities.add(new SimpleGrantedAuthority(role.getName()))
-    );
+    authorities = List.of(new SimpleGrantedAuthority(role.authorityName()));
   }
 
   @Override
