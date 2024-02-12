@@ -12,26 +12,26 @@ import java.util.Optional;
 // TODO : Remplacer celui-ci (prod) par celui de Quentin TELLIER
 
 @Service
-public final class QuestionFakeService implements QuestionServiceAdapter {
+public class QuestionFakeService implements QuestionServiceAdapter {
 
-    @Override
-    public List<QuestionDetailDTO> allQuestions() {
-        return Collections.emptyList();
-    }
+  @Override
+  public List<QuestionDetailDTO> allQuestions() {
+    return Collections.emptyList();
+  }
 
-    @Override
-    public QuestionDetailDTO registerQuestion(NewQuestionDTO newReviewDTO, long authorId) throws HttpException {
-        return null;
-    }
+  @Override
+  public QuestionDetailDTO registerQuestion(NewQuestionDTO newReviewDTO, long authorId) throws HttpException {
+    return null;
+  }
 
-    @Override
-    public boolean removeQuestion(long questionId) {
-        return false;
-    }
+  @Override
+  public boolean removeQuestion(long questionId) {
+    return false;
+  }
 
-    @Override
-    public Optional<QuestionDetailDTO> question(long questionId) {
-        return Optional.empty();
-    }
+  @Override
+  public Optional<QuestionDetailDTO> question(long questionId) {
+    return Optional.empty();
+  }
 
 }

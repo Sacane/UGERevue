@@ -6,26 +6,26 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public final class VoteService implements VoteServiceAdapter {
+public class VoteService implements VoteServiceAdapter {
 
-    @Override
-    public Optional<VoteDTO> votes(long questionId) {
-        return Optional.empty();
-    }
+  @Override
+  public Optional<VoteDTO> votes(long questionId) {
+    return Optional.empty();
+  }
 
-    @Override
-    public Optional<VoteDTO> votesQuestion(long questionId, boolean isUp) {
-        return Optional.empty();
-    }
+  @Override
+  public Optional<VoteDTO> votesQuestion(long questionId, boolean isUp) {
+    return Optional.empty();
+  }
 
-    @Override
-    public Optional<VoteDTO> votesReview(long questionId, boolean isUp) {
-        return Optional.empty();
-    }
+  @Override
+  public Optional<VoteDTO> votesReview(long questionId, boolean isUp) {
+    return Optional.empty();
+  }
 
-    @Override
-    public boolean hasVotedOnQuestion(long questionId, long userId) {
-        return false;
-    }
+  @Override
+  public boolean hasVotedOnQuestion(long questionId, long userId) {
+    return false;
+  }
 
 }
