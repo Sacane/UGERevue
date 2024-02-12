@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.controllers;
 
+import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
@@ -14,7 +15,7 @@ import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/users")
-public final class UserController {
+public class UserController {
   private static final Logger LOGGER = Logger.getLogger(UserController.class.getName());
   private final UserService userService;
   private final UserRepository userRepository;
@@ -30,6 +31,7 @@ public final class UserController {
   }
 
   @PostMapping("/follow/{id}")
+  @RequireUser
   public ResponseEntity<Void> followUser(@PathVariable long id, Principal principal) {
     if (principal == null) {
       throw HttpException.unauthorized("no user logged in");
@@ -40,6 +42,7 @@ public final class UserController {
   }
 
   @PostMapping("/unfollow/{id}")
+  @RequireUser
   public ResponseEntity<Void> unfollowUser(@PathVariable long id, Principal principal) {
     if (principal == null) {
       throw HttpException.unauthorized("no user logged in");

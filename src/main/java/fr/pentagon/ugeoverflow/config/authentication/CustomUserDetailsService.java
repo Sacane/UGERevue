@@ -1,4 +1,4 @@
-package fr.pentagon.ugeoverflow.config.auth;
+package fr.pentagon.ugeoverflow.config.authentication;
 
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.repository.UserRepository;

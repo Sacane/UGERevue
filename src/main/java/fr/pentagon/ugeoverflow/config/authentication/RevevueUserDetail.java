@@ -1,5 +1,6 @@
-package fr.pentagon.ugeoverflow.config.auth;
+package fr.pentagon.ugeoverflow.config.authentication;
 
+import fr.pentagon.ugeoverflow.config.authorization.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
