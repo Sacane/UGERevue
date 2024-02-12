@@ -21,9 +21,9 @@ public final class VoteController {
         this.voteService = Objects.requireNonNull(voteService);
     }
 
-    @GetMapping(Routes.Vote.WITH_QUESTION_ID)
+    @GetMapping(Routes.Vote.ROOT + "/questions/{questionId}")
     public ResponseEntity<VoteDTO> howManyVotes(@PathVariable long questionId){
-        LOGGER.info("GET performed on /api/votes/questions/" + questionId);
+        LOGGER.info("GET performed on " + Routes.Vote.ROOT + "/" + questionId);
         var votes = voteService.votes(questionId);
         if(votes.isPresent()){
             return ResponseEntity.ok(votes.get());
@@ -31,7 +31,7 @@ public final class VoteController {
         throw HttpException.notFound("");
     }
 
-    @PostMapping(Routes.Vote.UP_VOTE)
+    @PostMapping(Routes.Vote.UP_VOTE + "/questions/{questionId}")
     public ResponseEntity<Void> upVoteQuestion(@PathVariable long questionId){
         var vote = voteService.votesQuestion(questionId, true);
         if(vote.isPresent()){
@@ -40,14 +40,14 @@ public final class VoteController {
        throw HttpException.notFound("");
     }
 
-    @PostMapping(Routes.Vote.DOWN_VOTE)
+    @PostMapping(Routes.Vote.DOWN_VOTE + "/questions/{questionId}")
     public ResponseEntity<Void> downVoteQuestion(@PathVariable long questionId){
         voteService.votesQuestion(questionId, false);
         return ResponseEntity.ok().build();
     }
 
 
-    @GetMapping(Routes.Vote.HAS_VOTED_ON_QUESTION)
+    @GetMapping(Routes.Vote.ROOT + "/questions/{questionId}/users/{userId}")
     public ResponseEntity<Boolean> hasAlreadyVotedQuestion(
             @PathVariable("questionId") long questionId,
             @PathVariable("userId") long userId
