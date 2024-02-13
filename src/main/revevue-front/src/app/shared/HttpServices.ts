@@ -1,6 +1,6 @@
 import {inject, Injectable} from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {catchError, Observable, Observer, of, tap, throwError} from 'rxjs';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {catchError, Observable, of, tap, throwError} from 'rxjs';
 import {environment} from "../environment";
 import {UserCredentials, UserFollowInfo, UserRegister} from "./models-in";
 import {UserConnectedDTO, UserIdDTO} from "./models-out";
@@ -15,7 +15,7 @@ export class UserService {
     private readonly ROOT = environment.apiUrl + 'users'
 
     private readonly AUTH = this.ROOT + 'auth/'
-    private readonly LOGIN = environment.apiUrl + 'log'
+    private readonly LOGIN = environment.apiUrl + 'login'
     private readonly LOGOUT = environment.apiUrl + 'logout'
     private readonly TEST = this.ROOT + "/test"
 
@@ -29,20 +29,21 @@ export class UserService {
 
     public login(userCredentials : UserCredentials, onError: (error: Error) => any = (err) => {console.error(err)}): Observable<UserConnectedDTO> {
         return this.client.post<UserConnectedDTO>(this.LOGIN, userCredentials, { headers : this.HEADERS })
-            .pipe(tap(() => this.isLoggedIn = true), catchError(err => {
+            .pipe(tap(() => localStorage.setItem("isLoggin", "true")), catchError(err => {
             return throwError(() => {onError(err);});
         }));
     }
 
     public logout(onError: (error: Error) => any = (err) => {console.error(err)}) {
         return this.client.post(this.LOGOUT, null, { headers : this.HEADERS })
-            .pipe(tap(() => this.isLoggedIn = false), catchError(err => {
+            .pipe(tap(() => localStorage.setItem("isLoggin", "false")), catchError(err => {
             return throwError(() => {onError(err);});
         }));
     }
 
     public isLogin() : boolean {
-        return this.isLoggedIn
+        const isLoggin = localStorage.getItem("isLoggin")
+        return isLoggin !== null && isLoggin === "true"
     }
 
     public getALotFakeUserInfos(): Observable<UserFollowInfo[]> {
