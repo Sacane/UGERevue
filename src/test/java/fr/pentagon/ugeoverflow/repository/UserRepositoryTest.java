@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.repository;
 
+import fr.pentagon.ugeoverflow.config.authorization.Role;
 import fr.pentagon.ugeoverflow.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,46 +13,46 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 public class UserRepositoryTest {
 
-    @Autowired
-    private UserRepository userRepository;
-    private User userTest;
+  @Autowired
+  private UserRepository userRepository;
+  private User userTest;
 
-    @BeforeEach
-    void setup(){
-        userTest = new User("verestah","verestah1","12345","verestah@gmail.com");
-    }
+  @BeforeEach
+  void setup() {
+    userTest = new User("verestah", "verestah1", "12345", "verestah@gmail.com", Role.USER);
+  }
 
-    @Test
-    @DisplayName("Should save the user in the database")
-    void save(){
-        var savedUser = userRepository.save(userTest);
-        assertNotNull(savedUser);
-        assertEquals("verestah",savedUser.getUsername());
-    }
+  @Test
+  @DisplayName("Should save the user in the database")
+  void save() {
+    var savedUser = userRepository.save(userTest);
+    assertNotNull(savedUser);
+    assertEquals("verestah", savedUser.getUsername());
+  }
 
-    @Test
-    @DisplayName("Should find the user with the login verestah1")
-    void findByLogin(){
-        userRepository.save(userTest);
-        var out = userRepository.findByLogin("verestah1");
-        assertTrue(out.isPresent());
-        var finded = out.get();
-        assertNotNull(finded);
-        assertEquals("verestah1", finded.getLogin());
-    }
+  @Test
+  @DisplayName("Should find the user with the login verestah1")
+  void findByLogin() {
+    userRepository.save(userTest);
+    var out = userRepository.findByLogin("verestah1");
+    assertTrue(out.isPresent());
+    var finded = out.get();
+    assertNotNull(finded);
+    assertEquals("verestah1", finded.getLogin());
+  }
 
-    @Test
-    @DisplayName("Should find nothing")
-    void shouldNotFindByLogin(){
-        var out = userRepository.findByLogin("verestah1");
-        assertTrue(out.isEmpty());
-    }
+  @Test
+  @DisplayName("Should find nothing")
+  void shouldNotFindByLogin() {
+    var out = userRepository.findByLogin("verestah1");
+    assertTrue(out.isEmpty());
+  }
 
-    @Test
-    @DisplayName("Should return that the user with the username verestah exist")
-    void existByUsername(){
-        userRepository.save(userTest);
-        var exist = userRepository.existsByUsername("verestah");
-        assertTrue(exist);
-    }
+  @Test
+  @DisplayName("Should return that the user with the username verestah exist")
+  void existByUsername() {
+    userRepository.save(userTest);
+    var exist = userRepository.existsByUsername("verestah");
+    assertTrue(exist);
+  }
 }

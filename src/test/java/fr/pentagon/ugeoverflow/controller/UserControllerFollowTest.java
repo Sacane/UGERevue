@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -48,6 +49,7 @@ public class UserControllerFollowTest {
 
   @Test
   @DisplayName("Successful follow")
+  @WithMockUser
   void testSuccessfulFollow() throws Exception {
     var userDTO = userService.register(new UserRegisterDTO("test1", "test@gmail.com", "test1", "password"));
     var principal = new TestingAuthenticationToken(userDTO.username(), null);
@@ -65,6 +67,7 @@ public class UserControllerFollowTest {
 
   @Test
   @DisplayName("Following user that doesn't exist")
+  @WithMockUser
   void testFollowNonExistingUser() throws Exception {
     var userDTO = userService.register(new UserRegisterDTO("test1", "test@gmail.com", "test1", "password"));
     var principal = new TestingAuthenticationToken(userDTO.username(), null);
@@ -76,6 +79,7 @@ public class UserControllerFollowTest {
 
   @Test
   @DisplayName("Following while not connected")
+  @WithMockUser
   void testFollowNotConnected() throws Exception {
     mockMvc.perform(post(Routes.User.FOLLOW + "/" + 1))
         .andExpect(MockMvcResultMatchers.status().isUnauthorized());
@@ -83,6 +87,7 @@ public class UserControllerFollowTest {
 
   @Test
   @DisplayName("Successful unfollow")
+  @WithMockUser
   void testSuccessfulUnfollow() throws Exception {
     var userDTO = userService.register(new UserRegisterDTO("test1", "test@gmail.com", "test1", "password"));
     var principal = new TestingAuthenticationToken(userDTO.username(), null);
@@ -102,6 +107,7 @@ public class UserControllerFollowTest {
 
   @Test
   @DisplayName("Following user that doesn't exist")
+  @WithMockUser
   void testUnfollowNonExistingUser() throws Exception {
     var userDTO = userService.register(new UserRegisterDTO("test1", "test@gmail.com", "test1", "password"));
     var principal = new TestingAuthenticationToken(userDTO.username(), null);
@@ -113,6 +119,7 @@ public class UserControllerFollowTest {
 
   @Test
   @DisplayName("Following while not connected")
+  @WithMockUser
   void testUnfollowNotConnected() throws Exception {
     mockMvc.perform(post(Routes.User.UNFOLLOW + "/" + 1))
         .andExpect(MockMvcResultMatchers.status().isUnauthorized());

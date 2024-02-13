@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.controllers;
 
+import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
@@ -30,6 +31,7 @@ public final class UserController {
   }
 
   @PostMapping(Routes.User.FOLLOW + "/{id}")
+  @RequireUser
   public ResponseEntity<Void> followUser(@PathVariable long id, Principal principal) {
     if (principal == null) {
       throw HttpException.unauthorized("no user logged in");
@@ -40,6 +42,7 @@ public final class UserController {
   }
 
   @PostMapping(Routes.User.UNFOLLOW + "/{id}")
+  @RequireUser
   public ResponseEntity<Void> unfollowUser(@PathVariable long id, Principal principal) {
     if (principal == null) {
       throw HttpException.unauthorized("no user logged in");

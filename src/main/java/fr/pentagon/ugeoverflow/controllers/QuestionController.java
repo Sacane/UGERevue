@@ -17,13 +17,13 @@ import java.util.logging.Logger;
 @RestController
 public final class QuestionController {
 
-    private static final Logger LOGGER = Logger.getLogger(QuestionController.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(QuestionController.class.getName());
 
-    private final QuestionServiceAdapter questionService;
+  private final QuestionServiceAdapter questionService;
 
-    public QuestionController(QuestionServiceAdapter questionService) {
-        this.questionService = Objects.requireNonNull(questionService);
-    }
+  public QuestionController(QuestionServiceAdapter questionService) {
+    this.questionService = Objects.requireNonNull(questionService);
+  }
 
     @GetMapping(Routes.Question.ROOT)
     public ResponseEntity<List<QuestionDetailDTO>> allQuestions() {

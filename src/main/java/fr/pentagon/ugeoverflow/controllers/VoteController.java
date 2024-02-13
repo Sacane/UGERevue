@@ -13,13 +13,13 @@ import java.util.logging.Logger;
 @RestController
 public final class VoteController {
 
-    private static final Logger LOGGER = Logger.getLogger(VoteController.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(VoteController.class.getName());
 
-    private final VoteServiceAdapter voteService;
+  private final VoteServiceAdapter voteService;
 
-    public VoteController(VoteServiceAdapter voteService){
-        this.voteService = Objects.requireNonNull(voteService);
-    }
+  public VoteController(VoteServiceAdapter voteService) {
+    this.voteService = Objects.requireNonNull(voteService);
+  }
 
     @GetMapping(Routes.Vote.ROOT + "/questions/{questionId}")
     public ResponseEntity<VoteDTO> howManyVotes(@PathVariable long questionId){

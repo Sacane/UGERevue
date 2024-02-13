@@ -1,4 +1,4 @@
-package fr.pentagon.ugeoverflow.config.auth;
+package fr.pentagon.ugeoverflow.config.authentication;
 
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
@@ -16,6 +16,6 @@ public class CustomUserDetailsService implements UserDetailsService {
   public UserDetails loadUserByUsername(String login) {
     var user = userRepository.findByLogin(login)
         .orElseThrow(() -> HttpException.notFound("User with login " + login + " does not exists"));
-    return new RevevueUserDetail(user.getId(), user.getPassword(), user.getUsername(), user.getRoles());
+    return new RevevueUserDetail(user.getId(), user.getPassword(), user.getUsername(), user.getRole());
   }
 }
