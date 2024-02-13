@@ -10,6 +10,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailDTO;
 import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
 import fr.pentagon.ugeoverflow.service.FakeQuestionService;
 import fr.pentagon.ugeoverflow.service.UserService;
+import fr.pentagon.ugeoverflow.utils.Routes;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -65,7 +66,7 @@ class QuestionControllerTest {
         private final ResultActions request;
 
         GetAllQuestions() throws Exception {
-            request = questionMVC.perform(MockMvcRequestBuilders.get(DEFAULT_ROUTE).contentType(MediaType.APPLICATION_JSON));
+            request = questionMVC.perform(MockMvcRequestBuilders.get(Routes.Question.ROOT).contentType(MediaType.APPLICATION_JSON));
             var responseBody = request.andReturn().getResponse().getContentAsString();
             var typeReference = new TypeReference<List<QuestionDetailDTO>>() {
             };
@@ -116,7 +117,7 @@ class QuestionControllerTest {
         void requestAsUnknown() throws Exception {
             var question = new NewQuestionDTO("New", "WOW".getBytes(StandardCharsets.UTF_8), new byte[]{});
             questionMVC.perform(MockMvcRequestBuilders
-                    .post(DEFAULT_ROUTE)
+                    .post(Routes.Question.ROOT)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(question))
             ).andExpect(MockMvcResultMatchers.status().is(401));

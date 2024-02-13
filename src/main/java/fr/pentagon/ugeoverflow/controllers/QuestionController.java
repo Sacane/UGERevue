@@ -5,6 +5,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.service.QuestionServiceAdapter;
+import fr.pentagon.ugeoverflow.utils.Routes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +15,6 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("api/questions")
 public class QuestionController {
 
   private static final Logger LOGGER = Logger.getLogger(QuestionController.class.getName());
@@ -25,41 +25,41 @@ public class QuestionController {
     this.questionService = Objects.requireNonNull(questionService);
   }
 
-  @GetMapping
-  public ResponseEntity<List<QuestionDetailDTO>> allQuestions() {
-    LOGGER.info("GET performed on /api/questions");
-    return ResponseEntity.ok(questionService.allQuestions());
-  }
-
-  @PostMapping
-  public ResponseEntity<QuestionDetailDTO> createQuestion(@Valid @RequestBody NewQuestionDTO newQuestionDTO) {
-    LOGGER.info("POST performed on /api/questions");
-    var userDetail = SecurityContext.checkAuthentication();
-    var registeredQuestionDTO = questionService.registerQuestion(newQuestionDTO, userDetail.id());
-    return ResponseEntity.ok(registeredQuestionDTO);
-  }
-
-  @DeleteMapping("/{questionId}")
-  public ResponseEntity<String> removeQuestion(@PathVariable long questionId) {
-    LOGGER.info("DELETE performed on /api/questions/" + questionId);
-    SecurityContext.checkAuthentication();
-    if (questionService.removeQuestion(questionId)) {
-      return ResponseEntity.ok("Question with id : " + questionId + " was removed.");
+    @GetMapping(Routes.Question.ROOT)
+    public ResponseEntity<List<QuestionDetailDTO>> allQuestions() {
+        LOGGER.info("GET performed on /api/questions");
+        return ResponseEntity.ok(questionService.allQuestions());
     }
-    throw HttpException.notFound("Question with id : " + questionId + " not found.");
-  }
 
-
-  // TODO : Use commentaries and responses to create a "CompleteQuestionInfoDTO".
-
-  @GetMapping("/{questionId}")
-  public ResponseEntity<QuestionDetailDTO> getQuestion(@PathVariable long questionId) {
-    LOGGER.info("GET performed on /api/questions/" + questionId);
-    var question = questionService.question(questionId);
-    if (question.isPresent()) {
-      return ResponseEntity.ok(question.get());
+    @PostMapping(Routes.Question.ROOT)
+    public ResponseEntity<QuestionDetailDTO> createQuestion(@Valid @RequestBody NewQuestionDTO newQuestionDTO) {
+        LOGGER.info("POST performed on /api/questions");
+        var userDetail = SecurityContext.checkAuthentication();
+        var registeredQuestionDTO = questionService.registerQuestion(newQuestionDTO, userDetail.id());
+        return ResponseEntity.ok(registeredQuestionDTO);
     }
-    throw HttpException.notFound("Question with id : " + questionId + " not found.");
-  }
+
+    @DeleteMapping(Routes.Question.WITH_QUESTION_ID)
+    public ResponseEntity<String> removeQuestion(@PathVariable long questionId) {
+        LOGGER.info("DELETE performed on /api/questions/" + questionId);
+        SecurityContext.checkAuthentication();
+        if(questionService.removeQuestion(questionId)){
+            return ResponseEntity.ok("Question with id : " + questionId + " was removed.");
+        }
+        throw HttpException.notFound("Question with id : " + questionId + " not found.");
+    }
+
+
+    // TODO : Use commentaries and responses to create a "CompleteQuestionInfoDTO".
+
+    @GetMapping(Routes.Question.WITH_QUESTION_ID)
+    public ResponseEntity<QuestionDetailDTO> getQuestion(@PathVariable long questionId) {
+        LOGGER.info("GET performed on /api/questions/" + questionId);
+        var question = questionService.question(questionId);
+        if(question.isPresent()){
+            return ResponseEntity.ok(question.get());
+        }
+        throw HttpException.notFound("Question with id : " + questionId + " not found.");
+    }
 
 }

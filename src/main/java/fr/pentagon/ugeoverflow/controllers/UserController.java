@@ -6,6 +6,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.UserService;
+import fr.pentagon.ugeoverflow.utils.Routes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +15,6 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("/api/users")
 public class UserController {
   private static final Logger LOGGER = Logger.getLogger(UserController.class.getName());
   private final UserService userService;
@@ -25,12 +25,12 @@ public class UserController {
     this.userRepository = Objects.requireNonNull(userRepository);
   }
 
-  @PostMapping
+  @PostMapping(Routes.User.ROOT)
   public ResponseEntity<UserIdDTO> registerUser(@RequestBody UserRegisterDTO userRegisterDTO) {
     return ResponseEntity.ok(userService.register(userRegisterDTO));
   }
 
-  @PostMapping("/follow/{id}")
+  @PostMapping(Routes.User.FOLLOW + "/{id}")
   @RequireUser
   public ResponseEntity<Void> followUser(@PathVariable long id, Principal principal) {
     if (principal == null) {
@@ -41,7 +41,7 @@ public class UserController {
     return ResponseEntity.ok().build();
   }
 
-  @PostMapping("/unfollow/{id}")
+  @PostMapping(Routes.User.UNFOLLOW + "/{id}")
   @RequireUser
   public ResponseEntity<Void> unfollowUser(@PathVariable long id, Principal principal) {
     if (principal == null) {

@@ -30,5 +30,4 @@ Ne pas pouvoir liker une question / revue sans etre connecté
 Afficher le profil d'un utilisateur
 
 Ne pas pouvoir unfollow / follow un utilisateur si on est pas connecté
-
-Si on est pas connecté, 
+    
