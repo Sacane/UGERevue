@@ -1,6 +1,8 @@
 <div style="display: flex; justify-content: space-between; align-items: center;">
     <span style="font-size: 25px; font-weight: 500;">All Questions</span>
-    <a color="primary" href="/questions/ask" mat-raised-button>Ask question</a>
+    @if(isLoggin()){
+        <a color="primary" href="/questions/ask" mat-raised-button>Ask question</a>
+    }
 </div>
 <span style="font-size: 17px;">
     24,058,865 questions
