@@ -2,16 +2,19 @@
     <div class="main">
         <div class="upperSection">
             <div class="questionSection">
-                <div class="title">{{ question.title }}</div>
+                <div class="title">
+                    <span>{{ question.title }}</span>
+                    <button mat-raised-button color="primary" (click)="deleteQuestion()">Delete question</button>
+                </div>
                 <p style="margin-top: 20px">
                     {{ question.questionContent }}
                 </p>
                 <pre><code [highlight]="question.classContent" [languages]="['java']" [lineNumbers]="true"></code></pre>
                 @if (question.testResults != undefined) {
-                    <div class="title">Tests</div>
-                    <pre><code [highlight]="question.testClassContent || ''" [languages]="['java']"></code></pre>
-                    <b>Results</b>
-                    <pre><code>{{ question.testResults }}</code></pre>
+                <div class="title">Tests</div>
+                <pre><code [highlight]="question.testClassContent || ''" [languages]="['java']"></code></pre>
+                <b>Results</b>
+                <pre><code>{{ question.testResults }}</code></pre>
                 }
             </div>
             <div class="stats">
@@ -35,7 +38,7 @@
                 </mat-list>
                 <mat-chip-set>
                     @for (tag of question.tags; track tag) {
-                        <mat-chip>{{ tag }}</mat-chip>
+                    <mat-chip>{{ tag }}</mat-chip>
                     }
                 </mat-chip-set>
             </div>

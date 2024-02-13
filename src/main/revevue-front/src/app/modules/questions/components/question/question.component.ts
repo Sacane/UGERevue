@@ -1,7 +1,9 @@
-import {Component, ViewEncapsulation} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {Question} from "../../models/question";
-import {Review} from "../../models/review";
+import { Component, ViewEncapsulation } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Question } from "../../models/question";
+import { Review } from "../../models/review";
+import { QuestionService } from '../../../../shared/services/question.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
     selector: 'app-question',
@@ -90,9 +92,19 @@ export class QuestionComponent {
             reviews: []
         },
     ]
+
     private readonly id: string;
 
-    constructor(private activatedRoute: ActivatedRoute) {
+    constructor(private activatedRoute: ActivatedRoute, private questionService: QuestionService, private router: Router, private snackBar: MatSnackBar) {
         this.id = this.activatedRoute.snapshot.params['id'];
+    }
+
+    deleteQuestion(): void {
+        this.questionService.deleteQuestion(this.id).subscribe(response => {
+            if (!response.error) {
+                this.snackBar.open('La question a été suprimée', 'OK');
+                this.router.navigateByUrl('/questions');
+            }
+        });
     }
 }
