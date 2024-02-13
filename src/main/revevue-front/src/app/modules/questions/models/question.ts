@@ -11,3 +11,13 @@ export interface Question {
     voteCount: number;
     commentCount: number;
 }
+//TODO rajouter les tags plus tard
+export interface SimpleQuestion {
+    id: number,
+    title: string,
+    description: string,
+    userName: string,
+    date: string,
+    nbVotes: number,
+    nbAnswers: number
+}

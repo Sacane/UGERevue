@@ -24,4 +24,8 @@ public interface QuestionVoteRepository extends JpaRepository<QuestionVote, Ques
             """,
             nativeQuery = true)
     long findDownvoteNumberByQuestionId(long questionId);
+
+
+    @Query(value = "SELECT COUNT(v) FROM 'VOTE_QUESTION' v WHERE v.question_id = :id", nativeQuery = true)
+    long countAllById(long id);
 }

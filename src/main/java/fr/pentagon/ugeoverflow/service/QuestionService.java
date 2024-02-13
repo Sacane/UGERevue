@@ -1,9 +1,7 @@
 package fr.pentagon.ugeoverflow.service;
 
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionCreateDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionRemoveDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionUpdateDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseChildrenDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
@@ -32,13 +30,35 @@ public class QuestionService {
     private final ReviewRepository reviewRepository;
     private final QuestionVoteRepository questionVoteRepository;
 
-    public QuestionService(QuestionServiceWithFailure questionServiceWithFailure, ReviewService reviewService, QuestionRepository questionRepository, UserRepository userRepository, ReviewRepository reviewRepository, QuestionVoteRepository questionVoteRepository) {
+    public QuestionService(
+            QuestionServiceWithFailure questionServiceWithFailure,
+            ReviewService reviewService,
+            QuestionRepository questionRepository,
+            UserRepository userRepository,
+            ReviewRepository reviewRepository,
+            QuestionVoteRepository questionVoteRepository
+    ) {
         this.questionServiceWithFailure = questionServiceWithFailure;
         this.reviewService = reviewService;
         this.questionRepository = questionRepository;
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
         this.questionVoteRepository = questionVoteRepository;
+    }
+
+    @Transactional
+    public List<QuestionDTO> getQuestions() {
+        return questionRepository.findAllWithAuthors()
+                .stream()
+                .map(question -> new QuestionDTO(
+                        question.getId(),
+                        question.getTitle(),
+                        question.getDescription(),
+                        question.getAuthor().getUsername(),
+                        question.getCreatedAt().toString(),
+                        questionVoteRepository.countAllById(question.getId()),
+                        question.getReviews().size()
+                    )).toList();
     }
 
     @Transactional
@@ -62,14 +82,10 @@ public class QuestionService {
     }
 
     @Transactional
-    public long create(QuestionCreateDTO questionCreateDTO) {
-        var userFind = userRepository.findById(questionCreateDTO.userId());
-
-        if (userFind.isEmpty()) {
-            throw HttpException.notFound("User not exist");
-        }
-        var user = userFind.get();
-        var question = questionRepository.save(new Question(questionCreateDTO.title(), questionCreateDTO.descrition(), questionCreateDTO.file(), questionCreateDTO.testFile(), "TEST RESULT", true, new Date())); //TODO test
+    public long create(NewQuestionDTO questionCreateDTO, long authorId) {
+        var user = userRepository.findById(authorId)
+                .orElseThrow(() -> HttpException.notFound("User not exist"));
+        var question = questionRepository.save(new Question(questionCreateDTO.title(), questionCreateDTO.description(), questionCreateDTO.javaFile(), questionCreateDTO.testFile(), "TEST RESULT", true, new Date())); //TODO test
         user.addQuestion(question);
 
         return question.getId();

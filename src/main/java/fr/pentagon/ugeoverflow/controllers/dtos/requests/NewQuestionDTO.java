@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.Objects;
 
-public record NewQuestionDTO(@NotNull @NotBlank String title, @NotNull @NotEmpty byte[] javaFile, byte[] testFile) {
+public record NewQuestionDTO(@NotNull @NotBlank String title, String description, @NotNull @NotEmpty byte[] javaFile, byte[] testFile) {
 
     public NewQuestionDTO {
         Objects.requireNonNull(title);
