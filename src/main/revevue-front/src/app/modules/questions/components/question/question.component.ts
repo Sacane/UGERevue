@@ -47,7 +47,7 @@ export class QuestionComponent {
             '}',
         testResults: 'Tests passed: 1 of 1 test - 23ms',
         commentCount: 2,
-        creationDate: new Date(),
+        creationDate: '01/01/2024',
         id: 12,
         questionContent: "Mon code ne marche pas pourquoi?",
         title: "Code qui marche pas",

@@ -20,4 +20,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query(value = "SELECT q FROM Question q LEFT JOIN FETCH q.author LEFT JOIN FETCH q.reviews")
     List<Question> findAllWithAuthors();
+
+    @Query(value = "SELECT q FROM Question q LEFT JOIN FETCH q.author LEFT JOIN FETCH q.reviews WHERE q.id = :questionId")
+    Optional<Question> findByIdWithAuthorAndReviews(long questionId);
 }

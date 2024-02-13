@@ -2,6 +2,8 @@ package fr.pentagon.ugeoverflow.service;
 
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseChildrenDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
@@ -13,12 +15,14 @@ import fr.pentagon.ugeoverflow.repository.QuestionVoteRepository;
 import fr.pentagon.ugeoverflow.repository.ReviewRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -161,5 +165,25 @@ public class QuestionService {
         questionVoteId.setQuestion(question);
         questionVoteId.setAuthor(user);
         questionVoteRepository.deleteById(questionVoteId);
+    }
+
+    @Transactional
+    public QuestionDetailsDTO findById(long questionId) {
+        var question = questionRepository.findByIdWithAuthorAndReviews(questionId).orElseThrow(() -> HttpException.notFound("Question " + questionId + " does not exists"));
+        var dateFormatter = new DateFormatter("dd/MM/yyyy");
+        var voteCount = questionVoteRepository.countAllById(questionId);
+        return new QuestionDetailsDTO(
+                question.getId(),
+                question.getAuthor().getUsername(),
+                dateFormatter.print(question.getCreatedAt(), Locale.FRANCE),
+                List.of(),
+                question.getTitle(),
+                question.getDescription(),
+                "",
+                "",
+                "",
+                question.getReviews().size(),
+                voteCount
+        );
     }
 }

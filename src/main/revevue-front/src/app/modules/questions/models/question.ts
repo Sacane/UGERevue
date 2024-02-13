@@ -1,7 +1,7 @@
 export interface Question {
     id: number;
     author: string;
-    creationDate: Date;
+    creationDate: string;
     tags: Array<String>;
     title: string;
     questionContent: string;
