@@ -29,7 +29,7 @@ public final class UserController {
     return ResponseEntity.ok(userService.register(userRegisterDTO));
   }
 
-  @PostMapping(Routes.User.FOLLOW)
+  @PostMapping(Routes.User.FOLLOW + "/{id}")
   public ResponseEntity<Void> followUser(@PathVariable long id, Principal principal) {
     if (principal == null) {
       throw HttpException.unauthorized("no user logged in");
@@ -39,7 +39,7 @@ public final class UserController {
     return ResponseEntity.ok().build();
   }
 
-  @PostMapping(Routes.User.UNFOLLOW)
+  @PostMapping(Routes.User.UNFOLLOW + "/{id}")
   public ResponseEntity<Void> unfollowUser(@PathVariable long id, Principal principal) {
     if (principal == null) {
       throw HttpException.unauthorized("no user logged in");

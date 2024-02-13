@@ -8,6 +8,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.requests.LoginRequestDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
 import fr.pentagon.ugeoverflow.service.UserService;
+import fr.pentagon.ugeoverflow.utils.Routes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,7 @@ public class LoginControllerTest {
     void testAuthUser() throws Exception {
         var credentialsDTO = new LoginRequestDTO("login", "password");
         userService.register(new UserRegisterDTO("Verestah1", "verestah.fake@gmail.com", "login", "password"));
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/login")
+        mockMvc.perform(MockMvcRequestBuilders.post(Routes.Auth.LOGIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(credentialsDTO)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -57,7 +58,7 @@ public class LoginControllerTest {
     @DisplayName("Case of exception : login not found")
     void loginNotFoundUserAuth() throws Exception {
         var credentialsDTO = new CredentialsDTO("login", "password");
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/login")
+        mockMvc.perform(MockMvcRequestBuilders.post(Routes.Auth.LOGIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(credentialsDTO)))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized())
@@ -69,7 +70,7 @@ public class LoginControllerTest {
     void passwordDoesntMatchUserAuth() throws Exception {
         userService.register(new UserRegisterDTO("verestah1","verestah@gmail.com","login1231","password1"));
         var credentialsDTO = new CredentialsDTO("login", "passwordfazdfa");
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/login")
+        mockMvc.perform(MockMvcRequestBuilders.post(Routes.Auth.LOGIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(credentialsDTO)))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized())

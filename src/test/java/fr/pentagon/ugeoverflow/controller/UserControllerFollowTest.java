@@ -6,6 +6,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.UserService;
+import fr.pentagon.ugeoverflow.utils.Routes;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -68,7 +69,7 @@ public class UserControllerFollowTest {
     var userDTO = userService.register(new UserRegisterDTO("test1", "test@gmail.com", "test1", "password"));
     var principal = new TestingAuthenticationToken(userDTO.username(), null);
 
-    mockMvc.perform(post("/api/users/follow/" + 12315631)
+    mockMvc.perform(post(Routes.User.FOLLOW + "/" + 12315631)
             .principal(principal))
         .andExpect(MockMvcResultMatchers.status().isNotFound());
   }
@@ -76,7 +77,7 @@ public class UserControllerFollowTest {
   @Test
   @DisplayName("Following while not connected")
   void testFollowNotConnected() throws Exception {
-    mockMvc.perform(post("/api/users/follow/" + 1))
+    mockMvc.perform(post(Routes.User.FOLLOW + "/" + 1))
         .andExpect(MockMvcResultMatchers.status().isUnauthorized());
   }
 
@@ -89,7 +90,7 @@ public class UserControllerFollowTest {
 
     userService.follow(userDTO.id(), userToFollowId);
 
-    mockMvc.perform(post("/api/users/unfollow/" + userToFollowId)
+    mockMvc.perform(post(Routes.User.UNFOLLOW + "/" + userToFollowId)
             .principal(principal))
         .andExpect(MockMvcResultMatchers.status().isOk());
 
@@ -105,7 +106,7 @@ public class UserControllerFollowTest {
     var userDTO = userService.register(new UserRegisterDTO("test1", "test@gmail.com", "test1", "password"));
     var principal = new TestingAuthenticationToken(userDTO.username(), null);
 
-    mockMvc.perform(post("/api/users/unfollow/" + 12315631)
+    mockMvc.perform(post(Routes.User.UNFOLLOW + "/" + 12315631)
             .principal(principal))
         .andExpect(MockMvcResultMatchers.status().isNotFound());
   }
@@ -113,7 +114,7 @@ public class UserControllerFollowTest {
   @Test
   @DisplayName("Following while not connected")
   void testUnfollowNotConnected() throws Exception {
-    mockMvc.perform(post("/api/users/unfollow/" + 1))
+    mockMvc.perform(post(Routes.User.UNFOLLOW + "/" + 1))
         .andExpect(MockMvcResultMatchers.status().isUnauthorized());
   }
 }

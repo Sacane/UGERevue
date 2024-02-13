@@ -11,6 +11,7 @@ import fr.pentagon.ugeoverflow.model.Role;
 import fr.pentagon.ugeoverflow.repository.RoleRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.UserService;
+import fr.pentagon.ugeoverflow.utils.Routes;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -73,7 +74,7 @@ public class UserControllerRegisterTest {
   @DisplayName("Case of successful register")
   void testRegisterUser() throws Exception {
     var userRegisterDTO = new UserRegisterDTO("verestah", "verestah@gmail.com", "verestah1", "12345");
-    mockMvc.perform(MockMvcRequestBuilders.post("/api/users/")
+    mockMvc.perform(MockMvcRequestBuilders.post(Routes.User.ROOT)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(userRegisterDTO)))
         .andExpect(MockMvcResultMatchers.status().isOk())
@@ -89,7 +90,7 @@ public class UserControllerRegisterTest {
   void registerUserAlreadyExist() throws Exception {
     userService.register(new UserRegisterDTO("verestah1", "verestah@gmail.com", "login", "password"));
     var userRegisterDTO = new UserRegisterDTO("verestah1", "mathis@gmail.com", "login", "password");
-    mockMvc.perform(MockMvcRequestBuilders.post("/api/users/")
+    mockMvc.perform(MockMvcRequestBuilders.post(Routes.User.ROOT)
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(userRegisterDTO)))
         .andExpect(MockMvcResultMatchers.status().isBadRequest())

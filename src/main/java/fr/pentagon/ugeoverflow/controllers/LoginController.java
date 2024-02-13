@@ -3,6 +3,7 @@ package fr.pentagon.ugeoverflow.controllers;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.LoginRequestDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.LoginResponseDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
+import fr.pentagon.ugeoverflow.utils.Routes;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("/api")
 public class LoginController {
   private static final Logger LOGGER = Logger.getLogger(LoginController.class.getName());
   private final AuthenticationManager authenticationManager;
@@ -33,7 +33,7 @@ public class LoginController {
     this.authenticationManager = authenticationManager;
   }
 
-  @PostMapping("/login")
+  @PostMapping(Routes.Auth.LOGIN)
   public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO, HttpServletRequest request, HttpServletResponse response) {
     LOGGER.info("try to login");
     var token = UsernamePasswordAuthenticationToken.unauthenticated(loginRequestDTO.login(), loginRequestDTO.password());
@@ -50,7 +50,7 @@ public class LoginController {
     }
   }
 
-  @PostMapping("/logout")
+  @PostMapping(Routes.Auth.LOGOUT)
   public void logout(HttpServletRequest request, HttpServletResponse response) {
     var authentication = SecurityContextHolder.getContext().getAuthentication();
     LOGGER.info("try to logout");
