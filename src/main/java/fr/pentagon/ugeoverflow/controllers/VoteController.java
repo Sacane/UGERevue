@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 @RestController
-public final class VoteController {
+public class VoteController {
 
   private static final Logger LOGGER = Logger.getLogger(VoteController.class.getName());
 

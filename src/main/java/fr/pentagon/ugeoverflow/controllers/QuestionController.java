@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 @RestController
-public final class QuestionController {
+public class QuestionController {
 
   private static final Logger LOGGER = Logger.getLogger(QuestionController.class.getName());
 

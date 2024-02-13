@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 @RestController
-public final class UserController {
+public class UserController {
   private static final Logger LOGGER = Logger.getLogger(UserController.class.getName());
   private final UserService userService;
   private final UserRepository userRepository;
