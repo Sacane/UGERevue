@@ -334,4 +334,31 @@ public class QuestionServiceTest {
     var user = userOptional.get();
     assertEquals(0, user.getReviews().size());
   }
+
+  @Test
+  void findQuestionByIdTest() {
+    var sacaneUser = userRepository.save(new User("Sacane", "sacane", "sacane", "sacane.email", Role.USER));
+    var questionContentBytes = """
+            public class test() {
+              private final String content;
+              private final String testContent;
+            }
+            """.getBytes(StandardCharsets.UTF_8);
+    var questionId = questionService.create(
+            new NewQuestionDTO(
+                    "ma classe de test ne marche pas",
+                    "ma classe de test ne marche plus",
+                    questionContentBytes,
+                    null
+            ),
+            sacaneUser.getId()
+    );
+    var questionResponse = assertDoesNotThrow(() -> questionService.findById(questionId));
+    assertEquals("""
+            public class test() {
+              private final String content;
+              private final String testContent;
+            }
+            """, questionResponse.classContent());
+  }
 }

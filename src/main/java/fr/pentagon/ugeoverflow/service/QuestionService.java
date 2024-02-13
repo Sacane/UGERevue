@@ -179,8 +179,8 @@ public class QuestionService {
                 List.of(),
                 question.getTitle(),
                 question.getDescription(),
-                "",
-                "",
+                new String(question.getFile(), StandardCharsets.UTF_8),
+                question.getTestFile() != null ? new String(question.getTestFile(), StandardCharsets.UTF_8) : null,
                 "",
                 question.getReviews().size(),
                 voteCount

@@ -1,9 +1,7 @@
 package fr.pentagon.ugeoverflow.repository;
 
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.Review;
-import fr.pentagon.ugeoverflow.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
