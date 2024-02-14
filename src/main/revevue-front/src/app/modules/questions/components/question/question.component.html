@@ -4,7 +4,14 @@
             <div class="questionSection">
                 <div class="title">
                     <span>{{ question.title }}</span>
-                    <button mat-raised-button color="primary" (click)="deleteQuestion()">Delete question</button>
+                    <button mat-raised-button color="primary" (click)="deleteQuestion()" [disabled]="deleting">
+                        <div style="display: flex; column-gap: 10px;">
+                            <span>Delete question</span>
+                            @if (deleting) {
+                            <mat-spinner [diameter]="20"></mat-spinner>
+                            }
+                        </div>
+                    </button>
                 </div>
                 <p style="margin-top: 20px">
                     {{ question.questionContent }}

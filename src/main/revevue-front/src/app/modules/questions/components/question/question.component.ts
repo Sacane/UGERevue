@@ -4,6 +4,9 @@ import { Question } from "../../models/question";
 import { Review } from "../../models/review";
 import { QuestionService } from '../../../../shared/services/question.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { catchError, concat, of, switchMap } from 'rxjs';
 
 @Component({
     selector: 'app-question',
@@ -93,17 +96,47 @@ export class QuestionComponent {
         },
     ]
 
+    deleting: boolean = false;
     private readonly id: string;
 
-    constructor(private activatedRoute: ActivatedRoute, private questionService: QuestionService, private router: Router, private snackBar: MatSnackBar) {
+    constructor(private activatedRoute: ActivatedRoute, private questionService: QuestionService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) {
         this.id = this.activatedRoute.snapshot.params['id'];
     }
 
     deleteQuestion(): void {
-        this.questionService.deleteQuestion(this.id).subscribe(response => {
-            if (!response.error) {
+        this.dialog.open(ConfirmDialogComponent, {
+            data: {
+                title: 'Delete a question',
+                message: 'Confirm that you want to delete this question ?'
+            },
+            disableClose: true
+        }).afterClosed().pipe(
+            switchMap(confirm => {
+                if (confirm) {
+                    return concat(
+                        of({ deleting: true }),
+                        this.questionService.deleteQuestion(this.id).pipe(
+                            catchError(err => {
+                                console.log(err);
+                                return of({ error: err });
+                            })
+                        )
+                    );
+                }
+
+                return of();
+            })
+        ).subscribe(response => {
+            console.log(response);
+            if (response.deleting) {
+                this.deleting = true;
+            }
+            else if (!response.error) {
                 this.snackBar.open('La question a été suprimée', 'OK');
                 this.router.navigateByUrl('/questions');
+            }
+            else {
+                this.deleting = false;
             }
         });
     }

@@ -15,7 +15,7 @@ export class QuestionService {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
         console.log('SERVICE DELETE');
 
-        return of({ delete: true });
+        return of({ delete: true }).pipe(delay(1000));
         // return this.httpclient.delete<any>(this.url + '/questionId', { headers });
     }
 }
