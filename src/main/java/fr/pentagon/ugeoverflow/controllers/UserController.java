@@ -27,6 +27,7 @@ public class UserController {
 
   @PostMapping(Routes.User.ROOT)
   public ResponseEntity<UserIdDTO> registerUser(@RequestBody UserRegisterDTO userRegisterDTO) {
+    LOGGER.info("try to register");
     return ResponseEntity.ok(userService.register(userRegisterDTO));
   }
 

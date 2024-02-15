@@ -1,4 +1,5 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import {Component, inject, ViewEncapsulation} from '@angular/core';
+import {UserService} from "../../../../shared/HttpServices";
 
 @Component({
     selector: 'app-questions',
@@ -7,6 +8,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
     encapsulation: ViewEncapsulation.None
 })
 export class QuestionsComponent {
+    private readonly userService = inject(UserService)
     questions: any[] = [
         {
             id: 123,
@@ -31,4 +33,7 @@ export class QuestionsComponent {
             nbViews: 55378
         }
     ];
+    public isLoggin(): boolean {
+        return this.userService.isLogin()
+    }
 }

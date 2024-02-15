@@ -47,7 +47,6 @@ public class AuthFilter extends OncePerRequestFilter {
 
     private HandlerMethod getHandlerMethod(HttpServletRequest request) {
         Map<RequestMappingInfo, HandlerMethod> handlerMethods = handlerMapping.getHandlerMethods();
-        System.out.println(handlerMapping.getHandlerMethods());
         for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : handlerMethods.entrySet()) {
             RequestMappingInfo mappingInfo = entry.getKey();
             HandlerMethod handlerMethod = entry.getValue();
