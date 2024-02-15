@@ -1,12 +1,12 @@
-import {inject, Injectable} from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {catchError, Observable, Observer, of, tap, throwError} from 'rxjs';
-import {environment} from "../environment";
-import {UserCredentials, UserFollowInfo, UserRegister} from "./models-in";
-import {UserConnectedDTO, UserIdDTO} from "./models-out";
+import { catchError, Observable, Observer, of, tap, throwError } from 'rxjs';
+import { environment } from "../environment";
+import { UserCredentials, UserFollowInfo, UserRegister } from "./models-in";
+import { UserConnectedDTO, UserIdDTO } from "./models-out";
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root'
 })
 export class UserService {
 
@@ -15,66 +15,78 @@ export class UserService {
     private readonly ROOT = environment.apiUrl + 'users'
 
     private readonly AUTH = this.ROOT + 'auth/'
-    private readonly LOGIN = environment.apiUrl + 'log'
+    private readonly LOGIN = environment.apiUrl + 'login'
     private readonly LOGOUT = environment.apiUrl + 'logout'
     private readonly TEST = this.ROOT + "/test"
 
+    private infos: any;
+
     private client = inject(HttpClient)
 
-    public registerUser(registerInfos: UserRegister, onError: (error: Error) => any = (err) => {console.error(err)}): Observable<UserIdDTO> {
-        return this.client.post<UserIdDTO>(this.ROOT, registerInfos, { headers : this.HEADERS }).pipe(tap(() => this.isLoggedIn = true), catchError(err => {
-            return throwError(() => {onError(err);});
+    public registerUser(registerInfos: UserRegister, onError: (error: Error) => any = (err) => { console.error(err) }): Observable<UserIdDTO> {
+        return this.client.post<UserIdDTO>(this.ROOT, registerInfos, { headers: this.HEADERS }).pipe(tap(() => this.isLoggedIn = true), catchError(err => {
+            return throwError(() => { onError(err); });
         }));
     }
 
-    public login(userCredentials : UserCredentials, onError: (error: Error) => any = (err) => {console.error(err)}): Observable<UserConnectedDTO> {
-        return this.client.post<UserConnectedDTO>(this.LOGIN, userCredentials, { headers : this.HEADERS })
-            .pipe(tap(() => this.isLoggedIn = true), catchError(err => {
-            return throwError(() => {onError(err);});
-        }));
+    public login(userCredentials: UserCredentials, onError: (error: Error) => any = (err) => { console.error(err) }): Observable<UserConnectedDTO> {
+        return this.client.post<UserConnectedDTO>(this.LOGIN, userCredentials, { headers: this.HEADERS }).pipe(
+            tap(response => {
+                this.infos = response;
+                this.isLoggedIn = true
+            }
+            ), catchError(err => {
+                return throwError(() => { onError(err); });
+            })
+        );
     }
 
-    public logout(onError: (error: Error) => any = (err) => {console.error(err)}) {
-        return this.client.post(this.LOGOUT, null, { headers : this.HEADERS })
+    public logout(onError: (error: Error) => any = (err) => { console.error(err) }) {
+        return this.client.post(this.LOGOUT, null, { headers: this.HEADERS })
             .pipe(tap(() => this.isLoggedIn = false), catchError(err => {
-            return throwError(() => {onError(err);});
-        }));
+                return throwError(() => { onError(err); });
+            }));
     }
 
-    public isLogin() : boolean {
+    public getLogin(): string {
+        console.log(this.infos);
+        return this.isLoggedIn ? this.infos.login : "";
+    }
+
+    public isLogin(): boolean {
         return this.isLoggedIn
     }
 
     public getALotFakeUserInfos(): Observable<UserFollowInfo[]> {
         return of([
-            { username: 'Mathis', isFollowing: true},
-            { username: 'Johan', isFollowing: true},
-            { username: 'Yohann', isFollowing: true},
-            { username: 'Quentin', isFollowing: true},
-            { username: 'Clement', isFollowing: true},
-            { username: 'Arnaud', isFollowing: true},
-            { username: 'Remi', isFollowing: true},
-            { username: 'Drake', isFollowing: true},
-            { username: 'Kylian', isFollowing: true},
-            { username: 'Kylian', isFollowing: true},
-            { username: 'Kylian', isFollowing: true},
-            { username: 'Kylian', isFollowing: true},
-            { username: 'Kylian', isFollowing: true},
-            { username: 'Kylian', isFollowing: true},
-            { username: 'Yohann', isFollowing: true},
-            { username: 'Yohann', isFollowing: true},
-            { username: 'Yohann', isFollowing: true},
-            { username: 'Yohann', isFollowing: true},
-            { username: 'Yohann', isFollowing: true},
+            { username: 'Mathis', isFollowing: true },
+            { username: 'Johan', isFollowing: true },
+            { username: 'Yohann', isFollowing: true },
+            { username: 'Quentin', isFollowing: true },
+            { username: 'Clement', isFollowing: true },
+            { username: 'Arnaud', isFollowing: true },
+            { username: 'Remi', isFollowing: true },
+            { username: 'Drake', isFollowing: true },
+            { username: 'Kylian', isFollowing: true },
+            { username: 'Kylian', isFollowing: true },
+            { username: 'Kylian', isFollowing: true },
+            { username: 'Kylian', isFollowing: true },
+            { username: 'Kylian', isFollowing: true },
+            { username: 'Kylian', isFollowing: true },
+            { username: 'Yohann', isFollowing: true },
+            { username: 'Yohann', isFollowing: true },
+            { username: 'Yohann', isFollowing: true },
+            { username: 'Yohann', isFollowing: true },
+            { username: 'Yohann', isFollowing: true },
         ]);
     }
     public getFewFakeUserInfos(): Observable<UserFollowInfo[]> {
         return of([
-            { username: 'Mathis', isFollowing: true},
-            { username: 'Johan', isFollowing: true},
-            { username: 'Yohann', isFollowing: true},
-            { username: 'Quentin', isFollowing: true},
-            { username: 'Clement', isFollowing: true},
+            { username: 'Mathis', isFollowing: true },
+            { username: 'Johan', isFollowing: true },
+            { username: 'Yohann', isFollowing: true },
+            { username: 'Quentin', isFollowing: true },
+            { username: 'Clement', isFollowing: true },
         ]);
     }
 }

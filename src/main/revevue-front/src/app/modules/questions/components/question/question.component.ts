@@ -2,11 +2,12 @@ import { Component, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Question } from "../../models/question";
 import { Review } from "../../models/review";
-import { QuestionService } from '../../../../shared/services/question.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { catchError, concat, of, switchMap } from 'rxjs';
+import { UserService } from '../../../../shared/HttpServices';
+import { QuestionService } from '../../../../shared';
 
 @Component({
     selector: 'app-question',
@@ -99,8 +100,9 @@ export class QuestionComponent {
     deleting: boolean = false;
     private readonly id: string;
 
-    constructor(private activatedRoute: ActivatedRoute, private questionService: QuestionService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) {
+    constructor(private activatedRoute: ActivatedRoute, private userService: UserService, private questionService: QuestionService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) {
         this.id = this.activatedRoute.snapshot.params['id'];
+        console.log(userService.getLogin());
     }
 
     deleteQuestion(): void {

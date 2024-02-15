@@ -15,6 +15,7 @@ export class SideNavBarComponent implements AfterViewInit {
     }
 
     ngAfterViewInit(): void {
+        console.log('ON INNIT');
         console.log(this.navs);
         this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(val => {
             if (val instanceof NavigationEnd) {

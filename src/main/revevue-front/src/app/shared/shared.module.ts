@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { MaterialModule } from "./modules/material.module";
 import { NavBarComponent, SideNavBarComponent } from "./components";
-import { ConfirmDialogComponent } from "./components/confirm-dialog/confirm-dialog.component";
 
 const COMPONENTS: any[] = [
     NavBarComponent,
