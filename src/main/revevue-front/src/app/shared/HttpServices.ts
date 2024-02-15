@@ -15,7 +15,7 @@ export class UserService {
     private readonly ROOT = environment.apiUrl + 'users'
 
     private readonly AUTH = this.ROOT + 'auth/'
-    private readonly LOGIN = environment.apiUrl + 'log'
+    private readonly LOGIN = environment.apiUrl + 'login'
     private readonly LOGOUT = environment.apiUrl + 'logout'
     private readonly TEST = this.ROOT + "/test"
 
