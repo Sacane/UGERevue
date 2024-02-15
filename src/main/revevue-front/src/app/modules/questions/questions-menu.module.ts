@@ -1,18 +1,19 @@
-import {NgModule} from "@angular/core";
-import {SharedModule} from "../../shared/shared.module";
-import {QuestionsMenuComponent} from "./questions-menu.component";
-import {QuestionsMenuRoutingModule} from "./questions-menu-routing.module";
-import {QuestionComponent} from "./components/question/question.component";
-import {QuestionsComponent} from "./components/questions/questions.component";
-import {DatePipe, JsonPipe} from "@angular/common";
-import {HIGHLIGHT_OPTIONS, HighlightModule} from "ngx-highlightjs";
-import {MatDividerModule} from "@angular/material/divider";
-import {MatListModule} from "@angular/material/list";
-import {ReviewComponent} from "./components/review/review.component";
-import {ReviewsComponent} from "./components/reviews/reviews.component";
-import {MatChipsModule} from "@angular/material/chips";
-import {CreateQuestionComponent} from "./components/create-question/create-question.component";
-import {ReactiveFormsModule} from "@angular/forms";
+import { NgModule } from "@angular/core";
+import { SharedModule } from "../../shared/shared.module";
+import { QuestionsMenuComponent } from "./questions-menu.component";
+import { QuestionsMenuRoutingModule } from "./questions-menu-routing.module";
+import { QuestionComponent } from "./components/question/question.component";
+import { QuestionsComponent } from "./components/questions/questions.component";
+import { DatePipe, JsonPipe } from "@angular/common";
+import { HIGHLIGHT_OPTIONS, HighlightModule } from "ngx-highlightjs";
+import { MatDividerModule } from "@angular/material/divider";
+import { MatListModule } from "@angular/material/list";
+import { ReviewComponent } from "./components/review/review.component";
+import { ReviewsComponent } from "./components/reviews/reviews.component";
+import { MatChipsModule } from "@angular/material/chips";
+import { CreateQuestionComponent } from "./components/create-question/create-question.component";
+import { ReactiveFormsModule } from "@angular/forms";
+import { TestComponent } from "./components/test/test.component";
 
 @NgModule({
     providers: [
@@ -33,7 +34,8 @@ import {ReactiveFormsModule} from "@angular/forms";
         QuestionsComponent,
         ReviewComponent,
         ReviewsComponent,
-        CreateQuestionComponent
+        CreateQuestionComponent,
+        TestComponent
     ],
     imports: [
         QuestionsMenuRoutingModule,
@@ -46,8 +48,23 @@ import {ReactiveFormsModule} from "@angular/forms";
         ReactiveFormsModule,
         JsonPipe,
     ],
-    exports: [QuestionsMenuComponent],
-    bootstrap: [QuestionsMenuComponent]
+    exports: [
+        QuestionsMenuComponent,
+        QuestionComponent,
+        QuestionsComponent,
+        ReviewComponent,
+        ReviewsComponent,
+        CreateQuestionComponent,
+        TestComponent
+    ],
+    bootstrap: [
+        QuestionsMenuComponent,
+        QuestionComponent,
+        QuestionsComponent,
+        ReviewComponent,
+        ReviewsComponent,
+        CreateQuestionComponent,
+        TestComponent
+    ]
 })
-export class QuestionsMenuModule {
-}
+export class QuestionsMenuModule { }

@@ -1,4 +1,5 @@
 import { Component, ViewEncapsulation } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-questions',
@@ -31,4 +32,10 @@ export class QuestionsComponent {
             nbViews: 55378
         }
     ];
+
+    constructor(private router: Router) { }
+
+    navigateTo(): void {
+        this.router.navigateByUrl('/questions/test');
+    }
 }
