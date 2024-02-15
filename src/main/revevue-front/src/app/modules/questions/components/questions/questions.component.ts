@@ -35,7 +35,7 @@ export class QuestionsComponent {
 
     constructor(private router: Router) { }
 
-    navigateTo(): void {
-        this.router.navigateByUrl('/questions/test');
+    navigateTo(url: string): void {
+        this.router.navigateByUrl(url);
     }
 }

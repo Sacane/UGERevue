@@ -1,10 +1,11 @@
 <div style="display: flex; justify-content: space-between; align-items: center;">
     <span style="font-size: 25px; font-weight: 500;">All Questions</span>
-    <a color="primary" href="/questions/ask" mat-raised-button>Ask question</a>
+
+    <button mat-raised-button color="primary" (click)="navigateTo('/questions/ask')">Ask question</button>
 </div>
 <span style="font-size: 17px;">
     24,058,865 questions
-    <button mat-raised-button color="primary" (click)="navigateTo()">
+    <button mat-raised-button color="primary" (click)="navigateTo('/questions/test')">
         button test nav
     </button>
 </span>
@@ -18,9 +19,9 @@
             <div style="display: flex; justify-content: end; color: gray;">{{ question.nbViews }} views</div>
         </div>
         <div style="flex-grow: 7; display: flex; flex-direction: column; row-gap: 20px;">
-            <a href="/questions/{{ question.id }}">
+            <button mat-raised-button color="primary" (click)="navigateTo('/questions/' + question.id)">
                 {{ question.title }}
-            </a>
+            </button>
             <div>
                 {{ question.description }}
             </div>
