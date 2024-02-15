@@ -11,7 +11,6 @@ import {UserConnectedDTO, UserIdDTO} from "./models-out";
 export class UserService {
 
     private readonly HEADERS = new HttpHeaders().set('Content-Type', 'application/json');
-    private isLoggedIn = false;
     private readonly ROOT = environment.apiUrl + 'users'
 
     private readonly AUTH = this.ROOT + 'auth/'
@@ -22,7 +21,7 @@ export class UserService {
     private client = inject(HttpClient)
 
     public registerUser(registerInfos: UserRegister, onError: (error: Error) => any = (err) => {console.error(err)}): Observable<UserIdDTO> {
-        return this.client.post<UserIdDTO>(this.ROOT, registerInfos, { headers : this.HEADERS }).pipe(tap(() => this.isLoggedIn = true), catchError(err => {
+        return this.client.post<UserIdDTO>(this.ROOT, registerInfos, { headers : this.HEADERS }).pipe(tap(() => {}), catchError(err => {
             return throwError(() => {onError(err);});
         }));
     }

@@ -8,6 +8,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsDTO;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.utils.Routes;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,10 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.getQuestions());
     }
 
-    @PostMapping(Routes.Question.ROOT)
+    @PostMapping(
+            value = Routes.Question.ROOT,
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
     @RequireUser
     public ResponseEntity<Long> createQuestion(@Valid @RequestBody NewQuestionDTO newQuestionDTO) {
         LOGGER.info("POST performed on /api/questions");

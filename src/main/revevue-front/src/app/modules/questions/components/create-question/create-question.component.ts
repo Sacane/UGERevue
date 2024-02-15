@@ -1,5 +1,6 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component, ViewEncapsulation, inject} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {QuestionService} from "../../../../shared/questionService";
 
 @Component({
     selector: 'app-create-question',
@@ -14,6 +15,8 @@ export class CreateQuestionComponent {
         javaClass: new FormControl<File | null>(null, [Validators.required]),
         testClass: new FormControl<File | null>(null),
     });
+
+    private questionService = inject(QuestionService)
 
     onJavaClassPicked(event: Event) {
         const files = (event.target as HTMLInputElement).files;
@@ -30,6 +33,12 @@ export class CreateQuestionComponent {
 
     onSubmit() {
         console.warn(this.form.value);
+        this.questionService.createQuestion({
+            title: this.form.value.questionTitle as string,
+            description: this.form.value.questionContent as string,
+            javaFile: this.form.value.javaClass as File,
+            testFile: this.form.value.testClass as File | undefined
+        }).subscribe(() => console.log("OK"))
     }
 
     onTestClassPicked(event: Event) {
