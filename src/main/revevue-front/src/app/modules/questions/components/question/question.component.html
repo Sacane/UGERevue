@@ -7,7 +7,7 @@
                     {{ question()?.questionContent }}
                 </p>
                 <pre><code [highlight]="(question()!!.classContent)" [languages]="['java']" [lineNumbers]="true"></code></pre>
-                @if (question()?.testResults != undefined) {
+                @if (question()?.testResults !== undefined && question()?.testResults!!.length > 0) {
                     <div class="title">Tests</div>
                     <pre><code [highlight]="question()!!.testClassContent || ''" [languages]="['java']"></code></pre>
                     <b>Results</b>
