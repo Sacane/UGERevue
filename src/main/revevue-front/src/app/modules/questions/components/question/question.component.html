@@ -4,6 +4,7 @@
             <div class="questionSection">
                 <div class="title">
                     <span>{{ question.title }}</span>
+                    @if (canDelete) {
                     <button mat-raised-button color="primary" (click)="deleteQuestion()" [disabled]="deleting">
                         <div style="display: flex; column-gap: 10px;">
                             <span>Delete question</span>
@@ -12,6 +13,7 @@
                             }
                         </div>
                     </button>
+                    }
                 </div>
                 <p style="margin-top: 20px">
                     {{ question.questionContent }}

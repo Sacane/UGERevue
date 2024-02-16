@@ -17,7 +17,7 @@ import { QuestionService } from '../../../../shared';
 })
 export class QuestionComponent {
     question: Question = {
-        author: "sebdu93",
+        author: "quentin",
         tags: ['java', 'spring', 'jesuisnul'],
         classContent: "package fr.pentagon.ugeoverflow.repository;\n" +
             "\n" +
@@ -59,7 +59,7 @@ export class QuestionComponent {
         title: "Code qui marche pas",
         voteCount: 375
     };
-    reviews: Array<Review> = [
+    reviews: Review[] = [
         {
             author: "seblafrite",
             creationDate: new Date(),
@@ -68,22 +68,13 @@ export class QuestionComponent {
             downvotes: 5,
             reviews: [
                 {
-                    author: "teletubbies",
+                    author: "quentin",
                     creationDate: new Date(),
                     content: "c'est pas très gentil de dire ça",
                     upvotes: 7,
                     downvotes: 9,
-                    reviews: [
-                        {
-                            author: "noob",
-                            creationDate: new Date(),
-                            content: "osef mon gars",
-                            upvotes: 0,
-                            downvotes: 15,
-                            reviews: []
-                        },
-                    ]
-                },
+                    reviews: []
+                }
             ]
         },
         {
@@ -95,14 +86,14 @@ export class QuestionComponent {
             downvotes: 1,
             reviews: []
         },
-    ]
-
+    ];
+    canDelete: boolean = false;
     deleting: boolean = false;
     private readonly id: string;
 
     constructor(private activatedRoute: ActivatedRoute, private userService: UserService, private questionService: QuestionService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) {
         this.id = this.activatedRoute.snapshot.params['id'];
-        console.log(userService.getLogin());
+        this.canDelete = this.userService.getLogin() === this.question.author;
     }
 
     deleteQuestion(): void {

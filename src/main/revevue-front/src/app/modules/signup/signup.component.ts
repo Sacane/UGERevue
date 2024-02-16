@@ -1,7 +1,7 @@
-import {Component, inject, ViewEncapsulation} from '@angular/core';
+import { Component, inject, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import {UserService} from "../../shared/HttpServices";
-import {Router} from "@angular/router";
+import { UserService } from "../../shared/HttpServices";
+import { Router } from "@angular/router";
 
 @Component({
     selector: 'app-signup',
@@ -28,7 +28,7 @@ export class SignupComponent {
                 email: this.signupForm.value.email as string
             }).subscribe(response => {
                 console.log("User has been created : " + response.username);
-                this.router.navigateByUrl("/login").then()
+                this.router.navigateByUrl("/home");
             })
         }
     }

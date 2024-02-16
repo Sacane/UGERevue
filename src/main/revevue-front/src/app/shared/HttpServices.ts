@@ -24,9 +24,15 @@ export class UserService {
     private client = inject(HttpClient)
 
     public registerUser(registerInfos: UserRegister, onError: (error: Error) => any = (err) => { console.error(err) }): Observable<UserIdDTO> {
-        return this.client.post<UserIdDTO>(this.ROOT, registerInfos, { headers: this.HEADERS }).pipe(tap(() => this.isLoggedIn = true), catchError(err => {
-            return throwError(() => { onError(err); });
-        }));
+        return this.client.post<UserIdDTO>(this.ROOT, registerInfos, { headers: this.HEADERS }).pipe(
+            tap(response => {
+                this.infos = { login: response.username };
+                this.isLoggedIn = true
+            }),
+            catchError(err => {
+                return throwError(() => { onError(err); });
+            })
+        );
     }
 
     public login(userCredentials: UserCredentials, onError: (error: Error) => any = (err) => { console.error(err) }): Observable<UserConnectedDTO> {
@@ -49,7 +55,6 @@ export class UserService {
     }
 
     public getLogin(): string {
-        console.log(this.infos);
         return this.isLoggedIn ? this.infos.login : "";
     }
 

@@ -10,25 +10,25 @@
     border-collapse: collapse;
 }
 
-.reviewTable > tr > td {
+.reviewTable>tr>td {
     text-align: left;
     vertical-align: top;
     padding: 4px;
 }
 
-.reviewTable > tr > td:first-child {
+.reviewTable>tr>td:first-child {
     border-right: solid 1px grey;
     vertical-align: center;
 }
 
-.reviewTable > tr > th {
+.reviewTable>tr>th {
     border-bottom: solid 1px grey;
     text-align: left;
     padding: 4px;
     font-weight: normal;
 }
 
-.reviewTable > tr:nth-child(3) {
+.reviewTable>tr:nth-child(3) {
     border-top: solid 1px grey;
 }
 
@@ -43,7 +43,6 @@
 .commentSection {
     display: flex;
 }
-
 
 .mat-upvote {
     background-color: #43A047;

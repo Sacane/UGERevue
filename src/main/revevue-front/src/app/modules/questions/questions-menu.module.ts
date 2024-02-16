@@ -13,7 +13,6 @@ import { ReviewsComponent } from "./components/reviews/reviews.component";
 import { MatChipsModule } from "@angular/material/chips";
 import { CreateQuestionComponent } from "./components/create-question/create-question.component";
 import { ReactiveFormsModule } from "@angular/forms";
-import { TestComponent } from "./components/test/test.component";
 
 @NgModule({
     providers: [
@@ -34,8 +33,7 @@ import { TestComponent } from "./components/test/test.component";
         QuestionsComponent,
         ReviewComponent,
         ReviewsComponent,
-        CreateQuestionComponent,
-        TestComponent
+        CreateQuestionComponent
     ],
     imports: [
         QuestionsMenuRoutingModule,
@@ -54,8 +52,7 @@ import { TestComponent } from "./components/test/test.component";
         QuestionsComponent,
         ReviewComponent,
         ReviewsComponent,
-        CreateQuestionComponent,
-        TestComponent
+        CreateQuestionComponent
     ],
     bootstrap: [
         QuestionsMenuComponent,
@@ -63,8 +60,7 @@ import { TestComponent } from "./components/test/test.component";
         QuestionsComponent,
         ReviewComponent,
         ReviewsComponent,
-        CreateQuestionComponent,
-        TestComponent
+        CreateQuestionComponent
     ]
 })
 export class QuestionsMenuModule { }
