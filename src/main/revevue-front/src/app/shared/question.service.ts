@@ -3,7 +3,7 @@ import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {environment} from "../environment";
 import {catchError, Observable, of, tap, throwError} from "rxjs";
 import {NewQuestionDTO} from "./models-out";
-import {SimpleQuestion} from "../modules/questions/models/question";
+import {Question, SimpleQuestion} from "../modules/questions/models/question";
 
 @Injectable({
     providedIn: 'root',
@@ -25,8 +25,13 @@ export class QuestionService {
         return this.client.post<number>(this.ROOT, formData)
             .pipe(tap(), catchError(err => throwError(() => onError(err))))
     }
-    public getQuestions(onError: (error: Error) => any = (err) => console.error(err)): Observable<SimpleQuestion> {
-        return this.client.get<SimpleQuestion>(this.ROOT)
+    public getQuestions(onError: (error: Error) => any = (err) => console.error(err)): Observable<SimpleQuestion[]> {
+        return this.client.get<SimpleQuestion[]>(this.ROOT)
             .pipe(tap(), catchError(err => throwError(() => onError(err))))
+    }
+
+    public findQuestionById(questionId: number, onError: (error: Error) => any = (err) => console.error(err)): Observable<Question> {
+        return this.client.get<Question>(`${this.ROOT}/${questionId}`)
+            .pipe(catchError(err => throwError(() => onError(err))))
     }
 }

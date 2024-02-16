@@ -1,7 +1,8 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component, inject, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {Question} from "../../models/question";
 import {Review} from "../../models/review";
+import {QuestionService} from "../../../../shared/question.service";
+import {toSignal} from "@angular/core/rxjs-interop";
 
 @Component({
     selector: 'app-question',
@@ -10,49 +11,10 @@ import {Review} from "../../models/review";
     encapsulation: ViewEncapsulation.None
 })
 export class QuestionComponent {
-    question: Question = {
-        author: "sebdu93",
-        tags: ['java', 'spring', 'jesuisnul'],
-        classContent: "package fr.pentagon.ugeoverflow.repository;\n" +
-            "\n" +
-            "import fr.pentagon.ugeoverflow.model.User;\n" +
-            "import org.springframework.data.jpa.repository.JpaRepository;\n" +
-            "import org.springframework.stereotype.Repository;\n" +
-            "\n" +
-            "import java.util.Optional;\n" +
-            "\n" +
-            "@Repository\n" +
-            "public interface UserRepository extends JpaRepository<User, Long> {\n" +
-            "    boolean existsByUsername(String username);\n" +
-            "    Optional<User> findByLogin(String login)\n" +
-            "}\n",
-        testClassContent: 'package fr.uge.fifo;\n' +
-            '\n' +
-            'import static org.junit.jupiter.api.Assertions.assertEquals;\n' +
-            '\n' +
-            'import org.junit.jupiter.api.Test;\n' +
-            '\n' +
-            '@SuppressWarnings("static-method")\n' +
-            'public class ResizeableFifoTest {\n' +
-            '  @Test\n' +
-            '  public void shouldResizeWhenAddingMoreThanCapacityElements() {\n' +
-            '    var fifo = new ResizeableFifo<String>(1);\n' +
-            '    fifo.offer("foo");\n' +
-            '    fifo.offer("bar");\n' +
-            '    assertEquals(2, fifo.size());\n' +
-            '    assertEquals("foo", fifo.poll());\n' +
-            '    assertEquals("bar", fifo.poll());\n' +
-            '    assertEquals(0, fifo.size());\n' +
-            '  }\n' +
-            '}',
-        testResults: 'Tests passed: 1 of 1 test - 23ms',
-        commentCount: 2,
-        creationDate: '01/01/2024',
-        id: 12,
-        questionContent: "Mon code ne marche pas pourquoi?",
-        title: "Code qui marche pas",
-        voteCount: 375
-    };
+    private questionService = inject(QuestionService)
+    private id = inject(ActivatedRoute).snapshot.params['id']
+
+    question = toSignal(this.questionService.findQuestionById(this.id))
     reviews: Array<Review> = [
         {
             author: "seblafrite",
@@ -90,9 +52,5 @@ export class QuestionComponent {
             reviews: []
         },
     ]
-    private readonly id: string;
 
-    constructor(private activatedRoute: ActivatedRoute) {
-        this.id = this.activatedRoute.snapshot.params['id'];
-    }
 }

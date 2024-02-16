@@ -4,7 +4,7 @@ import {QuestionsMenuComponent} from "./questions-menu.component";
 import {QuestionsMenuRoutingModule} from "./questions-menu-routing.module";
 import {QuestionComponent} from "./components/question/question.component";
 import {QuestionsComponent} from "./components/questions/questions.component";
-import {DatePipe, JsonPipe} from "@angular/common";
+import {AsyncPipe, DatePipe, JsonPipe} from "@angular/common";
 import {HIGHLIGHT_OPTIONS, HighlightModule} from "ngx-highlightjs";
 import {MatDividerModule} from "@angular/material/divider";
 import {MatListModule} from "@angular/material/list";
@@ -45,6 +45,7 @@ import {ReactiveFormsModule} from "@angular/forms";
         MatChipsModule,
         ReactiveFormsModule,
         JsonPipe,
+        AsyncPipe,
     ],
     exports: [QuestionsMenuComponent],
     bootstrap: [QuestionsMenuComponent]
