@@ -72,6 +72,7 @@ public class SecurityConfig {
                 .anyRequest()
                 .authenticated()
             )
+            .headers(c -> c.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
             .formLogin(c -> c.loginPage("http://localhost:4200/login"))
             .httpBasic(AbstractHttpConfigurer::disable)
             .build();

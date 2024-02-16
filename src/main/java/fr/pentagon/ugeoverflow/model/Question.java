@@ -15,10 +15,13 @@ public class Question {
     private long id;
     private String title;
     private String description;
+    @Lob
+    @Column(columnDefinition = "BLOB")
     private byte[] file;
-    @Nullable
+    @Lob
+    @Column(columnDefinition = "BLOB")
     private byte[] testFile;
-    @Nullable
+
     private String testResult;
     private boolean open;
     @ManyToOne(fetch = FetchType.LAZY)
