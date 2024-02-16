@@ -12,12 +12,15 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 @Configuration
 @EnableMethodSecurity
@@ -61,15 +64,16 @@ public class SecurityConfig {
   @Profile("dev")
   public SecurityFilterChain securityFilterChainDev(HttpSecurity http) throws Exception {
     return http
-        .csrf(AbstractHttpConfigurer::disable)
-        .cors(Customizer.withDefaults())
-        .authorizeHttpRequests(authorize ->
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(Customizer.withDefaults())
+            .authorizeHttpRequests(authorize ->
             authorize.requestMatchers("/**", "/api/login", "/h2-console/**")
                 .permitAll()
                 .anyRequest()
-                .authenticated())
-        .httpBasic(AbstractHttpConfigurer::disable)
+                .authenticated()
+            )
             .formLogin(c -> c.loginPage("http://localhost:4200/login"))
-        .build();
+            .httpBasic(AbstractHttpConfigurer::disable)
+            .build();
   }
 }

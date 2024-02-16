@@ -12,12 +12,8 @@ export class UserService {
 
     private readonly HEADERS = new HttpHeaders().set('Content-Type', 'application/json');
     private readonly ROOT = environment.apiUrl + 'users'
-
-    private readonly AUTH = this.ROOT + 'auth/'
     private readonly LOGIN = environment.apiUrl + 'login'
     private readonly LOGOUT = environment.apiUrl + 'logout'
-    private readonly TEST = this.ROOT + "/test"
-
     private client = inject(HttpClient)
 
     public registerUser(registerInfos: UserRegister, onError: (error: Error) => any = (err) => {console.error(err)}): Observable<UserIdDTO> {
@@ -28,7 +24,10 @@ export class UserService {
 
     public login(userCredentials : UserCredentials, onError: (error: Error) => any = (err) => {console.error(err)}): Observable<UserConnectedDTO> {
         return this.client.post<UserConnectedDTO>(this.LOGIN, userCredentials, { headers : this.HEADERS })
-            .pipe(tap(() => localStorage.setItem("isLoggin", "true")), catchError(err => {
+            .pipe(tap(() => {
+                localStorage.setItem("isLoggin", "true")
+                console.log(document.cookie)
+            }), catchError(err => {
             return throwError(() => {onError(err);});
         }));
     }
