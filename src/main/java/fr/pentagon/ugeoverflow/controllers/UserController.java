@@ -1,6 +1,8 @@
 package fr.pentagon.ugeoverflow.controllers;
 
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
+import fr.pentagon.ugeoverflow.config.security.SecurityContext;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserFollowInfoDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -51,5 +54,11 @@ public class UserController {
     var user = userRepository.findByLogin(principal.getName()).orElseThrow();
     userService.unfollow(user.getId(), id);
     return ResponseEntity.ok().build();
+  }
+  @GetMapping(Routes.User.ROOT)
+  public ResponseEntity<List<UserFollowInfoDTO>> getAllRegisteredUsers(){
+    var userConnected = SecurityContext.checkAuthentication();
+    //TODO Si le user est pas co alors renvoyé la liste des userRegistered
+    return ResponseEntity.ok(userService.userRegisteredList(userConnected.id()));
   }
 }

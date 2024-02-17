@@ -1,6 +1,8 @@
 package fr.pentagon.ugeoverflow.service;
 
 import fr.pentagon.ugeoverflow.config.authorization.Role;
+import fr.pentagon.ugeoverflow.config.security.SecurityContext;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserFollowInfoDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
@@ -55,8 +57,24 @@ public class UserService {
     var followed = userRepository.findById(followedId).orElseThrow(
         () -> HttpException.notFound("user " + followedId + " not found")
     );
-
     follower.unfollows(followed);
     userRepository.saveAll(List.of(follower, followed));
+  }
+
+  @Transactional
+  public List<UserFollowInfoDTO> userRegisteredList(long userId){
+    var followers = userRepository.findFollowersById(userId);
+    return userRepository.findAllUsers()
+            .stream()
+            .map(user -> user.toUserFollowInfoDTO(followers.contains(user)))
+            .toList();
+  }
+
+  @Transactional
+  public List<UserFollowInfoDTO> userRegisteredList(){
+    return userRepository.findAllUsers()
+            .stream()
+            .map(user -> user.toUserFollowInfoDTO(false))
+            .toList();
   }
 }
