@@ -14,8 +14,8 @@ export class UserService {
     private readonly ROOT = environment.apiUrl + 'users'
     private readonly LOGIN = environment.apiUrl + 'login'
     private readonly LOGOUT = environment.apiUrl + 'logout'
-    private readonly FOLLOW = this.ROOT + 'follow'
-    private readonly UNFOLLOW = this.ROOT + 'unfollow'
+    private readonly FOLLOW = this.ROOT + '/follow'
+    private readonly UNFOLLOW = this.ROOT + '/unfollow'
     private client = inject(HttpClient)
 
     public registerUser(registerInfos: UserRegister, onError: (error: Error) => any = (err) => {console.error(err)}): Observable<UserIdDTO> {
@@ -49,15 +49,20 @@ export class UserService {
             }));
     }
 
-    public follow(userId: string, onError: (error: Error) => any = (err) => {console.error(err)}) {
-        return this.client.post(this.FOLLOW + '/${userId}', null, { headers : this.HEADERS })
-            .pipe(catchError(err => {
-                return throwError(() => {onError(err);});
-            }));
+    public follow(id: string, onError: (error: Error) => any = (err) => {console.error(err)}) {
+        console.log(this.FOLLOW + '/' + id);
+        return this.client.post(this.FOLLOW + '/' + id, null, { headers: this.HEADERS })
+            .pipe(
+                tap(response => console.log('Response from server:', response)),
+                catchError(err => {
+                    return throwError(() => { onError(err); });
+                })
+            );
     }
 
     public unfollow(userId: string, onError: (error: Error) => any = (err) => {console.error(err)}) {
-        return this.client.post(this.UNFOLLOW + '/${userId}', null, { headers : this.HEADERS })
+        console.log(this.UNFOLLOW + '/' + userId)
+        return this.client.post(this.UNFOLLOW + '/' + userId, null, { headers : this.HEADERS })
             .pipe(catchError(err => {
                 return throwError(() => {onError(err);});
             }));

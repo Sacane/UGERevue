@@ -41,10 +41,10 @@ public class UserController {
   @PostMapping(Routes.User.FOLLOW + "/{id}")
   @RequireUser
   public ResponseEntity<Void> followUser(@PathVariable long id, Principal principal) {
+    LOGGER.info("Trying to follow");
     if (principal == null) {
       throw HttpException.unauthorized("no user logged in");
     }
-    LOGGER.info("Trying to follow");
     var user = userRepository.findByLogin(principal.getName()).orElseThrow();
     userService.follow(user.getId(), id);
     return ResponseEntity.ok().build();
@@ -53,10 +53,10 @@ public class UserController {
   @PostMapping(Routes.User.UNFOLLOW + "/{id}")
   @RequireUser
   public ResponseEntity<Void> unfollowUser(@PathVariable long id, Principal principal) {
+    LOGGER.info("Trying to unfollow");
     if (principal == null) {
       throw HttpException.unauthorized("no user logged in");
     }
-    LOGGER.info("Trying to unfollow");
     var user = userRepository.findByLogin(principal.getName()).orElseThrow();
     userService.unfollow(user.getId(), id);
     return ResponseEntity.ok().build();
@@ -64,11 +64,10 @@ public class UserController {
   @GetMapping(Routes.User.ROOT)
   public ResponseEntity<List<UserFollowInfoDTO>> getAllRegisteredUsers(){
     LOGGER.info("Trying to get all registered Users");
-    if(!SecurityContextHolder.getContext().getAuthentication().isAuthenticated()){
+    if(SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")){
       return ResponseEntity.ok(userService.userRegisteredList());
     }
     var userConnected = SecurityContext.checkAuthentication();
-    //TODO Si le user est pas co alors renvoyé la liste des userRegistered
     return ResponseEntity.ok(userService.userRegisteredList(userConnected.id()));
   }
 }

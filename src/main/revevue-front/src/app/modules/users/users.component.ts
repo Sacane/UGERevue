@@ -58,13 +58,13 @@ export class UsersComponent implements OnInit, AfterViewInit {
     onFollow(user: UserFollowInfo): void {
         console.log('Followed:', user.username);
         user.isFollowing = true;
-        this.userService.follow(user.id)
+        this.userService.follow(user.id).subscribe();
     }
 
     onUnfollow(user: UserFollowInfo): void {
         console.log('Unfollowed:', user.username);
         user.isFollowing = false;
-        this.userService.unfollow(user.id)
+        this.userService.unfollow(user.id).subscribe();
     }
     isLogged(){
         return this.userService.isLogin();

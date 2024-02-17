@@ -1,7 +1,6 @@
 package fr.pentagon.ugeoverflow.service;
 
 import fr.pentagon.ugeoverflow.config.authorization.Role;
-import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserFollowInfoDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
@@ -14,9 +13,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 @Service
 public class UserService {
+  private static final Logger LOGGER = Logger.getLogger(UserService.class.getName());
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
 
@@ -63,10 +64,10 @@ public class UserService {
 
   @Transactional
   public List<UserFollowInfoDTO> userRegisteredList(long userId){
-    var followers = userRepository.findFollowersById(userId);
+    var follows = userRepository.findFollowsById(userId);
     return userRepository.findAllUsers()
             .stream()
-            .map(user -> user.toUserFollowInfoDTO(followers.contains(user)))
+            .map(user -> user.toUserFollowInfoDTO(follows.contains(user)))
             .toList();
   }
 
