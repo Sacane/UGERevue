@@ -8,4 +8,8 @@ import { Review } from "../../models/review";
 })
 export class ReviewsComponent {
     @Input() reviews: Review[] = [];
+
+    deleteReview(deleteReview: Review): void {
+        this.reviews = this.reviews.filter(review => review.id !== deleteReview.id);
+    }
 }

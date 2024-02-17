@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Review } from "../../models/review";
 import { UserService } from '../../../../shared/HttpServices';
 import { MatDialog } from '@angular/material/dialog';
@@ -17,10 +17,12 @@ export class ReviewComponent implements OnInit {
     @Input() review: Review = {
         id: "", author: "", creationDate: new Date(0), content: "", downvotes: 0, reviews: [], upvotes: 0
     };
+    @Output() onDelete: EventEmitter<void> = new EventEmitter();
+
     canDelete: boolean = false;
     deleting: boolean = false;
 
-    constructor(private userService: UserService, private reviewService: ReviewService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) { }
+    constructor(private userService: UserService, private reviewService: ReviewService, protected dialog: MatDialog) { }
 
     ngOnInit(): void {
         this.canDelete = this.userService.getLogin() === this.review.author;
@@ -50,12 +52,12 @@ export class ReviewComponent implements OnInit {
                 return of();
             })
         ).subscribe(response => {
-            console.log(response);
             if (response.deleting) {
                 this.deleting = true;
             }
             else if (!response.error) {
-                this.snackBar.open('La review a été suprimée', 'OK');
+                this.onDelete.emit();
+                // this.snackBar.open('La review a été suprimée', 'OK');
             }
             else {
                 this.deleting = false;

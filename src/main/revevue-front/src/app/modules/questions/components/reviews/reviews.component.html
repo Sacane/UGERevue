@@ -1,6 +1,6 @@
 <div class="reviewSection">
     @for (review of reviews; track review.id) {
-    <app-review [review]="review"></app-review>
+    <app-review [review]="review" (onDelete)="deleteReview(review)"></app-review>
     }
     @empty {
     <p> Aucun revue </p>

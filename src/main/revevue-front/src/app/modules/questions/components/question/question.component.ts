@@ -62,7 +62,7 @@ export class QuestionComponent {
     reviews: Review[] = [
         {
             id: "4",
-            author: "seblafrite",
+            author: "quentin",
             creationDate: new Date(),
             content: "tu pourrais au moins faire l'effort d'expliquer ton problème...",
             upvotes: 23,
