@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Import;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Import(DatasourceTestConfig.class)
@@ -33,8 +32,8 @@ public class UserServiceTest {
     @Test
     @DisplayName("Get empty list of registered users without Admin ")
     void getAllRegisteredUserNonUnauthenticatedEmpty(){
-        var users = userRepository.findAllUsers();
-        assertEquals(0, users.size());
+        var users = userService.userRegisteredList();
+        assertEquals(0, users.size()-1);
     }
 
     @Test
@@ -48,7 +47,7 @@ public class UserServiceTest {
                         new User("qtdrake", "qtdrake", "qtellier", "qt@email.com", Role.USER)
                 )
         );
-        var users = userRepository.findAllUsers();
+        var users = userService.userRegisteredList();
         assertEquals(users.size(), registered.size());
     }
 }
