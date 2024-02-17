@@ -14,8 +14,8 @@ export class UserService {
     private readonly ROOT = environment.apiUrl + 'users'
     private readonly LOGIN = environment.apiUrl + 'login'
     private readonly LOGOUT = environment.apiUrl + 'logout'
-    private readonly FOLLOW = environment.apiUrl + 'follow'
-    private readonly UNFOLLOW = environment.apiUrl + 'unfollow'
+    private readonly FOLLOW = this.ROOT + 'follow'
+    private readonly UNFOLLOW = this.ROOT + 'unfollow'
     private client = inject(HttpClient)
 
     public registerUser(registerInfos: UserRegister, onError: (error: Error) => any = (err) => {console.error(err)}): Observable<UserIdDTO> {
@@ -43,7 +43,8 @@ export class UserService {
 
     public getAllRegisteredUsers(onError: (error: Error) => any = (err) => {console.error(err)}) {
         return this.client.get<UserFollowInfo[]>(this.ROOT,{ headers : this.HEADERS })
-            .pipe(catchError(err => {
+            .pipe(tap(data => console.log('Data received:', data)),
+                catchError(err => {
                 return throwError(() => {onError(err);});
             }));
     }

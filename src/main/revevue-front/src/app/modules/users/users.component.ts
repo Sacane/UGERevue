@@ -28,9 +28,12 @@ export class UsersComponent implements OnInit, AfterViewInit {
             (data: UserFollowInfo[]) => this.userList = data.slice()
         );*/
         this.userService.getAllRegisteredUsers().subscribe(
-        (data: UserFollowInfo[]) => this.userList = data.slice()
+            (data: UserFollowInfo[]) => {
+                this.userList = data.slice();
+                this.usersFiltered = this.userList.slice();
+                console.log(this.userList);
+            }
         );
-        this.usersFiltered = this.userList.slice()
     }
 
     filter(event: Event): void {
