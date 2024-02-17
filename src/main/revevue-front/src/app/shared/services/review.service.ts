@@ -6,15 +6,14 @@ import { environment } from "../../environment";
 @Injectable({
     providedIn: 'root',
 })
-export class QuestionService {
-    private url: string = environment.apiUrl + '/questions';
+export class ReviewService {
+    private url: string = environment.apiUrl + '/reviews';
 
     constructor(private httpclient: HttpClient) { }
 
-    public deleteQuestion(questionId: string): Observable<any> {
+    public deleteReview(reviewId: string): Observable<any> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
         return of({ delete: true }).pipe(delay(1000));
-        // return this.httpclient.delete<any>(this.url + '/questionId', { headers });
     }
 }

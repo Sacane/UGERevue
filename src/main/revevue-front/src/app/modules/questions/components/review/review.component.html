@@ -8,9 +8,13 @@
                     </span>
 
                     @if (canDelete) {
-                    <button mat-raised-button color="primary" align="end">
+                    <button mat-raised-button color="primary" (click)="deleteReview()" [disabled]="deleting"
+                        align="end">
                         <div style="display: flex; column-gap: 10px;">
                             <span>Delete review</span>
+                            @if (deleting) {
+                            <mat-spinner [diameter]="20"></mat-spinner>
+                            }
                         </div>
                     </button>
                     }

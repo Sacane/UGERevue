@@ -61,6 +61,7 @@ export class QuestionComponent {
     };
     reviews: Review[] = [
         {
+            id: "4",
             author: "seblafrite",
             creationDate: new Date(),
             content: "tu pourrais au moins faire l'effort d'expliquer ton problème...",
@@ -68,6 +69,7 @@ export class QuestionComponent {
             downvotes: 5,
             reviews: [
                 {
+                    id: "1",
                     author: "quentin",
                     creationDate: new Date(),
                     content: "c'est pas très gentil de dire ça",
@@ -78,6 +80,7 @@ export class QuestionComponent {
             ]
         },
         {
+            id: "2",
             author: "jesaispasquoimettreici",
             creationDate: new Date(),
             content: "il manque un point virgule là",
