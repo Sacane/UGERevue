@@ -164,7 +164,7 @@ public final class User {
   }
 
   public UserFollowInfoDTO toUserFollowInfoDTO(boolean isFollowing){
-    return new UserFollowInfoDTO(this.username, isFollowing);
+    return new UserFollowInfoDTO(this.username, isFollowing, this.id);
   }
 }
 

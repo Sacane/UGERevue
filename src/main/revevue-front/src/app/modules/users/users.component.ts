@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, inject, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {UserFollowInfo} from "../../shared/models-in";
 import {MatPaginator} from "@angular/material/paginator";
 import {UserService} from "../../shared/HttpServices";
@@ -12,7 +12,7 @@ import {UserService} from "../../shared/HttpServices";
 export class UsersComponent implements OnInit, AfterViewInit {
     userList: UserFollowInfo[] = [];
     usersFiltered: UserFollowInfo[] = [];
-    constructor(private userService: UserService){}
+    private readonly userService: UserService = inject(UserService)
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -24,8 +24,11 @@ export class UsersComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit(): void {
-        this.userService.getALotFakeUserInfos().subscribe(  //Fake data
+        /*this.userService.getALotFakeUserInfos().subscribe(  Fake data
             (data: UserFollowInfo[]) => this.userList = data.slice()
+        );*/
+        this.userService.getAllRegisteredUsers().subscribe(
+        (data: UserFollowInfo[]) => this.userList = data.slice()
         );
         this.usersFiltered = this.userList.slice()
     }
@@ -52,11 +55,13 @@ export class UsersComponent implements OnInit, AfterViewInit {
     onFollow(user: UserFollowInfo): void {
         console.log('Followed:', user.username);
         user.isFollowing = true;
+        this.userService.follow(user.id)
     }
 
     onUnfollow(user: UserFollowInfo): void {
         console.log('Unfollowed:', user.username);
         user.isFollowing = false;
+        this.userService.unfollow(user.id)
     }
     isLogged(){
         return this.userService.isLogin();

@@ -12,5 +12,6 @@ export interface UserCredentials {
 
 export interface UserFollowInfo {
     username : string,
-    isFollowing : boolean
+    isFollowing : boolean,
+    id : string
 }
