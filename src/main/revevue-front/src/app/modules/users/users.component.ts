@@ -10,6 +10,7 @@ import {UserService} from "../../shared/HttpServices";
     encapsulation: ViewEncapsulation.None
 })
 export class UsersComponent implements OnInit, AfterViewInit {
+    userList: UserFollowInfo[] = [];
     usersFiltered: UserFollowInfo[] = [];
     constructor(private userService: UserService){}
 
@@ -24,13 +25,18 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
     ngOnInit(): void {
         this.userService.getALotFakeUserInfos().subscribe(  //Fake data
-            (data: UserFollowInfo[]) => this.usersFiltered = data.slice()
+            (data: UserFollowInfo[]) => this.userList = data.slice()
         );
+        this.usersFiltered = this.userList.slice()
     }
 
     filter(event: Event): void {
         const query = (event.target as HTMLInputElement).value;
-        this.usersFiltered = this.usersFiltered.filter(infos => infos.username.toLowerCase().includes(query.toLowerCase()));
+        if(query.length==0){
+            this.usersFiltered = this.userList;
+        }else{
+            this.usersFiltered = this.usersFiltered.filter(infos => infos.username.toLowerCase().includes(query.toLowerCase()));
+        }
         this.paginator.firstPage();
     }
 
@@ -51,5 +57,8 @@ export class UsersComponent implements OnInit, AfterViewInit {
     onUnfollow(user: UserFollowInfo): void {
         console.log('Unfollowed:', user.username);
         user.isFollowing = false;
+    }
+    isLogged(){
+        return this.userService.isLogin();
     }
 }
