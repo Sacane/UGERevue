@@ -1,4 +1,4 @@
-import {Component, inject, ViewEncapsulation} from '@angular/core';
+import {Component, inject, Signal, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Review} from "../../models/review";
 import {QuestionService} from "../../../../shared/question.service";
@@ -15,35 +15,6 @@ export class QuestionComponent {
     private questionService = inject(QuestionService)
     private reviewService = inject(ReviewService)
     private id = inject(ActivatedRoute).snapshot.params['id']
-
     question = toSignal(this.questionService.findQuestionById(this.id))
-
-    reviews: Array<Review> = [
-        {
-            author: "seblafrite",
-            creationDate: new Date(),
-            content: "tu pourrais au moins faire l'effort d'expliquer ton problème...",
-            upvotes: 23,
-            downvotes: 5,
-            reviews: [
-                {
-                    author: "teletubbies",
-                    creationDate: new Date(),
-                    content: "c'est pas très gentil de dire ça",
-                    upvotes: 7,
-                    downvotes: 9,
-                },
-            ]
-        },
-        {
-            author: "jesaispasquoimettreici",
-            creationDate: new Date(),
-            content: "il manque un point virgule là",
-            citedCode: "Optional<User> findByLogin(String login)",
-            upvotes: 245,
-            downvotes: 1,
-            reviews: []
-        },
-    ]
-
+    reviews: Signal<Review[]> = toSignal(this.reviewService.findReviewByQuestionId(this.id)) as Signal<Review[]>
 }

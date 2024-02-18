@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, Signal} from '@angular/core';
 import {Review, ReviewFromReview} from "../../models/review";
 
 @Component({
@@ -7,5 +7,5 @@ import {Review, ReviewFromReview} from "../../models/review";
     styleUrl: './reviews.component.scss'
 })
 export class ReviewsComponent {
-    @Input() reviews: Array<Review> = [];
+    @Input() reviews!: Review[];
 }
