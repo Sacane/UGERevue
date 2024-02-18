@@ -3,6 +3,7 @@ import {ActivatedRoute} from '@angular/router';
 import {Review} from "../../models/review";
 import {QuestionService} from "../../../../shared/question.service";
 import {toSignal} from "@angular/core/rxjs-interop";
+import {ReviewService} from "../../../../shared/review.service";
 
 @Component({
     selector: 'app-question',
@@ -12,9 +13,11 @@ import {toSignal} from "@angular/core/rxjs-interop";
 })
 export class QuestionComponent {
     private questionService = inject(QuestionService)
+    private reviewService = inject(ReviewService)
     private id = inject(ActivatedRoute).snapshot.params['id']
 
     question = toSignal(this.questionService.findQuestionById(this.id))
+
     reviews: Array<Review> = [
         {
             author: "seblafrite",
@@ -29,16 +32,6 @@ export class QuestionComponent {
                     content: "c'est pas très gentil de dire ça",
                     upvotes: 7,
                     downvotes: 9,
-                    reviews: [
-                        {
-                            author: "noob",
-                            creationDate: new Date(),
-                            content: "osef mon gars",
-                            upvotes: 0,
-                            downvotes: 15,
-                            reviews: []
-                        },
-                    ]
                 },
             ]
         },

@@ -1,8 +1,10 @@
 package fr.pentagon.ugeoverflow.service;
 
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionRemoveDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseChildrenDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
@@ -63,26 +65,6 @@ public class QuestionService {
                         questionVoteRepository.countAllById(question.getId()),
                         question.getReviews().size()
                     )).toList();
-    }
-
-    @Transactional
-    public List<ReviewResponseChildrenDTO> getReviews(long questionId) {
-        var questionOptional = questionRepository.findByIdWithReviews(questionId);
-        if (questionOptional.isEmpty()) {
-            throw HttpException.notFound("Question not exist");
-        }
-        var question = questionOptional.get();
-        var author = question.getAuthor();
-
-        return question.getReviews().stream().map(review -> {
-            var fileContent = new String(question.getFile(), StandardCharsets.UTF_8).split("\n");
-            var lineStart = review.getLineStart();
-            var lineEnd = review.getLineEnd();
-            var citedCode = (lineStart == null || lineEnd == null) ? null : Arrays.stream(fileContent, lineStart - 1, lineEnd)
-                    .collect(Collectors.joining("\n"));
-
-            return new ReviewResponseChildrenDTO(author.getId(), author.getUsername(), review.getId(), review.getContent(), citedCode, reviewService.getReviews(review.getId()));
-        }).toList();
     }
 
     @Transactional

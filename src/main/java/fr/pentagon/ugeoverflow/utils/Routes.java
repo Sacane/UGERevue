@@ -30,4 +30,8 @@ public final class Routes {
         public static final String LOGIN =  ROOT + "/login";
         public static final String LOGOUT = ROOT + "/logout";
     }
+    public static final class Review {
+        private Review() {}
+        public static final String ROOT = Routes.ROOT + "/reviews";
+    }
 }
