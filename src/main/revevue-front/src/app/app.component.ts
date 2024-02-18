@@ -1,13 +1,13 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
+export class AppComponent{
   title = 'revevue-front';
-  navs: any[] = [
+  navs = [
     {
       name: 'Home',
       url: '/home',
@@ -24,7 +24,7 @@ export class AppComponent {
       icon: 'tags'
     },
     {
-      name: 'Users',
+      name: 'Socials',
       url: '/users',
       icon: 'account_circle'
     }

@@ -8,6 +8,10 @@
         <input matInput>
     </mat-form-field>
     @if(userService.isLogin()) {
+        <button mat-button color="primary">
+            <mat-icon>account-circle</mat-icon>
+            Mon profil
+        </button>
         <button mat-stroked-button color="primary" (click)="logout()">Logout</button>
     } @else {
         <button mat-stroked-button color="primary" (click)="login()">Log in</button>
