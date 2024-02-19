@@ -3,6 +3,7 @@ package fr.pentagon.ugeoverflow.testutils;
 import fr.pentagon.ugeoverflow.config.authorization.Role;
 import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashMap;
@@ -19,6 +20,7 @@ public class UserTestProvider {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public HashMap<String, Long> addSomeUserIntoDatabase() {
         var userToId = new HashMap<String, Long>();
         List<User> users = List.of(
@@ -28,6 +30,7 @@ public class UserTestProvider {
                 new User("Sacane4", "loginSacane4", passwordEncoder.encode("SacanePassword4"), "sacane4.test@gmail.com", Role.USER)
         );
         userRepository.saveAll(users);
+        users.forEach(u -> userToId.put(u.getUsername(), u.getId()));
         return userToId;
     }
 }
