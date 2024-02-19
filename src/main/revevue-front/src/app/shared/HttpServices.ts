@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, Observable, Observer, of, tap, throwError } from 'rxjs';
+import { catchError, Observable, of, tap, throwError } from 'rxjs';
 import { environment } from "../environment";
 import { UserCredentials, UserFollowInfo, UserRegister } from "./models-in";
 import { UserConnectedDTO, UserIdDTO } from "./models-out";
@@ -28,12 +28,13 @@ export class UserService {
 
     public login(userCredentials: UserCredentials, onError: (error: Error) => any = (err) => { console.error(err) }): Observable<UserConnectedDTO> {
         return this.client.post<UserConnectedDTO>(this.LOGIN, userCredentials, { headers: this.HEADERS })
-            .pipe(tap(response => {
-                localStorage.setItem("isLoggin", "true")
-                this.infos = response;
-            }), catchError(err => {
-                return throwError(() => { onError(err); });
-            }));
+            .pipe(
+                tap(response => {
+                    localStorage.setItem("isLoggin", "true");
+                    localStorage.setItem('username', response.username);
+                }), catchError(err => {
+                    return throwError(() => { onError(err); });
+                }));
     }
 
     public logout(onError: (error: Error) => any = (err) => { console.error(err) }) {
@@ -44,7 +45,8 @@ export class UserService {
     }
 
     public getLogin(): string {
-        return this.isLogin() ? this.infos.login : "";
+        const username = localStorage.getItem('username');
+        return username ? username : '';
     }
 
     public isLogin(): boolean {

@@ -22,7 +22,6 @@ public class ReviewController {
     public ResponseEntity<List<ReviewResponseChildrenDTO>> findAllReviews(
             @PathVariable long questionId
     ) {
-        System.out.println("ICI");
         return ResponseEntity.ok(reviewService.findReviewsByQuestionId(questionId));
     }
 }

@@ -13,6 +13,7 @@ export class QuestionService {
     private readonly ROOT = environment.apiUrl + 'questions'
 
     private client = inject(HttpClient)
+
     public createQuestion(newQuestionDTO: NewQuestionDTO, onError: (error: Error) => any = (err) => console.error(err)): Observable<number> {
         const formData = new FormData();
         formData.append('title', newQuestionDTO.title);
@@ -29,8 +30,7 @@ export class QuestionService {
     public deleteQuestion(questionId: string): Observable<any> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-        return of({ delete: true }).pipe(delay(1000));
-        // return this.httpclient.delete<any>(this.url + '/questionId', { headers });
+        return this.client.delete<any>(`${this.ROOT}/${questionId}`, { headers });
     }
 
     public getQuestions(onError: (error: Error) => any = (err) => console.error(err)): Observable<SimpleQuestion[]> {
