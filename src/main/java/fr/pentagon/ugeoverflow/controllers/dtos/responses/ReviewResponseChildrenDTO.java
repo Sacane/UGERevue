@@ -1,10 +1,25 @@
 package fr.pentagon.ugeoverflow.controllers.dtos.responses;
 
-import jakarta.annotation.Nullable;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
-public record ReviewResponseChildrenDTO(long authorId, @NotNull @NotBlank String authorName, long reviewId, @NotNull @NotBlank String content, @Nullable String citedCode, List<ReviewResponseDTO> reviews) {
-}
+public record ReviewResponseChildrenDTO(
+        String author,
+        String content,
+        String citedCode,
+        long upvotes,
+        long downvotes,
+        Date creationDate,
+        List<ReviewResponseDTO> reviews
+) {}
+/**
+ * export interface Review {
+ *     author: string;
+ *     creationDate: Date;
+ *     content: string;
+ *     citedCode?: string;
+ *     upvotes: number;
+ *     downvotes: number;
+ *     reviews: Array<Review>;
+ * }
+ */

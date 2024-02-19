@@ -2,39 +2,39 @@
     <div class="main">
         <div class="upperSection">
             <div class="questionSection">
-                <div class="title">{{ question.title }}</div>
+                <div class="title">{{ question()?.title }}</div>
                 <p style="margin-top: 20px">
-                    {{ question.questionContent }}
+                    {{ question()?.questionContent }}
                 </p>
-                <pre><code [highlight]="question.classContent" [languages]="['java']" [lineNumbers]="true"></code></pre>
-                @if (question.testResults != undefined) {
+                <pre><code [highlight]="(question()!!.classContent)" [languages]="['java']" [lineNumbers]="true"></code></pre>
+                @if (question()?.testResults !== undefined && question()?.testResults!!.length > 0) {
                     <div class="title">Tests</div>
-                    <pre><code [highlight]="question.testClassContent || ''" [languages]="['java']"></code></pre>
+                    <pre><code [highlight]="question()!!.testClassContent || ''" [languages]="['java']"></code></pre>
                     <b>Results</b>
-                    <pre><code>{{ question.testResults }}</code></pre>
+                    <pre><code>{{ question()?.testResults }}</code></pre>
                 }
             </div>
             <div class="stats">
                 <mat-list>
                     <mat-list-item>
-                        <b>Auteur:</b> {{ question.author }}
+                        <b>Auteur:</b> {{ question()?.author }}
                     </mat-list-item>
                     <mat-divider></mat-divider>
                     <mat-list-item>
-                        <b>Date:</b> {{ question.creationDate | date:'dd/MM/yyyy, HH:mm' }}
+                        <b>Date:</b> {{ question()?.creationDate }}
                     </mat-list-item>
                     <mat-divider></mat-divider>
                     <mat-list-item>
-                        <b>Votes:</b> {{ question.voteCount }}
+                        <b>Votes:</b> {{ question()?.voteCount }}
                     </mat-list-item>
                     <mat-divider></mat-divider>
                     <mat-list-item>
-                        <b>Commentaires:</b> {{ question.commentCount }}
+                        <b>Commentaires:</b> {{ question()?.commentCount }}
                     </mat-list-item>
                     <mat-divider></mat-divider>
                 </mat-list>
                 <mat-chip-set>
-                    @for (tag of question.tags; track tag) {
+                    @for (tag of question()?.tags; track tag) {
                         <mat-chip>{{ tag }}</mat-chip>
                     }
                 </mat-chip-set>
@@ -43,7 +43,7 @@
         <div class="reviewsSection">
             <div class="title">Revues</div>
             <div>
-                <app-reviews [reviews]="reviews"></app-reviews>
+                <app-reviews [reviews]="reviews()"></app-reviews>
             </div>
         </div>
     </div>

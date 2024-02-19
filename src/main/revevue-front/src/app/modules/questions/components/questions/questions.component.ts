@@ -1,5 +1,8 @@
-import {Component, inject, ViewEncapsulation} from '@angular/core';
+import {Component, computed, inject, ViewEncapsulation} from '@angular/core';
 import {UserService} from "../../../../shared/HttpServices";
+import {QuestionService} from "../../../../shared/question.service";
+import {toSignal} from "@angular/core/rxjs-interop";
+import {SimpleQuestion} from "../../models/question";
 
 @Component({
     selector: 'app-questions',
@@ -9,31 +12,12 @@ import {UserService} from "../../../../shared/HttpServices";
 })
 export class QuestionsComponent {
     private readonly userService = inject(UserService)
-    questions: any[] = [
-        {
-            id: 123,
-            title: 'TITLE 1',
-            description: 'DESCRIPTION 1',
-            userName: 'qtdrake',
-            tags: ['java', 'jee', 'spring'],
-            date: '26/01/2024',
-            nbVotes: 129222,
-            nbAnswers: 1903,
-            nbViews: 55378
-        },
-        {
-            id: 1234,
-            title: 'TITLE 1',
-            description: 'DESCRIPTION 1',
-            userName: 'qtdrake',
-            tags: ['java', 'jee', 'spring'],
-            date: '26/01/2024',
-            nbVotes: 129222,
-            nbAnswers: 1903,
-            nbViews: 55378
-        }
-    ];
-    public isLoggin(): boolean {
+    private readonly questionService = inject(QuestionService)
+
+    questions = toSignal(this.questionService.getQuestions(), {initialValue: [] as SimpleQuestion[]})
+    numberQuestions = computed(() => this.questions().length)
+
+    public isLogin(): boolean {
         return this.userService.isLogin()
     }
 }

@@ -1,14 +1,14 @@
 <div style="display: flex; justify-content: space-between; align-items: center;">
     <span style="font-size: 25px; font-weight: 500;">All Questions</span>
-    @if(isLoggin()){
+    @if(isLogin()){
         <a color="primary" href="/questions/ask" mat-raised-button>Ask question</a>
     }
 </div>
 <span style="font-size: 17px;">
-    24,058,865 questions
+    {{numberQuestions()}} questions
 </span>
 <div style="display: flex; flex-direction: column;">
-    @for (question of questions; track question.title) {
+    @for (question of questions(); track question.title) {
         <div
             style="display: flex; column-gap: 20px; border-top: 2px solid lightgray; padding-top: 10px; padding-bottom: 10px;">
             <div style="flex-grow: 1; display: flex; flex-direction: column;">
@@ -29,9 +29,9 @@
                             {{ tag }}
                         }
                     </div>-->
-                    <div>
-                        {{ question.userName }}
-                        {{ question.date }}
+                    <div class="info">
+                        <p>Posté par {{ question.userName }}</p>
+                        <p>Le {{ question.date }}</p>
                     </div>
                 </div>
             </div>

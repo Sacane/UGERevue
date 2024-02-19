@@ -1,6 +1,7 @@
 import {Component, ViewEncapsulation, inject} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {QuestionService} from "../../../../shared/questionService";
+import {QuestionService} from "../../../../shared/question.service";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
     selector: 'app-create-question',
@@ -17,7 +18,7 @@ export class CreateQuestionComponent {
     });
 
     private questionService = inject(QuestionService)
-
+    private router = inject(Router)
     onJavaClassPicked(event: Event) {
         const files = (event.target as HTMLInputElement).files;
         if (files === null) {
@@ -38,7 +39,7 @@ export class CreateQuestionComponent {
             description: this.form.value.questionContent as string,
             javaFile: this.form.value.javaClass as File,
             testFile: this.form.value.testClass as File | undefined
-        }).subscribe(() => console.log("OK"))
+        }).subscribe(() => this.gotoQuestion())
     }
 
     onTestClassPicked(event: Event) {
@@ -54,5 +55,9 @@ export class CreateQuestionComponent {
         this.form.patchValue({testClass: null});
 
         // Build FormData from form and send to HTTP endpoint
+    }
+
+    gotoQuestion(): void {
+        this.router.navigateByUrl('/questions').then()
     }
 }

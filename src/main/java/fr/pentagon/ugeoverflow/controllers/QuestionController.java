@@ -11,8 +11,9 @@ import fr.pentagon.ugeoverflow.utils.Routes;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -37,10 +38,17 @@ public class QuestionController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     @RequireUser
-    public ResponseEntity<Long> createQuestion(@Valid @RequestBody NewQuestionDTO newQuestionDTO) {
+    public ResponseEntity<Long> createQuestion(
+            @RequestPart("title") String title,
+            @RequestPart("description") String description,
+            @RequestPart("javaFile")MultipartFile javaFile,
+            @RequestPart(value = "testFile", required = false) MultipartFile testFile
+    ) throws IOException {
         LOGGER.info("POST performed on /api/questions");
         var userDetail = SecurityContext.checkAuthentication();
-        return ResponseEntity.ok(questionService.create(newQuestionDTO, userDetail.id()));
+        return ResponseEntity.ok(questionService.create(new NewQuestionDTO(
+                title, description, javaFile.getBytes(), testFile == null ? null : testFile.getBytes()
+        ), userDetail.id()));
     }
 
     @DeleteMapping(Routes.Question.ROOT + "/{questionId}")
