@@ -1,6 +1,9 @@
 package fr.pentagon.ugeoverflow.controllers;
 
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
+import fr.pentagon.ugeoverflow.config.security.SecurityConfig;
+import fr.pentagon.ugeoverflow.config.security.SecurityContext;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserFollowInfoDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
@@ -8,9 +11,13 @@ import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.UserService;
 import fr.pentagon.ugeoverflow.utils.Routes;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.security.Security;
+import java.security.SecurityPermission;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -34,6 +41,7 @@ public class UserController {
   @PostMapping(Routes.User.FOLLOW + "/{id}")
   @RequireUser
   public ResponseEntity<Void> followUser(@PathVariable long id, Principal principal) {
+    LOGGER.info("Trying to follow");
     if (principal == null) {
       throw HttpException.unauthorized("no user logged in");
     }
@@ -45,11 +53,21 @@ public class UserController {
   @PostMapping(Routes.User.UNFOLLOW + "/{id}")
   @RequireUser
   public ResponseEntity<Void> unfollowUser(@PathVariable long id, Principal principal) {
+    LOGGER.info("Trying to unfollow");
     if (principal == null) {
       throw HttpException.unauthorized("no user logged in");
     }
     var user = userRepository.findByLogin(principal.getName()).orElseThrow();
     userService.unfollow(user.getId(), id);
     return ResponseEntity.ok().build();
+  }
+  @GetMapping(Routes.User.ROOT)
+  public ResponseEntity<List<UserFollowInfoDTO>> getAllRegisteredUsers(){
+    LOGGER.info("Trying to get all registered Users");
+    if(SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")){
+      return ResponseEntity.ok(userService.userRegisteredList());
+    }
+    var userConnected = SecurityContext.checkAuthentication();
+    return ResponseEntity.ok(userService.userRegisteredList(userConnected.id()));
   }
 }
