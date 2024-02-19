@@ -57,16 +57,15 @@ export class QuestionComponent {
                 return of();
             })
         ).subscribe(response => {
-            console.log(response);
-            if (response.deleting) {
+            if (response && response.deleting) {
                 this.deleting = true;
             }
-            else if (!response.error) {
-                this.snackBar.open('La question a été suprimée', 'OK');
-                this.router.navigateByUrl('/questions');
+            else if (response && response.error) {
+                this.deleting = false;
             }
             else {
-                this.deleting = false;
+                this.snackBar.open('La question a été suprimée', 'OK');
+                this.router.navigateByUrl('/questions');
             }
         });
     }
