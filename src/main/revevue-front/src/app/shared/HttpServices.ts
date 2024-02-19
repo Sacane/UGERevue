@@ -80,37 +80,4 @@ export class UserService {
                 return throwError(() => {onError(err);});
             }));
     }
-
-    public getALotFakeUserInfos(): Observable<UserFollowInfo[]> {
-        return of([
-            { username: 'Mathis', isFollowing: true},
-            { username: 'Johan', isFollowing: true},
-            { username: 'Yohann', isFollowing: true},
-            { username: 'Quentin', isFollowing: true},
-            { username: 'Clement', isFollowing: true},
-            { username: 'Arnaud', isFollowing: true},
-            { username: 'Remi', isFollowing: true},
-            { username: 'Drake', isFollowing: true},
-            { username: 'Kylian', isFollowing: true},
-            { username: 'Kylian', isFollowing: true},
-            { username: 'Kylian', isFollowing: true},
-            { username: 'Kylian', isFollowing: true},
-            { username: 'Kylian', isFollowing: true},
-            { username: 'Kylian', isFollowing: true},
-            { username: 'Yohann', isFollowing: true},
-            { username: 'Yohann', isFollowing: true},
-            { username: 'Yohann', isFollowing: true},
-            { username: 'Yohann', isFollowing: true},
-            { username: 'Yohann', isFollowing: true},
-        ]);
-    }
-    public getFewFakeUserInfos(): Observable<UserFollowInfo[]> {
-        return of([
-            { username: 'Mathis', isFollowing: true, id: "1"},
-            { username: 'Johan', isFollowing: true, id: "2"},
-            { username: 'Yohann', isFollowing: true, id: "3"},
-            { username: 'Quentin', isFollowing: true, id: "4"},
-            { username: 'Clement', isFollowing: true, id: "5"},
-        ]);
-    }
 }
