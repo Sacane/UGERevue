@@ -27,7 +27,8 @@ export class QuestionComponent {
     canDelete: boolean = false;
     deleting: boolean = false;
 
-    constructor(private activatedRoute: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) {
+    constructor(private activatedRoute: ActivatedRoute, private userService: UserService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) {
+        // this.canDelete = this.userService.getLogin() === this.question.author;
     }
 
     deleteQuestion(): void {

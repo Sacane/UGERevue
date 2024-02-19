@@ -4,6 +4,7 @@
             <div class="questionSection">
                 <div class="title">
                     <span>{{ question()?.title }}</span>
+                    {{ canDelete}}
                     @if (canDelete) {
                     <button mat-raised-button color="primary" (click)="deleteQuestion()" [disabled]="deleting">
                         <div style="display: flex; column-gap: 10px;">
@@ -20,10 +21,10 @@
                 </p>
                 <pre><code [highlight]="(question()!!.classContent)" [languages]="['java']" [lineNumbers]="true"></code></pre>
                 @if (question()?.testResults !== undefined && question()?.testResults!!.length > 0) {
-                    <div class="title">Tests</div>
-                    <pre><code [highlight]="question()!!.testClassContent || ''" [languages]="['java']"></code></pre>
-                    <b>Results</b>
-                    <pre><code>{{ question()?.testResults }}</code></pre>
+                <div class="title">Tests</div>
+                <pre><code [highlight]="question()!!.testClassContent || ''" [languages]="['java']"></code></pre>
+                <b>Results</b>
+                <pre><code>{{ question()?.testResults }}</code></pre>
                 }
             </div>
             <div class="stats">
@@ -47,11 +48,12 @@
                 </mat-list>
                 <mat-chip-set>
                     @for (tag of question()?.tags; track tag) {
-                        <mat-chip>{{ tag }}</mat-chip>
+                    <mat-chip>{{ tag }}</mat-chip>
                     }
                 </mat-chip-set>
             </div>
         </div>
+
         <div class="reviewsSection">
             <div class="title">Revues</div>
             <div>
