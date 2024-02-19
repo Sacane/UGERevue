@@ -1,7 +1,7 @@
 import {inject, Injectable} from "@angular/core";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {environment} from "../environment";
-import {catchError, Observable, of, tap, throwError} from "rxjs";
+import {catchError, Observable, tap, throwError} from "rxjs";
 import {NewQuestionDTO} from "./models-out";
 import {Question, SimpleQuestion} from "../modules/questions/models/question";
 
