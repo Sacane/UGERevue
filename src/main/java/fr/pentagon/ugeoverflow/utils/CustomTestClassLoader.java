@@ -108,6 +108,23 @@ public final class CustomTestClassLoader {
     }
 
     /**
+     * Removes all .class files in the specified directory.
+     *
+     * @throws IOException if an I/O error occurs while deleting the files
+     */
+    public void removeClassesInFolder() throws IOException {
+        try (var stream = Files.list(sourcesDirectory)) {
+            stream.filter(p -> p.toString().endsWith(".class")).forEach(p -> {
+                try {
+                    Files.delete(p);
+                } catch (IOException e) {
+                    // Do nothing
+                }
+            });
+        }
+    }
+
+    /**
      * Compiles and loads a test class from the provided source files.
      *
      * @param testFileName       the name of the test file to compile and load
