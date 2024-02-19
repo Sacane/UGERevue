@@ -1,9 +1,11 @@
 package fr.pentagon.ugeoverflow.service;
 
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionCreateDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionRemoveDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionUpdateDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseChildrenDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
@@ -15,12 +17,14 @@ import fr.pentagon.ugeoverflow.repository.QuestionVoteRepository;
 import fr.pentagon.ugeoverflow.repository.ReviewRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,7 +36,14 @@ public class QuestionService {
     private final ReviewRepository reviewRepository;
     private final QuestionVoteRepository questionVoteRepository;
 
-    public QuestionService(QuestionServiceWithFailure questionServiceWithFailure, ReviewService reviewService, QuestionRepository questionRepository, UserRepository userRepository, ReviewRepository reviewRepository, QuestionVoteRepository questionVoteRepository) {
+    public QuestionService(
+            QuestionServiceWithFailure questionServiceWithFailure,
+            ReviewService reviewService,
+            QuestionRepository questionRepository,
+            UserRepository userRepository,
+            ReviewRepository reviewRepository,
+            QuestionVoteRepository questionVoteRepository
+    ) {
         this.questionServiceWithFailure = questionServiceWithFailure;
         this.reviewService = reviewService;
         this.questionRepository = questionRepository;
@@ -42,34 +53,25 @@ public class QuestionService {
     }
 
     @Transactional
-    public List<ReviewResponseChildrenDTO> getReviews(long questionId) {
-        var questionOptional = questionRepository.findByIdWithReviews(questionId);
-        if (questionOptional.isEmpty()) {
-            throw HttpException.notFound("Question not exist");
-        }
-        var question = questionOptional.get();
-        var author = question.getAuthor();
-
-        return question.getReviews().stream().map(review -> {
-            var fileContent = new String(question.getFile(), StandardCharsets.UTF_8).split("\n");
-            var lineStart = review.getLineStart();
-            var lineEnd = review.getLineEnd();
-            var citedCode = (lineStart == null || lineEnd == null) ? null : Arrays.stream(fileContent, lineStart - 1, lineEnd)
-                    .collect(Collectors.joining("\n"));
-
-            return new ReviewResponseChildrenDTO(author.getId(), author.getUsername(), review.getId(), review.getContent(), citedCode, reviewService.getReviews(review.getId()));
-        }).toList();
+    public List<QuestionDTO> getQuestions() {
+        return questionRepository.findAllWithAuthors()
+                .stream()
+                .map(question -> new QuestionDTO(
+                        question.getId(),
+                        question.getTitle(),
+                        question.getDescription(),
+                        question.getAuthor().getUsername(),
+                        question.getCreatedAt().toString(),
+                        questionVoteRepository.countAllById(question.getId()),
+                        question.getReviews().size()
+                    )).toList();
     }
 
     @Transactional
-    public long create(QuestionCreateDTO questionCreateDTO) {
-        var userFind = userRepository.findById(questionCreateDTO.userId());
-
-        if (userFind.isEmpty()) {
-            throw HttpException.notFound("User not exist");
-        }
-        var user = userFind.get();
-        var question = questionRepository.save(new Question(questionCreateDTO.title(), questionCreateDTO.descrition(), questionCreateDTO.file(), questionCreateDTO.testFile(), "TEST RESULT", true, new Date())); //TODO test
+    public long create(NewQuestionDTO questionCreateDTO, long authorId) {
+        var user = userRepository.findById(authorId)
+                .orElseThrow(() -> HttpException.notFound("User not exist"));
+        var question = questionRepository.save(new Question(questionCreateDTO.title(), questionCreateDTO.description(), questionCreateDTO.javaFile(), questionCreateDTO.testFile(), "TEST RESULT", true, new Date())); //TODO test
         user.addQuestion(question);
 
         return question.getId();
@@ -145,5 +147,25 @@ public class QuestionService {
         questionVoteId.setQuestion(question);
         questionVoteId.setAuthor(user);
         questionVoteRepository.deleteById(questionVoteId);
+    }
+
+    @Transactional
+    public QuestionDetailsDTO findById(long questionId) {
+        var question = questionRepository.findByIdWithAuthorAndReviews(questionId).orElseThrow(() -> HttpException.notFound("Question " + questionId + " does not exists"));
+        var dateFormatter = new DateFormatter("dd/MM/yyyy");
+        var voteCount = questionVoteRepository.countAllById(questionId);
+        return new QuestionDetailsDTO(
+                question.getId(),
+                question.getAuthor().getUsername(),
+                dateFormatter.print(question.getCreatedAt(), Locale.FRANCE),
+                List.of(),
+                question.getTitle(),
+                question.getDescription(),
+                new String(question.getFile(), StandardCharsets.UTF_8),
+                question.getTestFile() != null ? new String(question.getTestFile(), StandardCharsets.UTF_8) : null,
+                "",
+                question.getReviews().size(),
+                voteCount
+        );
     }
 }

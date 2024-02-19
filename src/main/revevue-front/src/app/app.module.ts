@@ -6,14 +6,15 @@ import {RouterOutlet} from "@angular/router";
 import {BrowserModule} from "@angular/platform-browser";
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HomeModule, LoginModule, QuestionsMenuModule, SignupModule, TagsModule, UsersModule} from "./modules";
-import {provideHttpClient, withFetch} from "@angular/common/http";
+import {provideHttpClient, withFetch, withInterceptors} from "@angular/common/http";
+import {authInterceptor} from "./shared/authInterceptor";
 
 @NgModule({
     declarations: [
         AppComponent
     ],
     providers: [
-        provideHttpClient(withFetch()),
+        provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
     ],
     imports: [
         BrowserModule,

@@ -1,7 +1,12 @@
 package fr.pentagon.ugeoverflow.controllers.dtos.responses;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.util.Date;
 
-public record ReviewResponseDTO(long authorId, @NotNull @NotBlank String authorName, long reviewId, @NotNull @NotBlank String content) {
+public record ReviewResponseDTO(
+        String author,
+        String content,
+        long upvotes,
+        long downvotes,
+        Date creationDate
+) {
 }

@@ -1,4 +1,8 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import {Component, ViewEncapsulation, computed, inject, ViewEncapsulation} from '@angular/core';
+import {UserService} from "../../../../shared/HttpServices";
+import {QuestionService} from "../../../../shared/question.service";
+import {toSignal} from "@angular/core/rxjs-interop";
+import {SimpleQuestion} from "../../models/question";
 import { Router } from '@angular/router';
 
 @Component({
@@ -8,33 +12,15 @@ import { Router } from '@angular/router';
     encapsulation: ViewEncapsulation.None
 })
 export class QuestionsComponent {
-    questions: any[] = [
-        {
-            id: 123,
-            title: 'TITLE 1',
-            description: 'DESCRIPTION 1',
-            userName: 'qtdrake',
-            tags: ['java', 'jee', 'spring'],
-            date: '26/01/2024',
-            nbVotes: 129222,
-            nbAnswers: 1903,
-            nbViews: 55378
-        },
-        {
-            id: 1234,
-            title: 'TITLE 1',
-            description: 'DESCRIPTION 1',
-            userName: 'qtdrake',
-            tags: ['java', 'jee', 'spring'],
-            date: '26/01/2024',
-            nbVotes: 129222,
-            nbAnswers: 1903,
-            nbViews: 55378
-        }
-    ];
+    private readonly userService = inject(UserService)
+    private readonly questionService = inject(QuestionService)
+    private router = inject(Router)
+    questions = toSignal(this.questionService.getQuestions(), {initialValue: [] as SimpleQuestion[]})
+    numberQuestions = computed(() => this.questions().length)
 
-    constructor(private router: Router) { }
-
+    public isLogin(): boolean {
+        return this.userService.isLogin()
+    }
     navigateTo(url: string): void {
         this.router.navigateByUrl(url);
     }

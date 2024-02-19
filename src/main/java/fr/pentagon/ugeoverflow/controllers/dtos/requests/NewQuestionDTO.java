@@ -1,12 +1,9 @@
 package fr.pentagon.ugeoverflow.controllers.dtos.requests;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.Objects;
 
-public record NewQuestionDTO(@NotNull @NotBlank String title, @NotNull @NotEmpty byte[] javaFile, byte[] testFile) {
+public record NewQuestionDTO(String title, String description, byte[] javaFile, byte[] testFile) {
 
     public NewQuestionDTO {
         Objects.requireNonNull(title);

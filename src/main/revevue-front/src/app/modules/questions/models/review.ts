@@ -1,3 +1,12 @@
+
+export interface ReviewFromReview {
+    author: string;
+    content: string;
+    upvotes: number;
+    downvotes: number;
+    creationDate: Date
+}
+
 export interface Review {
     id: string;
     author: string;
@@ -6,5 +15,6 @@ export interface Review {
     citedCode?: string;
     upvotes: number;
     downvotes: number;
-    reviews: Array<Review>;
+    reviews: Array<ReviewFromReview>
 }
+

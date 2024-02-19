@@ -1,9 +1,9 @@
-import { inject, Injectable } from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, Observable, Observer, of, tap, throwError } from 'rxjs';
-import { environment } from "../environment";
-import { UserCredentials, UserFollowInfo, UserRegister } from "./models-in";
-import { UserConnectedDTO, UserIdDTO } from "./models-out";
+import {catchError, Observable, Observer, of, tap, throwError} from 'rxjs';
+import {environment} from "../environment";
+import {UserCredentials, UserFollowInfo, UserRegister} from "./models-in";
+import {UserConnectedDTO, UserIdDTO} from "./models-out";
 
 @Injectable({
     providedIn: 'root'
@@ -11,55 +11,44 @@ import { UserConnectedDTO, UserIdDTO } from "./models-out";
 export class UserService {
 
     private readonly HEADERS = new HttpHeaders().set('Content-Type', 'application/json');
-    private isLoggedIn = false;
     private readonly ROOT = environment.apiUrl + 'users'
-
-    private readonly AUTH = this.ROOT + 'auth/'
     private readonly LOGIN = environment.apiUrl + 'login'
     private readonly LOGOUT = environment.apiUrl + 'logout'
-    private readonly TEST = this.ROOT + "/test"
-
-    private infos: any;
-
     private client = inject(HttpClient)
-
-    public registerUser(registerInfos: UserRegister, onError: (error: Error) => any = (err) => { console.error(err) }): Observable<UserIdDTO> {
-        return this.client.post<UserIdDTO>(this.ROOT, registerInfos, { headers: this.HEADERS }).pipe(
-            tap(response => {
-                this.infos = { login: response.username };
-                this.isLoggedIn = true
-            }),
-            catchError(err => {
-                return throwError(() => { onError(err); });
-            })
-        );
+    private infos: any;
+    public registerUser(registerInfos: UserRegister, onError: (error: Error) => any = (err) => {console.error(err)}): Observable<UserIdDTO> {
+        return this.client.post<UserIdDTO>(this.ROOT, registerInfos, { headers : this.HEADERS }).pipe(tap(response => {
+            this.isLoggedIn = true
+            this.infos = { login: response.username };
+        }), catchError(err => {
+            return throwError(() => {onError(err);});
+        }));
     }
 
-    public login(userCredentials: UserCredentials, onError: (error: Error) => any = (err) => { console.error(err) }): Observable<UserConnectedDTO> {
-        return this.client.post<UserConnectedDTO>(this.LOGIN, userCredentials, { headers: this.HEADERS }).pipe(
-            tap(response => {
+    public login(userCredentials : UserCredentials, onError: (error: Error) => any = (err) => {console.error(err)}): Observable<UserConnectedDTO> {
+        return this.client.post<UserConnectedDTO>(this.LOGIN, userCredentials, { headers : this.HEADERS })
+            .pipe(tap(response => {
+                localStorage.setItem("isLoggin", "true")
                 this.infos = response;
-                this.isLoggedIn = true
-            }
-            ), catchError(err => {
-                return throwError(() => { onError(err); });
-            })
-        );
+            }), catchError(err => {
+            return throwError(() => {onError(err);});
+        }));
     }
 
-    public logout(onError: (error: Error) => any = (err) => { console.error(err) }) {
-        return this.client.post(this.LOGOUT, null, { headers: this.HEADERS })
-            .pipe(tap(() => this.isLoggedIn = false), catchError(err => {
-                return throwError(() => { onError(err); });
-            }));
+    public logout(onError: (error: Error) => any = (err) => {console.error(err)}) {
+        return this.client.post(this.LOGOUT, null, { headers : this.HEADERS })
+            .pipe(tap(() => localStorage.setItem("isLoggin", "false")), catchError(err => {
+            return throwError(() => {onError(err);});
+        }));
     }
 
     public getLogin(): string {
-        return this.isLoggedIn ? this.infos.login : "";
+        return this.isLogin() ? this.infos.login : "";
     }
 
-    public isLogin(): boolean {
-        return this.isLoggedIn
+    public isLogin() : boolean {
+        const isLoggin = localStorage.getItem("isLoggin")
+        return isLoggin !== null && isLoggin === "true"
     }
 
     public getALotFakeUserInfos(): Observable<UserFollowInfo[]> {

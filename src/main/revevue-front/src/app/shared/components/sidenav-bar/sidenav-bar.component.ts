@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, Input } from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input} from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 
@@ -11,9 +11,8 @@ import { filter } from 'rxjs';
 export class SideNavBarComponent implements AfterViewInit {
     @Input() navs: any[] = [];
 
-    constructor(private router: Router, private ref: ChangeDetectorRef) {
-    }
-
+    private router = inject(Router)
+    private ref = inject(ChangeDetectorRef)
     ngAfterViewInit(): void {
         this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(val => {
             if (val instanceof NavigationEnd) {
@@ -27,6 +26,6 @@ export class SideNavBarComponent implements AfterViewInit {
     }
 
     navigateTo(url: string): void {
-        this.router.navigateByUrl(url);
+        this.router.navigateByUrl(url).then();
     }
 }
