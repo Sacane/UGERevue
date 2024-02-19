@@ -58,7 +58,7 @@ public class SecurityConfig {
             csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
         .addFilterBefore(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
-    return config.build();
+    return config.build();  // TODO disable anonymous authentication
   }
 
   @Bean
@@ -76,6 +76,7 @@ public class SecurityConfig {
             .headers(c -> c.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
             .formLogin(c -> c.loginPage("http://localhost:4200/login"))
             .httpBasic(AbstractHttpConfigurer::disable)
+            .anonymous(AbstractHttpConfigurer::disable)
             .build();
   }
 }
