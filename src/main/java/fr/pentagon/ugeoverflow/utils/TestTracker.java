@@ -54,6 +54,15 @@ public final class TestTracker {
     }
 
     /**
+     * Gets the count of passed tests.
+     *
+     * @return the count of passed tests
+     */
+    public long passedTestsCount(){
+        return summary.getTestsSucceededCount();
+    }
+
+    /**
      * Gets the count of failed tests.
      *
      * @return the count of failed tests
