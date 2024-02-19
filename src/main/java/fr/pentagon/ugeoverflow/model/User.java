@@ -1,6 +1,7 @@
 package fr.pentagon.ugeoverflow.model;
 
 import fr.pentagon.ugeoverflow.config.authorization.Role;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserFollowInfoDTO;
 import jakarta.persistence.*;
 
 import java.util.*;
@@ -160,6 +161,10 @@ public final class User {
 
   public void setFollowers(Set<User> followers) {
     this.followers = followers;
+  }
+
+  public UserFollowInfoDTO toUserFollowInfoDTO(boolean isFollowing){
+    return new UserFollowInfoDTO(this.username, isFollowing, this.id);
   }
 }
 
