@@ -4,11 +4,14 @@ import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseChildren
 import fr.pentagon.ugeoverflow.service.ReviewService;
 import fr.pentagon.ugeoverflow.utils.Routes;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+@RestController
 public class ReviewController {
     private final ReviewService reviewService;
     public ReviewController(ReviewService reviewService) {
@@ -19,6 +22,7 @@ public class ReviewController {
     public ResponseEntity<List<ReviewResponseChildrenDTO>> findAllReviews(
             @PathVariable long questionId
     ) {
+        System.out.println("ICI");
         return ResponseEntity.ok(reviewService.findReviewsByQuestionId(questionId));
     }
 }

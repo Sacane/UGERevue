@@ -22,7 +22,9 @@ export class QuestionComponent {
     private reviewService = inject(ReviewService)
     private id = inject(ActivatedRoute).snapshot.params['id']
 
-    question = toSignal(this.questionService.findQuestionById(this.id))
+    question = toSignal(this.questionService.findQuestionById(this.id), {
+        initialValue: null
+    });
     reviews: Signal<Review[]> = toSignal(this.reviewService.findReviewByQuestionId(this.id)) as Signal<Review[]>
     canDelete: boolean = false;
     deleting: boolean = false;
