@@ -7,5 +7,8 @@ import {Review, ReviewFromReview} from "../../models/review";
     styleUrl: './reviews.component.scss'
 })
 export class ReviewsComponent {
-    @Input() reviews!: Review[];
+    @Input() reviews: Array<Review> = [];
+    deleteReview(deleteReview: Review): void {
+        this.reviews = this.reviews.filter(review => review.id !== deleteReview.id);
+    }
 }

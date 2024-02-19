@@ -1,7 +1,25 @@
 <div class="review">
     <table class="reviewTable">
         <tr>
-            <th colspan="2"><b>{{ review.author }}</b>, {{ review.creationDate | date:'dd/MM/yyyy, HH:mm' }}</th>
+            <th colspan="2">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>
+                        <b>{{ review.author }}</b>, {{ review.creationDate | date:'dd/MM/yyyy, HH:mm' }}
+                    </span>
+
+                    @if (canDelete) {
+                    <button mat-raised-button color="primary" (click)="deleteReview()" [disabled]="deleting"
+                        align="end">
+                        <div style="display: flex; column-gap: 10px;">
+                            <span>Delete review</span>
+                            @if (deleting) {
+                            <mat-spinner [diameter]="20"></mat-spinner>
+                            }
+                        </div>
+                    </button>
+                    }
+                </div>
+            </th>
         </tr>
         <tr>
             <td style="width: 5%; min-width: 60px;">
@@ -20,7 +38,7 @@
             </td>
             <td>
                 @if (review.citedCode) {
-                    <pre><code [highlight]="review.citedCode" [languages]="['java']"></code></pre>
+                <pre><code [highlight]="review.citedCode" [languages]="['java']"></code></pre>
                 }
                 <p>{{ review.content }}</p>
             </td>

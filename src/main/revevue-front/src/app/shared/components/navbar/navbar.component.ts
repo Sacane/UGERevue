@@ -1,6 +1,6 @@
-import {Component, inject, ViewEncapsulation} from '@angular/core';
+import { Component, inject, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import {UserService} from "../../HttpServices";
+import { UserService } from "../../HttpServices";
 
 @Component({
     selector: 'app-nav-bar',
@@ -11,6 +11,7 @@ import {UserService} from "../../HttpServices";
 export class NavBarComponent {
     private router = inject(Router)
     userService = inject(UserService)
+
     login(): void {
         this.router.navigateByUrl('/login').then();
     }
@@ -18,10 +19,15 @@ export class NavBarComponent {
     signup(): void {
         this.router.navigateByUrl('/signup').then();
     }
+
     logout(): void {
         //TODO ajouter une modal de confirmation
-        this.userService.logout().subscribe(() => console.log("Logout successfully"))
+        this.userService.logout().subscribe(() => {
+            console.log("Logout successfully");
+            this.router.navigateByUrl('/home');
+        });
     }
+
     isUserLogged(): boolean {
         return this.userService.isLogin()
     }

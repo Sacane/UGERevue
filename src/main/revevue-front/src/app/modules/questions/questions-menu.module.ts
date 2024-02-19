@@ -47,8 +47,21 @@ import {ReactiveFormsModule} from "@angular/forms";
         JsonPipe,
         AsyncPipe,
     ],
-    exports: [QuestionsMenuComponent],
-    bootstrap: [QuestionsMenuComponent]
+    exports: [
+        QuestionsMenuComponent,
+        QuestionComponent,
+        QuestionsComponent,
+        ReviewComponent,
+        ReviewsComponent,
+        CreateQuestionComponent
+    ],
+    bootstrap: [
+        QuestionsMenuComponent,
+        QuestionComponent,
+        QuestionsComponent,
+        ReviewComponent,
+        ReviewsComponent,
+        CreateQuestionComponent
+    ]
 })
-export class QuestionsMenuModule {
-}
+export class QuestionsMenuModule { }

@@ -5,8 +5,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import {MatCardModule} from "@angular/material/card";
-import {MatPaginatorModule} from "@angular/material/paginator";
+import { MatCardModule } from "@angular/material/card";
+import { MatPaginatorModule } from "@angular/material/paginator";
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
     imports: [
@@ -17,6 +20,9 @@ import {MatPaginatorModule} from "@angular/material/paginator";
         MatSidenavModule,
         MatCardModule,
         MatPaginatorModule,
+        MatSnackBarModule,
+        MatDialogModule,
+        MatProgressSpinnerModule
     ],
     exports: [
         MatButtonModule,
@@ -26,6 +32,9 @@ import {MatPaginatorModule} from "@angular/material/paginator";
         MatSidenavModule,
         MatCardModule,
         MatPaginatorModule,
+        MatSnackBarModule,
+        MatDialogModule,
+        MatProgressSpinnerModule
     ]
 })
 export class MaterialModule { }

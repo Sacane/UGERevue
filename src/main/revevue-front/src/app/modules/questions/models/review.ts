@@ -8,6 +8,7 @@ export interface ReviewFromReview {
 }
 
 export interface Review {
+    id: string;
     author: string;
     creationDate: Date;
     content: string;

@@ -52,7 +52,7 @@ public class QuestionController {
     }
 
     @DeleteMapping(Routes.Question.ROOT + "/{questionId}")
-    @RequireUser
+    // @RequireUser
     public ResponseEntity<Void> removeQuestion(@PathVariable long questionId) {
         LOGGER.info("DELETE performed on /api/questions/" + questionId);
         var user = SecurityContext.checkAuthentication();

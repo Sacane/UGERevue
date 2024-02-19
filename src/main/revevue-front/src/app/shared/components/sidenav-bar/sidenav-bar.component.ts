@@ -14,7 +14,6 @@ export class SideNavBarComponent implements AfterViewInit {
     private router = inject(Router)
     private ref = inject(ChangeDetectorRef)
     ngAfterViewInit(): void {
-        console.log(this.navs);
         this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(val => {
             if (val instanceof NavigationEnd) {
                 this.ref.markForCheck();
