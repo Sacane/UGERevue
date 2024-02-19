@@ -5,6 +5,7 @@ import fr.pentagon.ugeoverflow.config.authorization.Role;
 import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,11 @@ public class UserServiceTest {
     @Autowired
     private UserService userService;
 
+    @BeforeEach
+    void cleanUpBefore() {
+        userRepository.deleteAll();
+    }
+
     @AfterEach
     void clean() {
         userRepository.deleteAll();
@@ -33,7 +39,7 @@ public class UserServiceTest {
     @DisplayName("Get empty list of registered users without Admin ")
     void getAllRegisteredUserNonUnauthenticatedEmpty(){
         var users = userService.userRegisteredList();
-        assertEquals(0, users.size()-1);
+        assertEquals(0, users.size());
     }
 
     @Test

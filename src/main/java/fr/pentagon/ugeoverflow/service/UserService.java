@@ -75,6 +75,7 @@ public class UserService {
   public List<UserFollowInfoDTO> userRegisteredList(){
     return userRepository.findAllUsers()
             .stream()
+            .filter(u -> u.getRole() != Role.ADMIN)
             .map(user -> user.toUserFollowInfoDTO(false))
             .toList();
   }
