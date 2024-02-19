@@ -21,13 +21,19 @@ import java.util.Optional;
  */
 public final class CustomTestClassLoader {
 
-    /** The Java compiler instance. */
+    /**
+     * The Java compiler instance.
+     */
     private static final JavaCompiler JAVA_COMPILER = ToolProvider.getSystemJavaCompiler();
 
-    /** The URL class loader used to load classes dynamically. */
+    /**
+     * The URL class loader used to load classes dynamically.
+     */
     private final URLClassLoader urlClassLoader;
 
-    /** The directory containing the source files. */
+    /**
+     * The directory containing the source files.
+     */
     private final Path sourcesDirectory;
 
     /**
@@ -89,8 +95,8 @@ public final class CustomTestClassLoader {
     /**
      * Removes the package declaration and import statements related to the specified dependency from the test file.
      *
-     * @param testFilePath    the path to the test file
-     * @param dependencyURI   the URI of the dependency package
+     * @param testFilePath  the path to the test file
+     * @param dependencyURI the URI of the dependency package
      * @throws IOException if an I/O error occurs
      */
     private static void removePackageAndImports(Path testFilePath, String dependencyURI) throws IOException {
@@ -102,13 +108,16 @@ public final class CustomTestClassLoader {
     }
 
     /**
-     * Loads and compiles the test class from the specified source files.
+     * Compiles and loads a test class from the provided source files.
      *
-     * @param testFileName      the name of the test file
-     * @param dependencyFileName the name of the dependency file
-     * @return the loaded test class
-     * @throws IOException            if an I/O error occurs
-     * @throws ClassNotFoundException if the class cannot be found
+     * @param testFileName       the name of the test file to compile and load
+     * @param dependencyFileName the name of the dependency file required by the test file
+     * @return the compiled test class
+     * @throws IOException              if an I/O error occurs
+     * @throws ClassNotFoundException   if the class could not be found
+     * @throws CompilationException     if the compilation process fails
+     * @throws IllegalArgumentException if the file names do not end with ".java"
+     * @throws NoSuchFileException      if the specified files do not exist
      */
     public Class<?> fromSourceFiles(String testFileName, String dependencyFileName) throws IOException,
             ClassNotFoundException, CompilationException {
