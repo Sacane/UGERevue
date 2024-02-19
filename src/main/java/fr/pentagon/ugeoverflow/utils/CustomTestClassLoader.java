@@ -1,8 +1,12 @@
 package fr.pentagon.ugeoverflow.utils;
 
+import fr.pentagon.ugeoverflow.exception.CompilationException;
+
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -106,7 +110,8 @@ public final class CustomTestClassLoader {
      * @throws IOException            if an I/O error occurs
      * @throws ClassNotFoundException if the class cannot be found
      */
-    public Class<?> fromSourceFiles(String testFileName, String dependencyFileName) throws IOException, ClassNotFoundException {
+    public Class<?> fromSourceFiles(String testFileName, String dependencyFileName) throws IOException,
+            ClassNotFoundException, CompilationException {
         Objects.requireNonNull(testFileName);
         Objects.requireNonNull(dependencyFileName);
         if (!testFileName.endsWith(".java") || !dependencyFileName.endsWith(".java")) {
@@ -121,12 +126,18 @@ public final class CustomTestClassLoader {
             throw new NoSuchFileException(dependencyFilePath.toString());
         }
         var dependencyURI = removePackage(dependencyFilePath);
-        if(dependencyURI.isPresent()){
+        if (dependencyURI.isPresent()) {
             removePackageAndImports(testFilePath, dependencyURI.get());
-        }else {
+        } else {
             removePackage(testFilePath);
         }
-        JAVA_COMPILER.run(null, null, null, dependencyFilePath.toString(), testFilePath.toString());
+        var errorByteArray = new ByteArrayOutputStream();
+        JAVA_COMPILER.run(System.in, System.out, new PrintStream(errorByteArray), dependencyFilePath.toString(),
+                testFilePath.toString());
+        var error = errorByteArray.toString();
+        if (!error.isBlank()) {
+            throw new CompilationException(error);
+        }
         return Class.forName(testFileName.substring(0, testFileName.lastIndexOf(".")), false, urlClassLoader);
     }
 
