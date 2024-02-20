@@ -3,7 +3,7 @@ export interface ReviewFromReview {
     content: string;
     upvotes: number;
     downvotes: number;
-    creationDate: Date
+    creationDate: Date;
 }
 
 export interface Review {
@@ -14,6 +14,6 @@ export interface Review {
     citedCode?: string;
     upvotes: number;
     downvotes: number;
-    reviews: Array<ReviewFromReview>
+    reviews: ReviewFromReview[];
 }
 

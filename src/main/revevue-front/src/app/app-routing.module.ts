@@ -29,6 +29,10 @@ export const routes: Routes = [
             {
                 path: 'users',
                 loadChildren: () => import('./modules').then(m => m.UsersModule)
+            },
+            {
+                path: 'reviews',
+                loadChildren: () => import('./modules').then(m => m.ReviewsModule)
             }
         ]
     }

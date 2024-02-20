@@ -4,3 +4,4 @@ export * from './home';
 export * from './questions';
 export * from './tags';
 export * from './users';
+export * from './reviews';
