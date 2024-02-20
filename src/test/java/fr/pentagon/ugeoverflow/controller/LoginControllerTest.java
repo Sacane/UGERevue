@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.pentagon.ugeoverflow.DatasourceTestConfig;
 import fr.pentagon.ugeoverflow.controllers.LoginController;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.LoginRequestDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
 import fr.pentagon.ugeoverflow.service.UserService;
@@ -44,13 +43,13 @@ public class LoginControllerTest {
     @Test
     @DisplayName("Case of successful authentification")
     void testAuthUser() throws Exception {
-        var credentialsDTO = new LoginRequestDTO("login", "password");
+        var credentialsDTO = new CredentialsDTO("login", "password");
         userService.register(new UserRegisterDTO("Verestah1", "verestah.fake@gmail.com", "login", "password"));
         mockMvc.perform(MockMvcRequestBuilders.post(Routes.Auth.LOGIN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(credentialsDTO)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.login").value("Verestah1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("Verestah1"))
                 .andDo(print());
     }
 

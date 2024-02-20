@@ -1,6 +1,6 @@
 package fr.pentagon.ugeoverflow.controllers;
 
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.LoginRequestDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.LoginResponseDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.utils.Routes;
@@ -32,9 +32,9 @@ public class LoginController {
   }
 
   @PostMapping(Routes.Auth.LOGIN)
-  public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO loginRequestDTO, HttpServletRequest request, HttpServletResponse response) {
+  public ResponseEntity<LoginResponseDTO> login(@RequestBody CredentialsDTO credentialsDTO, HttpServletRequest request, HttpServletResponse response) {
     LOGGER.info("try to login");
-    var token = UsernamePasswordAuthenticationToken.unauthenticated(loginRequestDTO.login(), loginRequestDTO.password());
+    var token = UsernamePasswordAuthenticationToken.unauthenticated(credentialsDTO.login(), credentialsDTO.password());
     try {
       var authentication = authenticationManager.authenticate(token);
       if (authentication.isAuthenticated()) {
