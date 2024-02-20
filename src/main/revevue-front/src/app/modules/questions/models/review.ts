@@ -1,4 +1,3 @@
-
 export interface ReviewFromReview {
     author: string;
     content: string;

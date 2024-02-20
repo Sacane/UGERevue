@@ -1,12 +1,12 @@
 package fr.pentagon.ugeoverflow.service;
 
+import fr.pentagon.ugeoverflow.config.authorization.Role;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionRemoveDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseChildrenDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.Review;
@@ -21,11 +21,9 @@ import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -124,10 +122,13 @@ public class QuestionService {
         var user = userFind.get();
         var question = questionFind.get();
 
-        if (!userRepository.containsQuestion(user.getId(), question)) {
+        var containsQuestion = userRepository.containsQuestion(user.getId(), question);
+        if (!containsQuestion && user.getRole() != Role.ADMIN) {
             throw HttpException.unauthorized("Not your question");
         }
-        user.removeQuestion(question);
+        if (containsQuestion) {
+            user.removeQuestion(question);
+        }
         questionRepository.delete(question);
     }
 

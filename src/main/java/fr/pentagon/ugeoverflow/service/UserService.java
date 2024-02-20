@@ -38,7 +38,7 @@ public class UserService {
         Role.USER
     );
     var newUser = userRepository.save(user);
-    return new UserIdDTO(newUser.getId(), newUser.getUsername());
+    return new UserIdDTO(newUser.getId(), newUser.getUsername(), newUser.getRole().toString());
   }
 
   @Transactional

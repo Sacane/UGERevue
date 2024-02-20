@@ -1,6 +1,7 @@
 import { Component, computed, inject, Signal, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Review } from "../../models/review";
+import { Role } from "../../models/role.model";
 import { QuestionService } from "../../../../shared/question.service";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { ReviewService } from "../../../../shared/review.service";
@@ -26,7 +27,7 @@ export class QuestionComponent {
     });
     reviews: Signal<Review[]> = toSignal(this.reviewService.findReviewByQuestionId(this.id)) as Signal<Review[]>;
     canDelete: Signal<boolean> = computed(() => {
-        return this.question()?.author === this.userService.getLogin();
+        return this.question()?.author === this.userService.getLogin() || this.userService.getRole() === Role.ADMIN;
     });
     deleting: boolean = false;
 
