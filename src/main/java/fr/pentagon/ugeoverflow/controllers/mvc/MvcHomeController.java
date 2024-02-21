@@ -8,8 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/light")
 public class MvcHomeController {
-  @GetMapping
+  @GetMapping("/home")
   public String homePage() {
     return "pages/home";
+  }
+
+  @GetMapping
+  public String redirectToHome() {
+    return "redirect:/light/home";
   }
 }

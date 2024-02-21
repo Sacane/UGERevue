@@ -4,6 +4,7 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
 a {
@@ -12,8 +13,12 @@ a {
 }
 
 main {
+    box-sizing: border-box;
+    flex-grow: 1;
     width: 80%;
-    padding: 1em;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    padding: 0 2em;
     display: flex;
     flex-direction: column;
 }
@@ -29,6 +34,8 @@ form button {
 }
 
 header {
+    box-sizing: border-box;
+    width: 100%;
     border-bottom: 1px solid #ccc;
     padding: .5em 1em;
     display: flex;
@@ -51,9 +58,12 @@ header {
 .site-navigation li {
     display: inline-block;
     margin: 1.4em 1em 1em 1em;
+    font-weight: bold;
 }
 
 footer {
+    box-sizing: border-box;
+    width: 100%;
     margin-top: auto;
     border-top: 1px solid #ccc;
     padding: .5em 1em;
@@ -61,6 +71,6 @@ footer {
     background-color: #eeeeee;
 }
 
-.fail {
+.error {
     color: red;
 }

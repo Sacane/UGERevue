@@ -1,6 +1,9 @@
 package fr.pentagon.ugeoverflow.controllers.dtos.requests;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-public record CredentialsDTO(@NotNull @NotBlank String login, @NotNull @NotBlank String password) { }
+public record CredentialsDTO(
+    @NotNull @NotBlank(message = "Account name cannot be empty.") String login,
+    @NotNull @NotBlank(message = "Password cannot be empty.") String password) {
+}

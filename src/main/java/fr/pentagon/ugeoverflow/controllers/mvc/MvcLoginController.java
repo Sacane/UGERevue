@@ -4,8 +4,10 @@ import fr.pentagon.ugeoverflow.controllers.LoginManager;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,22 +23,25 @@ public class MvcLoginController {
   }
 
   @GetMapping("/login")
-  public String loginPage(Authentication authentication) {
+  public String loginPage(@ModelAttribute("credentialsDTO") CredentialsDTO credentialsDTO, Authentication authentication) {
     if (authentication != null) {
-      return "redirect:/light";
+      return "redirect:/light/home";
     }
     return "pages/login";
   }
 
   @PostMapping("/login")
-  public String login(@ModelAttribute("credentialsDTO") CredentialsDTO credentialsDTO, Authentication authentication,
-                      HttpServletRequest request, HttpServletResponse response) {
+  public String login(@Valid @ModelAttribute("credentialsDTO") CredentialsDTO credentialsDTO, BindingResult bindingResult,
+                      Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
+    if (bindingResult.hasErrors()) {
+      return "pages/login";
+    }
     if (authentication != null) {
-      return "redirect:/light";
+      return "redirect:/light/home";
     }
     var loginResponse = loginManager.login(credentialsDTO, request, response).orElse(null);
     if (loginResponse != null) {
-      return "redirect:/light";
+      return "redirect:/light/home";
     }
     return "redirect:/light/login?failed=true";
   }
@@ -44,9 +49,9 @@ public class MvcLoginController {
   @GetMapping("/logout")
   public String logout(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
     if (authentication == null) {
-      return "redirect:/light";
+      return "redirect:/light/home";
     }
     loginManager.logout(request, response);
-    return "redirect:/light";
+    return "redirect:/light/home";
   }
 }

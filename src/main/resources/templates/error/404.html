@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+<html lang="en"
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -21,9 +21,8 @@
 </header>
 
 <main>
-    <h1>Home</h1>
-    <p sec:authorize="isAuthenticated()">Hello, <span sec:authentication="name">user</span>!</p>
-    <p th:if="${#authentication == null}">Hello, anonymous! Please log in to see more</p>
+    <h1>Woops, page doesn't exist!</h1>
+    <p>Error 404</p>
 </main>
 
 <footer th:replace="~{fragments/footer :: footer}">

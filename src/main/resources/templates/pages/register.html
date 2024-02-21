@@ -22,20 +22,30 @@
 
 
 <main>
-    <h1>Login</h1>
-    <p class="error" th:if="${param.failed != null}">Wrong username or password</p>
-
-    <form method="post" th:action="@{/light/login}" th:object="${credentialsDTO}">
+    <h1>Register</h1>
+    <p class="error" th:if="${accountExists != null}">Account name or display name already used</p>
+    <form method="post" th:action="@{/light/register}" th:object="${userRegisterDTO}">
         <label for="login">Account name:</label><br>
-        <input id="login" th:field="*{login}" th:value="*{login}" type="text">
+        <input id="login" th:field="*{login}" th:value="*{login}" type="text"><br>
         <span th:errorclass="error" th:errors="*{login}"
               th:if="${#fields.hasErrors('login')}">Invalid account name</span><br>
 
+        <label for="username">Display name:</label><br>
+        <input id="username" th:field="*{username}" th:value="*{username}" type="text"><br>
+        <span th:errorclass="error" th:errors="*{username}"
+              th:if="${#fields.hasErrors('username')}">Invalid display name</span><br>
+
+        <label for="email">Email:</label><br>
+        <input id="email" th:field="*{email}" th:value="*{email}" type="text"><br>
+        <span th:errorclass="error" th:errors="*{email}"
+              th:if="${#fields.hasErrors('email')}">Invalid email</span><br>
+
         <label for="password">Password:</label><br>
-        <input id="password" th:field="*{password}" th:value="*{password}" type="password">
+        <input id="password" th:field="*{password}" th:value="*{password}" type="password"><br>
         <span th:errorclass="error" th:errors="*{password}"
               th:if="${#fields.hasErrors('password')}">Invalid password</span><br>
-        <button type="submit">Log in</button>
+
+        <button type="submit">Register</button>
     </form>
 
 </main>
