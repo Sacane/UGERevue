@@ -7,6 +7,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 @Embeddable
 public class QuestionVoteId implements Serializable {
@@ -38,5 +39,18 @@ public class QuestionVoteId implements Serializable {
 
     public void setAuthor(User user) {
         this.author = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        QuestionVoteId that = (QuestionVoteId) o;
+        return Objects.equals(author, that.author) && Objects.equals(question, that.question);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(author, question);
     }
 }
