@@ -2,7 +2,6 @@ package fr.pentagon.ugeoverflow.controllers;
 
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.LoginResponseDTO;
-import fr.pentagon.ugeoverflow.exception.HttpException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +14,7 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @Component
@@ -28,7 +28,7 @@ public class LoginManager {
     this.authenticationManager = authenticationManager;
   }
 
-  public LoginResponseDTO login(CredentialsDTO credentialsDTO, HttpServletRequest request, HttpServletResponse response) {
+  public Optional<LoginResponseDTO> login(CredentialsDTO credentialsDTO, HttpServletRequest request, HttpServletResponse response) {
     LOGGER.info("try to login");
     var token = UsernamePasswordAuthenticationToken.unauthenticated(credentialsDTO.login(), credentialsDTO.password());
     try {
@@ -39,9 +39,9 @@ public class LoginManager {
         contextHolderStrategy.setContext(securityContext);
         this.securityContextRepository.saveContext(securityContext, request, response);
       }
-      return new LoginResponseDTO(((UserDetails) authentication.getPrincipal()).getUsername());
+      return Optional.of(new LoginResponseDTO(((UserDetails) authentication.getPrincipal()).getUsername()));
     } catch (AuthenticationException e) {
-      throw HttpException.unauthorized("Bad credentials");
+      return Optional.empty();
     }
   }
 

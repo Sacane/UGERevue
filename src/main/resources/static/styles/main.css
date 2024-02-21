@@ -1,0 +1,66 @@
+body {
+    font-family: Helvetica, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    text-decoration: none;
+    color: #000;
+}
+
+main {
+    width: 80%;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+}
+
+form input {
+    margin: 0.5em 0;
+    padding: 0.5em;
+}
+
+form button {
+    margin: 0.5em 0;
+    padding: 0.5em;
+}
+
+header {
+    border-bottom: 1px solid #ccc;
+    padding: .5em 1em;
+    display: flex;
+    justify-content: space-between;
+    background-color: #eeeeee;
+}
+
+.site-identity h1 {
+    font-size: 1.5em;
+    margin: .6em 0;
+    display: inline-block;
+}
+
+.site-navigation ul,
+.site-navigation li {
+    margin: 0;
+    padding: 0;
+}
+
+.site-navigation li {
+    display: inline-block;
+    margin: 1.4em 1em 1em 1em;
+}
+
+footer {
+    margin-top: auto;
+    border-top: 1px solid #ccc;
+    padding: .5em 1em;
+    text-align: center;
+    background-color: #eeeeee;
+}
+
+.fail {
+    color: red;
+}

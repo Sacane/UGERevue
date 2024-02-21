@@ -3,6 +3,7 @@ package fr.pentagon.ugeoverflow.controllers.rest;
 import fr.pentagon.ugeoverflow.controllers.LoginManager;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.LoginResponseDTO;
+import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.utils.Routes;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,7 +24,10 @@ public class LoginController {
 
   @PostMapping(Routes.Auth.LOGIN)
   public ResponseEntity<LoginResponseDTO> login(@RequestBody CredentialsDTO credentialsDTO, HttpServletRequest request, HttpServletResponse response) {
-    return ResponseEntity.ok(loginManager.login(credentialsDTO, request, response));
+    return ResponseEntity.ok(
+        loginManager.login(credentialsDTO, request, response)
+            .orElseThrow(() -> HttpException.unauthorized("Bad credentials"))
+    );
   }
 
   @PostMapping(Routes.Auth.LOGOUT)
