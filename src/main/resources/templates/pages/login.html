@@ -23,16 +23,24 @@
 
 <main>
     <h1>Login</h1>
-    <p class="error" th:if="${param.failed != null}">Wrong username or password</p>
+    <p class="error" th:if="${loginFailed != null}">Wrong username or password</p>
 
     <form method="post" th:action="@{/light/login}" th:object="${credentialsDTO}">
         <label for="login">Account name:</label><br>
-        <input id="login" th:field="*{login}" th:value="*{login}" type="text">
+        <input id="login"
+               required
+               th:field="*{login}"
+               th:value="*{login}"
+               type="text">
         <span th:errorclass="error" th:errors="*{login}"
               th:if="${#fields.hasErrors('login')}">Invalid account name</span><br>
 
         <label for="password">Password:</label><br>
-        <input id="password" th:field="*{password}" th:value="*{password}" type="password">
+        <input id="password"
+               required
+               th:field="*{password}"
+               th:value="*{password}"
+               type="password">
         <span th:errorclass="error" th:errors="*{password}"
               th:if="${#fields.hasErrors('password')}">Invalid password</span><br>
         <button type="submit">Log in</button>

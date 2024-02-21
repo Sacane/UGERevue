@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -32,18 +33,20 @@ public class MvcLoginController {
 
   @PostMapping("/login")
   public String login(@Valid @ModelAttribute("credentialsDTO") CredentialsDTO credentialsDTO, BindingResult bindingResult,
-                      Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
-    if (bindingResult.hasErrors()) {
-      return "pages/login";
-    }
+                      Authentication authentication, HttpServletRequest request, HttpServletResponse response,
+                      Model model) {
     if (authentication != null) {
       return "redirect:/light/home";
+    }
+    if (bindingResult.hasErrors()) {
+      return "pages/login";
     }
     var loginResponse = loginManager.login(credentialsDTO, request, response).orElse(null);
     if (loginResponse != null) {
       return "redirect:/light/home";
     }
-    return "redirect:/light/login?failed=true";
+    model.addAttribute("loginFailed", true);
+    return "pages/login";
   }
 
   @GetMapping("/logout")
