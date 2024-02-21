@@ -22,12 +22,21 @@
 
 
 <main>
-    <h1>Registration successful</h1>
-    <p>Account
-        <span th:text="${userRegisterDTO.login}">testaccount</span>
-        was successfully created, you can now log in.
-    </p>
-
+    <div class="nav" th:replace="~{fragments/sidenav :: sidenav}">
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Questions</a></li>
+            <li><a href="#">Tags</a></li>
+            <li><a href="#">Socials</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <h1>Registration successful</h1>
+        <p>Account
+            <span th:text="${userRegisterDTO.login}">testaccount</span>
+            was successfully created, you can now log in.
+        </p>
+    </div>
 </main>
 
 <footer th:replace="~{fragments/footer :: footer}">
