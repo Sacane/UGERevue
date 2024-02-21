@@ -16,7 +16,7 @@ import { ReviewService } from '../../../../shared';
 })
 export class ReviewComponent implements OnInit {
     @Input() review: Review = {
-        id: "", author: "", creationDate: new Date(0), content: "", downvotes: 0, reviews: [], upvotes: 0
+        id: "", author: "", creationDate: '', content: "", downvotes: 0, reviews: [], upvotes: 0
     };
     @Output() onDelete: EventEmitter<void> = new EventEmitter();
 

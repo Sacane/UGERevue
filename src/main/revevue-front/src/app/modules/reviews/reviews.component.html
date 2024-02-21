@@ -1,9 +1,54 @@
+@if (review) {
 <div class="details-header">
-    <div style="padding: 20px;">
-        header
+    <div style="padding: 20px; display: flex; flex-direction: column; row-gap: 20px;">
+        <span style="font-size: 18px; font-weight: 500;">Review details</span>
+        <span>{{ review.content }}</span>
+
+        @if (review.citedCode) {
+        <pre><code [highlight]="review.citedCode" [languages]="['java']" [lineNumbers]="true"></code></pre>
+        }
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span>Published by {{ review.author }} on {{ review.creationDate }}</span>
+
+            <div>
+                <button mat-icon-button style="color: green;">
+                    <mat-icon aria-hidden="false" matBadge="{{ review.upvotes }}" matBadgeSize="small"
+                        class="green-badge">thumb_up</mat-icon>
+                </button>
+                <button mat-icon-button style="color: red;">
+                    <mat-icon aria-hidden="false" matBadge="{{ review.downvotes }}" matBadgeSize="small"
+                        class="red-badge">thumb_down</mat-icon>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
 
-<div style="width: 100%;">
-    revisw
+<div class="details-header">
+    <div style="padding: 20px; display: flex; flex-direction: column; row-gap: 20px;">
+        <span style="font-size: 18px; font-weight: 500;">Reviews</span>
+
+        @for(childReview of review.reviews; track childReview.id; let childReviewIndex = $index) {
+        <div style="display: flex; flex-direction: column;">
+            <app-child-review [review]="childReview"></app-child-review>
+            <div style="display: flex;">
+                <div style="flex-grow: 2;"></div>
+                <div style="flex-grow: 10;">
+                    @for(grandChildReview of childReview.reviews; track grandChildReview.id) {
+                    <app-child-review [review]="grandChildReview"></app-child-review>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @if (review.reviews && childReviewIndex != (review.reviews.length - 1)) {
+        <mat-divider></mat-divider>
+        }
+        }
+        @empty {
+        <span>Aucune review</span>
+        }
+    </div>
 </div>
+}
