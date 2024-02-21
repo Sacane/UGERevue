@@ -28,8 +28,8 @@ public class UserService {
 
   @Transactional
   public UserIdDTO register(UserRegisterDTO userDTO) {
-    if (userRepository.existsByUsername(userDTO.username())) {
-      throw HttpException.badRequest("User with this username already exist");
+    if (userRepository.existsByUsernameOrLogin(userDTO.username(), userDTO.login())) {
+      throw HttpException.badRequest("User with this username or login already exist");
     }
     var user = new User(userDTO.username(),
         userDTO.login(),

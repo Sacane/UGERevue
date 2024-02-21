@@ -88,7 +88,7 @@ public class UserControllerRegisterTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(userRegisterDTO)))
         .andExpect(MockMvcResultMatchers.status().isBadRequest())
-        .andExpect(MockMvcResultMatchers.content().string("User with this username already exist"))
+        .andExpect(MockMvcResultMatchers.content().string("User with this username or login already exist"))
         .andDo(print());
   }
 }
