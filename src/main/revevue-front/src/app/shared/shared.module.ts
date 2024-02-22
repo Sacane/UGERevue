@@ -3,11 +3,12 @@ import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { MaterialModule } from "./modules/material.module";
-import { NavBarComponent, SideNavBarComponent } from "./components";
+import { NavBarComponent, ReviewDialogComponent, SideNavBarComponent } from "./components";
 
 const COMPONENTS: any[] = [
     NavBarComponent,
-    SideNavBarComponent
+    SideNavBarComponent,
+    ReviewDialogComponent
 ];
 
 @NgModule({

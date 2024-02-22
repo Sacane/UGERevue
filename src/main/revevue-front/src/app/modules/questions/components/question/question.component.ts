@@ -1,4 +1,4 @@
-import { Component, computed, inject, Signal, ViewEncapsulation } from '@angular/core';
+import { Component, computed, inject, signal, Signal, ViewEncapsulation, WritableSignal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Review } from "../../models/review";
 import { Role } from "../../models/role.model";
@@ -10,6 +10,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { catchError, concat, of, switchMap } from 'rxjs';
 import { UserService } from '../../../../shared/HttpServices';
+import { ReviewDialogComponent } from '../../../../shared/components/review-dialog/review-dialog.component';
 
 @Component({
     selector: 'app-question',
@@ -29,9 +30,11 @@ export class QuestionComponent {
     canDelete: Signal<boolean> = computed(() => {
         return this.question()?.author === this.userService.getLogin() || this.userService.getRole() === Role.ADMIN;
     });
+    canReview: boolean;
     deleting: boolean = false;
 
     constructor(private activatedRoute: ActivatedRoute, private userService: UserService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) {
+        this.canReview = this.userService.getLogin() !== '';
     }
 
     deleteQuestion(): void {
@@ -67,6 +70,31 @@ export class QuestionComponent {
             else {
                 this.snackBar.open('La question a été suprimée', 'OK');
                 this.router.navigateByUrl('/questions');
+            }
+        });
+    }
+
+    addReview(): void {
+        this.dialog.open(ReviewDialogComponent, {
+            disableClose: true
+        }).afterClosed().pipe(
+            switchMap(reviewValue => {
+                console.log(reviewValue);
+
+                if (reviewValue) {
+                    return this.questionService.addReview(this.id, reviewValue.content, reviewValue.lineStart, reviewValue.lineEnd).pipe(
+                        catchError(err => {
+                            console.log(err);
+                            return of(err);
+                        })
+                    );
+                }
+
+                return of();
+            })
+        ).subscribe(response => {
+            if (response && !response.error) {
+                this.reviews = signal([...this.reviews(), response]);
             }
         });
     }

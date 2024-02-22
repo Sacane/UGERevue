@@ -2,10 +2,10 @@ package fr.pentagon.ugeoverflow.controllers;
 
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionRemoveDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponseDTO;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.utils.Routes;
 import org.springframework.http.MediaType;
@@ -67,5 +67,12 @@ public class QuestionController {
     public ResponseEntity<QuestionDetailsDTO> getQuestion(@PathVariable long questionId) {
         LOGGER.info("GET performed on /api/questions/" + questionId);
         return ResponseEntity.ok(questionService.findById(questionId));
+    }
+
+    @PostMapping(Routes.Question.ROOT + "/reviews")
+    public ResponseEntity<ReviewQuestionResponseDTO> addReview(@RequestBody QuestionReviewCreateBodyDTO questionReviewCreateBodyDTO) {
+        var userDetail = SecurityContext.checkAuthentication();
+
+        return ResponseEntity.ok(questionService.addReview(new QuestionReviewCreateDTO(userDetail.id(), questionReviewCreateBodyDTO.questionId(), questionReviewCreateBodyDTO.content(), questionReviewCreateBodyDTO.lineStart(), questionReviewCreateBodyDTO.lineEnd())));
     }
 }

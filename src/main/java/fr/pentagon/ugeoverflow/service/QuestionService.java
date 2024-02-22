@@ -7,6 +7,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponseDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.Review;
@@ -90,7 +91,7 @@ public class QuestionService {
     }
 
     @Transactional
-    public long addReview(QuestionReviewCreateDTO questionReviewCreateDTO) {
+    public ReviewQuestionResponseDTO addReview(QuestionReviewCreateDTO questionReviewCreateDTO) {
         var userFind = userRepository.findById(questionReviewCreateDTO.userId());
         if (userFind.isEmpty()) {
             throw HttpException.notFound("User not exist");
@@ -106,7 +107,16 @@ public class QuestionService {
         question.addReview(review);
         user.addReview(review);
 
-        return review.getId();
+        return new ReviewQuestionResponseDTO(
+                review.getId(),
+                user.getUsername(),
+                review.getCreatedAt(),
+                review.getContent(),
+                null,
+                0,
+                0,
+                List.of()
+        );
     }
 
     @Transactional

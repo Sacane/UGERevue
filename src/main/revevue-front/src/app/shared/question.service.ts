@@ -42,4 +42,10 @@ export class QuestionService {
         return this.client.get<Question>(`${this.ROOT}/${questionId}`)
             .pipe(catchError(err => throwError(() => onError(err))))
     }
+
+    public addReview(questionId: string, content: string, lineStart?: string, lineEnd?: string): Observable<any> {
+        const headers = new HttpHeaders().set('Content-Type', 'application/json');
+
+        return this.client.post<any>(`${this.ROOT}/reviews`, { questionId, content, lineStart, lineEnd }, { headers });
+    }
 }

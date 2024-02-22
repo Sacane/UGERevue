@@ -26,6 +26,7 @@ export class ReviewComponent implements OnInit {
     constructor(private userService: UserService, private reviewService: ReviewService, protected dialog: MatDialog) { }
 
     ngOnInit(): void {
+        console.log(this.review.id);
         this.canDelete = this.userService.getLogin() === this.review.author;
     }
 

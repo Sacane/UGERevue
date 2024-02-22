@@ -35,7 +35,6 @@ public class ReviewService {
         this.reviewVoteRepository = reviewVoteRepository;
     }
 
-
     List<ReviewResponseDTO> getReviews(long reviewId) {
         var review = reviewRepository.findByIdWithReviews(reviewId)
                 .orElseThrow(() ->  HttpException.notFound("Review not exist"));
@@ -114,7 +113,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public void cancelVote(long authorId, long reviewId){
+    public void cancelVote(long authorId, long reviewId) {
         var user = userRepository.findById(authorId).orElseThrow(() -> HttpException.notFound("The user does not exists"));
         var review = reviewRepository.findById(reviewId).orElseThrow(() -> HttpException.notFound("the review does not exists"));
         var reviewVoteId = new ReviewVoteId();
@@ -122,6 +121,7 @@ public class ReviewService {
         reviewVoteId.setReview(review);
         reviewVoteRepository.deleteById(reviewVoteId);
     }
+
     @Transactional
     public List<ReviewResponseChildrenDTO> findReviewsByQuestionId(long questionId) {
         var question = questionRepository.findByIdWithReviews(questionId)
