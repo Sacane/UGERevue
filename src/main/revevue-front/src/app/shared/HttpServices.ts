@@ -51,7 +51,11 @@ export class UserService {
 
     public logout(onError: (error: Error) => any = (err) => { console.error(err) }) {
         return this.client.post(this.LOGOUT, null, { headers: this.HEADERS })
-            .pipe(tap(() => localStorage.setItem("isLoggin", "false")), catchError(err => {
+            .pipe(tap(() => {
+                localStorage.setItem("isLoggin", "false");
+                localStorage.setItem('username', '');
+                localStorage.setItem('role', '');
+            }), catchError(err => {
                 return throwError(() => { onError(err); });
             }));
     }
