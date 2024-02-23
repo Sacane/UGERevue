@@ -1,7 +1,15 @@
 @if (review$ | async; as review) {
 <div class="details-header">
     <div style="padding: 20px; display: flex; flex-direction: column; row-gap: 20px;">
-        <span style="font-size: 18px; font-weight: 500;">Review details</span>
+        <div style="display: flex; justify-content: space-between;">
+            <span style="font-size: 18px; font-weight: 500;">Review details</span>
+
+            @if (canDelete) {
+            <button mat-mini-fab color="primary" (click)="deleteReview()">
+                <mat-icon>delete</mat-icon>
+            </button>
+            }
+        </div>
         <span>{{ review.content }}</span>
 
         @if (review.citedCode) {
@@ -37,6 +45,7 @@
             }
         </div>
 
+        <mat-divider></mat-divider>
         @for(childReview of review.reviews; track childReview.id; let childReviewIndex = $index) {
         <div style="display: flex; flex-direction: column;">
             <app-child-review [review]="childReview"></app-child-review>
