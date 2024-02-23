@@ -34,6 +34,7 @@ public final class TestTracker {
      * @return a TestTracker instance tracking the test execution summary
      */
     public static TestTracker runAndTrack(Class<?> testClass){
+        Objects.requireNonNull(testClass);
         var request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(selectClass(testClass))
                 .build();
@@ -77,6 +78,7 @@ public final class TestTracker {
      * @return a string containing details about the failed tests
      */
     public String failedTestsDetails(){
+        if(summary.getFailures().isEmpty()) return "";
         var details = new StringBuilder("Failed tests :\n\n");
         var failures = summary.getFailures();
         for (var failure : failures){
