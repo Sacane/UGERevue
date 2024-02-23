@@ -19,7 +19,9 @@
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <span>Published by {{ review.author }} on {{ review.creationDate }}</span>
 
-            <button mat-raised-button color="primary">Details</button>
+            <button mat-mini-fab color="primary" (click)="detailsReview()">
+                <mat-icon>more</mat-icon>
+            </button>
         </div>
     </div>
 </div>

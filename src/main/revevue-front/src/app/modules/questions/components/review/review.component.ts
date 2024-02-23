@@ -7,7 +7,7 @@ import { catchError, concat, of, switchMap } from 'rxjs';
 import { ReviewService } from '../../../../shared';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Role } from '../../models/role.model';
-
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-review',
@@ -23,7 +23,7 @@ export class ReviewComponent implements OnInit {
     canDelete: boolean = false;
     deleting: boolean = false;
 
-    constructor(private userService: UserService, private reviewService: ReviewService, private snackBar: MatSnackBar, protected dialog: MatDialog) { }
+    constructor(private userService: UserService, private reviewService: ReviewService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) { }
 
     ngOnInit(): void {
         this.canDelete = this.review.author === this.userService.getLogin() || this.userService.getRole() === Role.ADMIN;
@@ -65,5 +65,9 @@ export class ReviewComponent implements OnInit {
                 this.snackBar.open('The review have been deleted', 'OK');
             }
         });
+    }
+
+    detailsReview(): void {
+        this.router.navigateByUrl(`/reviews/${this.review.id}`);
     }
 }

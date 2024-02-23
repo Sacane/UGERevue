@@ -4,6 +4,7 @@ import { ReviewsComponent } from "./reviews.component";
 import { ReviewsRoutingModule } from "./reviews-routing.module";
 import { HIGHLIGHT_OPTIONS, HighlightModule } from "ngx-highlightjs";
 import { ChildReviewComponent } from "./child-review/child-review.component";
+import { CommonModule } from "@angular/common";
 
 @NgModule({
     providers: [
@@ -23,6 +24,7 @@ import { ChildReviewComponent } from "./child-review/child-review.component";
         ChildReviewComponent
     ],
     imports: [
+        CommonModule,
         ReviewsRoutingModule,
         HighlightModule,
         SharedModule

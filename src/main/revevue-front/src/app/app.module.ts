@@ -5,10 +5,10 @@ import { AppRoutingModule } from "./app-routing.module";
 import { RouterOutlet } from "@angular/router";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HomeModule, LoginModule, QuestionsMenuModule, SignupModule, TagsModule, UsersModule } from "./modules";
+import { HomeModule, LoginModule, QuestionsMenuModule, ReviewsModule, SignupModule, TagsModule, UsersModule } from "./modules";
 import { provideHttpClient, withFetch, withInterceptors } from "@angular/common/http";
 import { authInterceptor } from "./shared/authInterceptor";
-import { MatDialogModule } from "@angular/material/dialog";
+import { CommonModule } from "@angular/common";
 
 @NgModule({
     declarations: [
@@ -18,6 +18,7 @@ import { MatDialogModule } from "@angular/material/dialog";
         provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
     ],
     imports: [
+        CommonModule,
         BrowserModule,
         BrowserAnimationsModule,
         RouterOutlet,
@@ -28,7 +29,8 @@ import { MatDialogModule } from "@angular/material/dialog";
         HomeModule,
         QuestionsMenuModule,
         TagsModule,
-        UsersModule
+        UsersModule,
+        ReviewsModule
     ],
     bootstrap: [AppComponent]
 })

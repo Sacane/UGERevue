@@ -58,9 +58,12 @@
         <div class="reviewsSection">
             <div class="title">
                 <span>Revues</span>
+
+                @if (canReview) {
                 <button mat-mini-fab color="primary" (click)="addReview()">
                     <mat-icon>add</mat-icon>
                 </button>
+                }
             </div>
             <div>
                 <app-reviews [reviews]="reviews()"></app-reviews>

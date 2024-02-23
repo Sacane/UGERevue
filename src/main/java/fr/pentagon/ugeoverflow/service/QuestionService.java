@@ -22,9 +22,11 @@ import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -63,7 +65,7 @@ public class QuestionService {
                         question.getCreatedAt().toString(),
                         questionVoteRepository.countAllById(question.getId()),
                         question.getReviews().size()
-                    )).toList();
+                )).toList();
     }
 
     @Transactional
@@ -107,12 +109,18 @@ public class QuestionService {
         question.addReview(review);
         user.addReview(review);
 
+        var fileContent = new String(question.getFile(), StandardCharsets.UTF_8).split("\n");
+        var lineStart = questionReviewCreateDTO.lineStart();
+        var lineEnd = questionReviewCreateDTO.lineEnd();
+        var citedCode = (lineStart == null || lineEnd == null) ? null : Arrays.stream(fileContent, lineStart - 1, lineEnd)
+                .collect(Collectors.joining("\n"));
+
         return new ReviewQuestionResponseDTO(
                 review.getId(),
                 user.getUsername(),
                 review.getCreatedAt(),
                 review.getContent(),
-                null,
+                citedCode,
                 0,
                 0,
                 List.of()

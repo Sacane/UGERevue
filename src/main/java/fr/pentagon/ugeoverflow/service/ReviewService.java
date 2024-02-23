@@ -2,6 +2,8 @@ package fr.pentagon.ugeoverflow.service;
 
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewOnReviewDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewRemoveDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.DetailReviewResponseDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponseDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseChildrenDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
@@ -37,7 +39,7 @@ public class ReviewService {
 
     List<ReviewResponseDTO> getReviews(long reviewId) {
         var review = reviewRepository.findByIdWithReviews(reviewId)
-                .orElseThrow(() ->  HttpException.notFound("Review not exist"));
+                .orElseThrow(() -> HttpException.notFound("Review not exist"));
         var author = review.getAuthor();
 
         return review.getReviews()
@@ -52,16 +54,26 @@ public class ReviewService {
     }
 
     @Transactional
-    public long addReview(ReviewOnReviewDTO reviewOnReviewDTO) {
+    public ReviewQuestionResponseDTO addReview(ReviewOnReviewDTO reviewOnReviewDTO) {
         var user = userRepository.findById(reviewOnReviewDTO.userId())
                 .orElseThrow(() -> HttpException.notFound("User not exist"));
         var review = reviewRepository.findById(reviewOnReviewDTO.reviewId())
                 .orElseThrow(() -> HttpException.notFound("Review not exist"));
+
         var newReview = reviewRepository.save(new Review(reviewOnReviewDTO.content(), null, null, new Date()));
         user.addReview(newReview);
         review.addReview(newReview);
 
-        return newReview.getId();
+        return new ReviewQuestionResponseDTO(
+                newReview.getId(),
+                user.getUsername(),
+                newReview.getCreatedAt(),
+                newReview.getContent(),
+                null,
+                0,
+                0,
+                List.of()
+        );
     }
 
     @Transactional
@@ -84,8 +96,7 @@ public class ReviewService {
         removeReviewsChildren(review);
         if (review.getParentReview() != null) {
             review.getParentReview().removeReview(review);
-        }
-        else {
+        } else {
             var questionOptional = questionRepository.findByReviewIdWithReviews(review);
             if (questionOptional.isEmpty()) {
                 throw HttpException.notFound("Review have no question");
@@ -99,7 +110,7 @@ public class ReviewService {
     private void removeReviewsChildren(Review review) {
         review.getAuthor().removeReview(review);
 
-        for(var r: review.getReviews()) {
+        for (var r : review.getReviews()) {
             removeReviewsChildren(r);
         }
     }
@@ -136,5 +147,48 @@ public class ReviewService {
 
             return new ReviewResponseChildrenDTO(review.getId(), author.getUsername(), review.getContent(), citedCode, reviewVoteRepository.findUpvoteNumberByReviewId(review.getId()), reviewVoteRepository.findDownvoteNumberByReviewId(review.getId()), review.getCreatedAt(), getReviews(review.getId()));
         }).toList();
+    }
+
+    @Transactional
+    public DetailReviewResponseDTO findDetailFromReviewId(long reviewId) {
+        var review = reviewRepository.findByIdWithReviews(reviewId).orElseThrow(() -> HttpException.notFound("This review does not exists"));
+
+        String citedCode = null;
+        if (review.getQuestion() != null) {
+            var fileContent = new String(review.getQuestion().getFile(), StandardCharsets.UTF_8).split("\n");
+            var lineStart = review.getLineStart();
+            var lineEnd = review.getLineEnd();
+            citedCode = (lineStart == null || lineEnd == null) ? null : Arrays.stream(fileContent, lineStart - 1, lineEnd)
+                    .collect(Collectors.joining("\n"));
+        }
+
+        return new DetailReviewResponseDTO(
+                review.getId(),
+                review.getAuthor().getUsername(),
+                review.getCreatedAt(),
+                review.getContent(),
+                citedCode,
+                reviewVoteRepository.findUpvoteNumberByReviewId(review.getId()),
+                reviewVoteRepository.findDownvoteNumberByReviewId(review.getId()),
+                review.getReviews().stream().map(childReview -> new DetailReviewResponseDTO(
+                        childReview.getId(),
+                        childReview.getAuthor().getUsername(),
+                        childReview.getCreatedAt(),
+                        childReview.getContent(),
+                        null,
+                        reviewVoteRepository.findUpvoteNumberByReviewId(childReview.getId()),
+                        reviewVoteRepository.findDownvoteNumberByReviewId(childReview.getId()),
+                        childReview.getReviews().stream().map(grandChildReview -> new DetailReviewResponseDTO(
+                                grandChildReview.getId(),
+                                grandChildReview.getAuthor().getUsername(),
+                                grandChildReview.getCreatedAt(),
+                                grandChildReview.getContent(),
+                                null,
+                                reviewVoteRepository.findUpvoteNumberByReviewId(grandChildReview.getId()),
+                                reviewVoteRepository.findDownvoteNumberByReviewId(grandChildReview.getId()),
+                                List.of()
+                        )).toList()
+                )).toList()
+        );
     }
 }

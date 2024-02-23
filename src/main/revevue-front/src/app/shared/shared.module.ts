@@ -23,6 +23,7 @@ const COMPONENTS: any[] = [
         COMPONENTS
     ],
     exports: [
+        CommonModule,
         MaterialModule,
         COMPONENTS
     ]

@@ -1,4 +1,4 @@
-@if (review) {
+@if (review$ | async; as review) {
 <div class="details-header">
     <div style="padding: 20px; display: flex; flex-direction: column; row-gap: 20px;">
         <span style="font-size: 18px; font-weight: 500;">Review details</span>
@@ -27,7 +27,15 @@
 
 <div class="details-header">
     <div style="padding: 20px; display: flex; flex-direction: column; row-gap: 20px;">
-        <span style="font-size: 18px; font-weight: 500;">Reviews</span>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 18px; font-weight: 500;">Reviews</span>
+
+            @if (canReview) {
+            <button mat-mini-fab color="primary" (click)="addReview()">
+                <mat-icon>add</mat-icon>
+            </button>
+            }
+        </div>
 
         @for(childReview of review.reviews; track childReview.id; let childReviewIndex = $index) {
         <div style="display: flex; flex-direction: column;">
@@ -51,4 +59,7 @@
         }
     </div>
 </div>
+}
+@else {
+<mat-spinner></mat-spinner>
 }

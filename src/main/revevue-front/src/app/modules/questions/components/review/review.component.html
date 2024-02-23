@@ -18,6 +18,9 @@
                         </div>
                     </button>
                     }
+                    <button mat-mini-fab color="primary" (click)="detailsReview()">
+                        <mat-icon>more</mat-icon>
+                    </button>
                 </div>
             </th>
         </tr>
@@ -26,7 +29,6 @@
                 <div class="voteSection">
                     <button color="upvote" extended mat-mini-fab>
                         <mat-icon>thumb_up</mat-icon>
-
                     </button>
                     {{ review.upvotes }}
 
