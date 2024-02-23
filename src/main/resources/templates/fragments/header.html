@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ReveVue</title>
+    <link href="../../static/styles/main.css" rel="stylesheet" th:href="@{/styles/main.css}"/>
+</head>
+<body>
+
+<!-- header pris à https://codepen.io/kccnma/pen/eMgPWY -->
+
+<header th:fragment="header">
+    <div class="site-identity">
+        <h1><a href="/light">Revevue</a></h1>
+    </div>
+    <form>
+        <input>
+        <button type="submit">Search</button>
+    </form>
+    <nav class="site-navigation">
+        <ul class="nav">
+            <li th:if="${#authentication == null}"><a href="/light/login">Log in</a></li>
+            <li th:if="${#authentication == null}"><a href="/light/register">Register</a></li>
+            <li sec:authorize="isAuthenticated()"><a href="#" sec:authentication="name"></a></li>
+            <li sec:authorize="isAuthenticated()"><a href="/light/logout">Log out</a></li>
+        </ul>
+    </nav>
+</header>
+
+</body>
+</html>

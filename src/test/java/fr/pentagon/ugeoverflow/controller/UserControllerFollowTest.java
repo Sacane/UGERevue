@@ -1,8 +1,8 @@
 package fr.pentagon.ugeoverflow.controller;
 
 import fr.pentagon.ugeoverflow.DatasourceTestConfig;
-import fr.pentagon.ugeoverflow.controllers.UserController;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
+import fr.pentagon.ugeoverflow.controllers.rest.UserController;
 import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.UserService;
@@ -20,7 +20,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @SpringBootTest

@@ -1,7 +1,6 @@
-package fr.pentagon.ugeoverflow.controllers;
+package fr.pentagon.ugeoverflow.controllers.rest;
 
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
-import fr.pentagon.ugeoverflow.config.security.SecurityConfig;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserFollowInfoDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
@@ -15,8 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.security.Security;
-import java.security.SecurityPermission;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -61,10 +58,11 @@ public class UserController {
     userService.unfollow(user.getId(), id);
     return ResponseEntity.ok().build();
   }
+
   @GetMapping(Routes.User.ROOT)
-  public ResponseEntity<List<UserFollowInfoDTO>> getAllRegisteredUsers(){
+  public ResponseEntity<List<UserFollowInfoDTO>> getAllRegisteredUsers() {
     LOGGER.info("Trying to get all registered Users");
-    if(SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")){
+    if (SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")) {
       return ResponseEntity.ok(userService.userRegisteredList());
     }
     var userConnected = SecurityContext.checkAuthentication();

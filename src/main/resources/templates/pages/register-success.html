@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Revevue</title>
+    <link href="../../static/styles/main.css" rel="stylesheet" th:href="@{/styles/main.css}"/>
+</head>
+
+<body>
+
+<header th:replace="~{fragments/header :: header}">
+    <div class="site-identity">
+        <h1><a href="/light">Revevue</a></h1>
+    </div>
+    <nav class="site-navigation">
+        <ul class="nav">
+            <li><a href="#">Login</a></li>
+        </ul>
+    </nav>
+</header>
+
+
+<main>
+    <div class="nav" th:replace="~{fragments/sidenav :: sidenav}">
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Questions</a></li>
+            <li><a href="#">Tags</a></li>
+            <li><a href="#">Socials</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <h1>Registration successful</h1>
+        <p>Account
+            <span th:text="${userRegisterDTO.login}">testaccount</span>
+            was successfully created, you can now log in.
+        </p>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}">
+    &copy; 2024 Revevue
+</footer>
+
+
+</body>
+</html>
