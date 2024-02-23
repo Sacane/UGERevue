@@ -4,9 +4,7 @@ import fr.pentagon.ugeoverflow.exception.CompilationException;
 
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -122,6 +120,28 @@ public final class CustomTestClassLoader {
     }
 
     /**
+     * Compiles the test file and its dependency using the Java Compiler API.
+     *
+     * @param testFileName      the name of the test file to compile
+     * @param dependencyFileName the name of the dependency file to compile
+     * @throws CompilationException if compilation fails
+     */
+    private static void compileTestAndDependency(String testFileName, String dependencyFileName) throws CompilationException {
+        var errorByteArray = new ByteArrayOutputStream();
+        var trashPrintStream = new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) {
+                // Drop all
+            }
+        });
+        JAVA_COMPILER.run(System.in, trashPrintStream, new PrintStream(errorByteArray), dependencyFileName, testFileName);
+        var error = errorByteArray.toString();
+        if (!error.isBlank()) {
+            throw new CompilationException(error);
+        }
+    }
+
+    /**
      * Compiles and loads a test class from the provided source files.
      *
      * @param testFileName       the name of the test file to compile and load
@@ -148,13 +168,7 @@ public final class CustomTestClassLoader {
         } else {
             removePackage(testFilePath);
         }
-        var errorByteArray = new ByteArrayOutputStream();
-        JAVA_COMPILER.run(System.in, System.out, new PrintStream(errorByteArray), dependencyFilePath.toString(),
-                testFilePath.toString());
-        var error = errorByteArray.toString();
-        if (!error.isBlank()) {
-            throw new CompilationException(error);
-        }
+        compileTestAndDependency(testFilePath.toString(), dependencyFilePath.toString());
         return Class.forName(testFileName.substring(0, testFileName.lastIndexOf(".")), false, urlClassLoader);
     }
 
