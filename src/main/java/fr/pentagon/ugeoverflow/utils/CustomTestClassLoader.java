@@ -48,7 +48,23 @@ public final class CustomTestClassLoader {
     }
 
     /**
-     * Creates a new CustomTestClassLoader for the specified sources directory.
+     * Ensures that the provided path is non-null and exists. If the path is null
+     * or does not exist, a NoSuchFileException is thrown.
+     *
+     * @param path the path to check
+     * @return the provided path if it exists
+     * @throws NoSuchFileException if the path is null or does not exist
+     */
+    private static Path assertPathNonNullAndExists(Path path) throws NoSuchFileException {
+        Objects.requireNonNull(path);
+        if (Files.notExists(path)) {
+            throw new NoSuchFileException(path.toString());
+        }
+        return path;
+    }
+
+    /**
+     * Creates a new CustomTestClassLoader for the specified source directory.
      *
      * @param sourcesDirectory the directory containing the source files
      * @return a new CustomTestClassLoader instance
@@ -56,10 +72,7 @@ public final class CustomTestClassLoader {
      * @throws MalformedURLException if a URL cannot be formed for the directory
      */
     public static CustomTestClassLoader in(Path sourcesDirectory) throws NoSuchFileException, MalformedURLException {
-        Objects.requireNonNull(sourcesDirectory);
-        if (Files.notExists(sourcesDirectory)) {
-            throw new NoSuchFileException(sourcesDirectory.toString());
-        }
+        assertPathNonNullAndExists(sourcesDirectory);
         if (!Files.isDirectory(sourcesDirectory)) {
             throw new IllegalArgumentException("Must be a folder");
         }
@@ -75,7 +88,7 @@ public final class CustomTestClassLoader {
      * @throws IOException if an I/O error occurs
      */
     private static Optional<String> removePackage(Path filePath) throws IOException {
-        if (!Files.exists(filePath)) throw new NoSuchFileException(filePath.toString());
+        assertPathNonNullAndExists(filePath);
         int keepingIndex;
         var lines = Files.readAllLines(filePath);
         String dependencyURI = null;
@@ -100,27 +113,11 @@ public final class CustomTestClassLoader {
      * @throws IOException if an I/O error occurs
      */
     private static void removePackageAndImports(Path testFilePath, String dependencyURI) throws IOException {
-        if (!Files.exists(testFilePath)) throw new NoSuchFileException(testFilePath.toString());
+        Objects.requireNonNull(dependencyURI);
+        assertPathNonNullAndExists(testFilePath);
         try (var lines = Files.lines(testFilePath)) {
             var remainingLines = lines.dropWhile(s -> s.isBlank() || s.stripLeading().startsWith("package"));
             Files.write(testFilePath, remainingLines.filter(s -> !s.contains(dependencyURI)).toList());
-        }
-    }
-
-    /**
-     * Removes all .class files in the specified directory.
-     *
-     * @throws IOException if an I/O error occurs while deleting the files
-     */
-    public void removeClassesInFolder() throws IOException {
-        try (var stream = Files.list(sourcesDirectory)) {
-            stream.filter(p -> p.toString().endsWith(".class")).forEach(p -> {
-                try {
-                    Files.delete(p);
-                } catch (IOException e) {
-                    // Do nothing
-                }
-            });
         }
     }
 
@@ -136,21 +133,15 @@ public final class CustomTestClassLoader {
      * @throws IllegalArgumentException if the file names do not end with ".java"
      * @throws NoSuchFileException      if the specified files do not exist
      */
-    public Class<?> fromSourceFiles(String testFileName, String dependencyFileName) throws IOException,
+    public Class<?> load(String testFileName, String dependencyFileName) throws IOException,
             ClassNotFoundException, CompilationException {
         Objects.requireNonNull(testFileName);
         Objects.requireNonNull(dependencyFileName);
         if (!testFileName.endsWith(".java") || !dependencyFileName.endsWith(".java")) {
             throw new IllegalArgumentException("Must be a java file.");
         }
-        var dependencyFilePath = sourcesDirectory.resolve(dependencyFileName);
-        var testFilePath = sourcesDirectory.resolve(testFileName);
-        if (Files.notExists(testFilePath)) {
-            throw new NoSuchFileException(testFilePath.toString());
-        }
-        if (Files.notExists(dependencyFilePath)) {
-            throw new NoSuchFileException(dependencyFilePath.toString());
-        }
+        var dependencyFilePath = assertPathNonNullAndExists(sourcesDirectory.resolve(dependencyFileName));
+        var testFilePath = assertPathNonNullAndExists(sourcesDirectory.resolve(testFileName));
         var dependencyURI = removePackage(dependencyFilePath);
         if (dependencyURI.isPresent()) {
             removePackageAndImports(testFilePath, dependencyURI.get());
@@ -165,6 +156,23 @@ public final class CustomTestClassLoader {
             throw new CompilationException(error);
         }
         return Class.forName(testFileName.substring(0, testFileName.lastIndexOf(".")), false, urlClassLoader);
+    }
+
+    /**
+     * Removes all .class files in the specified directory.
+     *
+     * @throws IOException if an I/O error occurs while deleting the files
+     */
+    public void clean() throws IOException {
+        try (var stream = Files.list(sourcesDirectory)) {
+            stream.filter(p -> p.toString().endsWith(".class")).forEach(p -> {
+                try {
+                    Files.delete(p);
+                } catch (IOException e) {
+                    // Do nothing
+                }
+            });
+        }
     }
 
 }
