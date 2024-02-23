@@ -68,14 +68,23 @@ final class TestExecutionTests {
 
         @Test
         @DisplayName("'in' and 'load' assertions")
-        void loadAssertions() throws MalformedURLException, NoSuchFileException {
+        void loadAssertions() throws IOException {
             var loader = CustomTestClassLoader.in(TEST_DIRECTORY);
+            var f = Paths.get("src", "test", "resources", "FakeJavaFiles", "HelloWorldWithError.java");
+            var d = Paths.get("src", "test", "resources", "TempDoNotRemove", "HelloWorldWithError.java");
+            Files.copy(f, d);
             assertAll("'in' and 'load' assertions",
                     () -> assertThrows(NullPointerException.class, () -> CustomTestClassLoader.in(null)),
                     () -> assertThrows(NoSuchFileException.class, () -> CustomTestClassLoader.in(Paths.get("NOT_EXISTS"))),
                     () -> assertThrows(NullPointerException.class, () -> loader.load(null, "")),
-                    () -> assertThrows(NullPointerException.class, () -> loader.load("", null))
+                    () -> assertThrows(NullPointerException.class, () -> loader.load("", null)),
+                    () -> assertThrows(IllegalArgumentException.class, () -> loader.load("", "")),
+                    () -> assertThrows(IllegalArgumentException.class, () -> loader.load(".java", "")),
+                    () -> assertThrows(NoSuchFileException.class, () -> loader.load(TEST_FILE_NAME, "NOT_EXISTS.java")),
+                    () -> assertThrows(NoSuchFileException.class, () -> loader.load("NOT_EXISTS.java", DEPENDENCY_FILE_NAME)),
+                    () -> assertThrows(CompilationException.class, () -> loader.load(TEST_FILE_NAME, "HelloWorldWithError.java"))
             );
+            Files.delete(d);
         }
     }
 
