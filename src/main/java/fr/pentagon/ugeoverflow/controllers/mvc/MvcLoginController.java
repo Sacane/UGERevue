@@ -1,6 +1,6 @@
 package fr.pentagon.ugeoverflow.controllers.mvc;
 
-import fr.pentagon.ugeoverflow.controllers.LoginManager;
+import fr.pentagon.ugeoverflow.service.LoginManager;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

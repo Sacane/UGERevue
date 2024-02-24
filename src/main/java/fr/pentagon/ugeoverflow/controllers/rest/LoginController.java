@@ -1,6 +1,6 @@
 package fr.pentagon.ugeoverflow.controllers.rest;
 
-import fr.pentagon.ugeoverflow.controllers.LoginManager;
+import fr.pentagon.ugeoverflow.service.LoginManager;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.LoginResponseDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
