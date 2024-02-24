@@ -51,7 +51,8 @@
 
         <mat-divider></mat-divider>
         @for(childReview of review.reviews; track childReview.id; let childReviewIndex = $index) {
-        <div style="display: flex; flex-direction: column;">
+        <app-child-review [review]="childReview"></app-child-review>
+        <!--<div style="display: flex; flex-direction: column;">
             <app-child-review [review]="childReview"></app-child-review>
             <div style="display: flex;">
                 <div style="flex-grow: 2;"></div>
@@ -65,7 +66,7 @@
 
         @if (review.reviews && childReviewIndex != (review.reviews.length - 1)) {
         <mat-divider></mat-divider>
-        }
+        }-->
         }
         @empty {
         <span>Aucune review</span>

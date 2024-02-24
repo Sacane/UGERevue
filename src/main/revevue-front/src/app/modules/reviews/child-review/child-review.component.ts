@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { Review } from '../models/review.model';
 import { Router } from '@angular/router';
 import { ReviewService } from '../../../shared';
 import { catchError, of } from 'rxjs';
@@ -19,7 +18,6 @@ export class ChildReviewComponent {
     }
 
     vote(review: any, up: boolean): void {
-        console.log(review);
         if (review.vote === up) {
             this.reviewService.cancelVote(review.id).pipe(
                 catchError(err => {

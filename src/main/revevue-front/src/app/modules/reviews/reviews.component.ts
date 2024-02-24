@@ -45,7 +45,6 @@ export class ReviewsComponent implements OnDestroy {
         this.reviewId = this.activatedRoute.snapshot.params['id'];
 
         this.reviewService.getDetails(this.reviewId).subscribe(response => {
-            console.log(response);
             this.review$.next(response);
             this.canDelete = response.author === this.userService.getLogin() || this.userService.getRole() === Role.ADMIN;
         });
@@ -56,8 +55,6 @@ export class ReviewsComponent implements OnDestroy {
             disableClose: true
         }).afterClosed().pipe(
             switchMap(reviewValue => {
-                console.log(reviewValue);
-
                 if (reviewValue) {
                     return this.reviewService.addReview(this.reviewId, reviewValue.content).pipe(
                         catchError(err => {
@@ -117,7 +114,6 @@ export class ReviewsComponent implements OnDestroy {
     }
 
     vote(review: any, up: boolean): void {
-        console.log(review);
         if (review.vote === up) {
             this.reviewService.cancelVote(review.id).pipe(
                 catchError(err => {

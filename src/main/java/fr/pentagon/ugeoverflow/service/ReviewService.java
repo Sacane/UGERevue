@@ -153,7 +153,8 @@ public class ReviewService {
 
     @Transactional
     public DetailReviewResponseDTO findDetailFromReviewId(long userId, long reviewId) {
-        var review = reviewRepository.findByIdWithReviews(reviewId).orElseThrow(() -> HttpException.notFound("This review does not exists"));
+        return findDetailsFromReviewIdWithChildren(userId, reviewId);
+        /*var review = reviewRepository.findByIdWithReviews(reviewId).orElseThrow(() -> HttpException.notFound("This review does not exists"));
 
         String citedCode = null;
         if (review.getQuestion() != null) {
@@ -194,6 +195,31 @@ public class ReviewService {
                                 List.of()
                         )).toList()
                 )).toList()
+        );*/
+    }
+
+    private DetailReviewResponseDTO findDetailsFromReviewIdWithChildren(long userId, long reviewId) {
+        var review = reviewRepository.findByIdWithReviews(reviewId).orElseThrow(() -> HttpException.notFound("This review does not exists"));
+
+        String citedCode = null;
+        if (review.getQuestion() != null) {
+            var fileContent = new String(review.getQuestion().getFile(), StandardCharsets.UTF_8).split("\n");
+            var lineStart = review.getLineStart();
+            var lineEnd = review.getLineEnd();
+            citedCode = (lineStart == null || lineEnd == null) ? null : Arrays.stream(fileContent, lineStart - 1, lineEnd)
+                    .collect(Collectors.joining("\n"));
+        }
+
+        return new DetailReviewResponseDTO(
+                review.getId(),
+                review.getAuthor().getUsername(),
+                review.getCreatedAt(),
+                review.getContent(),
+                citedCode,
+                reviewVoteRepository.findUpvoteNumberByReviewId(review.getId()),
+                reviewVoteRepository.findDownvoteNumberByReviewId(review.getId()),
+                reviewVoteRepository.findVoteUserByReviewId(userId, reviewId),
+                review.getReviews().stream().map(childReview -> findDetailsFromReviewIdWithChildren(userId, childReview.getId())).toList()
         );
     }
 }
