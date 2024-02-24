@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.service;
 
+import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.LoginResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,7 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Component;
@@ -39,7 +39,9 @@ public class LoginManager {
         contextHolderStrategy.setContext(securityContext);
         this.securityContextRepository.saveContext(securityContext, request, response);
       }
-      return Optional.of(new LoginResponseDTO(((UserDetails) authentication.getPrincipal()).getUsername()));
+      var currentUser = SecurityContext.checkAuthentication();
+      var role = currentUser.getAuthorities().stream().findFirst().orElseThrow();
+      return Optional.of(new LoginResponseDTO(currentUser.getUsername(), role.getAuthority()));
     } catch (AuthenticationException e) {
       return Optional.empty();
     }
