@@ -7,7 +7,7 @@
     </button>
     }
     @else {
-    <button mat-raised-button color="primary" style="width: 100%;">
+    <button mat-raised-button color="primary" style="width: 100%;" (click)="navigateTo(nav.url)">
         <mat-icon>{{ nav.icon }}</mat-icon>
         {{ nav.name }}
     </button>

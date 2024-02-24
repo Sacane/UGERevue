@@ -1,6 +1,7 @@
 package fr.pentagon.ugeoverflow.service;
 
 import fr.pentagon.ugeoverflow.config.authorization.Role;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserFollowInfoDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
@@ -12,9 +13,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 @Service
 public class UserService {
+  private static final Logger LOGGER = Logger.getLogger(UserService.class.getName());
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
 
@@ -25,8 +28,8 @@ public class UserService {
 
   @Transactional
   public UserIdDTO register(UserRegisterDTO userDTO) {
-    if (userRepository.existsByUsername(userDTO.username())) {
-      throw HttpException.badRequest("User with this username already exist");
+    if (userRepository.existsByUsernameOrLogin(userDTO.username(), userDTO.login())) {
+      throw HttpException.badRequest("User with this username or login already exist");
     }
     var user = new User(userDTO.username(),
         userDTO.login(),
@@ -55,8 +58,25 @@ public class UserService {
     var followed = userRepository.findById(followedId).orElseThrow(
         () -> HttpException.notFound("user " + followedId + " not found")
     );
-
     follower.unfollows(followed);
     userRepository.saveAll(List.of(follower, followed));
+  }
+
+  @Transactional
+  public List<UserFollowInfoDTO> userRegisteredList(long userId){
+    var follows = userRepository.findFollowsById(userId);
+    return userRepository.findAllUsers()
+            .stream()
+            .map(user -> user.toUserFollowInfoDTO(follows.contains(user)))
+            .toList();
+  }
+
+  @Transactional
+  public List<UserFollowInfoDTO> userRegisteredList(){
+    return userRepository.findAllUsers()
+            .stream()
+            .filter(u -> u.getRole() != Role.ADMIN)
+            .map(user -> user.toUserFollowInfoDTO(false))
+            .toList();
   }
 }

@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
@@ -15,17 +17,21 @@ public class UserRepositoryTest {
 
   @Autowired
   private UserRepository userRepository;
-  private User userTest;
+  private List<User> userTest;
 
   @BeforeEach
   void setup() {
-    userTest = new User("verestah", "verestah1", "12345", "verestah@gmail.com", Role.USER);
+    userTest = List.of(
+            new User("verestah", "verestah1", "12345", "verestah@gmail.com", Role.USER),
+            new User("qtdrake", "qtdrake1", "12345", "qtdrake@gmail.com", Role.USER),
+            new User("sacane", "sacane1", "12345", "sacane@gmail.com", Role.USER)
+    );
   }
 
   @Test
   @DisplayName("Should save the user in the database")
   void save() {
-    var savedUser = userRepository.save(userTest);
+    var savedUser = userRepository.save(userTest.get(0));
     assertNotNull(savedUser);
     assertEquals("verestah", savedUser.getUsername());
   }
@@ -33,7 +39,7 @@ public class UserRepositoryTest {
   @Test
   @DisplayName("Should find the user with the login verestah1")
   void findByLogin() {
-    userRepository.save(userTest);
+    userRepository.save(userTest.get(0));
     var out = userRepository.findByLogin("verestah1");
     assertTrue(out.isPresent());
     var finded = out.get();
@@ -51,8 +57,23 @@ public class UserRepositoryTest {
   @Test
   @DisplayName("Should return that the user with the username verestah exist")
   void existByUsername() {
-    userRepository.save(userTest);
+    userRepository.save(userTest.get(0));
     var exist = userRepository.existsByUsername("verestah");
     assertTrue(exist);
+  }
+
+  @Test
+  @DisplayName("Should find 3 users registered")
+  void findAllRegisteredUser(){
+      userRepository.saveAll(userTest);
+      var users = userRepository.findAllUsers();
+      assertEquals(3, users.size());
+  }
+
+  @Test
+  @DisplayName("Should find 0 users registered")
+  void noRegisteredUserFind(){
+    var users = userRepository.findAllUsers();
+    assertEquals(0, users.size());
   }
 }

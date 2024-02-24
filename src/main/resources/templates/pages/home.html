@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Revevue</title>
+    <link href="../../static/styles/main.css" rel="stylesheet" th:href="@{/styles/main.css}"/>
+</head>
+
+<body>
+
+<header th:replace="~{fragments/header :: header}">
+    <div class="site-identity">
+        <h1><a href="/light">Revevue</a></h1>
+    </div>
+    <nav class="site-navigation">
+        <ul class="nav">
+            <li><a href="#">Login</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <div class="nav" th:replace="~{fragments/sidenav :: sidenav}">
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Questions</a></li>
+            <li><a href="#">Tags</a></li>
+            <li><a href="#">Socials</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <h1>Home</h1>
+        <p sec:authorize="isAuthenticated()">Hello, <span sec:authentication="name">user</span>!</p>
+        <p th:if="${#authentication == null}">Hello, anonymous! Please log in to see more</p>
+    </div>
+
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}">
+    &copy; 2024 Revevue
+</footer>
+
+</body>
+</html>

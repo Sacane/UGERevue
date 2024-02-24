@@ -5,4 +5,8 @@ app-questions {
     row-gap: 30px;
     flex-grow: 1;
     background-color: white;
+    .info{
+        display: flex;
+        flex-direction: column;
+    }
 }

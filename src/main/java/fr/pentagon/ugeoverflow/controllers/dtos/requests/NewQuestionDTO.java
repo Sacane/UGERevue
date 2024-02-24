@@ -1,8 +1,5 @@
 package fr.pentagon.ugeoverflow.controllers.dtos.requests;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.Objects;
 

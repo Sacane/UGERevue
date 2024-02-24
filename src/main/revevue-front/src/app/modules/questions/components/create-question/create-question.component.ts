@@ -1,6 +1,7 @@
-import {Component, ViewEncapsulation, inject} from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {QuestionService} from "../../../../shared/questionService";
+import { Component, ViewEncapsulation, inject } from '@angular/core';
+import { FormControl, FormGroup, Validators } from "@angular/forms";
+import { QuestionService } from "../../../../shared/question.service";
+import { Router } from "@angular/router";
 
 @Component({
     selector: 'app-create-question',
@@ -17,28 +18,30 @@ export class CreateQuestionComponent {
     });
 
     private questionService = inject(QuestionService)
-
+    private router = inject(Router)
     onJavaClassPicked(event: Event) {
         const files = (event.target as HTMLInputElement).files;
         if (files === null) {
             return;
         }
         const file = files[0];
-        this.form.patchValue({javaClass: file});
+        this.form.patchValue({ javaClass: file });
     }
 
     onJavaClassWipe() {
-        this.form.patchValue({javaClass: null});
+        this.form.patchValue({ javaClass: null });
     }
 
     onSubmit() {
         console.warn(this.form.value);
-        this.questionService.createQuestion({
-            title: this.form.value.questionTitle as string,
-            description: this.form.value.questionContent as string,
-            javaFile: this.form.value.javaClass as File,
-            testFile: this.form.value.testClass as File | undefined
-        }).subscribe(() => console.log("OK"))
+        if (this.form.status === 'VALID') {
+            this.questionService.createQuestion({
+                title: this.form.value.questionTitle as string,
+                description: this.form.value.questionContent as string,
+                javaFile: this.form.value.javaClass as File,
+                testFile: this.form.value.testClass as File | undefined
+            }).subscribe(() => this.gotoQuestion());
+        }
     }
 
     onTestClassPicked(event: Event) {
@@ -47,12 +50,16 @@ export class CreateQuestionComponent {
             return;
         }
         const file = files[0];
-        this.form.patchValue({testClass: file});
+        this.form.patchValue({ testClass: file });
     }
 
     onTestClassWipe() {
-        this.form.patchValue({testClass: null});
+        this.form.patchValue({ testClass: null });
 
         // Build FormData from form and send to HTTP endpoint
+    }
+
+    gotoQuestion(): void {
+        this.router.navigateByUrl('/questions').then();
     }
 }

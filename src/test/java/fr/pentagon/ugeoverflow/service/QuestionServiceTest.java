@@ -232,7 +232,7 @@ public class QuestionServiceTest {
       questionService.addReview(new QuestionReviewCreateDTO(quentinResponse.id(), questionId, "CONTENT:" + i, i + 1, i + 1));
     }
 
-    var reviews = questionService.getReviews(questionId);
+    var reviews = reviewService.findReviewsByQuestionId(questionId);
     assertEquals(3, reviews.size());
   }
 
@@ -249,7 +249,7 @@ public class QuestionServiceTest {
       reviewService.addReview(new ReviewOnReviewDTO(quentin.id(), reviewId, "SUPER CONTENT"));
     }
 
-    var reviews = questionService.getReviews(questionId);
+    var reviews = reviewService.findReviewsByQuestionId(questionId);
     assertEquals(3, reviews.size());
 
     for (var review : reviews) {

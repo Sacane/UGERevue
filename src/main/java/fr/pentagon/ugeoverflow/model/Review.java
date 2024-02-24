@@ -96,6 +96,7 @@ public class Review {
 
     public void removeReview(Review review) {
         reviews.remove(review);
+        review.parentReview = null;
     }
 
     @Nullable

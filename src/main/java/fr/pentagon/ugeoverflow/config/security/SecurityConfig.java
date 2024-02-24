@@ -2,6 +2,7 @@ package fr.pentagon.ugeoverflow.config.security;
 
 import fr.pentagon.ugeoverflow.config.authentication.CustomUserDetailsService;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
+import fr.pentagon.ugeoverflow.service.CustomPasswordEncoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -27,7 +28,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 public class SecurityConfig {
   @Bean
   public PasswordEncoder passwordEncoder() {
-    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    return new CustomPasswordEncoder();
   }
 
   @Bean
@@ -57,7 +58,7 @@ public class SecurityConfig {
             csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
         .addFilterBefore(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
-    return config.build();
+    return config.build();  // TODO disable anonymous authentication
   }
 
   @Bean
@@ -72,8 +73,10 @@ public class SecurityConfig {
                 .anyRequest()
                 .authenticated()
             )
+            .headers(c -> c.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
             .formLogin(c -> c.loginPage("http://localhost:4200/login"))
             .httpBasic(AbstractHttpConfigurer::disable)
+            .anonymous(AbstractHttpConfigurer::disable)
             .build();
   }
 }

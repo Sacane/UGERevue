@@ -46,7 +46,7 @@ public final class CustomPasswordEncoder implements PasswordEncoder {
             for (var b : enteredPwdHash) {
                 builder.append(String.format("%02x", b));
             }
-            return builder.toString().equals(rawPassword.toString().substring(0,64));
+            return builder.toString().equals(encodedPassword.substring(0,64));
         } catch (NoSuchAlgorithmException e) {
             throw new AssertionError("SHA-256 algorithm doesn't exists anymore");
         }

@@ -9,8 +9,8 @@ import org.springframework.web.multipart.support.StandardServletMultipartResolve
 @Configuration
 @ComponentScan
 public class Config {
-    @Bean
-    public MultipartResolver multipartResolver() {
-        return new StandardServletMultipartResolver();
-    }
+  @Bean
+  public MultipartResolver multipartResolver() {
+    return new StandardServletMultipartResolver();
+  }
 }

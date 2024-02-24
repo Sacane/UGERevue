@@ -21,9 +21,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "SELECT EXISTS (SELECT u FROM User u LEFT JOIN u.reviews WHERE u.id = ?1 AND ?2 MEMBER OF u.reviews)")
     boolean containsReview(long userId, Review review);
     boolean existsByUsername(String username);
+    boolean existsByUsernameOrLogin(String username, String login);
     Optional<User> findByLogin(String login);
     @Query("SELECT u.followers FROM User u WHERE u = :user")
     Set<User> findFollowers(User user);
     @Query("SELECT u.follows FROM User u WHERE u = :user")
     Set<User> findFollowing(User user);
+    @Query("SELECT u FROM User u")
+    Set<User> findAllUsers();
+    @Query("SELECT u.follows FROM User u WHERE u.id = :id")
+    Set<User> findFollowsById(long id);
 }

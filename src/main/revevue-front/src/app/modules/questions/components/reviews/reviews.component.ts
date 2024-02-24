@@ -1,5 +1,5 @@
-import {Component, Input} from '@angular/core';
-import {Review} from "../../models/review";
+import {Component, Input, Signal} from '@angular/core';
+import {Review, ReviewFromReview} from "../../models/review";
 
 @Component({
     selector: 'app-reviews',
@@ -8,4 +8,7 @@ import {Review} from "../../models/review";
 })
 export class ReviewsComponent {
     @Input() reviews: Array<Review> = [];
+    deleteReview(deleteReview: Review): void {
+        this.reviews = this.reviews.filter(review => review.id !== deleteReview.id);
+    }
 }
