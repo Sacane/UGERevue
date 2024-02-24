@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.pentagon.ugeoverflow.DatasourceTestConfig;
 import fr.pentagon.ugeoverflow.config.SetupDataLoader;
 import fr.pentagon.ugeoverflow.config.authorization.Role;
-import fr.pentagon.ugeoverflow.controllers.UserController;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
+import fr.pentagon.ugeoverflow.controllers.rest.UserController;
 import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.UserService;
@@ -88,7 +88,7 @@ public class UserControllerRegisterTest {
             .contentType(MediaType.APPLICATION_JSON)
             .content(objectMapper.writeValueAsString(userRegisterDTO)))
         .andExpect(MockMvcResultMatchers.status().isBadRequest())
-        .andExpect(MockMvcResultMatchers.content().string("User with this username already exist"))
+        .andExpect(MockMvcResultMatchers.content().string("User with this username or login already exist"))
         .andDo(print());
   }
 }
