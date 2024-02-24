@@ -2,13 +2,17 @@
 <div style="display: flex;">
     <div style="flex-grow: 2; display: flex; flex-direction: column;" align="center">
         <div>
-            <button mat-icon-button style="color: green;">
+            <button mat-icon-button
+                [ngStyle]="{'color': review.vote === true ? 'white': 'green', 'background-color': review.vote === true ? 'green': 'white'}"
+                (click)="vote(review, true)">
                 <mat-icon>thumb_up</mat-icon>
             </button>
         </div>
         <span>{{ review.upvotes - review.downvotes }}</span>
         <div>
-            <button mat-icon-button style="color: red;">
+            <button mat-icon-button
+                [ngStyle]="{'color': review.vote === false ? 'white': 'red', 'background-color': review.vote === false ? 'red': 'white'}"
+                (click)="vote(review, false)">
                 <mat-icon>thumb_down</mat-icon>
             </button>
         </div>

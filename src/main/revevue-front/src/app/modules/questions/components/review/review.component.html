@@ -7,20 +7,22 @@
                         <b>{{ review.author }}</b>, {{ review.creationDate | date:'dd/MM/yyyy, HH:mm' }}
                     </span>
 
-                    @if (canDelete) {
-                    <button mat-raised-button color="primary" (click)="deleteReview()" [disabled]="deleting"
-                        align="end">
-                        <div style="display: flex; column-gap: 10px;">
-                            <span>Delete review</span>
-                            @if (deleting) {
-                            <mat-spinner [diameter]="20"></mat-spinner>
-                            }
-                        </div>
-                    </button>
-                    }
-                    <button mat-mini-fab color="primary" (click)="detailsReview()">
-                        <mat-icon>more</mat-icon>
-                    </button>
+                    <div style="display: flex; align-items: center; column-gap: 10px;">
+                        @if (canDelete) {
+                        <button mat-raised-button color="primary" (click)="deleteReview()" [disabled]="deleting"
+                            align="end">
+                            <div style="display: flex; column-gap: 10px;">
+                                <span>Delete review</span>
+                                @if (deleting) {
+                                <mat-spinner [diameter]="20"></mat-spinner>
+                                }
+                            </div>
+                        </button>
+                        }
+                        <button mat-mini-fab color="primary" (click)="detailsReview()">
+                            <mat-icon>more</mat-icon>
+                        </button>
+                    </div>
                 </div>
             </th>
         </tr>

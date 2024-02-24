@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Review } from "../../models/review";
 
 @Component({
@@ -9,7 +9,10 @@ import { Review } from "../../models/review";
 export class ReviewsComponent {
     @Input() reviews: Review[] = [];
 
+    @Output() onDelete: EventEmitter<Review[]> = new EventEmitter();
+
     deleteReview(deleteReview: Review): void {
         this.reviews = this.reviews.filter(review => review.id !== deleteReview.id);
+        this.onDelete.emit(this.reviews);
     }
 }

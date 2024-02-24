@@ -93,6 +93,7 @@ public class ReviewService {
             throw HttpException.unauthorized("Not your review");
         }
 
+        reviewVoteRepository.deleteAll(reviewVoteRepository.findAllVoteByReviewId(review.getId()));
         removeReviewsChildren(review);
         if (review.getParentReview() != null) {
             review.getParentReview().removeReview(review);
@@ -108,6 +109,7 @@ public class ReviewService {
     }
 
     private void removeReviewsChildren(Review review) {
+        reviewVoteRepository.deleteAll(reviewVoteRepository.findAllVoteByReviewId(review.getId()));
         review.getAuthor().removeReview(review);
 
         for (var r : review.getReviews()) {
@@ -150,7 +152,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public DetailReviewResponseDTO findDetailFromReviewId(long reviewId) {
+    public DetailReviewResponseDTO findDetailFromReviewId(long userId, long reviewId) {
         var review = reviewRepository.findByIdWithReviews(reviewId).orElseThrow(() -> HttpException.notFound("This review does not exists"));
 
         String citedCode = null;
@@ -170,6 +172,7 @@ public class ReviewService {
                 citedCode,
                 reviewVoteRepository.findUpvoteNumberByReviewId(review.getId()),
                 reviewVoteRepository.findDownvoteNumberByReviewId(review.getId()),
+                reviewVoteRepository.findVoteUserByReviewId(userId, reviewId),
                 review.getReviews().stream().map(childReview -> new DetailReviewResponseDTO(
                         childReview.getId(),
                         childReview.getAuthor().getUsername(),
@@ -178,6 +181,7 @@ public class ReviewService {
                         null,
                         reviewVoteRepository.findUpvoteNumberByReviewId(childReview.getId()),
                         reviewVoteRepository.findDownvoteNumberByReviewId(childReview.getId()),
+                        reviewVoteRepository.findVoteUserByReviewId(userId, childReview.getId()),
                         childReview.getReviews().stream().map(grandChildReview -> new DetailReviewResponseDTO(
                                 grandChildReview.getId(),
                                 grandChildReview.getAuthor().getUsername(),
@@ -186,6 +190,7 @@ public class ReviewService {
                                 null,
                                 reviewVoteRepository.findUpvoteNumberByReviewId(grandChildReview.getId()),
                                 reviewVoteRepository.findDownvoteNumberByReviewId(grandChildReview.getId()),
+                                reviewVoteRepository.findVoteUserByReviewId(userId, grandChildReview.getId()),
                                 List.of()
                         )).toList()
                 )).toList()

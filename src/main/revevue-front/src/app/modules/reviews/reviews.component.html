@@ -20,11 +20,15 @@
             <span>Published by {{ review.author }} on {{ review.creationDate }}</span>
 
             <div>
-                <button mat-icon-button style="color: green;">
+                <button mat-icon-button
+                    [ngStyle]="{'color': review.vote === true ? 'white': 'green', 'background-color': review.vote === true ? 'green': 'white'}"
+                    (click)="vote(review, true)">
                     <mat-icon aria-hidden="false" matBadge="{{ review.upvotes }}" matBadgeSize="small"
                         class="green-badge">thumb_up</mat-icon>
                 </button>
-                <button mat-icon-button style="color: red;">
+                <button mat-icon-button
+                    [ngStyle]="{'color': review.vote === false ? 'white': 'red', 'background-color': review.vote === false ? 'red': 'white'}"
+                    (click)="vote(review, false)">
                     <mat-icon aria-hidden="false" matBadge="{{ review.downvotes }}" matBadgeSize="small"
                         class="red-badge">thumb_down</mat-icon>
                 </button>

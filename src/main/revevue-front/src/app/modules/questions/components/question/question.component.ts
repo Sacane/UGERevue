@@ -98,4 +98,8 @@ export class QuestionComponent {
             }
         });
     }
+
+    onUpdateDelete(reviews: Review[]): void {
+        this.reviews = signal(reviews);
+    }
 }
