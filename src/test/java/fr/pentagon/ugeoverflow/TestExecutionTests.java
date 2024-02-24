@@ -34,7 +34,7 @@ final class TestExecutionTests {
     @AfterEach
     void cleanTempDirectory() throws IOException {
         try (var files = Files.list(TEST_DIRECTORY)) {
-            files.forEach(file -> {
+            files.filter(p -> !p.endsWith(".gitkeep")).forEach(file -> {
                 try {
                     Files.delete(file);
                 } catch (IOException e) {
@@ -60,7 +60,7 @@ final class TestExecutionTests {
                         loader.clean();
                         assertDoesNotThrow(loader::clean);
                         try (var files = Files.list(TEST_DIRECTORY)) {
-                            assertEquals(2, files.toList().size());
+                            assertEquals(3, files.toList().size());
                         }
                     }
             );
