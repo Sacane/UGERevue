@@ -112,8 +112,10 @@ public class QuestionService {
         var fileContent = new String(question.getFile(), StandardCharsets.UTF_8).split("\n");
         var lineStart = questionReviewCreateDTO.lineStart();
         var lineEnd = questionReviewCreateDTO.lineEnd();
-        var citedCode = (lineStart == null || lineEnd == null) ? null : Arrays.stream(fileContent, lineStart - 1, lineEnd)
-                .collect(Collectors.joining("\n"));
+        String citedCode = null;
+        if (lineStart != null && lineEnd != null && lineStart > 0 && lineEnd <= fileContent.length) {
+            citedCode = Arrays.stream(fileContent, lineStart - 1, lineEnd).collect(Collectors.joining("\n"));
+        }
 
         return new ReviewQuestionResponseDTO(
                 review.getId(),
