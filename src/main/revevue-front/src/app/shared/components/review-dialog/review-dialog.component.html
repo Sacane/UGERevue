@@ -1,6 +1,7 @@
 <h2 mat-dialog-title align="center">Add review</h2>
 <mat-dialog-content>
     <form [formGroup]="form">
+        @if (data.onQuestion) {
         <mat-form-field>
             <mat-label>Ligne de début</mat-label>
             <input matInput type="text" formControlName="lineStart">
@@ -15,6 +16,7 @@
             <mat-error>Required</mat-error>
             }
         </mat-form-field>
+        }
         <mat-form-field>
             <mat-label>Contenu</mat-label>
             <input matInput type="text" formControlName="content">

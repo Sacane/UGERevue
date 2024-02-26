@@ -17,7 +17,7 @@
         }
 
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span>Published by {{ review.author }} on {{ review.creationDate }}</span>
+            <span>Published by {{ review.author }} on {{ review.creationDate | date }}</span>
 
             <div>
                 <button mat-icon-button
@@ -51,22 +51,7 @@
 
         <mat-divider></mat-divider>
         @for(childReview of review.reviews; track childReview.id; let childReviewIndex = $index) {
-        <app-child-review [review]="childReview"></app-child-review>
-        <!--<div style="display: flex; flex-direction: column;">
-            <app-child-review [review]="childReview"></app-child-review>
-            <div style="display: flex;">
-                <div style="flex-grow: 2;"></div>
-                <div style="flex-grow: 10;">
-                    @for(grandChildReview of childReview.reviews; track grandChildReview.id) {
-                    <app-child-review [review]="grandChildReview"></app-child-review>
-                    }
-                </div>
-            </div>
-        </div>
-
-        @if (review.reviews && childReviewIndex != (review.reviews.length - 1)) {
-        <mat-divider></mat-divider>
-        }-->
+        <app-child-review [review]="childReview" (onDelete)="onChildDelete($event)"></app-child-review>
         }
         @empty {
         <span>Aucune review</span>

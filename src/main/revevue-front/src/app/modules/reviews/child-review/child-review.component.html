@@ -23,20 +23,32 @@
             <span>{{ review.content }}</span>
 
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span>Published by {{ review.author }} on {{ review.creationDate }}</span>
+                <span>Published by {{ review.author }} on {{ review.creationDate | date }}</span>
 
-                <button mat-mini-fab color="primary" (click)="detailsReview()">
-                    <mat-icon>more</mat-icon>
-                </button>
+                <div style="display: flex; column-gap: 5px;">
+                    <button mat-mini-fab color="primary" (click)="addReview()">
+                        <mat-icon>add</mat-icon>
+                    </button>
+                    @if (canDelete) {
+                    <button mat-mini-fab color="primary" (click)="deleteReview()">
+                        <mat-icon>delete</mat-icon>
+                    </button>
+                    }
+                    <button mat-mini-fab color="primary" (click)="detailsReview()">
+                        <mat-icon>more</mat-icon>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <div style="display: flex;">
-        <div style="flex-grow: 2;"></div>
+        <div style="flex-grow: 2; padding-right: 50px;">
+            <mat-divider [vertical]="true" style="height: 100%; border-right-color: black;"></mat-divider>
+        </div>
         <div style="flex-grow: 10;">
             @for(childReview of review.reviews; track childReview.id) {
-            <app-child-review [review]="childReview"></app-child-review>
+            <app-child-review [review]="childReview" (onDelete)="onChildDelete($event)"></app-child-review>
             }
         </div>
     </div>

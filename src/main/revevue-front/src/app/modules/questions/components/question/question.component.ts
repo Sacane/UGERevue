@@ -76,6 +76,9 @@ export class QuestionComponent {
 
     addReview(): void {
         this.dialog.open(ReviewDialogComponent, {
+            data: {
+                onQuestion: true
+            },
             disableClose: true
         }).afterClosed().pipe(
             switchMap(reviewValue => {

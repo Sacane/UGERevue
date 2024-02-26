@@ -52,6 +52,9 @@ export class ReviewsComponent implements OnDestroy {
 
     addReview(): void {
         this.dialog.open(ReviewDialogComponent, {
+            data: {
+                onQuestion: false
+            },
             disableClose: true
         }).afterClosed().pipe(
             switchMap(reviewValue => {
@@ -111,6 +114,12 @@ export class ReviewsComponent implements OnDestroy {
                 this.location.back();
             }
         });
+    }
+
+    onChildDelete(id: string): void {
+        const review = this.review$.getValue();
+
+        this.review$.next({ ...review, reviews: review.reviews.filter((childReview: any) => childReview.id !== id) });
     }
 
     vote(review: any, up: boolean): void {
