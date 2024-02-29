@@ -1,5 +1,5 @@
-import {Component, Input, Signal} from '@angular/core';
-import {Review, ReviewFromReview} from "../../models/review";
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Review } from "../../models/review";
 
 @Component({
     selector: 'app-reviews',
@@ -7,8 +7,12 @@ import {Review, ReviewFromReview} from "../../models/review";
     styleUrl: './reviews.component.scss'
 })
 export class ReviewsComponent {
-    @Input() reviews: Array<Review> = [];
+    @Input() reviews: Review[] = [];
+
+    @Output() onDelete: EventEmitter<Review[]> = new EventEmitter();
+
     deleteReview(deleteReview: Review): void {
         this.reviews = this.reviews.filter(review => review.id !== deleteReview.id);
+        this.onDelete.emit(this.reviews);
     }
 }

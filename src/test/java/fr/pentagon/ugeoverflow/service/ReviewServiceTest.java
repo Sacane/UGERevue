@@ -54,22 +54,22 @@ public class ReviewServiceTest {
     assertNotNull(quentin);
     var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null), quentin.id());
 
-    var reviewParentId = questionService.addReview(new QuestionReviewCreateDTO(quentin.id(), questionId, "CONTENT", null, null));
+    var reviewParentResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.id(), questionId, "CONTENT", null, null));
 
-    var reviewId = reviewService.addReview(new ReviewOnReviewDTO(quentin.id(), reviewParentId, "CONTENT CHILD REVIEW"));
+    var reviewResponse = reviewService.addReview(new ReviewOnReviewDTO(quentin.id(), reviewParentResponse.id(), "CONTENT CHILD REVIEW"));
 
     var questionOptional = questionRepository.findByIdWithReviews(questionId);
     assertTrue(questionOptional.isPresent());
     var question = questionOptional.get();
     assertEquals(1, question.getReviews().size());
 
-    var reviewParentOptional = reviewRepository.findByIdWithReviews(reviewParentId);
+    var reviewParentOptional = reviewRepository.findByIdWithReviews(reviewParentResponse.id());
     assertTrue(reviewParentOptional.isPresent());
     var reviewParent = reviewParentOptional.get();
     assertEquals(1, reviewParent.getReviews().size());
     assertNull(reviewParent.getParentReview());
 
-    var reviewOptional = reviewRepository.findByIdWithReviews(reviewId);
+    var reviewOptional = reviewRepository.findByIdWithReviews(reviewResponse.id());
     assertTrue(reviewOptional.isPresent());
     var review = reviewOptional.get();
     assertEquals(0, review.getReviews().size());
@@ -84,13 +84,13 @@ public class ReviewServiceTest {
     assertNotNull(quentin);
     var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null), quentin.id());
 
-    var reviewParentId = questionService.addReview(new QuestionReviewCreateDTO(quentin.id(), questionId, "CONTENT", null, null));
+    var reviewParentResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.id(), questionId, "CONTENT", null, null));
 
     for (var i = 0; i < 10; i++) {
-      reviewService.addReview(new ReviewOnReviewDTO(quentin.id(), reviewParentId, "CONTENT CHILD REVIEW:" + i));
+      reviewService.addReview(new ReviewOnReviewDTO(quentin.id(), reviewParentResponse.id(), "CONTENT CHILD REVIEW:" + i));
     }
 
-    assertEquals(10, reviewService.getReviews(reviewParentId).size());
+    assertEquals(10, reviewService.getReviews(reviewParentResponse.id()).size());
   }
 
   private AuthorsIdOnVote setupVote() {
@@ -111,14 +111,14 @@ public class ReviewServiceTest {
     );
     var question = new NewQuestionDTO( "I DONT KNOW", "IDJZAODIJZD", new byte[0], new byte[0]);
     var questionId = questionService.create(question, userSaved.getId());
-    var id = questionService.addReview(new QuestionReviewCreateDTO(user.getId(), questionId, "fzaerzearza", 0, 3));
-    var savedReview = reviewRepository.findById(id);
+    var reviewResponse = questionService.addReview(new QuestionReviewCreateDTO(user.getId(), questionId, "fzaerzearza", 0, 3));
+    var savedReview = reviewRepository.findById(reviewResponse.id());
     assertTrue(savedReview.isPresent());
 
-    reviewService.vote(userSaved2.getId(), id, true);
-    reviewService.vote(userSaved3.getId(), id, true);
-    reviewService.vote(userSaved4.getId(), id, false);
-    return new AuthorsIdOnVote(authorIds, id);
+    reviewService.vote(userSaved2.getId(), reviewResponse.id(), true);
+    reviewService.vote(userSaved3.getId(), reviewResponse.id(), true);
+    reviewService.vote(userSaved4.getId(), reviewResponse.id(), false);
+    return new AuthorsIdOnVote(authorIds, reviewResponse.id());
   }
 
   @Test
@@ -147,10 +147,10 @@ public class ReviewServiceTest {
     var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123", Role.USER));
     var question = questionRepository.save(new Question("TITLE", "DESCRIPTION", new byte[0], null, null, true, new Date()));
 
-    var reviewParentId = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT", 1, 2));
+    var reviewParentResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT", 1, 2));
     assertEquals(1, reviewRepository.findAll().size());
 
-    reviewService.remove(new ReviewRemoveDTO(quentin.getId(), reviewParentId));
+    reviewService.remove(new ReviewRemoveDTO(quentin.getId(), reviewParentResponse.id()));
 
     assertEquals(0, reviewRepository.findAll().size());
     var userOptional = userRepository.findByIdWithReviews(quentin.getId());
@@ -169,18 +169,18 @@ public class ReviewServiceTest {
     var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123", Role.USER));
     var question = questionRepository.save(new Question("TITLE", "DESCRIPTION", new byte[0], null, null, true, new Date()));
 
-    var reviewParentId = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT", 1, 2));
+    var reviewParentResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT", 1, 2));
     assertEquals(1, reviewRepository.findAll().size());
 
-    var reviewId = reviewService.addReview(new ReviewOnReviewDTO(quentin.getId(), reviewParentId, "CONTENT"));
+    var reviewResponse = reviewService.addReview(new ReviewOnReviewDTO(quentin.getId(), reviewParentResponse.id(), "CONTENT"));
 
     assertEquals(2, reviewRepository.findAll().size());
 
-    reviewService.addReview(new ReviewOnReviewDTO(quentin.getId(), reviewId, "CONTENT"));
+    reviewService.addReview(new ReviewOnReviewDTO(quentin.getId(), reviewResponse.id(), "CONTENT"));
 
     assertEquals(3, reviewRepository.findAll().size());
 
-    reviewService.remove(new ReviewRemoveDTO(quentin.getId(), reviewParentId));
+    reviewService.remove(new ReviewRemoveDTO(quentin.getId(), reviewParentResponse.id()));
 
     assertEquals(0, reviewRepository.findAll().size());
     var userOptional = userRepository.findByIdWithReviews(quentin.getId());
@@ -199,18 +199,18 @@ public class ReviewServiceTest {
     var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123", Role.USER));
     var question = questionRepository.save(new Question("TITLE", "DESCRIPTION", new byte[0], null, null, true, new Date()));
 
-    var reviewParentId = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT", 1, 2));
+    var reviewParentResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT", 1, 2));
     assertEquals(1, reviewRepository.findAll().size());
 
-    var reviewId = reviewService.addReview(new ReviewOnReviewDTO(quentin.getId(), reviewParentId, "CONTENT"));
+    var reviewResponse = reviewService.addReview(new ReviewOnReviewDTO(quentin.getId(), reviewParentResponse.id(), "CONTENT"));
 
     assertEquals(2, reviewRepository.findAll().size());
 
-    var rId = reviewService.addReview(new ReviewOnReviewDTO(quentin.getId(), reviewId, "CONTENT"));
+    var rResponse = reviewService.addReview(new ReviewOnReviewDTO(quentin.getId(), reviewResponse.id(), "CONTENT"));
 
     assertEquals(3, reviewRepository.findAll().size());
 
-    reviewService.remove(new ReviewRemoveDTO(quentin.getId(), rId));
+    reviewService.remove(new ReviewRemoveDTO(quentin.getId(), rResponse.id()));
 
     assertEquals(2, reviewRepository.findAll().size());
     var userOptional = userRepository.findByIdWithReviews(quentin.getId());
@@ -229,18 +229,18 @@ public class ReviewServiceTest {
     var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123", Role.USER));
     var question = questionRepository.save(new Question("TITLE", "DESCRIPTION", new byte[0], null, null, true, new Date()));
 
-    var reviewParentId = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT", 1, 2));
+    var reviewParentResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT", 1, 2));
     assertEquals(1, reviewRepository.findAll().size());
 
-    var reviewId = reviewService.addReview(new ReviewOnReviewDTO(quentin.getId(), reviewParentId, "CONTENT"));
+    var reviewResponse = reviewService.addReview(new ReviewOnReviewDTO(quentin.getId(), reviewParentResponse.id(), "CONTENT"));
 
     assertEquals(2, reviewRepository.findAll().size());
 
-    reviewService.addReview(new ReviewOnReviewDTO(quentin.getId(), reviewId, "CONTENT"));
+    reviewService.addReview(new ReviewOnReviewDTO(quentin.getId(), reviewResponse.id(), "CONTENT"));
 
     assertEquals(3, reviewRepository.findAll().size());
 
-    reviewService.remove(new ReviewRemoveDTO(quentin.getId(), reviewId));
+    reviewService.remove(new ReviewRemoveDTO(quentin.getId(), reviewResponse.id()));
 
     assertEquals(1, reviewRepository.findAll().size());
     var userOptional = userRepository.findByIdWithReviews(quentin.getId());

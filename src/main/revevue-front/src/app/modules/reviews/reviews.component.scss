@@ -1,0 +1,21 @@
+app-review-detail {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    flex-grow: 1;
+    row-gap: 20px;
+
+    .details-header {
+        width: 100%;
+        background-color: white;
+        box-shadow: 0px 0px 2px black !important;
+    }
+
+    .green-badge .mat-badge-content {
+        background-color: green;
+    }
+
+    .red-badge .mat-badge-content {
+        background-color: red;
+    }
+}

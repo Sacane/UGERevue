@@ -56,9 +56,17 @@
         }
 
         <div class="reviewsSection">
-            <div class="title">Revues</div>
+            <div class="title">
+                <span>Revues</span>
+
+                @if (canReview) {
+                <button mat-mini-fab color="primary" (click)="addReview()">
+                    <mat-icon>add</mat-icon>
+                </button>
+                }
+            </div>
             <div>
-                <app-reviews [reviews]="reviews()"></app-reviews>
+                <app-reviews [reviews]="reviews()" (onDelete)="onUpdateDelete($event)"></app-reviews>
             </div>
         </div>
     </div>

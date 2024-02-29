@@ -29,13 +29,17 @@ export const routes: Routes = [
             {
                 path: 'users',
                 loadChildren: () => import('./modules').then(m => m.UsersModule)
+            },
+            {
+                path: 'reviews',
+                loadChildren: () => import('./modules').then(m => m.ReviewsModule)
             }
         ]
     }
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes, {})],
+    imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload' })],
     exports: [RouterModule]
 })
 export class AppRoutingModule { }

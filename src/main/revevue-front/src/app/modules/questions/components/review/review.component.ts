@@ -1,13 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Review, ReviewFromReview } from "../../models/review";
+import { Review } from "../../models/review";
 import { UserService } from '../../../../shared/HttpServices';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { catchError, concat, of, switchMap } from 'rxjs';
-import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ReviewService } from '../../../../shared';
-
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Role } from '../../models/role.model';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-review',
@@ -16,17 +16,17 @@ import { ReviewService } from '../../../../shared';
 })
 export class ReviewComponent implements OnInit {
     @Input() review: Review = {
-        id: "", author: "", creationDate: new Date(0), content: "", downvotes: 0, reviews: [], upvotes: 0
+        id: "", author: "", creationDate: '', content: "", downvotes: 0, reviews: [], upvotes: 0
     };
     @Output() onDelete: EventEmitter<void> = new EventEmitter();
 
     canDelete: boolean = false;
     deleting: boolean = false;
 
-    constructor(private userService: UserService, private reviewService: ReviewService, protected dialog: MatDialog) { }
+    constructor(private userService: UserService, private reviewService: ReviewService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) { }
 
     ngOnInit(): void {
-        this.canDelete = this.userService.getLogin() === this.review.author;
+        this.canDelete = this.review.author === this.userService.getLogin() || this.userService.getRole() === Role.ADMIN;
     }
 
     deleteReview(): void {
@@ -41,7 +41,7 @@ export class ReviewComponent implements OnInit {
                 if (confirm) {
                     return concat(
                         of({ deleting: true }),
-                        this.reviewService.deleteReview("").pipe(
+                        this.reviewService.deleteReview(this.review.id).pipe(
                             catchError(err => {
                                 console.log(err);
                                 return of({ error: err });
@@ -53,16 +53,21 @@ export class ReviewComponent implements OnInit {
                 return of();
             })
         ).subscribe(response => {
-            if (response.deleting) {
+            if (response && response.deleting) {
                 this.deleting = true;
             }
-            else if (!response.error) {
-                this.onDelete.emit();
-                // this.snackBar.open('La review a été suprimée', 'OK');
+            else if (response && response.error) {
+                this.deleting = false;
+                this.snackBar.open('Error occurs while deleting the review', 'OK');
             }
             else {
-                this.deleting = false;
+                this.onDelete.emit();
+                this.snackBar.open('The review have been deleted', 'OK');
             }
         });
+    }
+
+    detailsReview(): void {
+        this.router.navigateByUrl(`/reviews/${this.review.id}`);
     }
 }

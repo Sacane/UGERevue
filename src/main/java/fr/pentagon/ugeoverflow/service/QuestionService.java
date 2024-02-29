@@ -1,12 +1,13 @@
 package fr.pentagon.ugeoverflow.service;
 
+import fr.pentagon.ugeoverflow.config.authorization.Role;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionRemoveDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseChildrenDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponseDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.Review;
@@ -64,7 +65,7 @@ public class QuestionService {
                         question.getCreatedAt().toString(),
                         questionVoteRepository.countAllById(question.getId()),
                         question.getReviews().size()
-                    )).toList();
+                )).toList();
     }
 
     @Transactional
@@ -92,7 +93,7 @@ public class QuestionService {
     }
 
     @Transactional
-    public long addReview(QuestionReviewCreateDTO questionReviewCreateDTO) {
+    public ReviewQuestionResponseDTO addReview(QuestionReviewCreateDTO questionReviewCreateDTO) {
         var userFind = userRepository.findById(questionReviewCreateDTO.userId());
         if (userFind.isEmpty()) {
             throw HttpException.notFound("User not exist");
@@ -108,7 +109,24 @@ public class QuestionService {
         question.addReview(review);
         user.addReview(review);
 
-        return review.getId();
+        var fileContent = new String(question.getFile(), StandardCharsets.UTF_8).split("\n");
+        var lineStart = questionReviewCreateDTO.lineStart();
+        var lineEnd = questionReviewCreateDTO.lineEnd();
+        String citedCode = null;
+        if (lineStart != null && lineEnd != null && lineStart > 0 && lineEnd <= fileContent.length) {
+            citedCode = Arrays.stream(fileContent, lineStart - 1, lineEnd).collect(Collectors.joining("\n"));
+        }
+
+        return new ReviewQuestionResponseDTO(
+                review.getId(),
+                user.getUsername(),
+                review.getCreatedAt(),
+                review.getContent(),
+                citedCode,
+                0,
+                0,
+                List.of()
+        );
     }
 
     @Transactional
@@ -124,10 +142,13 @@ public class QuestionService {
         var user = userFind.get();
         var question = questionFind.get();
 
-        if (!userRepository.containsQuestion(user.getId(), question)) {
+        var containsQuestion = userRepository.containsQuestion(user.getId(), question);
+        if (!containsQuestion && user.getRole() != Role.ADMIN) {
             throw HttpException.unauthorized("Not your question");
         }
-        user.removeQuestion(question);
+        if (containsQuestion) {
+            user.removeQuestion(question);
+        }
         questionRepository.delete(question);
     }
 

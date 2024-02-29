@@ -1,7 +1,7 @@
-import {Component, inject, ViewEncapsulation} from '@angular/core';
+import { Component, inject, ViewEncapsulation } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import {UserService} from "../../shared/HttpServices";
-import {Router} from "@angular/router";
+import { UserService } from "../../shared/HttpServices";
+import { Router } from "@angular/router";
 
 @Component({
     selector: 'app-login',
@@ -15,7 +15,7 @@ export class LoginComponent {
         password: new FormControl('', [Validators.required])
     });
     userService = inject(UserService)
-    private router =  inject(Router)
+    private router = inject(Router)
 
     login(): void {
         if (this.loginForm.valid) {
@@ -23,7 +23,6 @@ export class LoginComponent {
                 login: this.loginForm.value.accountName as string,
                 password: this.loginForm.value.password as string
             }).subscribe(result => {
-                console.log("Is login => " + this.userService.isLogin())
                 this.router.navigateByUrl("/home").then()
             })
         }

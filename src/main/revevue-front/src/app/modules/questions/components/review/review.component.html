@@ -7,17 +7,22 @@
                         <b>{{ review.author }}</b>, {{ review.creationDate | date:'dd/MM/yyyy, HH:mm' }}
                     </span>
 
-                    @if (canDelete) {
-                    <button mat-raised-button color="primary" (click)="deleteReview()" [disabled]="deleting"
-                        align="end">
-                        <div style="display: flex; column-gap: 10px;">
-                            <span>Delete review</span>
-                            @if (deleting) {
-                            <mat-spinner [diameter]="20"></mat-spinner>
-                            }
-                        </div>
-                    </button>
-                    }
+                    <div style="display: flex; align-items: center; column-gap: 10px;">
+                        @if (canDelete) {
+                        <button mat-raised-button color="primary" (click)="deleteReview()" [disabled]="deleting"
+                            align="end">
+                            <div style="display: flex; column-gap: 10px;">
+                                <span>Delete review</span>
+                                @if (deleting) {
+                                <mat-spinner [diameter]="20"></mat-spinner>
+                                }
+                            </div>
+                        </button>
+                        }
+                        <button mat-mini-fab color="primary" (click)="detailsReview()">
+                            <mat-icon>more</mat-icon>
+                        </button>
+                    </div>
                 </div>
             </th>
         </tr>
@@ -26,7 +31,6 @@
                 <div class="voteSection">
                     <button color="upvote" extended mat-mini-fab>
                         <mat-icon>thumb_up</mat-icon>
-
                     </button>
                     {{ review.upvotes }}
 
@@ -44,37 +48,38 @@
             </td>
         </tr>
         @if (review.reviews.length > 0) {
-            <tr>
-                <td colspan="2" style="border-right: none">
-                    <div class="review">
-                        @for(subReview of review.reviews; track subReview.author) {
-                            <table class="reviewTable">
-                                <tr>
-                                    <th colspan="2"><b>{{ subReview.author }}</b>, {{ subReview.creationDate | date:'dd/MM/yyyy, HH:mm' }}</th>
-                                </tr>
-                                <tr>
-                                    <td style="width: 5%; min-width: 60px;">
-                                        <div class="voteSection">
-                                            <button color="upvote" extended mat-mini-fab>
-                                                <mat-icon>thumb_up</mat-icon>
-                                            </button>
-                                            {{ subReview.upvotes }}
+        <tr>
+            <td colspan="2" style="border-right: none">
+                <div class="review">
+                    @for(subReview of review.reviews; track subReview.author) {
+                    <table class="reviewTable">
+                        <tr>
+                            <th colspan="2"><b>{{ subReview.author }}</b>, {{ subReview.creationDate | date:'dd/MM/yyyy,
+                                HH:mm' }}</th>
+                        </tr>
+                        <tr>
+                            <td style="width: 5%; min-width: 60px;">
+                                <div class="voteSection">
+                                    <button color="upvote" extended mat-mini-fab>
+                                        <mat-icon>thumb_up</mat-icon>
+                                    </button>
+                                    {{ subReview.upvotes }}
 
-                                            <button color="downvote" mat-mini-fab>
-                                                <mat-icon>thumb_down</mat-icon>
-                                            </button>
-                                            {{ subReview.downvotes }}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <p>{{ subReview.content }}</p>
-                                    </td>
-                                </tr>
-                            </table>
-                        }
-                    </div>
-                </td>
-            </tr>
+                                    <button color="downvote" mat-mini-fab>
+                                        <mat-icon>thumb_down</mat-icon>
+                                    </button>
+                                    {{ subReview.downvotes }}
+                                </div>
+                            </td>
+                            <td>
+                                <p>{{ subReview.content }}</p>
+                            </td>
+                        </tr>
+                    </table>
+                    }
+                </div>
+            </td>
+        </tr>
         }
     </table>
 </div>

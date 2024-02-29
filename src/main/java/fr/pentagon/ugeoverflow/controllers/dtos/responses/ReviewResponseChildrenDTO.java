@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 public record ReviewResponseChildrenDTO(
+        long id,
         String author,
         String content,
         String citedCode,
