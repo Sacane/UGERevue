@@ -20,7 +20,7 @@ public final class User {
   @Enumerated(EnumType.STRING)
   private Role role;
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
-  private List<Question> questions;
+  private List<Question> questions = new ArrayList<>();
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "author")
   private List<Review> reviews = new ArrayList<>();
   @ManyToMany
