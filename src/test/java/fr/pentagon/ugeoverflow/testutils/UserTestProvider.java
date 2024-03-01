@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 public class UserTestProvider {
@@ -30,8 +29,7 @@ public class UserTestProvider {
     }
 
     @Transactional
-    public HashMap<String, Long> addSomeUserIntoDatabase() throws IOException {
-        var userToId = new HashMap<String, Long>();
+    public void addSomeUserIntoDatabase() throws IOException {
         List<User> users = List.of(
                 new User("Sacane", "loginSacane", passwordEncoder.encode("SacanePassword"), "sacane.test@gmail.com", Role.USER),
                 new User("Sacane2", "loginSacane2", passwordEncoder.encode("SacanePassword2"), "sacane2.test@gmail.com", Role.USER),
@@ -39,20 +37,19 @@ public class UserTestProvider {
                 new User("Sacane4", "loginSacane4", passwordEncoder.encode("SacanePassword4"), "sacane4.test@gmail.com", Role.USER)
         );
         userRepository.saveAll(users);
-        users.forEach(u -> userToId.put(u.getUsername(), u.getId()));
 
 
         var f1 = Paths.get("src", "test", "resources", "FakeJavaFiles", "HelloWorld.java");
         var f2 = Paths.get("src", "test", "resources", "FakeJavaFiles", "HelloWorldTest.java");
 
-        Question entity = new Question("Hello world ne marche pas", "Je n'arrive pas a afficher mon hello world", Files.readAllBytes(f1), Files.readAllBytes(f2), "No result", true, new Date());
-        Question entity2 = new Question("Hello world ne marche pas", "Je n'arrive pas a afficher mon hello world", Files.readAllBytes(f1), Files.readAllBytes(f2), "No result", true, new Date());
-        Question entity3 = new Question("Hello world ne marche pas", "Je n'arrive pas a afficher mon hello world", Files.readAllBytes(f1), Files.readAllBytes(f2), "No result", true, new Date());
-        Question entity4 = new Question("Hello world ne marche pas", "Je n'arrive pas a afficher mon hello world", Files.readAllBytes(f1), Files.readAllBytes(f2), "No result", true, new Date());
-        Question entity5 = new Question("Hello world ne marche pas", "Je n'arrive pas a afficher mon hello world", Files.readAllBytes(f1), Files.readAllBytes(f2), "No result", true, new Date());
-        Question entity6 = new Question("Hello world ne marche pas", "Je n'arrive pas a afficher mon hello world", Files.readAllBytes(f1), Files.readAllBytes(f2), "No result", true, new Date());
-        Question entity7 = new Question("Hello world ne marche pas", "Je n'arrive pas a afficher mon hello world", Files.readAllBytes(f1), Files.readAllBytes(f2), "No result", true, new Date());
-        Question entity8 = new Question("Hello world ne marche pas", "Je n'arrive pas a afficher mon hello world", Files.readAllBytes(f1), Files.readAllBytes(f2), "No result", true, new Date());
+        Question entity = new Question("Hello world ne marche pas chez moi", "Je n'arrive pas a afficher mon hello world", Files.readAllBytes(f1), Files.readAllBytes(f2), "No result", true, new Date());
+        Question entity2 = new Question("J'aimerai afficher un Hello world mais j'ai une erreur de compilation", "Je n'arrive pas a afficher mon hello world", Files.readAllBytes(f1), Files.readAllBytes(f2), "No result", true, new Date());
+        Question entity3 = new Question("Impossible de trouver le bug", "Je n'arrive pas a afficher mon hello world", Files.readAllBytes(f1), Files.readAllBytes(f2), "No result", true, new Date());
+        Question entity4 = new Question("Ce hello world m'exaspere", "Je n'arrive pas a afficher mon hello world", Files.readAllBytes(f1), Files.readAllBytes(f2), "No result", true, new Date());
+        Question entity5 = new Question("Je ne comprends pas", "Je n'arrive pas a afficher mon hello world", Files.readAllBytes(f1), Files.readAllBytes(f2), "No result", true, new Date());
+        Question entity6 = new Question("Pourquoi est-ce que mon test ne fonctionne pas", "Je n'arrive pas a afficher mon hello world", Files.readAllBytes(f1), Files.readAllBytes(f2), "No result", true, new Date());
+        Question entity7 = new Question("J'ai bien peur d'avoir pété Java", "Je n'arrive pas a afficher mon hello world", Files.readAllBytes(f1), Files.readAllBytes(f2), "No result", true, new Date());
+        Question entity8 = new Question("J'aimerai optimiser mon code sous Java 21", "Je n'arrive pas a afficher mon hello world", Files.readAllBytes(f1), Files.readAllBytes(f2), "No result", true, new Date());
 
         entity.setAuthor(users.get(0));
         var user1 = users.get(1);
@@ -85,7 +82,5 @@ public class UserTestProvider {
         user3.addQuestion(entity6);
         user3.addQuestion(entity7);
         user3.addQuestion(entity8);
-
-        return userToId;
     }
 }

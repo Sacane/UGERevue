@@ -32,4 +32,8 @@ public class LoginTestService {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(credentialsDTO)));
     }
+
+    public ResultActions logout() throws Exception {
+        return mockMvc.perform(MockMvcRequestBuilders.post(Routes.Auth.LOGOUT));
+    }
 }
