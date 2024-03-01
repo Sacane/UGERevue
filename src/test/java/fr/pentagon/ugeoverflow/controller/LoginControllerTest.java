@@ -1,9 +1,10 @@
 package fr.pentagon.ugeoverflow.controller;
 
 import fr.pentagon.ugeoverflow.DatasourceTestConfig;
+import fr.pentagon.ugeoverflow.config.authentication.RevevueUserDetail;
+import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
-import fr.pentagon.ugeoverflow.controllers.rest.LoginController;
 import fr.pentagon.ugeoverflow.service.UserService;
 import fr.pentagon.ugeoverflow.testutils.LoginTestService;
 import org.junit.jupiter.api.DisplayName;
@@ -13,14 +14,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @SpringBootTest
 @Import(DatasourceTestConfig.class)
 public class LoginControllerTest {
-  @Autowired
-  private LoginController loginController;
-
   @Autowired
   private UserService userService;
 
@@ -36,10 +38,14 @@ public class LoginControllerTest {
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("Verestah1"))
         .andDo(print());
+    Optional<RevevueUserDetail> authentication = SecurityContext.authentication();
+    assertTrue(authentication.isPresent());
+    var auth = authentication.get();
+    assertEquals("Verestah1", auth.getUsername());
   }
 
   @Test
-  @DisplayName("Case of exception : login not found")
+  @DisplayName("Case of exception : login unauthorized")
   void loginNotFoundUserAuth() throws Exception {
     var credentialsDTO = new CredentialsDTO("login", "password");
     loginTestService.login(credentialsDTO)
