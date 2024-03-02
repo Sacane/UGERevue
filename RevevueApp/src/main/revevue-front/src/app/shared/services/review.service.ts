@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, catchError, throwError } from "rxjs";
 import { environment } from "../../environment";
-import { Review } from "../../modules/questions/models/review";
+import {DetailReviewResponseDTO, Review} from "../../modules/reviews/models/review.model";
 
 @Injectable({
     providedIn: 'root',
@@ -12,7 +12,7 @@ export class ReviewService {
 
     constructor(private httpclient: HttpClient) { }
 
-    public getDetails(reviewId: string): Observable<any> {
+    public getDetails(reviewId: string): Observable<DetailReviewResponseDTO> {
         return this.httpclient.get<any>(`${this.url}/${reviewId}`);
     }
 
@@ -30,10 +30,10 @@ export class ReviewService {
         );
     }
 
-    public addReview(reviewId: string, content: string): Observable<any> {
+    public addReview(reviewId: string, content: string): Observable<Review> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-        return this.httpclient.post<any>(this.url, { reviewId, content }, { headers });
+        return this.httpclient.post<Review>(this.url, { reviewId, content }, { headers });
     }
 
     public vote(reviewId: string, up: boolean): Observable<any> {

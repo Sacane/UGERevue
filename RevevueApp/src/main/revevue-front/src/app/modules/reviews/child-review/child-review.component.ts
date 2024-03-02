@@ -1,12 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Router } from '@angular/router';
-import { ReviewDialogComponent, ReviewService } from '../../../shared';
-import { catchError, concat, of, switchMap } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { UserService } from '../../../shared/HttpServices';
-import { Role } from '../../questions/models/role.model';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Router} from '@angular/router';
+import {ReviewDialogComponent, ReviewService} from '../../../shared';
+import {catchError, concat, of, switchMap} from 'rxjs';
+import {MatDialog} from '@angular/material/dialog';
+import {ConfirmDialogComponent} from '../../../shared/components/confirm-dialog/confirm-dialog.component';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {UserService} from '../../../shared/HttpServices';
+import {Role} from '../../questions/models/role.model';
 
 @Component({
     selector: 'app-child-review',
@@ -92,7 +92,7 @@ export class ChildReviewComponent implements OnInit {
     }
 
     detailsReview(): void {
-        this.router.navigateByUrl(`/reviews/${this.review?.id}`);
+        this.router.navigateByUrl(`/reviews/${this.review?.id}`).then();
     }
 
     vote(review: any, up: boolean): void {

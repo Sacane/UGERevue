@@ -22,6 +22,6 @@ export class QuestionsComponent {
         return this.userService.isLogin()
     }
     navigateTo(url: string): void {
-        this.router.navigateByUrl(url);
+        this.router.navigateByUrl(url).then();
     }
 }

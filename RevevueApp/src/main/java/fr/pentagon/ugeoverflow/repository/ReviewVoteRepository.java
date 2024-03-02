@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ReviewVoteRepository extends JpaRepository<ReviewVote, ReviewVoteId> {
@@ -32,7 +33,7 @@ public interface ReviewVoteRepository extends JpaRepository<ReviewVote, ReviewVo
             WHERE v.review_id = :reviewId AND v.author_id = :userId
             """,
             nativeQuery = true)
-    Boolean findVoteUserByReviewId(@Param("userId") long userId,@Param("reviewId") long reviewId);
+    Optional<Boolean> findVoteUserByReviewId(@Param("userId") long userId, @Param("reviewId") long reviewId);
 
     @Query(value = """
             SELECT * FROM "REVIEW_VOTE" v

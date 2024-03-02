@@ -13,7 +13,7 @@ export class ReviewDialogComponent {
         lineEnd: new FormControl('')
     });
 
-    constructor(public dialogRef: MatDialogRef<ReviewDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any) {
+    constructor(public dialogRef: MatDialogRef<ReviewDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { onQuestion: boolean }) {
     }
 
     close(): void {

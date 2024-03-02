@@ -15,25 +15,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @RestController
 public class ReviewController {
     private final ReviewService reviewService;
-
+    private static final Logger LOGGER = Logger.getLogger(ReviewController.class.getName());
 
     public ReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
     }
 
     @GetMapping(Routes.Review.ROOT + "/{reviewId}")
-    public ResponseEntity<DetailReviewResponseDTO> findDetailsReview(@PathVariable long reviewId) {
-        var user = SecurityContext.checkAuthentication();
-
-        return ResponseEntity.ok(reviewService.findDetailFromReviewId(user.id(), reviewId));
+    public ResponseEntity<DetailReviewResponseDTO> findDetailsReview(@PathVariable(name = "reviewId") long reviewId) {
+        LOGGER.info("fetch on " + Routes.Review.ROOT + " => " + reviewId);
+        return SecurityContext.authentication()
+                .map(revevueUserDetail -> ResponseEntity.ok(reviewService.findDetailFromReviewId(revevueUserDetail.id(), reviewId)))
+                .orElse(ResponseEntity.ok(reviewService.findDetailFromReviewId(null, reviewId)));
     }
 
     @GetMapping(Routes.Review.ROOT + Routes.Question.IDENT + "/{questionId}")
-    public ResponseEntity<List<ReviewResponseChildrenDTO>> findAllReviews(@PathVariable long questionId) {
+    public ResponseEntity<List<ReviewResponseChildrenDTO>> findAllReviews(@PathVariable(name = "questionId") long questionId) {
         return ResponseEntity.ok(reviewService.findReviewsByQuestionId(questionId));
     }
 
@@ -46,7 +48,7 @@ public class ReviewController {
 
     @DeleteMapping(Routes.Review.ROOT + "/{reviewId}")
     @RequireUser
-    public ResponseEntity<Void> removeReview(@PathVariable long reviewId) {
+    public ResponseEntity<Void> removeReview(@PathVariable(name = "reviewId") long reviewId) {
         var user = SecurityContext.checkAuthentication();
 
         reviewService.remove(new ReviewRemoveDTO(user.id(), reviewId));
@@ -55,7 +57,7 @@ public class ReviewController {
     }
 
     @PostMapping(Routes.Review.ROOT + "/{reviewId}/vote")
-    public ResponseEntity<Void> voteReview(@PathVariable long reviewId, @RequestBody VoteBodyDTO voteBodyDTO) {
+    public ResponseEntity<Void> voteReview(@PathVariable(name = "reviewId") long reviewId, @RequestBody VoteBodyDTO voteBodyDTO) {
         var user = SecurityContext.checkAuthentication();
 
         reviewService.vote(user.id(), reviewId, voteBodyDTO.up());
@@ -64,7 +66,7 @@ public class ReviewController {
     }
 
     @DeleteMapping(Routes.Review.ROOT + "/{reviewId}/cancelVote")
-    public ResponseEntity<Void> cancelVoteReview(@PathVariable long reviewId) {
+    public ResponseEntity<Void> cancelVoteReview(@PathVariable(name = "reviewId") long reviewId) {
         var user = SecurityContext.checkAuthentication();
 
         reviewService.cancelVote(user.id(), reviewId);
