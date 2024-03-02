@@ -15,7 +15,7 @@ public final class SecurityContext {
     public static RevevueUserDetail checkAuthentication() throws HttpException {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated()) {
-            throw HttpException.unauthorized("");
+            throw HttpException.unauthorized("User is not authenticated");
         }
         return (RevevueUserDetail) auth.getPrincipal();
     }

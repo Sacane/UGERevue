@@ -53,7 +53,7 @@ public class QuestionController {
 
     @DeleteMapping(Routes.Question.ROOT + "/{questionId}")
     @RequireUser
-    public ResponseEntity<Void> removeQuestion(@PathVariable("questionId") long questionId) {
+    public ResponseEntity<Void> removeQuestion(@PathVariable(name = "questionId") long questionId) {
         LOGGER.info("DELETE performed on /api/questions/" + questionId);
         var user = SecurityContext.checkAuthentication();
         questionService.remove(new QuestionRemoveDTO(user.id(), questionId));
@@ -64,15 +64,23 @@ public class QuestionController {
     // TODO : Use commentaries and responses to create a "CompleteQuestionInfoDTO".
 
     @GetMapping(Routes.Question.ROOT + "/{questionId}")
-    public ResponseEntity<QuestionDetailsDTO> getQuestion(@PathVariable("questionId") long questionId) {
-        LOGGER.info("GET performed on /api/questions/" + questionId);
-        return ResponseEntity.ok(questionService.findById(questionId));
+    public ResponseEntity<QuestionDetailsDTO> getQuestion(@PathVariable(name = "questionId") long questionId) {
+        try {
+            LOGGER.info("GET performed on /api/questions/" + questionId);
+            return ResponseEntity.ok(questionService.findById(questionId));
+        }finally {
+            LOGGER.info("End of the method");
+        }
     }
 
     @PostMapping(Routes.Question.ROOT + "/reviews")
     public ResponseEntity<ReviewQuestionResponseDTO> addReview(@RequestBody QuestionReviewCreateBodyDTO questionReviewCreateBodyDTO) {
-        var userDetail = SecurityContext.checkAuthentication();
+        try {
+            var userDetail = SecurityContext.checkAuthentication();
 
-        return ResponseEntity.ok(questionService.addReview(new QuestionReviewCreateDTO(userDetail.id(), questionReviewCreateBodyDTO.questionId(), questionReviewCreateBodyDTO.content(), questionReviewCreateBodyDTO.lineStart(), questionReviewCreateBodyDTO.lineEnd())));
+            return ResponseEntity.ok(questionService.addReview(new QuestionReviewCreateDTO(userDetail.id(), questionReviewCreateBodyDTO.questionId(), questionReviewCreateBodyDTO.content(), questionReviewCreateBodyDTO.lineStart(), questionReviewCreateBodyDTO.lineEnd())));
+        }finally {
+            LOGGER.info("End of the method");
+        }
     }
 }

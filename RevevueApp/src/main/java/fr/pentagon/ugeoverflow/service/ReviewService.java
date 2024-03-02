@@ -152,53 +152,11 @@ public class ReviewService {
     }
 
     @Transactional
-    public DetailReviewResponseDTO findDetailFromReviewId(long userId, long reviewId) {
+    public DetailReviewResponseDTO findDetailFromReviewId(Long userId, long reviewId) {
         return findDetailsFromReviewIdWithChildren(userId, reviewId);
-        /*var review = reviewRepository.findByIdWithReviews(reviewId).orElseThrow(() -> HttpException.notFound("This review does not exists"));
-
-        String citedCode = null;
-        if (review.getQuestion() != null) {
-            var fileContent = new String(review.getQuestion().getFile(), StandardCharsets.UTF_8).split("\n");
-            var lineStart = review.getLineStart();
-            var lineEnd = review.getLineEnd();
-            citedCode = (lineStart == null || lineEnd == null) ? null : Arrays.stream(fileContent, lineStart - 1, lineEnd)
-                    .collect(Collectors.joining("\n"));
-        }
-
-        return new DetailReviewResponseDTO(
-                review.getId(),
-                review.getAuthor().getUsername(),
-                review.getCreatedAt(),
-                review.getContent(),
-                citedCode,
-                reviewVoteRepository.findUpvoteNumberByReviewId(review.getId()),
-                reviewVoteRepository.findDownvoteNumberByReviewId(review.getId()),
-                reviewVoteRepository.findVoteUserByReviewId(userId, reviewId),
-                review.getReviews().stream().map(childReview -> new DetailReviewResponseDTO(
-                        childReview.getId(),
-                        childReview.getAuthor().getUsername(),
-                        childReview.getCreatedAt(),
-                        childReview.getContent(),
-                        null,
-                        reviewVoteRepository.findUpvoteNumberByReviewId(childReview.getId()),
-                        reviewVoteRepository.findDownvoteNumberByReviewId(childReview.getId()),
-                        reviewVoteRepository.findVoteUserByReviewId(userId, childReview.getId()),
-                        childReview.getReviews().stream().map(grandChildReview -> new DetailReviewResponseDTO(
-                                grandChildReview.getId(),
-                                grandChildReview.getAuthor().getUsername(),
-                                grandChildReview.getCreatedAt(),
-                                grandChildReview.getContent(),
-                                null,
-                                reviewVoteRepository.findUpvoteNumberByReviewId(grandChildReview.getId()),
-                                reviewVoteRepository.findDownvoteNumberByReviewId(grandChildReview.getId()),
-                                reviewVoteRepository.findVoteUserByReviewId(userId, grandChildReview.getId()),
-                                List.of()
-                        )).toList()
-                )).toList()
-        );*/
     }
 
-    private DetailReviewResponseDTO findDetailsFromReviewIdWithChildren(long userId, long reviewId) {
+    private DetailReviewResponseDTO findDetailsFromReviewIdWithChildren(Long userId, long reviewId) {
         var review = reviewRepository.findByIdWithReviews(reviewId).orElseThrow(() -> HttpException.notFound("This review does not exists"));
 
         String citedCode = null;
@@ -218,7 +176,7 @@ public class ReviewService {
                 citedCode,
                 reviewVoteRepository.findUpvoteNumberByReviewId(review.getId()),
                 reviewVoteRepository.findDownvoteNumberByReviewId(review.getId()),
-                reviewVoteRepository.findVoteUserByReviewId(userId, reviewId),
+                userId != null ? reviewVoteRepository.findVoteUserByReviewId(userId, reviewId).orElse(false) : false, //TODO handle vote review from another user
                 review.getReviews().stream().map(childReview -> findDetailsFromReviewIdWithChildren(userId, childReview.getId())).toList()
         );
     }
