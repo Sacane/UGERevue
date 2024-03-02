@@ -29,11 +29,11 @@ public interface ReviewVoteRepository extends JpaRepository<ReviewVote, ReviewVo
     long findDownvoteNumberByReviewId(@Param("reviewId") long reviewId);
 
     @Query(value = """
-            SELECT is_up FROM "REVIEW_VOTE" v
+            SELECT COUNT(*) FROM "REVIEW_VOTE" v
             WHERE v.review_id = :reviewId AND v.author_id = :userId
             """,
             nativeQuery = true)
-    Optional<Boolean> findVoteUserByReviewId(@Param("userId") long userId, @Param("reviewId") long reviewId);
+    boolean findVoteUserByReviewId(@Param("userId") long userId, @Param("reviewId") long reviewId);
 
     @Query(value = """
             SELECT * FROM "REVIEW_VOTE" v
@@ -41,4 +41,6 @@ public interface ReviewVoteRepository extends JpaRepository<ReviewVote, ReviewVo
             """,
             nativeQuery = true)
     List<ReviewVote> findAllVoteByReviewId(@Param("reviewId") long reviewId);
+
+    boolean existsReviewVoteByReviewVoteId_Author_IdAndReviewVoteId_Review_Id(long authorId, long reviewId);
 }

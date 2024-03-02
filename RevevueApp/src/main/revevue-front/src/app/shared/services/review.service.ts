@@ -39,12 +39,12 @@ export class ReviewService {
     public vote(reviewId: string, up: boolean): Observable<any> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-        return this.httpclient.post<any>(`${this.url}/${reviewId}/vote`, { up }, { headers });
+        return this.httpclient.post<void>(`${this.url}/${reviewId}/vote`, { up }, { headers });
     }
 
     public cancelVote(reviewId: string): Observable<any> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-        return this.httpclient.delete<any>(`${this.url}/${reviewId}/cancelVote`, { headers });
+        return this.httpclient.delete<void>(`${this.url}/${reviewId}/cancelVote`, { headers });
     }
 }

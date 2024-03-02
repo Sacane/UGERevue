@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.service;
 
+import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewOnReviewDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewRemoveDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.DetailReviewResponseDTO;
@@ -21,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +31,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final ReviewVoteRepository reviewVoteRepository;
+    private final Logger logger = Logger.getLogger(ReviewService.class.getName());
 
     public ReviewService(QuestionRepository questionRepository, ReviewRepository reviewRepository, UserRepository userRepository, ReviewVoteRepository reviewVoteRepository) {
         this.questionRepository = questionRepository;
@@ -152,11 +155,11 @@ public class ReviewService {
     }
 
     @Transactional
-    public DetailReviewResponseDTO findDetailFromReviewId(Long userId, long reviewId) {
+    public DetailReviewResponseDTO findDetailFromReviewId(long userId, long reviewId) {
         return findDetailsFromReviewIdWithChildren(userId, reviewId);
     }
 
-    private DetailReviewResponseDTO findDetailsFromReviewIdWithChildren(Long userId, long reviewId) {
+    private DetailReviewResponseDTO findDetailsFromReviewIdWithChildren(long userId, long reviewId) {
         var review = reviewRepository.findByIdWithReviews(reviewId).orElseThrow(() -> HttpException.notFound("This review does not exists"));
 
         String citedCode = null;
@@ -167,7 +170,10 @@ public class ReviewService {
             citedCode = (lineStart == null || lineEnd == null) ? null : Arrays.stream(fileContent, lineStart - 1, lineEnd)
                     .collect(Collectors.joining("\n"));
         }
-
+        var doesUserVote = reviewVoteRepository.existsReviewVoteByReviewVoteId_Author_IdAndReviewVoteId_Review_Id(userId, reviewId);
+        logger.info("does user vote => " + doesUserVote);
+        System.out.println("USER ID => " + userId);
+        logger.info("user id => " + userId);
         return new DetailReviewResponseDTO(
                 review.getId(),
                 review.getAuthor().getUsername(),
@@ -176,7 +182,7 @@ public class ReviewService {
                 citedCode,
                 reviewVoteRepository.findUpvoteNumberByReviewId(review.getId()),
                 reviewVoteRepository.findDownvoteNumberByReviewId(review.getId()),
-                userId != null ? reviewVoteRepository.findVoteUserByReviewId(userId, reviewId).orElse(false) : false, //TODO handle vote review from another user
+                doesUserVote, //TODO handle vote review from another user
                 review.getReviews().stream().map(childReview -> findDetailsFromReviewIdWithChildren(userId, childReview.getId())).toList()
         );
     }

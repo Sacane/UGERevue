@@ -21,13 +21,13 @@
 
             <div>
                 <button mat-icon-button
-                    [ngStyle]="{'color': reviewDetail()?.vote === true ? 'white': 'green', 'background-color': reviewDetail()?.vote === true ? 'green': 'white'}"
+                    [ngStyle]="{'color': isFontPositive() ? 'white': 'green', 'background-color': isFontPositive() ? 'green': 'white'}"
                     (click)="vote(reviewDetail()!!, true)">
                     <mat-icon aria-hidden="false" matBadge="{{ reviewDetail()?.upvotes }}" matBadgeSize="small"
                         class="green-badge">thumb_up</mat-icon>
                 </button>
                 <button mat-icon-button
-                    [ngStyle]="{'color': reviewDetail()?.vote === false ? 'white': 'red', 'background-color': reviewDetail()?.vote === false ? 'red': 'white'}"
+                    [ngStyle]="{'color': isFontNegative() ? 'white': 'red', 'background-color': isFontNegative() ? 'red': 'white'}"
                     (click)="vote(reviewDetail()!!, false)">
                     <mat-icon aria-hidden="false" matBadge="{{ reviewDetail()?.downvotes }}" matBadgeSize="small"
                         class="red-badge">thumb_down</mat-icon>

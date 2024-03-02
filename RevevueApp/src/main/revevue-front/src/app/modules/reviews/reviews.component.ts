@@ -9,7 +9,7 @@ import {ConfirmDialogComponent} from '../../shared/components/confirm-dialog/con
 import {Location} from '@angular/common';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {DetailReviewResponseDTO, Review} from "./models/review.model";
-import {toSignal} from "@angular/core/rxjs-interop";
+import {toObservable, toSignal} from "@angular/core/rxjs-interop";
 
 @Component({
     selector: 'app-review-detail',
@@ -32,18 +32,12 @@ export class ReviewsComponent implements OnDestroy {
     reviewId: string = this.activatedRoute.snapshot.params['id'];
     canReview: boolean = this.userService.isLogin();
 
-    details$ = this.reviewService.getDetails(this.reviewId)
-
     reviewDetail = signal<DetailReviewResponseDTO | undefined>(undefined)
-    reviewCall$ = toSignal<DetailReviewResponseDTO>(this.details$.pipe(tap(review => {
-            console.log('ah?')
-            this.reviewDetail.set(review);
-            this.subReviews.set(review.reviews as Review[])
-            this.canDelete = review.author === this.userService.getLogin() || this.userService.getRole() === Role.ADMIN;
-        })))
+
 
     subReviews = signal<Review[]>([])
-
+    isFontPositive = computed(() => this.reviewDetail()?.vote == true && (this.reviewDetail()!!.upvotes > 0))
+    isFontNegative = computed(() => this.reviewDetail()?.vote == true && (this.reviewDetail()!!.downvotes > 0))
     review$ = new BehaviorSubject<any>(null);
     constructor() {
         this.router.events.pipe(
@@ -59,13 +53,17 @@ export class ReviewsComponent implements OnDestroy {
     ngOnDestroy(): void {
         this._onDestroy.next();
         this._onDestroy.complete();
+
     }
 
     initData(): void {
+        console.log('Hm ?')
         this.reviewId = this.activatedRoute.snapshot.params['id'];
         this.reviewService.getDetails(this.reviewId).subscribe(response => {
+            console.log(response)
             this.reviewDetail.set(response)
             this.subReviews.set(response.reviews as Review[])
+            this.canDelete = response.author === this.userService.getLogin() || this.userService.getRole() === Role.ADMIN;
         });
     }
 
@@ -134,36 +132,80 @@ export class ReviewsComponent implements OnDestroy {
     }
 
     vote(review: DetailReviewResponseDTO, up: boolean): void {
-        if (review.vote === up) {
+        if (
+            (up && review.upvotes > 0) ||
+            (!up && review.downvotes > 0)
+        ) {
+            console.log("cancel vote")
             this.reviewService.cancelVote(review.id).pipe(
                 catchError(err => {
                     console.log(err);
                     return of(err);
                 })
-            ).subscribe(response => {
-                if (!response) {
-                    /*review.upvotes = review.vote ? review.upvotes - 1 : review.upvotes;
-                    review.downvotes = review.vote ? review.downvotes : review.downvotes - 1;*/
-                    this.reviewDetail.update((old) => {
-                        return {...old, upvotes: review.vote ? review.upvotes - 1 : review.upvotes, downvotes: review.vote ? review.downvotes : review.downvotes - 1} as DetailReviewResponseDTO
-                    })
-                    review.vote = undefined;
+            ).subscribe(() => {
+
+                /*review.upvotes = review.vote ? review.upvotes - 1 : review.upvotes;
+                review.downvotes = review.vote ? review.downvotes : review.downvotes - 1;*/
+                let upvote: number = review.upvotes;
+                let downvote: number = review.downvotes;
+                if(!up) {
+                    if(downvote > 0) {
+                        downvote -= 1;
+                    } else if(downvote === 0 ){
+                        downvote += 1;
+                    }
+                    if(upvote > 0) {
+                        upvote -= 1;
+                    }
+                } else {
+                    if(upvote > 0) {
+                        upvote -= 1;
+                    } else if(upvote === 0) {
+                        upvote += 1;
+                    }
                 }
+                this.reviewDetail.update((old) => {
+                    return {...old, upvotes: upvote, downvotes: downvote} as DetailReviewResponseDTO
+                })
+
             });
         }
         else {
+            console.log("vote => " + up);
             this.reviewService.vote(review.id, up).pipe(
                 catchError(err => {
                     console.log(err);
                     return of(err);
                 })
-            ).subscribe(response => {
-                if (!response) {
-                    this.reviewDetail.update((old) => {
-                        return {...old, upvotes: up ? review.upvotes + 1 : (review.vote === true ? review.upvotes - 1 : review.upvotes), downvotes: up ? (review.vote === false ? review.downvotes - 1 : review.downvotes) : review.downvotes + 1} as DetailReviewResponseDTO
-                    })
-                    review.vote = up;
+            ).subscribe(() => {
+                let upvote: number = review.upvotes;
+                let downvote: number = review.downvotes;
+                if(up) {
+                    if(upvote > 0) {
+                        upvote -= 1;
+                    } else if(upvote === 0) {
+                        upvote += 1;
+                    }
+                    if(downvote > 0) {
+                        downvote -= 1;
+                    }
                 }
+                else{
+                    if(downvote >= 1) {
+                        console.log('> 1')
+                        downvote -= 1;
+                    } else if(downvote === 0) {
+                        console.log('=== 0')
+                        downvote += 1;
+                    }
+                    if(upvote > 0) {
+                        upvote -= 1;
+                    }
+                }
+                this.reviewDetail.update((old) => {
+                    return {...old, upvotes: upvote, downvotes: downvote} as DetailReviewResponseDTO
+                })
+                review.vote = up;
             });
         }
     }

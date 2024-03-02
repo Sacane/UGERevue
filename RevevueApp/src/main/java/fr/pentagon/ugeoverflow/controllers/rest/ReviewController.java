@@ -29,9 +29,10 @@ public class ReviewController {
     @GetMapping(Routes.Review.ROOT + "/{reviewId}")
     public ResponseEntity<DetailReviewResponseDTO> findDetailsReview(@PathVariable(name = "reviewId") long reviewId) {
         LOGGER.info("fetch on " + Routes.Review.ROOT + " => " + reviewId);
-        return SecurityContext.authentication()
-                .map(revevueUserDetail -> ResponseEntity.ok(reviewService.findDetailFromReviewId(revevueUserDetail.id(), reviewId)))
-                .orElse(ResponseEntity.ok(reviewService.findDetailFromReviewId(null, reviewId)));
+        var auth = SecurityContext.authentication();
+        return auth.map(revevueUserDetail ->
+                ResponseEntity.ok(reviewService.findDetailFromReviewId(revevueUserDetail.id(), reviewId)))
+                .orElseGet(() -> ResponseEntity.ok(reviewService.findDetailFromReviewId(-1, reviewId)));
     }
 
     @GetMapping(Routes.Review.ROOT + Routes.Question.IDENT + "/{questionId}")
