@@ -4,6 +4,7 @@ import fr.pentagon.ugeoverflow.model.vote.QuestionVote;
 import fr.pentagon.ugeoverflow.model.vote.QuestionVoteId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -15,7 +16,7 @@ public interface QuestionVoteRepository extends JpaRepository<QuestionVote, Ques
             v.is_up = true
             """,
     nativeQuery = true)
-    long findUpvoteNumberByQuestionId(long questionId);
+    long findUpvoteNumberByQuestionId(@Param("questionId") long questionId);
 
     @Query(value = """
             SELECT COUNT(*) FROM "VOTE_QUESTION" v
@@ -23,11 +24,11 @@ public interface QuestionVoteRepository extends JpaRepository<QuestionVote, Ques
             v.is_up = false
             """,
             nativeQuery = true)
-    long findDownvoteNumberByQuestionId(long questionId);
+    long findDownvoteNumberByQuestionId(@Param("questionId") long questionId);
 
 
     @Query(value = """
     SELECT COUNT(*) FROM "VOTE_QUESTION" v WHERE v.question_id = :id
     """, nativeQuery = true)
-    long countAllById(long id);
+    long countAllById(@Param("id") long id);
 }

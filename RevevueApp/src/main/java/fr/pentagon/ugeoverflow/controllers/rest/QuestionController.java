@@ -53,7 +53,7 @@ public class QuestionController {
 
     @DeleteMapping(Routes.Question.ROOT + "/{questionId}")
     @RequireUser
-    public ResponseEntity<Void> removeQuestion(@PathVariable long questionId) {
+    public ResponseEntity<Void> removeQuestion(@PathVariable("questionId") long questionId) {
         LOGGER.info("DELETE performed on /api/questions/" + questionId);
         var user = SecurityContext.checkAuthentication();
         questionService.remove(new QuestionRemoveDTO(user.id(), questionId));
@@ -64,7 +64,7 @@ public class QuestionController {
     // TODO : Use commentaries and responses to create a "CompleteQuestionInfoDTO".
 
     @GetMapping(Routes.Question.ROOT + "/{questionId}")
-    public ResponseEntity<QuestionDetailsDTO> getQuestion(@PathVariable long questionId) {
+    public ResponseEntity<QuestionDetailsDTO> getQuestion(@PathVariable("questionId") long questionId) {
         LOGGER.info("GET performed on /api/questions/" + questionId);
         return ResponseEntity.ok(questionService.findById(questionId));
     }

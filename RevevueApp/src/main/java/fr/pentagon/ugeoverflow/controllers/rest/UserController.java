@@ -37,7 +37,7 @@ public class UserController {
 
   @PostMapping(Routes.User.FOLLOW + "/{id}")
   @RequireUser
-  public ResponseEntity<Void> followUser(@PathVariable long id, Principal principal) {
+  public ResponseEntity<Void> followUser(@PathVariable("id") long id, Principal principal) {
     LOGGER.info("Trying to follow");
     if (principal == null) {
       throw HttpException.unauthorized("no user logged in");
@@ -49,7 +49,7 @@ public class UserController {
 
   @PostMapping(Routes.User.UNFOLLOW + "/{id}")
   @RequireUser
-  public ResponseEntity<Void> unfollowUser(@PathVariable long id, Principal principal) {
+  public ResponseEntity<Void> unfollowUser(@PathVariable("id") long id, Principal principal) {
     LOGGER.info("Trying to unfollow");
     if (principal == null) {
       throw HttpException.unauthorized("no user logged in");
