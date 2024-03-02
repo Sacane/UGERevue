@@ -13,6 +13,7 @@ target/
 .springBeans
 .sts4-cache
 .package-lock.json
+!**/src/main/revevue-front/package-lock.json
 
 ### IntelliJ IDEA ###
 .idea
