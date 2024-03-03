@@ -9,6 +9,7 @@ import { HomeModule, LoginModule, QuestionsMenuModule, ReviewsModule, SignupModu
 import { provideHttpClient, withFetch, withInterceptors } from "@angular/common/http";
 import { authInterceptor } from "./shared/authInterceptor";
 import { CommonModule } from "@angular/common";
+import {MarkdownModule} from "ngx-markdown";
 
 @NgModule({
     declarations: [
@@ -30,7 +31,9 @@ import { CommonModule } from "@angular/common";
         QuestionsMenuModule,
         TagsModule,
         UsersModule,
-        ReviewsModule
+        ReviewsModule,
+        MarkdownModule,
+        MarkdownModule.forRoot()
     ],
     bootstrap: [AppComponent]
 })
