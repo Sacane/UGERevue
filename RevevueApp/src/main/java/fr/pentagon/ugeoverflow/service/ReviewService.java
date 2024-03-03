@@ -171,9 +171,6 @@ public class ReviewService {
                     .collect(Collectors.joining("\n"));
         }
         var doesUserVote = reviewVoteRepository.existsReviewVoteByReviewVoteId_Author_IdAndReviewVoteId_Review_Id(userId, reviewId);
-        logger.info("does user vote => " + doesUserVote);
-        System.out.println("USER ID => " + userId);
-        logger.info("user id => " + userId);
         return new DetailReviewResponseDTO(
                 review.getId(),
                 review.getAuthor().getUsername(),
