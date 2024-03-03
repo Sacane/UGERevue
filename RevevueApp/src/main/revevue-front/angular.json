@@ -32,7 +32,7 @@
             "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss",
-                "node_modules/prismjs/themes/prism-okaidia.css"
+                "node_modules/prismjs/themes/prism-solarizedlight.min.css"
             ],
             "scripts": [
                 "node_modules/prismjs/prism.js",

@@ -1,0 +1,8 @@
+.dialog-content{
+    display: flex;
+    flex-direction: column;
+    .content-field {
+        display: flex;
+        flex-direction: column;
+    }
+}

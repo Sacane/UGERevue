@@ -9,6 +9,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Role } from '../../models/role.model';
 import { Router } from '@angular/router';
 
+import 'prismjs'; // Import Prism.js
+import 'prismjs/components/prism-java.js'; // Import the Java language syntax for Prism.js
 @Component({
     selector: 'app-review',
     templateUrl: './review.component.html',
@@ -22,6 +24,8 @@ export class ReviewComponent implements OnInit {
 
     canDelete: boolean = false;
     deleting: boolean = false;
+
+    codeTest = "public record Point(int x, int y){\n}"
 
     constructor(private userService: UserService, private reviewService: ReviewService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) { }
 
@@ -68,6 +72,6 @@ export class ReviewComponent implements OnInit {
     }
 
     detailsReview(): void {
-        this.router.navigateByUrl(`/reviews/${this.review.id}`);
+        this.router.navigateByUrl(`/reviews/${this.review.id}`).then();
     }
 }

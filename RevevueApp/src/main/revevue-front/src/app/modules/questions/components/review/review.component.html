@@ -44,7 +44,7 @@
                 @if (review.citedCode) {
                 <pre><code [highlight]="review.citedCode" [languages]="['java']"></code></pre>
                 }
-                <p>{{ review.content }}</p>
+                <markdown [data]="review.content"></markdown>
             </td>
         </tr>
         @if (review.reviews.length > 0) {

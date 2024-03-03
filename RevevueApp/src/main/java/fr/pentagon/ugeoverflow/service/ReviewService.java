@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.service;
 
+import fr.pentagon.ugeoverflow.config.authorization.Role;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewOnReviewDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewRemoveDTO;
@@ -92,7 +93,7 @@ public class ReviewService {
         var user = userFind.get();
         var review = reviewFind.get();
 
-        if (!userRepository.containsReview(user.getId(), review)) {
+        if (user.getRole() != Role.ADMIN && !userRepository.containsReview(user.getId(), review)) {
             throw HttpException.unauthorized("Not your review");
         }
 

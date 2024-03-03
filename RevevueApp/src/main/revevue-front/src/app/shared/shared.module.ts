@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterModule } from "@angular/router";
 import { MaterialModule } from "./modules/material.module";
 import { NavBarComponent, ReviewDialogComponent, SideNavBarComponent } from "./components";
+import {MarkdownComponent} from "ngx-markdown";
 
 const COMPONENTS: any[] = [
     NavBarComponent,
@@ -17,7 +18,8 @@ const COMPONENTS: any[] = [
         RouterModule,
         FormsModule,
         ReactiveFormsModule,
-        MaterialModule
+        MaterialModule,
+        MarkdownComponent
     ],
     declarations: [
         COMPONENTS
