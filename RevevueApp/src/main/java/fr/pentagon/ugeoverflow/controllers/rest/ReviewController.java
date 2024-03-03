@@ -50,8 +50,8 @@ public class ReviewController {
     @DeleteMapping(Routes.Review.ROOT + "/{reviewId}")
     @RequireUser
     public ResponseEntity<Void> removeReview(@PathVariable(name = "reviewId") long reviewId) {
-        var user = SecurityContext.checkAuthentication();
-
+        var user = SecurityContext.authentication().orElseThrow();
+        LOGGER.info("perform delete on " + Routes.Review.ROOT);
         reviewService.remove(new ReviewRemoveDTO(user.id(), reviewId));
 
         return ResponseEntity.ok().build();
