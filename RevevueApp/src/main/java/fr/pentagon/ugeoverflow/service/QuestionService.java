@@ -22,10 +22,7 @@ import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -188,5 +185,23 @@ public class QuestionService {
                 question.getReviews().size(),
                 voteCount
         );
+    }
+
+    @Transactional
+    public List<QuestionDTO> getQuestionsFromFollowers(long userId) {
+        var questions = questionRepository.findAll();
+        var questionsWithScore = new HashMap<Question, Integer>();
+
+        questions.forEach(question -> questionsWithScore.put(question, 0));
+
+        visitQuestionWithScore(userId, questionsWithScore, 1);
+
+        return List.of();
+    }
+
+    private void visitQuestionWithScore(long userId, Map<Question, Integer> questionsWithScore, int score) {
+        var questions = questionRepository.findAllByAuthor(userId);
+
+        System.out.println(questions);
     }
 }

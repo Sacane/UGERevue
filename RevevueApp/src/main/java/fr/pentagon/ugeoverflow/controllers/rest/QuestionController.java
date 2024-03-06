@@ -83,4 +83,11 @@ public class QuestionController {
             LOGGER.info("End of the method");
         }
     }
+
+    @GetMapping(Routes.Question.ROOT + "/{questionId}")
+    public ResponseEntity<List<QuestionDTO>> getQuestionsFromFollowers() {
+        var userDetail = SecurityContext.checkAuthentication();
+
+        return ResponseEntity.ok(questionService.getQuestionsFromFollowers(userDetail.id()));
+    }
 }
