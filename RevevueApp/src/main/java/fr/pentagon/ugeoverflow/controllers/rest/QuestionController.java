@@ -84,7 +84,7 @@ public class QuestionController {
         }
     }
 
-    @GetMapping(Routes.Question.ROOT + "/{questionId}")
+    @GetMapping(Routes.Question.ROOT + "/followers")
     public ResponseEntity<List<QuestionDTO>> getQuestionsFromFollowers() {
         var userDetail = SecurityContext.checkAuthentication();
 

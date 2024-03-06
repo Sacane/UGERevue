@@ -191,17 +191,22 @@ public class QuestionService {
     public List<QuestionDTO> getQuestionsFromFollowers(long userId) {
         var questions = questionRepository.findAll();
         var questionsWithScore = new HashMap<Question, Integer>();
+        var visitedUserId = new ArrayList<Long>();
 
         questions.forEach(question -> questionsWithScore.put(question, 0));
 
-        visitQuestionWithScore(userId, questionsWithScore, 1);
+        visitQuestionWithScore(userId, visitedUserId, questionsWithScore, 1);
 
         return List.of();
     }
 
-    private void visitQuestionWithScore(long userId, Map<Question, Integer> questionsWithScore, int score) {
-        var questions = questionRepository.findAllByAuthor(userId);
+    private void visitQuestionWithScore(long userId, List<Long> visitedUserId, Map<Question, Integer> questionsWithScore, int score) {
+        var follows = userRepository.findFollowsById(userId);
 
-        System.out.println(questions);
+        visitedUserId.add(userId);
+
+        for (var follow: follows) {
+            System.out.println(follow.getId() + " " + follow.getUsername());
+        }
     }
 }

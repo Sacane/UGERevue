@@ -1,5 +1,6 @@
 @if (!isLogged()) {
-    <body>
+
+<body>
     <div class="container">
         <div class="topdiv">
             <div class="three">
@@ -9,7 +10,7 @@
         <div class="bottomdiv">
             <mat-card class="card">
                 <mat-card-header>
-                    <mat-card-title  class="card-title">Community</mat-card-title>
+                    <mat-card-title class="card-title">Community</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
                     <p class="card-text">
@@ -20,15 +21,18 @@
 
             <mat-card class="card">
                 <mat-card-header>
-                    <mat-card-title  class="card-title">Socials</mat-card-title>
+                    <mat-card-title class="card-title">Socials</mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
                     <p class="card-text">
-                        Connect, answer, and solve together! Our social coding platform lets you solve problems of developers around the world.
+                        Connect, answer, and solve together! Our social coding platform lets you solve problems of
+                        developers around the world.
                     </p>
                 </mat-card-content>
             </mat-card>
         </div>
     </div>
-    </body>
+</body>
+}
+@else {
 }
