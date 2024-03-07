@@ -5,6 +5,7 @@ import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserFollowInfoDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserInfoDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.UserService;
@@ -67,5 +68,14 @@ public class UserController {
     }
     var userConnected = SecurityContext.checkAuthentication();
     return ResponseEntity.ok(userService.userRegisteredList(userConnected.id()));
+  }
+
+  @GetMapping(Routes.User.CURRENT_USER_INFO)
+  public ResponseEntity<UserInfoDTO> getCurrentAuthenticatedUserInformation(Principal principal) {
+    if (principal == null) {
+      throw HttpException.forbidden("No user currently authenticated");
+    }
+    var user = userRepository.findByLogin(principal.getName()).orElseThrow();
+    return ResponseEntity.ok(new UserInfoDTO(user.getUsername(), user.getLogin(), user.getEmail(), user.getRole()));
   }
 }

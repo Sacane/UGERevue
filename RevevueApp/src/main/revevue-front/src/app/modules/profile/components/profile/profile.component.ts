@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {MatTab, MatTabContent, MatTabGroup} from "@angular/material/tabs";
-import {ProfileInfoComponent} from "../info/profile-info.component";
+import {ProfileInfoComponent} from "../profile-info/profile-info.component";
 
 @Component({
     selector: 'app-profile',

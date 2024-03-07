@@ -1,6 +1,6 @@
-import { Component, inject, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
-import { UserService } from "../../HttpServices";
+import {Component, inject, ViewEncapsulation} from '@angular/core';
+import {Router} from '@angular/router';
+import {UserService} from "../../HttpServices";
 
 @Component({
     selector: 'app-nav-bar',
@@ -9,8 +9,8 @@ import { UserService } from "../../HttpServices";
     encapsulation: ViewEncapsulation.None
 })
 export class NavBarComponent {
-    private router = inject(Router)
     userService = inject(UserService)
+    private router = inject(Router)
 
     login(): void {
         this.router.navigateByUrl('/login').then();
@@ -26,6 +26,10 @@ export class NavBarComponent {
             console.log("Logout successfully");
             this.router.navigateByUrl('/home');
         });
+    }
+
+    profile(): void {
+        this.router.navigateByUrl('/profile').then();
     }
 
     isUserLogged(): boolean {
