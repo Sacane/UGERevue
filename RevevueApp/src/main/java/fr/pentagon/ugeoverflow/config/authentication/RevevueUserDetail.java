@@ -12,13 +12,13 @@ public class RevevueUserDetail implements UserDetails {
 
   private final long id;
   private final String password;
-  private final String username;
+  private final String login;
   private final List<GrantedAuthority> authorities;
 
-  public RevevueUserDetail(long id, String password, String username, Role role) {
+  public RevevueUserDetail(long id, String password, String login, Role role) {
     this.id = id;
     this.password = password;
-    this.username = username;
+    this.login = login;
     authorities = List.of(new SimpleGrantedAuthority(role.authorityName()));
   }
 
@@ -39,7 +39,7 @@ public class RevevueUserDetail implements UserDetails {
 
   @Override
   public String getUsername() {
-    return username;
+    return login;
   }
 
   @Override

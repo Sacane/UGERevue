@@ -1,6 +1,6 @@
 export interface UserInfo {
-    username: String,
-    login: String,
-    email: String,
-    role: String
+    username: string,
+    login: string,
+    email: string,
+    role: string
 }

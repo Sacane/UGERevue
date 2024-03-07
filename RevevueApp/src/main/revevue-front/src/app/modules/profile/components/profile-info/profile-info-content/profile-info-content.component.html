@@ -1,48 +1,42 @@
 <div class="container">
-    <table>
-        <tr>
-            <td>
-                <mat-form-field class="example-full-width">
+    <div class="column">
+        <div class="row">
+            @if (!editingUsername) {
+                <mat-form-field>
                     <mat-label>Nom d'utilisateur</mat-label>
-                    <input [readonly]="true" [value]="userInfo.username" matInput placeholder="Nom d'utilisateur">
+                    <input [readonly]="true" [value]="userInfo.username" matInput placeholder="Nom d'utilisateur"
+                           disabled>
                 </mat-form-field>
-            </td>
-            <td>
-                <button color="primary" mat-raised-button>Editer</button>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <mat-form-field class="example-full-width">
-                    <mat-label>Nom de compte</mat-label>
-                    <input [readonly]="true" [value]="userInfo.login" matInput placeholder="Nom d'utilisateur">
-                </mat-form-field>
-            </td>
-            <td>
 
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <mat-form-field class="example-full-width">
-                    <mat-label>Email</mat-label>
-                    <input [readonly]="true" [value]="userInfo.email" matInput placeholder="Nom d'utilisateur">
+                <button color="primary" mat-raised-button (click)="editName()">Editer</button>
+            } @else {
+                <mat-form-field>
+                    <mat-label>Nom d'utilisateur</mat-label>
+                    <input matInput placeholder="Nom d'utilisateur" [formControl]="usernameControl">
                 </mat-form-field>
-            </td>
-            <td>
 
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <mat-form-field class="example-full-width">
-                    <mat-label>Role</mat-label>
-                    <input [readonly]="true" [value]="userInfo.role | role" matInput placeholder="Nom d'utilisateur">
-                </mat-form-field>
-            </td>
-            <td>
+                <button color="primary" mat-raised-button (click)="saveName()">Sauvegarder</button>
+            }
 
-            </td>
-        </tr>
-    </table>
+        </div>
+        <div class="row">
+            <mat-form-field>
+                <mat-label>Nom de compte</mat-label>
+                <input [readonly]="true" [value]="userInfo.login" disabled matInput placeholder="Nom d'utilisateur">
+            </mat-form-field>
+        </div>
+        <div class="row">
+            <mat-form-field>
+                <mat-label>Email</mat-label>
+                <input [readonly]="true" [value]="userInfo.email" disabled matInput placeholder="Nom d'utilisateur">
+            </mat-form-field>
+        </div>
+        <div class="row">
+            <mat-form-field>
+                <mat-label>Role</mat-label>
+                <input [readonly]="true" [value]="userInfo.role | role" disabled matInput
+                       placeholder="Nom d'utilisateur">
+            </mat-form-field>
+        </div>
+    </div>
 </div>

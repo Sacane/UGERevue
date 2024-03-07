@@ -3,6 +3,7 @@ package fr.pentagon.ugeoverflow.controllers.rest;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserFollowInfoDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserInfoUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserInfoDTO;
@@ -10,6 +11,7 @@ import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.UserService;
 import fr.pentagon.ugeoverflow.utils.Routes;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -75,7 +77,18 @@ public class UserController {
     if (principal == null) {
       throw HttpException.forbidden("No user currently authenticated");
     }
+    LOGGER.info(principal.getName());
     var user = userRepository.findByLogin(principal.getName()).orElseThrow();
     return ResponseEntity.ok(new UserInfoDTO(user.getUsername(), user.getLogin(), user.getEmail(), user.getRole()));
+  }
+
+  @PatchMapping(Routes.User.CURRENT_USER_INFO)
+  public ResponseEntity<Void> updateCurrentAuthenticatedUserInformation(@RequestBody @Valid UserInfoUpdateDTO userInfoUpdateDTO,
+                                                                        Principal principal) {
+    if (principal == null) {
+      throw HttpException.forbidden("No user currently authenticated");
+    }
+    userService.updateUser(principal.getName(), userInfoUpdateDTO);
+    return ResponseEntity.ok().build();
   }
 }

@@ -4,7 +4,20 @@
   flex-grow: 1;
 }
 
-table {
-  border-collapse: collapse;
-  width: 500px;
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+
+    mat-form-field {
+      width: 500px;
+      margin-top: 0;
+    }
+  }
 }
