@@ -11,7 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SearchQuestionByLabelStrategyTest {
 
-    private static final List<Question> provideQuestions = List.of(
+
+
+    private final List<Question> provideQuestions = List.of(
             provideQuestionFromTitleAndDescription(
                     "Comment déclarer une classe abstraite en Java ?",
                     "Je veux comprendre comment créer une classe abstraite en Java et à quoi cela sert-il dans la programmation orientée objet."
@@ -55,7 +57,7 @@ public class SearchQuestionByLabelStrategyTest {
     );
 
 
-    private static Question provideQuestionFromTitleAndDescription(
+    private Question provideQuestionFromTitleAndDescription(
             String title, String description
     ){
         return new Question(title, description, new byte[]{}, null, "", true, new Date());
@@ -75,8 +77,6 @@ public class SearchQuestionByLabelStrategyTest {
         String[] prompt = {"Comment", "déclarer", "une", "classe", "abstraite", "en", "Java"};
         var questionScore = strategy.getScoreByQuestion(question, prompt);
         var questionScore2 = strategy.getScoreByQuestion(question2, prompt);
-        System.out.println(questionScore);
-        System.out.println(questionScore2);
         assertTrue(questionScore > questionScore2);
     }
 
@@ -85,5 +85,10 @@ public class SearchQuestionByLabelStrategyTest {
         var strategy = new SearchQuestionByLabelStrategy("Comment faire du java");
         var result = strategy.getQuestions(provideQuestions);
         assertEquals("Comment lire et écrire des fichiers en Java ?", result.getFirst().getTitle());
+    }
+
+    @Test
+    void noQuestionResultTest() {
+        var strategy = new SearchQuestionByLabelStrategy("Comment");
     }
 }

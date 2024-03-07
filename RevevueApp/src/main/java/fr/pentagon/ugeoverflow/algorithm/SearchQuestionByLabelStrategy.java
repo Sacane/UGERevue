@@ -5,6 +5,7 @@ import fr.pentagon.ugeoverflow.model.Question;
 import java.util.*;
 
 public class SearchQuestionByLabelStrategy implements QuestionSorterStrategy {
+
     private final String label;
     private static final int TITLE_POINT = 4;
     private static final int DESCRIPTION_POINT = 2;
@@ -20,10 +21,14 @@ public class SearchQuestionByLabelStrategy implements QuestionSorterStrategy {
                 .toArray(String[]::new);
         for (Question question : origins) {
             int scoreByQuestion = getScoreByQuestion(question, tokens);
+            if(scoreByQuestion == 0) {
+                continue; // question is ignored on zero-score
+            }
             result.put(scoreByQuestion, question);
         }
         return new ArrayList<>(result.values());
     }
+
     int getScoreByQuestion(Question question, String[] tokens) {
         int score = 0;
         String description = question.getDescription().toLowerCase();
@@ -34,13 +39,9 @@ public class SearchQuestionByLabelStrategy implements QuestionSorterStrategy {
             int tokenScore = TITLE_POINT * token.length();
             if (title.contains(token)) {
                 score += tokenScore;
-                if (countOccurrences(title, token) == 1) {
-                    score += TITLE_POINT * 2;
-                }
             }
         }
 
-        // Calcul du score pour la description
         for (String t : tokens) {
             var token = t.toLowerCase();
             int tokenScore = DESCRIPTION_POINT * token.length();
@@ -49,8 +50,7 @@ public class SearchQuestionByLabelStrategy implements QuestionSorterStrategy {
         return score;
     }
 
-    // Méthode utilitaire pour compter le nombre d'occurrences d'une sous-chaîne dans une chaîne
-    private int countOccurrences(String str, String subStr) {
+    int countOccurrences(String str, String subStr) {
         int count = 0;
         int idx = 0;
         while ((idx = str.indexOf(subStr, idx)) != -1) {
