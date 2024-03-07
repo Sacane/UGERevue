@@ -1,1 +1,26 @@
-<p>profile works!</p>
+<div class="profile">
+    <mat-tab-group animationDuration="0ms" fitInkBarToContent>
+        <mat-tab label="Informations">
+            <ng-template matTabContent>
+                <div class="container">
+                    <app-profile-info></app-profile-info>
+                </div>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Questions créées">
+            <ng-template matTabContent>
+                Content 2
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Utilisateurs suivis">
+            <ng-template matTabContent>
+                Content 3
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Questions consultées">
+            <ng-template matTabContent>
+                Content 4
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
+</div>
