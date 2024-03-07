@@ -197,16 +197,33 @@ public class QuestionService {
 
         visitQuestionWithScore(userId, visitedUserId, questionsWithScore, 1);
 
-        return List.of();
+        return questionsWithScore.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getValue)).map(entrySet -> {
+            var question = entrySet.getKey();
+
+            return new QuestionDTO(
+                    question.getId(),
+                    question.getTitle(),
+                    question.getDescription(),
+                    question.getAuthor().getUsername(),
+                    question.getCreatedAt().toString(),
+                    questionVoteRepository.countAllById(question.getId()),
+                    question.getReviews().size()
+            );
+        }).toList();
     }
 
     private void visitQuestionWithScore(long userId, List<Long> visitedUserId, Map<Question, Integer> questionsWithScore, int score) {
         var follows = userRepository.findFollowsById(userId);
 
         visitedUserId.add(userId);
-
         for (var follow: follows) {
-            System.out.println(follow.getId() + " " + follow.getUsername());
+            for (var question: follow.getQuestions()) {
+                questionsWithScore.put(question, score);
+            }
+
+            if (!visitedUserId.contains(follow.getId())) {
+                visitQuestionWithScore(follow.getId(), visitedUserId, questionsWithScore, score + 1);
+            }
         }
     }
 }

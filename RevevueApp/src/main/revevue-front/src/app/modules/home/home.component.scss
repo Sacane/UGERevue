@@ -1,66 +1,71 @@
-.container {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
+app-home {
     flex-grow: 1;
 
-    .topdiv {
-        height: 50%;
-        position: relative;
-        background-color: rgba(63, 81, 181, 0.3);
+    .container {
+        height: 100%;
+        width: 100%;
+        margin: 0;
         display: flex;
         flex-direction: column;
         flex-grow: 1;
 
-        .three {
-            justify-content: flex-end;
-            h1 {
-                font-size: 90px;
-                font-weight: 500;
-                letter-spacing: 0;
-                line-height: 1.5em;
-                padding-bottom: 50px;
-                margin: 0;
-                position: absolute;
-                bottom: 0;
+        .topdiv {
+            height: 50%;
+            position: relative;
+            background-color: rgba(63, 81, 181, 0.3);
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+
+            .three {
+                justify-content: flex-end;
+
+                h1 {
+                    font-size: 90px;
+                    font-weight: 500;
+                    letter-spacing: 0;
+                    line-height: 1.5em;
+                    padding-bottom: 50px;
+                    margin: 0;
+                    position: absolute;
+                    bottom: 0;
+                }
             }
+
+            margin-bottom: 10px;
         }
 
-        margin-bottom: 10px;
-    }
+        .bottomdiv {
+            height: 50%;
+            display: flex;
+            flex-direction: row;
 
-    .bottomdiv {
-        height: 50%;
-        display: flex;
-        flex-direction: row;
+            .card {
+                flex-grow: 1;
+                height: 80%;
+                width: 80%;
+                margin: 30px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                border-radius: 40px;
+                justify-content: center;
+                align-items: center;
 
-        .card {
-            flex-grow: 1;
-            height: 80%;
-            width: 80%;
-            margin: 30px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 40px;
-            justify-content: center;
-            align-items: center;
+                .card-text {
+                    text-align: center;
+                    font-family: Roboto, sans-serif;
+                    font-size: 22px;
+                    line-height: 1.4;
+                    color: #333;
+                    margin: 15px;
+                }
 
-            .card-text {
-                text-align: center;
-                font-family: Roboto, sans-serif;
-                font-size: 22px;
-                line-height: 1.4;
-                color: #333;
-                margin: 15px;
-            }
-
-            .card-title {
-                font-family: Roboto, sans-serif;
-                font-size: 28px;
-                line-height: 1.4;
-                color: #333;
-                margin-top: -30px;
+                .card-title {
+                    font-family: Roboto, sans-serif;
+                    font-size: 28px;
+                    line-height: 1.4;
+                    color: #333;
+                    margin-top: -30px;
+                }
             }
         }
     }
