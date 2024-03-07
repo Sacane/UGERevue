@@ -35,9 +35,11 @@ export class ProfileInfoContentComponent {
     saveName() {
         const newUsername = this.usernameControl.value;
         if (newUsername != null && this.usernameControl.valid) {
-            this.userInfo.username = newUsername;
+            if (newUsername !== this.userInfo.username) {
+                this.userInfo.username = newUsername;
+                this.usernameChanged.emit(newUsername);
+            }
             this.editingUsername = false;
-            this.usernameChanged.emit(newUsername);
         }
     }
 }
