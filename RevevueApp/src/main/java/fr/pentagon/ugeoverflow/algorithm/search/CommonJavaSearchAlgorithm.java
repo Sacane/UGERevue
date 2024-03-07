@@ -1,4 +1,4 @@
-package fr.pentagon.ugeoverflow.algorithm;
+package fr.pentagon.ugeoverflow.algorithm.search;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,7 +32,7 @@ public class CommonJavaSearchAlgorithm implements SearchAlgorithm{
     }
 
     @Override
-    public int apply(String word, String token) {
+    public int apply(String token) {
         int coefficient = 0;
         if(JAVA_KEYWORDS.contains(token)) {
             coefficient += 2;
@@ -40,6 +40,6 @@ public class CommonJavaSearchAlgorithm implements SearchAlgorithm{
         if(JAVA_CORE_NOTIONS.contains(token)) {
             coefficient += 3;
         }
-        return searchAlgorithm.apply(word, token) * coefficient;
+        return searchAlgorithm.apply(token) * coefficient;
     }
 }

@@ -77,6 +77,8 @@ public class SearchQuestionByLabelStrategyTest {
         String[] prompt = {"Comment", "déclarer", "une", "classe", "abstraite", "en", "Java"};
         var questionScore = strategy.getScoreByQuestion(question, prompt);
         var questionScore2 = strategy.getScoreByQuestion(question2, prompt);
+        System.err.println(questionScore);
+        System.err.println(questionScore2);
         assertTrue(questionScore > questionScore2);
     }
 

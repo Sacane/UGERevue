@@ -1,14 +1,17 @@
 package fr.pentagon.ugeoverflow.algorithm;
 
+import fr.pentagon.ugeoverflow.algorithm.search.CommonJavaSearchAlgorithm;
+import fr.pentagon.ugeoverflow.algorithm.search.OnDescriptionContainsAlgorithm;
+import fr.pentagon.ugeoverflow.algorithm.search.OnTitleContainsAlgorithm;
+import fr.pentagon.ugeoverflow.algorithm.search.SearchAlgorithm;
 import fr.pentagon.ugeoverflow.model.Question;
 
 import java.util.*;
 
 public class SearchQuestionByLabelStrategy implements QuestionSorterStrategy {
-
     private final String label;
-    private static final int TITLE_POINT = 4;
-    private static final int DESCRIPTION_POINT = 2;
+    public static final int TITLE_POINT = 4;
+    public static final int DESCRIPTION_POINT = 2;
     public SearchQuestionByLabelStrategy(String label){
         this.label = label;
     }
@@ -33,24 +36,15 @@ public class SearchQuestionByLabelStrategy implements QuestionSorterStrategy {
         int score = 0;
         String description = question.getDescription().toLowerCase();
         String title = question.getTitle().toLowerCase();
-
+        SearchAlgorithm searchAlgorithm = new OnTitleContainsAlgorithm(new OnDescriptionContainsAlgorithm(new CommonJavaSearchAlgorithm(SearchAlgorithm.IDENTITY), description), title);
         for (String t : tokens) {
             var token = t.toLowerCase();
-            int tokenScore = TITLE_POINT * token.length();
-            if (title.contains(token)) {
-                score += tokenScore;
-            }
-        }
-
-        for (String t : tokens) {
-            var token = t.toLowerCase();
-            int tokenScore = DESCRIPTION_POINT * token.length();
-            score += tokenScore * countOccurrences(description, token);
+            score += searchAlgorithm.apply(token);
         }
         return score;
     }
 
-    int countOccurrences(String str, String subStr) {
+    public static int countOccurrences(String str, String subStr) {
         int count = 0;
         int idx = 0;
         while ((idx = str.indexOf(subStr, idx)) != -1) {
