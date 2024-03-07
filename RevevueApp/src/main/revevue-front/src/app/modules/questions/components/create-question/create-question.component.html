@@ -1,7 +1,7 @@
 <div class="main">
     <div class="section">
         <div class="title">Poser une question</div>
-        <form (ngSubmit)="onSubmit()" [formGroup]="form">
+        <div [formGroup]="form">
             <mat-form-field>
                 <mat-label>Titre</mat-label>
                 <input formControlName="questionTitle" matInput required>
@@ -34,10 +34,10 @@
                 </button>
                 }
             </mat-form-field>
-            <button [disabled]="!form.valid" color="primary" mat-raised-button type="submit">Poster</button>
+            <button mat-button [disabled]="!form.valid" color="primary" mat-raised-button (click)="onSubmit()">Poster</button>
             <input #javaClassUpload (change)="onJavaClassPicked($event)" style="display: none" type="file">
             <input #testClassUpload (change)="onTestClassPicked($event)" style="display: none" type="file">
-        </form>
+        </div>
     </div>
     <button mat-button (click)="gotoQuestion()">
         Back to questions section
