@@ -1,7 +1,5 @@
 package fr.pentagon.ugeoverflow.algorithm.search;
 
-import static fr.pentagon.ugeoverflow.algorithm.SearchQuestionByLabelStrategy.TITLE_POINT;
-
 public class OnTitleContainsAlgorithm implements SearchAlgorithm{
     private final String title;
     private final SearchAlgorithm searchAlgorithm;
@@ -12,6 +10,6 @@ public class OnTitleContainsAlgorithm implements SearchAlgorithm{
 
     @Override
     public int apply(String token) {
-        return title.contains(token) ? TITLE_POINT * token.length() + searchAlgorithm.apply(token) : searchAlgorithm.apply(token);
+        return title.contains(token) ? token.length() * token.length() + searchAlgorithm.apply(token) : searchAlgorithm.apply(token);
     }
 }

@@ -13,6 +13,6 @@ public class OnDescriptionContainsAlgorithm implements SearchAlgorithm{
 
     @Override
     public int apply(String token) {
-        return (countOccurrences(description, token) * (DESCRIPTION_POINT + token.length())) + searchAlgorithm.apply(token) ;
+        return (countOccurrences(description, token) * (DESCRIPTION_POINT + token.length())) + searchAlgorithm.apply(token);
     }
 }

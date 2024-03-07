@@ -77,20 +77,19 @@ public class SearchQuestionByLabelStrategyTest {
         String[] prompt = {"Comment", "déclarer", "une", "classe", "abstraite", "en", "Java"};
         var questionScore = strategy.getScoreByQuestion(question, prompt);
         var questionScore2 = strategy.getScoreByQuestion(question2, prompt);
-        System.err.println(questionScore);
-        System.err.println(questionScore2);
         assertTrue(questionScore > questionScore2);
     }
 
     @Test
     void algorithmTest(){
-        var strategy = new SearchQuestionByLabelStrategy("Comment faire du java");
+        var strategy = new SearchQuestionByLabelStrategy("Comment lire et écrire des fichiers en Java ?");
         var result = strategy.getQuestions(provideQuestions);
         assertEquals("Comment lire et écrire des fichiers en Java ?", result.getFirst().getTitle());
     }
 
     @Test
     void noQuestionResultTest() {
-        var strategy = new SearchQuestionByLabelStrategy("Comment");
+        var strategy = new SearchQuestionByLabelStrategy("où rechercher mon beurre demain ?");
+        assertEquals(0, strategy.getQuestions(provideQuestions).size());
     }
 }

@@ -7,6 +7,8 @@ import fr.pentagon.ugeoverflow.algorithm.search.SearchAlgorithm;
 import fr.pentagon.ugeoverflow.model.Question;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SearchQuestionByLabelStrategy implements QuestionSorterStrategy {
     private final String label;
@@ -24,7 +26,8 @@ public class SearchQuestionByLabelStrategy implements QuestionSorterStrategy {
                 .toArray(String[]::new);
         for (Question question : origins) {
             int scoreByQuestion = getScoreByQuestion(question, tokens);
-            if(scoreByQuestion == 0) {
+            System.out.println(scoreByQuestion + " -> " + question.getTitle() + " || "+ question.getDescription());
+            if(scoreByQuestion < 20) {
                 continue; // question is ignored on zero-score
             }
             result.put(scoreByQuestion, question);
@@ -44,12 +47,13 @@ public class SearchQuestionByLabelStrategy implements QuestionSorterStrategy {
         return score;
     }
 
-    public static int countOccurrences(String str, String subStr) {
+    public static int countOccurrences(String str, String token) {
+        Pattern pattern = Pattern.compile("\\b" + Pattern.quote(token) + "\\b");
+        Matcher matcher = pattern.matcher(str);
+
         int count = 0;
-        int idx = 0;
-        while ((idx = str.indexOf(subStr, idx)) != -1) {
+        while (matcher.find()) {
             count++;
-            idx += subStr.length();
         }
         return count;
     }
