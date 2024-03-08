@@ -6,6 +6,7 @@ import {environment} from "../../../environment";
 import {UserInfoUpdate} from "../models/UserInfoUpdate";
 import {SimpleQuestion} from "../../../shared/models/question";
 import {UserPasswordUpdate} from "../models/UserPasswordUpdate"
+import {UserFollowing} from "../models/UserFollowing";
 
 @Injectable({
     providedIn: 'root'
@@ -28,6 +29,10 @@ export class UserService {
 
     getCurrentUserQuestions(): Observable<Array<SimpleQuestion>> {
         return this.http.get<Array<SimpleQuestion>>(environment.apiUrl + 'questions/currentUser');
+    }
+
+    getCurrentUserFollowing(): Observable<Array<UserFollowing>> {
+        return this.http.get<Array<UserFollowing>>(environment.apiUrl + 'users/current/following');
     }
 }
 

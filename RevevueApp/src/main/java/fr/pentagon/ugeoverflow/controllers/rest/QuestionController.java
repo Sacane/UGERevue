@@ -39,7 +39,7 @@ public class QuestionController {
   }
 
   @GetMapping(Routes.Question.CURRENT_USER)
-  public ResponseEntity<List<QuestionDTO>> allQuestionsFromCurrentUser(Principal principal) {
+  public ResponseEntity<List<QuestionDTO>> getAllQuestionsFromCurrentUser(Principal principal) {
     if (principal == null) {
       throw HttpException.forbidden("No user currently authenticated");
     }

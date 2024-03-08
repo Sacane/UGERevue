@@ -39,20 +39,24 @@
             </mat-form-field>
         </div>
         <div class="titleRow">Mot de passe</div>
-        <div class="row">
-            <mat-form-field>
-                <mat-label>Ancien mot de passe</mat-label>
-                <input [formControl]="oldPasswordControl" matInput placeholder="Ancient mot de passe" type="password">
-            </mat-form-field>
-        </div>
-        <div class="row">
-            <mat-form-field>
-                <mat-label>Nouveau mot de passe</mat-label>
-                <input [formControl]="newPasswordControl" matInput placeholder="Nouveau mot de passe" type="password">
-            </mat-form-field>
-        </div>
-        <div class="row">
-            <button (click)="savePassword()" color="primary" mat-raised-button>Changer de mot de passe</button>
-        </div>
+        <form (ngSubmit)="savePassword()" class="column">
+            <div class="row">
+                <mat-form-field>
+                    <mat-label>Ancien mot de passe</mat-label>
+                    <input [formControl]="oldPasswordControl" matInput placeholder="Ancient mot de passe"
+                           type="password">
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <mat-form-field>
+                    <mat-label>Nouveau mot de passe</mat-label>
+                    <input [formControl]="newPasswordControl" matInput placeholder="Nouveau mot de passe"
+                           type="password">
+                </mat-form-field>
+            </div>
+            <div class="row">
+                <button color="primary" mat-raised-button type="submit">Changer de mot de passe</button>
+            </div>
+        </form>
     </div>
 </div>

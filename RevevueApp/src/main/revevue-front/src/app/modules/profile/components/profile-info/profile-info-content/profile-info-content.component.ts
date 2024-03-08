@@ -4,7 +4,7 @@ import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {MatButton} from "@angular/material/button";
 import {RolePipe} from "../../../pipes/role.pipe";
-import {FormControl, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormControl, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {UserPasswordUpdate} from "../../../models/UserPasswordUpdate"
 
 @Component({
@@ -16,7 +16,8 @@ import {UserPasswordUpdate} from "../../../models/UserPasswordUpdate"
         MatInput,
         MatButton,
         RolePipe,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        FormsModule
     ],
     templateUrl: './profile-info-content.component.html',
     styleUrl: './profile-info-content.component.scss'

@@ -5,6 +5,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserFollowInfoDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserInfoUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserPasswordUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserFollowingDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.User;
@@ -97,5 +98,13 @@ public class UserService {
     }
     user.setPassword(passwordEncoder.encode(userPasswordUpdateDTO.newPassword()));
     userRepository.save(user);
+  }
+
+  @Transactional
+  public List<UserFollowingDTO> getUserFollowings(String userId) {
+    var user = userRepository.findByLogin(userId).orElseThrow();
+    return userRepository.findFollowing(user).stream()
+        .map(following -> new UserFollowingDTO(following.getId(), following.getUsername()))
+        .toList();
   }
 }

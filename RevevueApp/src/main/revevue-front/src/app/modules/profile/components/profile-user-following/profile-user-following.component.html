@@ -1,0 +1,3 @@
+<ng-container *ngIf="userFollowing$ | async as userFollowing">
+    <app-profile-user-following-content [userFollowing]="userFollowing"></app-profile-user-following-content>
+</ng-container>

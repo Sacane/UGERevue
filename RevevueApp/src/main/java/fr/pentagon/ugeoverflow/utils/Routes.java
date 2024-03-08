@@ -13,6 +13,7 @@ public final class Routes {
     public static final String UNFOLLOW = ROOT + "/unfollow";
     public static final String CURRENT_USER = ROOT + "/current";
     public static final String PASSWORD = CURRENT_USER + "/password";
+    public static final String FOLLOWING = CURRENT_USER + "/following";
 
     private User() {
     }

@@ -2,13 +2,15 @@ import {Component, Input} from '@angular/core';
 import {SimpleQuestion} from "../../../../../shared/models/question";
 import {DatePipe, JsonPipe} from "@angular/common";
 import {Router} from "@angular/router";
+import {MatRipple} from "@angular/material/core";
 
 @Component({
     selector: 'app-profile-user-questions-content',
     standalone: true,
     imports: [
         JsonPipe,
-        DatePipe
+        DatePipe,
+        MatRipple
     ],
     templateUrl: './profile-user-questions-content.component.html',
     styleUrl: './profile-user-questions-content.component.scss'

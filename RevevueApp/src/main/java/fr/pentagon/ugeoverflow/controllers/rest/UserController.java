@@ -6,6 +6,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserFollowInfoDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserInfoUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserPasswordUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserFollowingDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserInfoDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
@@ -63,6 +64,16 @@ public class UserController {
     return ResponseEntity.ok().build();
   }
 
+  @GetMapping(Routes.User.FOLLOWING)
+  @RequireUser
+  public ResponseEntity<List<UserFollowingDTO>> getCurrentUserFollowing(Principal principal) {
+    if (principal == null) {
+      throw HttpException.forbidden("No user currently authenticated");
+    }
+    return ResponseEntity.ok(userService.getUserFollowings(principal.getName()));
+  }
+
+
   @GetMapping(Routes.User.ROOT)
   public ResponseEntity<List<UserFollowInfoDTO>> getAllRegisteredUsers() {
     LOGGER.info("Trying to get all registered Users");
@@ -74,16 +85,17 @@ public class UserController {
   }
 
   @GetMapping(Routes.User.CURRENT_USER)
-  public ResponseEntity<UserInfoDTO> getCurrentAuthenticatedUserInformation(Principal principal) {
+  @RequireUser
+  public ResponseEntity<UserInfoDTO> getCurrentUserInformation(Principal principal) {
     if (principal == null) {
       throw HttpException.forbidden("No user currently authenticated");
     }
-    LOGGER.info(principal.getName());
     var user = userRepository.findByLogin(principal.getName()).orElseThrow();
     return ResponseEntity.ok(new UserInfoDTO(user.getUsername(), user.getLogin(), user.getEmail(), user.getRole()));
   }
 
   @PatchMapping(Routes.User.CURRENT_USER)
+  @RequireUser
   public ResponseEntity<Void> updateCurrentAuthenticatedUserInformation(@RequestBody @Valid UserInfoUpdateDTO userInfoUpdateDTO,
                                                                         Principal principal) {
     if (principal == null) {
@@ -94,6 +106,7 @@ public class UserController {
   }
 
   @PostMapping(Routes.User.PASSWORD)
+  @RequireUser
   public ResponseEntity<Void> updateCurrentUserPassword(@RequestBody @Valid UserPasswordUpdateDTO userPasswordUpdateDTO,
                                                         Principal principal) {
     if (principal == null) {
