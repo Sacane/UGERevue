@@ -5,6 +5,7 @@ import {MatInput} from "@angular/material/input";
 import {MatButton} from "@angular/material/button";
 import {RolePipe} from "../../../pipes/role.pipe";
 import {FormControl, ReactiveFormsModule, Validators} from "@angular/forms";
+import {UserPasswordUpdate} from "../../../models/UserPasswordUpdate"
 
 @Component({
     selector: 'app-profile-info-content',
@@ -23,9 +24,15 @@ import {FormControl, ReactiveFormsModule, Validators} from "@angular/forms";
 export class ProfileInfoContentComponent {
     @Input({required: true}) userInfo!: UserInfo;
     @Output() usernameChanged = new EventEmitter<string>();
+    @Output() passwordChanged = new EventEmitter<UserPasswordUpdate>();
     usernameControl = new FormControl('',
         [Validators.minLength(3), Validators.maxLength(20)]);
     editingUsername = false;
+
+    oldPasswordControl = new FormControl('',
+        [Validators.minLength(3), Validators.maxLength(20)]);
+    newPasswordControl = new FormControl('',
+        [Validators.minLength(3), Validators.maxLength(20)]);
 
     editName() {
         this.usernameControl.setValue(this.userInfo.username);
@@ -40,6 +47,17 @@ export class ProfileInfoContentComponent {
                 this.usernameChanged.emit(newUsername);
             }
             this.editingUsername = false;
+        }
+    }
+
+    savePassword() {
+        const oldPassword = this.oldPasswordControl.value;
+        const newPassword = this.newPasswordControl.value;
+        if (this.oldPasswordControl.valid && this.newPasswordControl.valid
+            && oldPassword !== null && newPassword !== null) {
+            this.oldPasswordControl.setValue('');
+            this.newPasswordControl.setValue('');
+            this.passwordChanged.emit({oldPassword, newPassword});
         }
     }
 }

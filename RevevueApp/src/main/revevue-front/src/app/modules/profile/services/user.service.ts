@@ -4,6 +4,8 @@ import {UserInfo} from "../models/UserInfo";
 import {Observable} from "rxjs";
 import {environment} from "../../../environment";
 import {UserInfoUpdate} from "../models/UserInfoUpdate";
+import {SimpleQuestion} from "../../../shared/models/question";
+import {UserPasswordUpdate} from "../models/UserPasswordUpdate"
 
 @Injectable({
     providedIn: 'root'
@@ -18,6 +20,14 @@ export class UserService {
 
     changeCurrentUserInfo(userInfoUpdate: UserInfoUpdate): Observable<any> {
         return this.http.patch(environment.apiUrl + 'users/current', userInfoUpdate);
+    }
+
+    changeCurrentUserPassword(userPasswordUpdate: UserPasswordUpdate): Observable<any> {
+        return this.http.post(environment.apiUrl + 'users/current/password', userPasswordUpdate);
+    }
+
+    getCurrentUserQuestions(): Observable<Array<SimpleQuestion>> {
+        return this.http.get<Array<SimpleQuestion>>(environment.apiUrl + 'questions/currentUser');
     }
 }
 

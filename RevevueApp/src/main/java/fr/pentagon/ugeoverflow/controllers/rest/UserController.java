@@ -4,6 +4,7 @@ import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserFollowInfoDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserInfoUpdateDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserPasswordUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserInfoDTO;
@@ -72,7 +73,7 @@ public class UserController {
     return ResponseEntity.ok(userService.userRegisteredList(userConnected.id()));
   }
 
-  @GetMapping(Routes.User.CURRENT_USER_INFO)
+  @GetMapping(Routes.User.CURRENT_USER)
   public ResponseEntity<UserInfoDTO> getCurrentAuthenticatedUserInformation(Principal principal) {
     if (principal == null) {
       throw HttpException.forbidden("No user currently authenticated");
@@ -82,13 +83,23 @@ public class UserController {
     return ResponseEntity.ok(new UserInfoDTO(user.getUsername(), user.getLogin(), user.getEmail(), user.getRole()));
   }
 
-  @PatchMapping(Routes.User.CURRENT_USER_INFO)
+  @PatchMapping(Routes.User.CURRENT_USER)
   public ResponseEntity<Void> updateCurrentAuthenticatedUserInformation(@RequestBody @Valid UserInfoUpdateDTO userInfoUpdateDTO,
                                                                         Principal principal) {
     if (principal == null) {
       throw HttpException.forbidden("No user currently authenticated");
     }
     userService.updateUser(principal.getName(), userInfoUpdateDTO);
+    return ResponseEntity.ok().build();
+  }
+
+  @PostMapping(Routes.User.PASSWORD)
+  public ResponseEntity<Void> updateCurrentUserPassword(@RequestBody @Valid UserPasswordUpdateDTO userPasswordUpdateDTO,
+                                                        Principal principal) {
+    if (principal == null) {
+      throw HttpException.forbidden("No user currently authenticated");
+    }
+    userService.updateUserPassword(principal.getName(), userPasswordUpdateDTO);
     return ResponseEntity.ok().build();
   }
 }

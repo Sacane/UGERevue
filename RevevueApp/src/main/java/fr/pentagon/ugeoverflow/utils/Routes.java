@@ -11,7 +11,9 @@ public final class Routes {
     public static final String ROOT = Routes.ROOT + IDENT;
     public static final String FOLLOW = ROOT + "/follow";
     public static final String UNFOLLOW = ROOT + "/unfollow";
-    public static final String CURRENT_USER_INFO = ROOT + "/current";
+    public static final String CURRENT_USER = ROOT + "/current";
+    public static final String PASSWORD = CURRENT_USER + "/password";
+
     private User() {
     }
   }
@@ -19,8 +21,11 @@ public final class Routes {
   public static final class Question {
     public static final String IDENT = "/questions";
     public static final String ROOT = Routes.ROOT + IDENT;
-    private static final String WITH_ID = "/{questionId}";
+
+    public static final String CURRENT_USER = ROOT + "/currentUser";
+    private static final String WITH_ID = "/{questionId:[0-9]+}";
     public static final String WITH_QUESTION_ID = ROOT + WITH_ID;
+
     private Question() {
     }
   }
@@ -30,6 +35,7 @@ public final class Routes {
     public static final String ROOT = Routes.ROOT + "/votes";
     public static final String UP_VOTE = ROOT + "/upvote/";
     public static final String DOWN_VOTE = ROOT + "/downvote/";
+
     private Vote() {
     }
 
@@ -38,6 +44,7 @@ public final class Routes {
   public static final class Auth {
     public static final String LOGIN = ROOT + "/login";
     public static final String LOGOUT = ROOT + "/logout";
+
     private Auth() {
     }
   }

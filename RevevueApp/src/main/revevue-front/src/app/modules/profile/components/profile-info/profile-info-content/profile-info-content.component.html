@@ -1,10 +1,11 @@
 <div class="container">
     <div class="column">
+        <div class="titleRow">Informations</div>
         <div class="row">
             @if (!editingUsername) {
                 <mat-form-field>
                     <mat-label>Nom d'utilisateur</mat-label>
-                    <input [readonly]="true" [value]="userInfo.username" matInput placeholder="Nom d'utilisateur"
+                    <input [readonly]="true" [value]="userInfo.username" matInput
                            disabled>
                 </mat-form-field>
 
@@ -12,7 +13,7 @@
             } @else {
                 <mat-form-field>
                     <mat-label>Nom d'utilisateur</mat-label>
-                    <input matInput placeholder="Nom d'utilisateur" [formControl]="usernameControl">
+                    <input matInput [formControl]="usernameControl">
                 </mat-form-field>
 
                 <button color="primary" mat-raised-button (click)="saveName()">Sauvegarder</button>
@@ -22,21 +23,36 @@
         <div class="row">
             <mat-form-field>
                 <mat-label>Nom de compte</mat-label>
-                <input [readonly]="true" [value]="userInfo.login" disabled matInput placeholder="Nom d'utilisateur">
+                <input [readonly]="true" [value]="userInfo.login" disabled matInput>
             </mat-form-field>
         </div>
         <div class="row">
             <mat-form-field>
                 <mat-label>Email</mat-label>
-                <input [readonly]="true" [value]="userInfo.email" disabled matInput placeholder="Nom d'utilisateur">
+                <input [readonly]="true" [value]="userInfo.email" disabled matInput>
             </mat-form-field>
         </div>
         <div class="row">
             <mat-form-field>
                 <mat-label>Role</mat-label>
-                <input [readonly]="true" [value]="userInfo.role | role" disabled matInput
-                       placeholder="Nom d'utilisateur">
+                <input [readonly]="true" [value]="userInfo.role | role" disabled matInput>
             </mat-form-field>
+        </div>
+        <div class="titleRow">Mot de passe</div>
+        <div class="row">
+            <mat-form-field>
+                <mat-label>Ancien mot de passe</mat-label>
+                <input [formControl]="oldPasswordControl" matInput placeholder="Ancient mot de passe" type="password">
+            </mat-form-field>
+        </div>
+        <div class="row">
+            <mat-form-field>
+                <mat-label>Nouveau mot de passe</mat-label>
+                <input [formControl]="newPasswordControl" matInput placeholder="Nouveau mot de passe" type="password">
+            </mat-form-field>
+        </div>
+        <div class="row">
+            <button (click)="savePassword()" color="primary" mat-raised-button>Changer de mot de passe</button>
         </div>
     </div>
 </div>

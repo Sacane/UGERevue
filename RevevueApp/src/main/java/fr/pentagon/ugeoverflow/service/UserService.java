@@ -3,6 +3,7 @@ package fr.pentagon.ugeoverflow.service;
 import fr.pentagon.ugeoverflow.config.authorization.Role;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserFollowInfoDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserInfoUpdateDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserPasswordUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
@@ -85,6 +86,16 @@ public class UserService {
   public void updateUser(String userId, UserInfoUpdateDTO userInfoUpdateDTO) {
     var user = userRepository.findByLogin(userId).orElseThrow();
     user.setUsername(userInfoUpdateDTO.username());
+    userRepository.save(user);
+  }
+
+  @Transactional
+  public void updateUserPassword(String userId, UserPasswordUpdateDTO userPasswordUpdateDTO) {
+    var user = userRepository.findByLogin(userId).orElseThrow();
+    if (!passwordEncoder.matches(userPasswordUpdateDTO.oldPassword(), user.getPassword())) {
+      throw HttpException.badRequest("Bad password");
+    }
+    user.setPassword(passwordEncoder.encode(userPasswordUpdateDTO.newPassword()));
     userRepository.save(user);
   }
 }
