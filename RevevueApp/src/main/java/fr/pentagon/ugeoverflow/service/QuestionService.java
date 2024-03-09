@@ -68,12 +68,12 @@ public class QuestionService {
     }
 
     @Transactional
-    public List<QuestionDTO> getQuestions(String label, String username) { // TODO take in count the username
+    public List<QuestionDTO> getQuestions(String label, String username) {
         Objects.requireNonNull(label);
         var questions = questionRepository.findAllWithAuthors();
-        QuestionSorterStrategy questionSorterStrategy = new SearchQuestionByLabelStrategy(label);
-        questionSorterStrategy.getQuestions(questions).forEach(System.out::println);
-        return questionSorterStrategy.getQuestions(questions)
+        QuestionSorterStrategy questionSorterStrategy = new SearchQuestionByLabelStrategy();
+
+        return questionSorterStrategy.getQuestions(label, (username != null) ? QuestionSorterStrategy.WITH_AUTHOR.getQuestions(username, questions) : questions)
                 .stream()
                 .map(question -> new QuestionDTO(
                         question.getId(),

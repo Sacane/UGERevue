@@ -12,6 +12,7 @@ export class NavBarComponent {
     userService = inject(UserService)
     private router = inject(Router)
     label = signal('')
+    username = signal('undefined')
 
     login(): void {
         this.router.navigateByUrl('/login').then();
@@ -39,10 +40,13 @@ export class NavBarComponent {
     search(): void {
         console.log(this.label())
         this.router.navigateByUrl('/questions/search/' + this.label(), { skipLocationChange: true }).then();
-        //this.questionService.searchQuestion(this.label()).subscribe(questions => this.router.navigateByUrl('/search-questions'));
     }
 
     updateLabel($event: any): void {
         this.label.set($event.target.value)
+    }
+
+    updateUsername($event: any) {
+        this.username.set($event.target.value)
     }
 }

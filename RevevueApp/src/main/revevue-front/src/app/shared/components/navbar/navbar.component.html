@@ -7,6 +7,10 @@
         <mat-label>Search</mat-label>
         <input matInput (keyup)="updateLabel($event)" (keyup.enter)="search()">
     </mat-form-field>
+    <mat-form-field>
+        <mat-label>User</mat-label>
+        <input matInput (keyup)="updateUsername($event)" (keyup.enter)="search()">
+    </mat-form-field>
     @if (userService.isLogin()) {
         <button mat-button color="primary" (click)="profile()">
             <mat-icon>account-circle</mat-icon>

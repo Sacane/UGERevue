@@ -1,8 +1,10 @@
 package fr.pentagon.ugeoverflow.algorithm;
 
+import fr.pentagon.ugeoverflow.algorithm.search.QuestionSearchAlgorithm;
 import fr.pentagon.ugeoverflow.model.Question;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +17,7 @@ public class SearchQuestionByLabelStrategyTest {
 
     private final List<Question> provideQuestions = List.of(
             provideQuestionFromTitleAndDescription(
-                    "Comment déclarer une classe abstraite en Java ?",
+                    "Comment déclarer une List<Object> en Java ?",
                     "Je veux comprendre comment créer une classe abstraite en Java et à quoi cela sert-il dans la programmation orientée objet."
             ),
             provideQuestionFromTitleAndDescription(
@@ -65,7 +67,7 @@ public class SearchQuestionByLabelStrategyTest {
 
     @Test
     void scoreResultTest() {
-        var strategy = new SearchQuestionByLabelStrategy("Comment déclarer une classe abstraite en Java ?");
+        var strategy = new SearchQuestionByLabelStrategy();
         var question =  provideQuestionFromTitleAndDescription(
                 "Comment déclarer une classe abstraite en Java ?",
                 "Je veux comprendre comment créer une classe abstraite en Java et à quoi cela sert-il dans la programmation orientée objet."
@@ -75,21 +77,21 @@ public class SearchQuestionByLabelStrategyTest {
                 "J'ai vu des exceptions en Java mais je ne sais pas exactement ce qu'elles sont ni comment les traiter correctement dans mes programmes. Pouvez-vous m'expliquer les bases de la gestion des exceptions en Java ?"
         );
         String[] prompt = {"Comment", "déclarer", "une", "classe", "abstraite", "en", "Java"};
-        var questionScore = strategy.getScoreByQuestion(question, prompt);
-        var questionScore2 = strategy.getScoreByQuestion(question2, prompt);
+        var questionScore = strategy.getScoreByQuestion(question, prompt, QuestionSearchAlgorithm.IDENTITY);
+        var questionScore2 = strategy.getScoreByQuestion(question2, prompt, QuestionSearchAlgorithm.IDENTITY);
         assertTrue(questionScore > questionScore2);
     }
 
     @Test
     void algorithmTest(){
-        var strategy = new SearchQuestionByLabelStrategy("Comment lire et écrire des fichiers en Java ?");
-        var result = strategy.getQuestions(provideQuestions);
+        var strategy = new SearchQuestionByLabelStrategy();
+        var result = strategy.getQuestions("Comment lire et écrire des fichiers en Java ?", provideQuestions);
         assertEquals("Comment lire et écrire des fichiers en Java ?", result.getFirst().getTitle());
     }
 
     @Test
     void noQuestionResultTest() {
-        var strategy = new SearchQuestionByLabelStrategy("où rechercher mon beurre demain ?");
-        assertEquals(0, strategy.getQuestions(provideQuestions).size());
+        var strategy = new SearchQuestionByLabelStrategy();
+        assertEquals(0, strategy.getQuestions("où rechercher mon beurre demain ?", provideQuestions).size());
     }
 }
