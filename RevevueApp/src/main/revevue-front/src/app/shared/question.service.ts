@@ -15,9 +15,11 @@ export class QuestionService {
     private readonly SEARCH = this.ROOT + '/search'
     private client = inject(HttpClient)
 
-    public searchQuestion(label: string, onError: (error: Error) => any = (err) => console.error(err)): Observable<SimpleQuestion[]> {
+    public searchQuestion(label: string, username?: string, onError: (error: Error) => any = (err) => console.error(err)): Observable<SimpleQuestion[]> {
         let params = new HttpParams().append('label', label)
-        // params.set('', '') TODO put username
+        if(username !== undefined) {
+            params = params.append('username', username)
+        }
         return this.client.get<SimpleQuestion[]>(this.SEARCH, {params: params})
             .pipe(tap(), catchError(err => throwError(() => onError(err))))
     }

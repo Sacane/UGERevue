@@ -4,11 +4,11 @@
     <span class="spacer"></span>
     <mat-form-field>
         <mat-button-toggle matIconPrefix (click)="search()"><mat-icon matPrefix>search</mat-icon></mat-button-toggle>
-        <mat-label>Search</mat-label>
+        <mat-label>Rechercher une question</mat-label>
         <input matInput (keyup)="updateLabel($event)" (keyup.enter)="search()">
     </mat-form-field>
     <mat-form-field>
-        <mat-label>User</mat-label>
+        <mat-label>Rechercher un utilisateur</mat-label>
         <input matInput (keyup)="updateUsername($event)" (keyup.enter)="search()">
     </mat-form-field>
     @if (userService.isLogin()) {

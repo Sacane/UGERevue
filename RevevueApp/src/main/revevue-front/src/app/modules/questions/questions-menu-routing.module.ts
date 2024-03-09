@@ -7,7 +7,7 @@ import {SearchQuestionsComponent} from "./components/search-questions/search-que
 
 const routes: Routes = [
     {
-        path: 'search/:label',
+        path: 'search/:label/:username',
         component: SearchQuestionsComponent
     },
     {

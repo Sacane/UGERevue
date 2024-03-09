@@ -11,7 +11,7 @@ import { UserService } from "../../HttpServices";
 export class NavBarComponent {
     userService = inject(UserService)
     private router = inject(Router)
-    label = signal('')
+    label = signal('undefined')
     username = signal('undefined')
 
     login(): void {
@@ -39,7 +39,9 @@ export class NavBarComponent {
 
     search(): void {
         console.log(this.label())
-        this.router.navigateByUrl('/questions/search/' + this.label(), { skipLocationChange: true }).then();
+        const finalLabel = this.label() === '' ? 'undefined' : this.label()
+        console.log(finalLabel)
+        this.router.navigateByUrl('/questions/search/' + finalLabel + '/' + this.username(), { skipLocationChange: true }).then();
     }
 
     updateLabel($event: any): void {
