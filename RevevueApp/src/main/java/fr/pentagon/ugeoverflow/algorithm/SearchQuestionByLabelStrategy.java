@@ -19,19 +19,21 @@ public class SearchQuestionByLabelStrategy implements QuestionSorterStrategy {
 
     @Override
     public List<Question> getQuestions(List<Question> origins) {
-        var result = new TreeMap<Integer, Question>(Collections.reverseOrder());
+        var result = new TreeMap<Integer, List<Question>>(Collections.reverseOrder());
         var tokens = Arrays.stream(this.label.split(" "))
                 .map(String::toLowerCase)
                 .toArray(String[]::new);
         for (Question question : origins) {
             int scoreByQuestion = getScoreByQuestion(question, tokens);
-            System.out.println(scoreByQuestion + " -> " + question.getTitle() + " || "+ question.getDescription());
             if(scoreByQuestion < 20) {
                 continue; // question is ignored on zero-score
             }
-            result.put(scoreByQuestion, question);
+            System.out.println(scoreByQuestion + " -> " + question.getTitle() + " || "+ question.getDescription());
+            result.computeIfAbsent(scoreByQuestion, k -> new ArrayList<>()).add(question);
         }
-        return new ArrayList<>(result.values());
+        return result.values().stream()
+                .flatMap(List::stream)
+                .toList();
     }
 
     int getScoreByQuestion(Question question, String[] tokens) {

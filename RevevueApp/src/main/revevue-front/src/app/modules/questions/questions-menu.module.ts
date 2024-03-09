@@ -15,6 +15,7 @@ import {CreateQuestionComponent} from "./components/create-question/create-quest
 import {ReactiveFormsModule} from "@angular/forms";
 import {MarkdownComponent} from "ngx-markdown";
 import {SearchQuestionsComponent} from "./components/search-questions/search-questions.component";
+import {MatTableModule} from "@angular/material/table";
 
 @NgModule({
     providers: [
@@ -50,6 +51,7 @@ import {SearchQuestionsComponent} from "./components/search-questions/search-que
         JsonPipe,
         AsyncPipe,
         MarkdownComponent,
+        MatTableModule
     ],
     exports: [
         QuestionsMenuComponent,

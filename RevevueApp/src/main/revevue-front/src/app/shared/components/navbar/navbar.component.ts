@@ -1,7 +1,6 @@
-import { Component, inject, signal, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
-import { UserService } from "../../HttpServices";
-import {QuestionService} from "../../question.service";
+import {Component, inject, signal, ViewEncapsulation} from '@angular/core';
+import {Router} from '@angular/router';
+import {UserService} from "../../HttpServices";
 
 @Component({
     selector: 'app-nav-bar',
@@ -34,8 +33,8 @@ export class NavBarComponent {
     }
 
     search(): void {
-        console.log('test')
-        this.router.navigateByUrl('/questions/search').then()
+        console.log(this.label())
+        this.router.navigateByUrl('/questions/search/' + this.label(), { skipLocationChange: true }).then();
         //this.questionService.searchQuestion(this.label()).subscribe(questions => this.router.navigateByUrl('/search-questions'));
     }
 

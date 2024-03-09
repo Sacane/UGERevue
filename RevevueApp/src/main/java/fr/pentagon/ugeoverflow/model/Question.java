@@ -3,6 +3,7 @@ package fr.pentagon.ugeoverflow.model;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -138,5 +139,20 @@ public class Question {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", testResult='" + testResult + '\'' +
+                ", open=" + open +
+                ", author=" + author +
+                ", reviews=" + reviews +
+                ", createdAt=" + createdAt +
+                ", version=" + version +
+                '}';
     }
 }

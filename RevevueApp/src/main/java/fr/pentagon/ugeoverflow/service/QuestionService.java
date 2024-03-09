@@ -72,6 +72,7 @@ public class QuestionService {
         Objects.requireNonNull(label);
         var questions = questionRepository.findAllWithAuthors();
         QuestionSorterStrategy questionSorterStrategy = new SearchQuestionByLabelStrategy(label);
+        questionSorterStrategy.getQuestions(questions).forEach(System.out::println);
         return questionSorterStrategy.getQuestions(questions)
                 .stream()
                 .map(question -> new QuestionDTO(
