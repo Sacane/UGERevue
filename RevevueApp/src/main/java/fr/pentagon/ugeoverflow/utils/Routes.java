@@ -17,14 +17,15 @@ public final class Routes {
 
     private User() {
     }
-    public static final class Question {
-        private Question() {}
-        public static final String IDENT = "/questions";
-        private static final String WITH_ID = "/{questionId}";
-        public static final String ROOT = Routes.ROOT + IDENT;
-        public static final String WITH_QUESTION_ID = ROOT + WITH_ID;
-        public static final String SEARCH = Routes.ROOT + IDENT + "/search";
-    }
+
+  }
+  public static final class Question {
+    private Question() {}
+    public static final String IDENT = "/questions";
+    private static final String WITH_ID = "/{questionId}";
+    public static final String ROOT = Routes.ROOT + IDENT;
+    public static final String WITH_QUESTION_ID = ROOT + WITH_ID;
+    public static final String SEARCH = Routes.ROOT + IDENT + "/search";
   }
 
   public static final class Vote {
