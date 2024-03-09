@@ -46,12 +46,12 @@ public class LoginControllerTest {
     userService.register(new UserRegisterDTO("Verestah1", "verestah.fake@gmail.com", "login", "password"));
     loginTestService.login(credentialsDTO)
         .andExpect(status().isOk())
-        .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("Verestah1"))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("login"))
         .andDo(print());
     Optional<RevevueUserDetail> authentication = SecurityContext.authentication();
     assertTrue(authentication.isPresent());
     var auth = authentication.get();
-    assertEquals("Verestah1", auth.getUsername());
+    assertEquals("login", auth.getUsername());
   }
 
   @Test
@@ -78,11 +78,11 @@ public class LoginControllerTest {
     userService.register(new UserRegisterDTO("verestah1", "verestah@gmail.com", "login1231", "password1"));
     var credentialsDTO = new CredentialsDTO("login1231", "password1");
     loginTestService.login(credentialsDTO)
-            .andExpect(status().isOk())
-            .andDo(print());
+        .andExpect(status().isOk())
+        .andDo(print());
     assertTrue(SecurityContext.authentication().isPresent());
     loginTestService.logout()
-            .andExpect(status().isOk());
+        .andExpect(status().isOk());
     assertTrue(SecurityContext.authentication().isEmpty());
   }
 }

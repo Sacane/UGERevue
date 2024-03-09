@@ -7,8 +7,8 @@
         <mat-label>Search</mat-label>
         <input matInput>
     </mat-form-field>
-    @if(userService.isLogin()) {
-        <button mat-button color="primary">
+    @if (userService.isLogin()) {
+        <button mat-button color="primary" (click)="profile()">
             <mat-icon>account-circle</mat-icon>
             Mon profil
         </button>
