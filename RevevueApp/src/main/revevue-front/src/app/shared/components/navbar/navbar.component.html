@@ -3,10 +3,11 @@
     <span>ReveVue</span>
     <span class="spacer"></span>
     <mat-form-field>
-        <mat-icon matPrefix>search</mat-icon>
+        <mat-button-toggle matIconPrefix (click)="search()"><mat-icon matPrefix>search</mat-icon></mat-button-toggle>
         <mat-label>Search</mat-label>
-        <input matInput>
+        <input matInput (keydown)="updateLabel($event)" (keyup.enter)="search()">
     </mat-form-field>
+    <button mat-button (click)="search()">test</button>
     @if(userService.isLogin()) {
         <button mat-button color="primary">
             <mat-icon>account-circle</mat-icon>

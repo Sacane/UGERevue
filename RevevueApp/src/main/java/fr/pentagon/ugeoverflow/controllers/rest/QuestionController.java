@@ -37,7 +37,7 @@ public class QuestionController {
     }
 
     @GetMapping(Routes.Question.SEARCH)
-    public ResponseEntity<List<QuestionDTO>> allQuestionByParameters(@RequestParam String label, @RequestParam(required = false) String username) {
+    public ResponseEntity<List<QuestionDTO>> allQuestionByParameters(@RequestParam("label") String label, @RequestParam(required = false, value = "username") String username) {
         LOGGER.info("Get performed on " + Routes.Question.SEARCH);
         return ok(questionService.getQuestions(label, username));
     }

@@ -14,6 +14,7 @@ import {MatChipsModule} from "@angular/material/chips";
 import {CreateQuestionComponent} from "./components/create-question/create-question.component";
 import {ReactiveFormsModule} from "@angular/forms";
 import {MarkdownComponent} from "ngx-markdown";
+import {SearchQuestionsComponent} from "./components/search-questions/search-questions.component";
 
 @NgModule({
     providers: [
@@ -34,7 +35,8 @@ import {MarkdownComponent} from "ngx-markdown";
         QuestionsComponent,
         ReviewComponent,
         ReviewsComponent,
-        CreateQuestionComponent
+        CreateQuestionComponent,
+        SearchQuestionsComponent
     ],
     imports: [
         QuestionsMenuRoutingModule,
@@ -55,7 +57,8 @@ import {MarkdownComponent} from "ngx-markdown";
         QuestionsComponent,
         ReviewComponent,
         ReviewsComponent,
-        CreateQuestionComponent
+        CreateQuestionComponent,
+        SearchQuestionsComponent
     ],
     bootstrap: [
         QuestionsMenuComponent,
@@ -63,7 +66,8 @@ import {MarkdownComponent} from "ngx-markdown";
         QuestionsComponent,
         ReviewComponent,
         ReviewsComponent,
-        CreateQuestionComponent
+        CreateQuestionComponent,
+        SearchQuestionsComponent
     ]
 })
 export class QuestionsMenuModule { }

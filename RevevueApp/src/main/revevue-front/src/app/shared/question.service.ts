@@ -1,5 +1,5 @@
 import { inject, Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import { environment } from "../environment";
 import { catchError, delay, Observable, of, tap, throwError } from "rxjs";
 import { NewQuestionDTO } from "./models-out";
@@ -11,9 +11,16 @@ import { Question, SimpleQuestion } from "../modules/questions/models/question";
 export class QuestionService {
     private HEADERS = new HttpHeaders().set('Content-Type', 'application/json');
     private readonly ROOT = environment.apiUrl + 'questions'
-
+    private readonly SEARCH = this.ROOT + '/search'
     private client = inject(HttpClient)
 
+    public searchQuestion(label: string, onError: (error: Error) => any = (err) => console.error(err)): Observable<SimpleQuestion[]> {
+        const params = new HttpParams()
+        // params.set('', '') TODO put username
+        params.set('label', label)
+        return this.client.get<SimpleQuestion[]>(this.SEARCH, {params: params})
+            .pipe(tap(), catchError(err => throwError(() => onError(err))))
+    }
     public createQuestion(newQuestionDTO: NewQuestionDTO, onError: (error: Error) => any = (err) => console.error(err)): Observable<number> {
         const formData = new FormData();
         formData.append('title', newQuestionDTO.title);
