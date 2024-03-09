@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
 
 export const routes: Routes = [
-    { path: '', pathMatch: 'full', redirectTo: '/home' },
+    {path: '', pathMatch: 'full', redirectTo: '/home'},
     {
         path: '',
         children: [
@@ -33,13 +33,18 @@ export const routes: Routes = [
             {
                 path: 'reviews',
                 loadChildren: () => import('./modules').then(m => m.ReviewsModule)
+            },
+            {
+                path: 'profile',
+                loadChildren: () => import('./modules').then(m => m.ProfileModule)
             }
         ]
     }
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes, { scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload' })],
+    imports: [RouterModule.forRoot(routes, {scrollPositionRestoration: 'enabled', onSameUrlNavigation: 'reload'})],
     exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

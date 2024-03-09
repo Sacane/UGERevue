@@ -5,3 +5,5 @@ export * from './questions';
 export * from './tags';
 export * from './users';
 export * from './reviews';
+export * from './profile';
+export * from './profile';

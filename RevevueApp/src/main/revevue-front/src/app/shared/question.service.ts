@@ -36,7 +36,7 @@ export class QuestionService {
     public deleteQuestion(questionId: string): Observable<any> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-        return this.client.delete<any>(`${this.ROOT}/${questionId}`, { headers });
+        return this.client.delete<any>(`${this.ROOT}/${questionId}`, {headers});
     }
 
     public getQuestions(onError: (error: Error) => any = (err) => console.error(err)): Observable<SimpleQuestion[]> {
@@ -52,6 +52,6 @@ export class QuestionService {
     public addReview(questionId: string, content: string, lineStart?: string, lineEnd?: string): Observable<any> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-        return this.client.post<any>(`${this.ROOT}/reviews`, { questionId, content, lineStart, lineEnd }, { headers });
+        return this.client.post<any>(`${this.ROOT}/reviews`, {questionId, content, lineStart, lineEnd}, {headers});
     }
 }
