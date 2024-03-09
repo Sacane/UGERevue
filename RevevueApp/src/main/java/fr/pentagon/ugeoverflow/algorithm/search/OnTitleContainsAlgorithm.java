@@ -1,5 +1,7 @@
 package fr.pentagon.ugeoverflow.algorithm.search;
 
+import fr.pentagon.ugeoverflow.model.Question;
+
 public class OnTitleContainsAlgorithm implements SearchAlgorithm{
     private final String title;
     private final SearchAlgorithm searchAlgorithm;
@@ -9,7 +11,7 @@ public class OnTitleContainsAlgorithm implements SearchAlgorithm{
     }
 
     @Override
-    public int apply(String token) {
-        return title.contains(token) ? token.length() * token.length() + searchAlgorithm.apply(token) : searchAlgorithm.apply(token);
+    public int apply(String token, Question question) {
+        return title.contains(token) ? token.length() * token.length() + searchAlgorithm.apply(token, question) : searchAlgorithm.apply(token, question);
     }
 }

@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 
 public class SearchQuestionByLabelStrategy implements QuestionSorterStrategy {
     private final String label;
-    public static final int TITLE_POINT = 4;
     public static final int DESCRIPTION_POINT = 2;
     public SearchQuestionByLabelStrategy(String label){
         this.label = label;
@@ -42,7 +41,7 @@ public class SearchQuestionByLabelStrategy implements QuestionSorterStrategy {
         SearchAlgorithm searchAlgorithm = new OnTitleContainsAlgorithm(new OnDescriptionContainsAlgorithm(new CommonJavaSearchAlgorithm(SearchAlgorithm.IDENTITY), description), title);
         for (String t : tokens) {
             var token = t.toLowerCase();
-            score += searchAlgorithm.apply(token);
+            score += searchAlgorithm.apply(token, question);
         }
         return score;
     }

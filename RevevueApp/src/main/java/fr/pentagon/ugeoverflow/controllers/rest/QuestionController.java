@@ -17,6 +17,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static org.springframework.http.ResponseEntity.ok;
+
+
 @RestController
 public class QuestionController {
 
@@ -30,7 +33,13 @@ public class QuestionController {
     @GetMapping(Routes.Question.ROOT)
     public ResponseEntity<List<QuestionDTO>> allQuestions() {
         LOGGER.info("GET performed on /api/questions");
-        return ResponseEntity.ok(questionService.getQuestions());
+        return ok(questionService.getQuestions());
+    }
+
+    @GetMapping(Routes.Question.SEARCH)
+    public ResponseEntity<List<QuestionDTO>> allQuestionByParameters(@RequestParam String label, @RequestParam(required = false) String username) {
+        LOGGER.info("Get performed on " + Routes.Question.SEARCH);
+        return ok(questionService.getQuestions(label, username));
     }
 
     @PostMapping(
@@ -46,7 +55,7 @@ public class QuestionController {
     ) throws IOException {
         LOGGER.info("POST performed on /api/questions");
         var userDetail = SecurityContext.checkAuthentication();
-        return ResponseEntity.ok(questionService.create(new NewQuestionDTO(
+        return ok(questionService.create(new NewQuestionDTO(
                 title, description, javaFile.getBytes(), testFile == null ? null : testFile.getBytes()
         ), userDetail.id()));
     }
@@ -57,7 +66,7 @@ public class QuestionController {
         LOGGER.info("DELETE performed on /api/questions/" + questionId);
         var user = SecurityContext.checkAuthentication();
         questionService.remove(new QuestionRemoveDTO(user.id(), questionId));
-        return ResponseEntity.ok().build();
+        return ok().build();
     }
 
 
@@ -67,7 +76,7 @@ public class QuestionController {
     public ResponseEntity<QuestionDetailsDTO> getQuestion(@PathVariable(name = "questionId") long questionId) {
         try {
             LOGGER.info("GET performed on /api/questions/" + questionId);
-            return ResponseEntity.ok(questionService.findById(questionId));
+            return ok(questionService.findById(questionId));
         }finally {
             LOGGER.info("End of the method");
         }
@@ -78,7 +87,7 @@ public class QuestionController {
         try {
             var userDetail = SecurityContext.checkAuthentication();
 
-            return ResponseEntity.ok(questionService.addReview(new QuestionReviewCreateDTO(userDetail.id(), questionReviewCreateBodyDTO.questionId(), questionReviewCreateBodyDTO.content(), questionReviewCreateBodyDTO.lineStart(), questionReviewCreateBodyDTO.lineEnd())));
+            return ok(questionService.addReview(new QuestionReviewCreateDTO(userDetail.id(), questionReviewCreateBodyDTO.questionId(), questionReviewCreateBodyDTO.content(), questionReviewCreateBodyDTO.lineStart(), questionReviewCreateBodyDTO.lineEnd())));
         }finally {
             LOGGER.info("End of the method");
         }

@@ -1,5 +1,7 @@
 package fr.pentagon.ugeoverflow.algorithm.search;
 
+import fr.pentagon.ugeoverflow.model.Question;
+
 import static fr.pentagon.ugeoverflow.algorithm.SearchQuestionByLabelStrategy.DESCRIPTION_POINT;
 import static fr.pentagon.ugeoverflow.algorithm.SearchQuestionByLabelStrategy.countOccurrences;
 
@@ -12,7 +14,7 @@ public class OnDescriptionContainsAlgorithm implements SearchAlgorithm{
     }
 
     @Override
-    public int apply(String token) {
-        return (countOccurrences(description, token) * (DESCRIPTION_POINT + token.length())) + searchAlgorithm.apply(token);
+    public int apply(String token, Question question) {
+        return (countOccurrences(description, token) * (DESCRIPTION_POINT + token.length())) + searchAlgorithm.apply(token, question);
     }
 }
