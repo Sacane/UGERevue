@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AsyncPipe, NgIf} from "@angular/common";
 import {ProfileInfoContentComponent} from "../profile-info/profile-info-content/profile-info-content.component";
 import {Observable} from "rxjs";
@@ -20,13 +20,13 @@ import {
     templateUrl: './profile-user-questions.component.html',
     styleUrl: './profile-user-questions.component.scss'
 })
-export class ProfileUserQuestionsComponent {
+export class ProfileUserQuestionsComponent implements OnInit{
     userQuestions$!: Observable<Array<SimpleQuestion>>;
 
     constructor(private userService: UserService) {
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.userQuestions$ = this.userService.getCurrentUserQuestions();
     }
 }
