@@ -38,9 +38,7 @@ export class NavBarComponent {
     }
 
     search(): void {
-        console.log(this.label())
         const finalLabel = this.label() === '' ? 'undefined' : this.label()
-        console.log(finalLabel)
         this.router.navigateByUrl('/questions/search/' + finalLabel + '/' + this.username(), { skipLocationChange: true }).then();
     }
 
