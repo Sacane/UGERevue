@@ -52,7 +52,7 @@ public class ReviewServiceTest {
   void reviewOnReview() {
     var quentin = userService.register(new UserRegisterDTO("qtdrake", "qt@email.com", "qtellier", "123"));
     assertNotNull(quentin);
-    var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null), quentin.id());
+    var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "", ""), quentin.id());
 
     var reviewParentResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.id(), questionId, "CONTENT", null, null));
 
@@ -82,7 +82,7 @@ public class ReviewServiceTest {
   void reviewsFromReview() {
     var quentin = userService.register(new UserRegisterDTO("qtdrake", "qt@email.com", "qtellier", "123"));
     assertNotNull(quentin);
-    var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null), quentin.id());
+    var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "", ""), quentin.id());
 
     var reviewParentResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.id(), questionId, "CONTENT", null, null));
 
@@ -109,7 +109,7 @@ public class ReviewServiceTest {
         userSaved3.getId(),
         userSaved4.getId()
     );
-    var question = new NewQuestionDTO( "I DONT KNOW", "IDJZAODIJZD", new byte[0], new byte[0]);
+    var question = new NewQuestionDTO( "I DONT KNOW", "IDJZAODIJZD", new byte[0], new byte[0], "main.java", "test.java");
     var questionId = questionService.create(question, userSaved.getId());
     var reviewResponse = questionService.addReview(new QuestionReviewCreateDTO(user.getId(), questionId, "fzaerzearza", 0, 3));
     var savedReview = reviewRepository.findById(reviewResponse.id());

@@ -245,7 +245,7 @@ public class QuestionServiceTest {
     void getReviewsFromQuestionWithChildrenReviews() {
         var quentin = userService.register(new UserRegisterDTO("qtdrake", "qt@email.com", "qtellier", "123"));
         assertNotNull(quentin);
-        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", "LINE1\nLINE2\nLINE3\n".getBytes(StandardCharsets.UTF_8), null), quentin.id());
+        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", "LINE1\nLINE2\nLINE3\n".getBytes(StandardCharsets.UTF_8), null, "main.java", "test.java"), quentin.id());
 
         for (var i = 0; i < 3; i++) {
             var reviewResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.id(), questionId, "CONTENT:" + i, i + 1, i + 1));

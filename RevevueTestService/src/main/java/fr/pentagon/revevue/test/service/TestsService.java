@@ -9,23 +9,33 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 @Service
 public final class TestsService {
+    private final Logger logger = Logger.getLogger(TestsService.class.getName());
 
     public TestResultDTO runTest(TestBundle testBundle) throws IOException, CompilationException, ClassNotFoundException {
         Objects.requireNonNull(testBundle);
-        initializeFolder(testBundle);
-        var loader = CustomTestClassLoader.in(Paths.get(testBundle.idAsString()));
-        var clazz = loader.load(testBundle.testFileName(), testBundle.dependencyFileName());
-        var tracker = TestTracker.runAndTrack(clazz);
-        deleteFolder(testBundle.idAsString());
-        return new TestResultDTO(
-                tracker.allTestsPassed(),
-                tracker.passedCount(),
-                tracker.failuresCount(),
-                tracker.failureDetails()
-        );
+        try {
+            logger.info("initialisation");
+            initializeFolder(testBundle);
+
+            var loader = CustomTestClassLoader.in(Paths.get(testBundle.idAsString()));
+            var clazz = loader.load(testBundle.testFileName(), testBundle.dependencyFileName());
+            var tracker = TestTracker.runAndTrack(clazz);
+            logger.info("Run test");
+            TestResultDTO testResultDTO = new TestResultDTO(
+                    tracker.allTestsPassed(),
+                    tracker.passedCount(),
+                    tracker.failuresCount(),
+                    tracker.failureDetails()
+            );
+            logger.info(testResultDTO.toString());
+            return testResultDTO;
+        }finally {
+            deleteFolder(testBundle.idAsString());
+        }
     }
 
     private static void initializeFolder(TestBundle testBundle) throws IOException {

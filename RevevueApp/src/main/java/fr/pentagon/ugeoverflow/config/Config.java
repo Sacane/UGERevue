@@ -17,9 +17,6 @@ public class Config {
   }
   @Bean
   public WebClient getWebClient(WebClient.Builder defaultBuilder) {
-    return defaultBuilder.exchangeStrategies(ExchangeStrategies.builder()
-            .codecs(configurer -> configurer
-                    .defaultCodecs()
-                    .maxInMemorySize(16 * 1024 * 1024)).build()).build();
+    return WebClient.create("http://localhost:7777/api");
   }
 }
