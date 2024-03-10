@@ -13,6 +13,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponse
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.Review;
+import fr.pentagon.ugeoverflow.model.embed.CodePart;
 import fr.pentagon.ugeoverflow.model.vote.QuestionVote;
 import fr.pentagon.ugeoverflow.model.vote.QuestionVoteId;
 import fr.pentagon.ugeoverflow.repository.QuestionRepository;
@@ -30,7 +31,6 @@ import java.util.stream.Collectors;
 @Service
 public class QuestionService {
   private final QuestionServiceWithFailure questionServiceWithFailure;
-  private final ReviewService reviewService;
   private final QuestionRepository questionRepository;
   private final UserRepository userRepository;
   private final ReviewRepository reviewRepository;
@@ -38,14 +38,12 @@ public class QuestionService {
 
   public QuestionService(
       QuestionServiceWithFailure questionServiceWithFailure,
-      ReviewService reviewService,
       QuestionRepository questionRepository,
       UserRepository userRepository,
       ReviewRepository reviewRepository,
       QuestionVoteRepository questionVoteRepository
   ) {
     this.questionServiceWithFailure = questionServiceWithFailure;
-    this.reviewService = reviewService;
     this.questionRepository = questionRepository;
     this.userRepository = userRepository;
     this.reviewRepository = reviewRepository;
@@ -122,8 +120,10 @@ public class QuestionService {
     }
     var user = userFind.get();
     var question = questionFind.get();
-
-    var review = reviewRepository.save(new Review(questionReviewCreateDTO.content(), questionReviewCreateDTO.lineStart(), questionReviewCreateDTO.lineEnd(), new Date()));
+    var codePart = (questionReviewCreateDTO.lineStart() == null || questionReviewCreateDTO.lineEnd() == null)
+            ? null
+            :  new CodePart(questionReviewCreateDTO.lineStart(), questionReviewCreateDTO.lineEnd());
+    var review = reviewRepository.save(new Review(questionReviewCreateDTO.content(), codePart, new Date()));
     question.addReview(review);
     user.addReview(review);
 
