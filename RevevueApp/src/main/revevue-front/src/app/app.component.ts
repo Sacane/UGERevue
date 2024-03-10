@@ -8,7 +8,7 @@ export class AppComponent{
   title = 'revevue-front';
   navs = [
     {
-      name: 'Home',
+      name: 'Accueil',
       url: '/home',
       icon: 'home'
     },
@@ -18,12 +18,7 @@ export class AppComponent{
       icon: 'chat'
     },
     {
-      name: 'Tags',
-      url: '/tags',
-      icon: 'tags'
-    },
-    {
-      name: 'Socials',
+      name: 'Social',
       url: '/users',
       icon: 'account_circle'
     }
