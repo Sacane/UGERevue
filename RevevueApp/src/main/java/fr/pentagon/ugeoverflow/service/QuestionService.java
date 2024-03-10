@@ -86,9 +86,8 @@ public class QuestionService {
   public long create(NewQuestionDTO questionCreateDTO, long authorId) {
     var user = userRepository.findById(authorId)
         .orElseThrow(() -> HttpException.notFound("User not exist"));
-    var question = questionRepository.save(new Question(questionCreateDTO.title(), questionCreateDTO.description(), questionCreateDTO.javaFile(), questionCreateDTO.testFile(), "TEST RESULT", true, new Date())); //TODO test
-    user.addQuestion(question);
-    if(question.getTestFile() != null) {
+    String result = "Test failed...";
+    if(questionCreateDTO.testFile() != null) {
       MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
       parts.add("dependencyFile", new ByteArrayResource(questionCreateDTO.javaFile()));
       parts.add("id", authorId);
@@ -108,9 +107,11 @@ public class QuestionService {
                 }
               }).block();
       if (response != null) {
-        logger.info(response.toString());
+        result = response.toString();
       }
     }
+    var question = questionRepository.save(new Question(questionCreateDTO.title(), questionCreateDTO.description(), questionCreateDTO.javaFile(), questionCreateDTO.testFile(), result, true, new Date())); //TODO test
+    user.addQuestion(question);
     return question.getId();
   }
 

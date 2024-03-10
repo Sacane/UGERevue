@@ -23,11 +23,8 @@ public final class TestsService {
             logger.info("Initialisation ok, folders has correctly been created");
             var loader = CustomTestClassLoader.in(Paths.get(testBundle.idAsString()));
             logger.info("trying to load the classLoader with test file => " + testBundle.testFileName() + " and dependency => " + testBundle.dependencyFileName());
-            try {
-                var clazz = loader.load(testBundle.testFileName(), testBundle.dependencyFileName());
-            }catch (Exception e){
-                logger.severe(e.getMessage());
-            }
+            String property = System.getProperty("java.class.path");
+            logger.info("classpath : " + property);
             var clazz = loader.load(testBundle.testFileName(), testBundle.dependencyFileName());
             logger.info("Run test..");
             var tracker = TestTracker.runAndTrack(clazz);

@@ -5,7 +5,10 @@ import fr.pentagon.revevue.test.exception.CompilationException;
 
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -139,7 +142,7 @@ public final class CustomTestClassLoader {
         String[] args;
         if(System.getenv("WORK_ENV") != null) {
             System.out.println("WORK ENV");
-            args = new String[]{"-classpath", "apiguardian-api-1.1.2.jar:junit-jupiter-5.10.1.jar:junit-jupiter-api-5.10.2.jar:junit-jupiter-engine-5.10.1.jar:junit-jupiter-params-5.10.1.jar", dependencyFileName, testFileName};
+            args = new String[]{"-classpath", "apiguardian-api-1.1.2.jar:junit-jupiter-5.10.1.jar:junit-jupiter-api-5.10.2.jar:junit-jupiter-engine-5.10.1.jar:junit-jupiter-params-5.10.1.jar:opentest4j-1.3.0.jar", dependencyFileName, testFileName};
         } else {
             System.out.println("IJ ENV");
             args = new String[]{ dependencyFileName, testFileName};
