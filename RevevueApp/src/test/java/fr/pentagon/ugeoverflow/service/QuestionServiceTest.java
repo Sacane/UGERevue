@@ -282,7 +282,7 @@ public class QuestionServiceTest {
     void removeUnauthorizedUser() {
         var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123", Role.USER));
         var quentin2 = userRepository.save(new User("qtdrake2", "qt@email.com", "qtellier", "123", Role.USER));
-        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "", ""), quentin.getId());
+        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], new byte[0], "", ""), quentin.getId());
 
         assertThrows(HttpException.class, () -> questionService.remove(new QuestionRemoveDTO(quentin2.getId(), questionId)));
     }
@@ -291,7 +291,7 @@ public class QuestionServiceTest {
     @DisplayName("Remove a question")
     void remove() {
         var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123", Role.USER));
-        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "", ""), quentin.getId());
+        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], new byte[0], "", ""), quentin.getId());
         assertEquals(1, questionRepository.findAll().size());
 
         for (var i = 0; i < 3; i++) {
@@ -320,7 +320,7 @@ public class QuestionServiceTest {
     @DisplayName("Remove a question with review on review")
     void removeWithReviewOnReview() {
         var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123", Role.USER));
-        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "", ""), quentin.getId());
+        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], new byte[0], "", ""), quentin.getId());
         assertEquals(1, questionRepository.findAll().size());
 
         var reviewResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), questionId, "CONTENT", null, null));

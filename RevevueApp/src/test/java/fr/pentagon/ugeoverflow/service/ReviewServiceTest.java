@@ -145,7 +145,7 @@ public class ReviewServiceTest {
   @DisplayName("Remove a review from a question")
   void removeQuestionReview() {
     var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123", Role.USER));
-    var question = questionRepository.save(new Question("TITLE", "DESCRIPTION", new byte[0], null, null, true, new Date()));
+    var question = questionRepository.save(new Question("TITLE", "DESCRIPTION", new byte[0], new byte[0], null, true, new Date()));
 
     var reviewParentResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT", 1, 2));
     assertEquals(1, reviewRepository.findAll().size());
@@ -167,7 +167,7 @@ public class ReviewServiceTest {
   @DisplayName("Remove a review from a question with children reviews")
   void removeQuestionReviewWithChildren() {
     var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123", Role.USER));
-    var question = questionRepository.save(new Question("TITLE", "DESCRIPTION", new byte[0], null, null, true, new Date()));
+    var question = questionRepository.save(new Question("TITLE", "DESCRIPTION", new byte[0], new byte[0], null, true, new Date()));
 
     var reviewParentResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT", 1, 2));
     assertEquals(1, reviewRepository.findAll().size());
@@ -197,7 +197,7 @@ public class ReviewServiceTest {
   @DisplayName("Remove review on review with no children")
   void removeReviewOnReviewWithNoChildren() {
     var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123", Role.USER));
-    var question = questionRepository.save(new Question("TITLE", "DESCRIPTION", new byte[0], null, null, true, new Date()));
+    var question = questionRepository.save(new Question("TITLE", "DESCRIPTION", new byte[0], new byte[0], null, true, new Date()));
 
     var reviewParentResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT", 1, 2));
     assertEquals(1, reviewRepository.findAll().size());
@@ -227,7 +227,7 @@ public class ReviewServiceTest {
   @DisplayName("Remove review on review with children")
   void removeReviewOnReviewWithChildren() {
     var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123", Role.USER));
-    var question = questionRepository.save(new Question("TITLE", "DESCRIPTION", new byte[0], null, null, true, new Date()));
+    var question = questionRepository.save(new Question("TITLE", "DESCRIPTION", new byte[0], new byte[0], null, true, new Date()));
 
     var reviewParentResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT", 1, 2));
     assertEquals(1, reviewRepository.findAll().size());

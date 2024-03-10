@@ -19,17 +19,20 @@ import fr.pentagon.ugeoverflow.repository.QuestionVoteRepository;
 import fr.pentagon.ugeoverflow.repository.ReviewRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.util.MultiValueMapAdapter;
+import org.springframework.web.reactive.function.BodyInserter;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -85,23 +88,28 @@ public class QuestionService {
         .orElseThrow(() -> HttpException.notFound("User not exist"));
     var question = questionRepository.save(new Question(questionCreateDTO.title(), questionCreateDTO.description(), questionCreateDTO.javaFile(), questionCreateDTO.testFile(), "TEST RESULT", true, new Date())); //TODO test
     user.addQuestion(question);
-    var response = webClient.post()
-            .uri(builder -> builder.path("/tests/run")
-                    .queryParam("id", authorId)
-                    .queryParam("dependencyFile", questionCreateDTO.javaFile())
-                    .queryParam("testFile", questionCreateDTO.testFile())
-                    .queryParam("dependencyFilename", questionCreateDTO.javaFilename())
-                    .queryParam("testFilename", questionCreateDTO.testFilename()
-                    ).build()
-            ).accept(MediaType.APPLICATION_JSON).exchangeToMono(r -> {
-      if (r.statusCode().is2xxSuccessful()) {
-        return r.bodyToMono(TestResultDTO.class);
-      } else {
-        return Mono.just(TestResultDTO.zero());
+    if(question.getTestFile() != null) {
+      MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
+      parts.add("dependencyFile", new ByteArrayResource(questionCreateDTO.javaFile()));
+      parts.add("id", authorId);
+      parts.add("testFile", new ByteArrayResource(questionCreateDTO.testFile()));
+      parts.add("dependencyFilename", questionCreateDTO.javaFilename());
+      parts.add("testFilename", questionCreateDTO.testFilename());
+      var response = webClient.post()
+              .uri(builder -> builder.path("/tests/run").build())
+              .contentType(MediaType.MULTIPART_FORM_DATA)
+              .body(BodyInserters.fromMultipartData(parts))
+              .accept(MediaType.APPLICATION_JSON).exchangeToMono(r -> {
+                if (r.statusCode().is2xxSuccessful()) {
+                  return r.bodyToMono(TestResultDTO.class);
+                } else {
+                  logger.severe(r.statusCode().value() + "");
+                  return r.bodyToMono(String.class);
+                }
+              }).block();
+      if (response != null) {
+        logger.info(response.toString());
       }
-    }).block();
-    if(response != null) {
-      logger.info(response.toString());
     }
     return question.getId();
   }

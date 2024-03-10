@@ -18,13 +18,20 @@ public final class TestsService {
     public TestResultDTO runTest(TestBundle testBundle) throws IOException, CompilationException, ClassNotFoundException {
         Objects.requireNonNull(testBundle);
         try {
-            logger.info("initialisation");
+            logger.info("initialisation...");
             initializeFolder(testBundle);
-
+            logger.info("Initialisation ok, folders has correctly been created");
             var loader = CustomTestClassLoader.in(Paths.get(testBundle.idAsString()));
+            logger.info("trying to load the classLoader with test file => " + testBundle.testFileName() + " and dependency => " + testBundle.dependencyFileName());
+            try {
+                var clazz = loader.load(testBundle.testFileName(), testBundle.dependencyFileName());
+            }catch (Exception e){
+                logger.severe(e.getMessage());
+            }
             var clazz = loader.load(testBundle.testFileName(), testBundle.dependencyFileName());
+            logger.info("Run test..");
             var tracker = TestTracker.runAndTrack(clazz);
-            logger.info("Run test");
+            logger.info("Test has been running successfully");
             TestResultDTO testResultDTO = new TestResultDTO(
                     tracker.allTestsPassed(),
                     tracker.passedCount(),

@@ -135,7 +135,16 @@ public final class CustomTestClassLoader {
                 // Drop all
             }
         });
-        JAVA_COMPILER.run(System.in, trashPrintStream, new PrintStream(errorByteArray), dependencyFileName, testFileName);
+
+        String[] args;
+        if(System.getenv("WORK_ENV") != null) {
+            System.out.println("WORK ENV");
+            args = new String[]{"-classpath", "apiguardian-api-1.1.2.jar:junit-jupiter-5.10.1.jar:junit-jupiter-api-5.10.2.jar:junit-jupiter-engine-5.10.1.jar:junit-jupiter-params-5.10.1.jar", dependencyFileName, testFileName};
+        } else {
+            System.out.println("IJ ENV");
+            args = new String[]{ dependencyFileName, testFileName};
+        }
+        JAVA_COMPILER.run(System.in, trashPrintStream, new PrintStream(errorByteArray), args);
         var error = errorByteArray.toString();
         if (!error.isBlank()) {
             throw new CompilationException(error);
