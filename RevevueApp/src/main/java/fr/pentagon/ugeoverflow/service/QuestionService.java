@@ -8,6 +8,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponseDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.TestResultDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.Review;
@@ -20,6 +21,7 @@ import fr.pentagon.ugeoverflow.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -40,14 +42,16 @@ public class QuestionService {
   private final UserRepository userRepository;
   private final ReviewRepository reviewRepository;
   private final QuestionVoteRepository questionVoteRepository;
+  private final WebClient webClient;
 
   public QuestionService(
-      QuestionServiceWithFailure questionServiceWithFailure,
-      ReviewService reviewService,
-      QuestionRepository questionRepository,
-      UserRepository userRepository,
-      ReviewRepository reviewRepository,
-      QuestionVoteRepository questionVoteRepository
+          QuestionServiceWithFailure questionServiceWithFailure,
+          ReviewService reviewService,
+          QuestionRepository questionRepository,
+          UserRepository userRepository,
+          ReviewRepository reviewRepository,
+          QuestionVoteRepository questionVoteRepository,
+          WebClient webClient
   ) {
     this.questionServiceWithFailure = questionServiceWithFailure;
     this.reviewService = reviewService;
@@ -55,6 +59,7 @@ public class QuestionService {
     this.userRepository = userRepository;
     this.reviewRepository = reviewRepository;
     this.questionVoteRepository = questionVoteRepository;
+      this.webClient = webClient;
   }
 
   @Transactional
@@ -78,7 +83,19 @@ public class QuestionService {
         .orElseThrow(() -> HttpException.notFound("User not exist"));
     var question = questionRepository.save(new Question(questionCreateDTO.title(), questionCreateDTO.description(), questionCreateDTO.javaFile(), questionCreateDTO.testFile(), "TEST RESULT", true, new Date())); //TODO test
     user.addQuestion(question);
-
+    var response = webClient.post()
+            .uri(builder -> builder.path("http://localhost:7777/api/tests/run")
+                    .queryParam("id", authorId)
+                    .queryParam("dependencyFile", questionCreateDTO.javaFile())
+                    .queryParam("testFile", questionCreateDTO.testFile())
+                    .queryParam("dependencyFilename", questionCreateDTO.javaFilename())
+                    .queryParam("testFilename", questionCreateDTO.testFilename()
+                    ).build()
+            ).exchangeToMono(r -> r.bodyToMono(TestResultDTO.class)
+            ).block();
+    if(response != null) {
+      logger.info(response.toString());
+    }
     return question.getId();
   }
 

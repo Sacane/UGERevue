@@ -60,7 +60,7 @@ public class QuestionController {
     LOGGER.info("POST performed on /api/questions");
     var userDetail = SecurityContext.checkAuthentication();
     return ResponseEntity.ok(questionService.create(new NewQuestionDTO(
-        title, description, javaFile.getBytes(), testFile == null ? null : testFile.getBytes()
+        title, description, javaFile.getBytes(), testFile == null ? null : testFile.getBytes(), javaFile.getOriginalFilename(), testFile == null ? null : testFile.getOriginalFilename()
     ), userDetail.id()));
   }
 
