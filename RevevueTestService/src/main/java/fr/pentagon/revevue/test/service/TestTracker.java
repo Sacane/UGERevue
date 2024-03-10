@@ -60,7 +60,7 @@ public final class TestTracker {
      *
      * @return the count of passed tests
      */
-    public long passedTestsCount(){
+    public long passedCount(){
         return summary.getTestsSucceededCount();
     }
 
@@ -69,7 +69,7 @@ public final class TestTracker {
      *
      * @return the count of failed tests
      */
-    public long failedTestsCount(){
+    public long failuresCount(){
         return summary.getTestsFailedCount();
     }
 
@@ -78,7 +78,7 @@ public final class TestTracker {
      *
      * @return a string containing details about the failed tests
      */
-    public String failedTestsDetails(){
+    public String failureDetails(){
         if(summary.getFailures().isEmpty()) return "";
         var details = new StringBuilder("Failed tests :\n\n");
         var failures = summary.getFailures();

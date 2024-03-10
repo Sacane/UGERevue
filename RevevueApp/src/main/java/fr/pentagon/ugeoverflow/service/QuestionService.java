@@ -26,10 +26,14 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
+
+  private final Logger logger = Logger.getLogger(QuestionService.class.getName());
+
   private final QuestionServiceWithFailure questionServiceWithFailure;
   private final ReviewService reviewService;
   private final QuestionRepository questionRepository;
