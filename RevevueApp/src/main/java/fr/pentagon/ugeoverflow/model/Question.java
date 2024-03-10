@@ -3,7 +3,6 @@ package fr.pentagon.ugeoverflow.model;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
