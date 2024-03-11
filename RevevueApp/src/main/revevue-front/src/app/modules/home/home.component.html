@@ -1,5 +1,6 @@
 @if (!isLogged()) {
-    <body>
+
+<body>
     <div class="container">
         <div class="topdiv">
             <div class="three">
@@ -39,5 +40,44 @@
             </mat-card>
         </div>
     </div>
-    </body>
+</body>
+}
+@else {
+@if (questions$ | async; as questions) {
+@if (!questions.loading) {
+<div style="background-color: white; padding: 20px; display: flex; flex-direction: column; row-gap: 20px;">
+    <span style="font-size: 25px; font-weight: 500;">Questions</span>
+
+    <span style="font-size: 17px;">{{ questions.lines.length }} questions</span>
+
+    @for (question of questions.lines; track question.title) {
+    <div
+        style="display: flex; column-gap: 20px; border-top: 2px solid lightgray; padding-top: 10px; padding-bottom: 10px;">
+        <div style="flex-grow: 1; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: end;">{{ question.nbVotes }} votes</div>
+            <div style="display: flex; justify-content: end; color: gray;">{{ question.nbAnswers }} answers</div>
+        </div>
+
+        <div style="flex-grow: 7; display: flex; flex-direction: column; row-gap: 20px;">
+            <button mat-raised-button color="primary" (click)="navigateTo('/questions/' + question.id)">
+                {{ question.title }}
+            </button>
+            <div>
+                {{ question.description }}
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+                <div class="info">
+                    <p>Posté par {{ question.userName }}</p>
+                    <p>Le {{ question.date }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+</div>
+}
+@else {
+<mat-spinner></mat-spinner>
+}
+}
 }

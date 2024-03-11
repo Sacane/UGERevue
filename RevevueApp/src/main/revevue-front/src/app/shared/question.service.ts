@@ -57,4 +57,8 @@ export class QuestionService {
 
         return this.client.post<any>(`${this.ROOT}/reviews`, {questionId, content, lineStart, lineEnd}, {headers});
     }
+
+    public getQuestionsFromFollowers(): Observable<any[]> {
+        return this.client.get<any[]>(`${this.ROOT}/followers`);
+    }
 }

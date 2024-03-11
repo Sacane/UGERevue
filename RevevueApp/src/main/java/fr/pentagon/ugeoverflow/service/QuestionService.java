@@ -240,4 +240,47 @@ public class QuestionService {
         .map(questionMapper::entityToQuestionDTO)
         .toList();
   }
+
+    @Transactional
+    public List<QuestionDTO> getQuestionsFromFollowers(long userId) {
+        var questions = questionRepository.findAll();
+        var questionsWithScore = new HashMap<Question, Integer>();
+        var visitedUserId = new ArrayList<Long>();
+
+        questions.forEach(question -> questionsWithScore.put(question, 0));
+
+        visitQuestionWithScore(userId, visitedUserId, questionsWithScore, 1);
+
+        return questionsWithScore.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getValue)).map(entrySet -> {
+            var question = entrySet.getKey();
+
+            return new QuestionDTO(
+                    question.getId(),
+                    question.getTitle(),
+                    question.getDescription(),
+                    question.getAuthor().getUsername(),
+                    question.getCreatedAt().toString(),
+                    questionVoteRepository.countAllById(question.getId()),
+                    question.getReviews().size()
+            );
+        }).toList();
+    }
+
+    private void visitQuestionWithScore(long userId, List<Long> visitedUserId, Map<Question, Integer> questionsWithScore, int score) {
+        var follows = userRepository.findFollowsById(userId);
+
+        visitedUserId.add(userId);
+        for (var follow: follows) {
+            for (var question: follow.getQuestions()) {
+                var questionScore = questionsWithScore.get(question);
+                if (questionScore == 0 || score < questionScore) {
+                    questionsWithScore.put(question, score);
+                }
+            }
+
+            if (!visitedUserId.contains(follow.getId())) {
+                visitQuestionWithScore(follow.getId(), visitedUserId, questionsWithScore, score + 1);
+            }
+        }
+    }
 }
