@@ -43,7 +43,6 @@ public final class TestTracker {
         var launcher = LauncherFactory.create();
         launcher.registerTestExecutionListeners(listener);
         launcher.execute(request);
-        System.out.println("summary => " + listener.getSummary());
         return new TestTracker(listener.getSummary());
     }
 
