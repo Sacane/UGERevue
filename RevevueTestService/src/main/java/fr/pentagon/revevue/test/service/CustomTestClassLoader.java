@@ -1,7 +1,6 @@
 package fr.pentagon.revevue.test.service;
 
 
-import fr.pentagon.revevue.test.RevevueTestServiceApplication;
 import fr.pentagon.revevue.test.exception.CompilationException;
 
 import javax.tools.JavaCompiler;
@@ -16,10 +15,8 @@ import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * A custom class loader for loading and compiling test classes from source files.
@@ -141,23 +138,7 @@ public final class CustomTestClassLoader {
                 // Drop all
             }
         });
-
-        String[] args;
-        if(System.getenv("WORK_ENV") != null) {
-            System.out.println("WORK ENV");
-            args = new String[]{"-classpath", "junit-platform-commons-1.10.2.jar:junit-platform-launcher-1.10.2.jar:apiguardian-api-1.1.2.jar:junit-jupiter-5.10.1.jar:junit-jupiter-api-5.10.2.jar:junit-jupiter-engine-5.10.1.jar:junit-jupiter-params-5.10.1.jar:opentest4j-1.3.0.jar", dependencyFileName, testFileName};
-
-//            if(RevevueTestServiceApplication.class.getClassLoader() instanceof URLClassLoader urlClassLoader){
-//                var list = Arrays.stream(urlClassLoader.getURLs()).map(URL::getFile).collect(Collectors.joining(":"));
-//                args = new String[]{"-classpath", list, dependencyFileName, testFileName};
-//            } else {
-//                args = new String[]{"-classpath", "junit-platform-commons-1.10.2.jar:junit-platform-launcher-1.10.2.jar:apiguardian-api-1.1.2.jar:junit-jupiter-5.10.1.jar:junit-jupiter-api-5.10.2.jar:junit-jupiter-engine-5.10.1.jar:junit-jupiter-params-5.10.1.jar:opentest4j-1.3.0.jar", dependencyFileName, testFileName};
-//            }
-            System.out.println("args => " + Arrays.toString(args));
-        } else {
-            System.out.println("IJ ENV");
-            args = new String[]{ dependencyFileName, testFileName};
-        }
+        var args = new String[]{dependencyFileName, testFileName};
         JAVA_COMPILER.run(System.in, trashPrintStream, new PrintStream(errorByteArray), args);
         var error = errorByteArray.toString();
         if (!error.isBlank()) {

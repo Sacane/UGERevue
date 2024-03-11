@@ -21,21 +21,21 @@ public class SetupDataTest implements CommandLineRunner {
     }
     @Override
     public void run(String... args) throws Exception {
-        try {
-            logger.info("On Application Event...");
-            var dependency = Files.readAllBytes(Paths.get("HelloWorld.java"));
-            var testDependency = Files.readAllBytes(Paths.get("HelloWorldTest.java"));
-            System.err.println("dependency => " + new String(dependency, StandardCharsets.UTF_8));
-            logger.info("test => " + new String(testDependency, StandardCharsets.UTF_8));
-            testsService.runTest(
-                    new TestBundle(100000000, "HelloWorldTest.java", testDependency, "HelloWorld.java", dependency)
-            );
-        } catch (IOException e) {
-            logger.severe("IOException");
-        } catch (CompilationException e) {
-            logger.severe("Compilation error => " + e.getMessage());
-        } catch (ClassNotFoundException e) {
-            logger.severe("class not found error");
-        }
+//        try {
+//            logger.info("On Application Event...");
+//            var dependency = Files.readAllBytes(Paths.get("HelloWorld.java"));
+//            var testDependency = Files.readAllBytes(Paths.get("HelloWorldTest.java"));
+//            System.err.println("dependency => " + new String(dependency, StandardCharsets.UTF_8));
+//            logger.info("test => " + new String(testDependency, StandardCharsets.UTF_8));
+//            testsService.runTest(
+//                    new TestBundle(100000000, "HelloWorldTest.java", testDependency, "HelloWorld.java", dependency)
+//            );
+//        } catch (IOException e) {
+//            logger.severe("IOException");
+//        } catch (CompilationException e) {
+//            logger.severe("Compilation error => " + e.getMessage());
+//        } catch (ClassNotFoundException e) {
+//            logger.severe("class not found error");
+//        }
     }
 }
