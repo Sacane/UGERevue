@@ -81,7 +81,7 @@ public class Question {
 
     @Nullable
     public byte[] getTestFile() {
-        return testKit.getTestFile();
+        return (testKit == null) ? null : testKit.getTestFile();
     }
 
     public void setTestFile(@Nullable byte[] testFile) {
@@ -90,11 +90,16 @@ public class Question {
 
     @Nullable
     public String getTestResult() {
-        return testKit.getTestResult();
+        return (testKit == null) ? "Pas de résultats" : testKit.getTestResult();
     }
 
     public void setTestResult(@Nullable String testResult) {
+        if(testKit == null) return;
         this.testKit.setTestResult(testResult);
+    }
+
+    public void setTestKit(TestKit testKit) {
+        this.testKit = testKit;
     }
 
     public boolean isOpen() {

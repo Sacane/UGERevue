@@ -82,17 +82,10 @@ public class QuestionController {
         return ok().build();
     }
 
-
-  // TODO : Use commentaries and responses to create a "CompleteQuestionInfoDTO".
-
     @GetMapping(Routes.Question.ROOT + "/{questionId}")
     public ResponseEntity<QuestionDetailsDTO> getQuestion(@PathVariable(name = "questionId") long questionId) {
-        try {
-            LOGGER.info("GET performed on /api/questions/" + questionId);
-            return ok(questionService.findById(questionId));
-        }finally {
-            LOGGER.info("End of the method");
-        }
+        LOGGER.info("GET performed on /api/questions/" + questionId);
+        return ok(questionService.findById(questionId));
     }
 
   @PostMapping(Routes.Question.ROOT + "/reviews")
