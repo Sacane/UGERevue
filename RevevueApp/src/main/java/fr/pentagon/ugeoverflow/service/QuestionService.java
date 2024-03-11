@@ -103,7 +103,7 @@ public class QuestionService {
                   return r.bodyToMono(TestResultDTO.class);
                 } else {
                   logger.severe(r.statusCode().value() + "");
-                  return r.bodyToMono(String.class);
+                  return Mono.just(TestResultDTO.zero());
                 }
               }).block();
       if (response != null) {
