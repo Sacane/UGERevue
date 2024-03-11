@@ -1,6 +1,6 @@
-import {Component, computed, inject, Inject, signal} from "@angular/core";
-import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import {Component, inject, Inject, signal} from "@angular/core";
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {MarkdownService} from "ngx-markdown";
 
 @Component({

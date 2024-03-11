@@ -1,0 +1,19 @@
+<div class="profile">
+    <mat-tab-group animationDuration="0ms" fitInkBarToContent>
+        <mat-tab label="Informations">
+            <ng-template matTabContent>
+                <app-profile-info></app-profile-info>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Questions">
+            <ng-template matTabContent>
+                <app-profile-user-questions></app-profile-user-questions>
+            </ng-template>
+        </mat-tab>
+        <mat-tab label="Utilisateurs suivis">
+            <ng-template matTabContent>
+                <app-profile-user-following></app-profile-user-following>
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
+</div>

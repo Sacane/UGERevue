@@ -1,7 +1,6 @@
 package fr.pentagon.ugeoverflow.service;
 
 import fr.pentagon.ugeoverflow.config.authorization.Role;
-import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewOnReviewDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewRemoveDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.DetailReviewResponseDTO;
@@ -16,6 +15,7 @@ import fr.pentagon.ugeoverflow.repository.QuestionRepository;
 import fr.pentagon.ugeoverflow.repository.ReviewRepository;
 import fr.pentagon.ugeoverflow.repository.ReviewVoteRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
+import fr.pentagon.ugeoverflow.service.mapper.ReviewMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +23,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,29 +31,25 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final ReviewVoteRepository reviewVoteRepository;
-    private final Logger logger = Logger.getLogger(ReviewService.class.getName());
+    private final ReviewMapper reviewMapper;
+    //private final Logger logger = Logger.getLogger(ReviewService.class.getName());
 
-    public ReviewService(QuestionRepository questionRepository, ReviewRepository reviewRepository, UserRepository userRepository, ReviewVoteRepository reviewVoteRepository) {
+    public ReviewService(QuestionRepository questionRepository, ReviewRepository reviewRepository, UserRepository userRepository, ReviewVoteRepository reviewVoteRepository, ReviewMapper reviewMapper) {
         this.questionRepository = questionRepository;
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.reviewVoteRepository = reviewVoteRepository;
+        this.reviewMapper = reviewMapper;
     }
 
     List<ReviewResponseDTO> getReviews(long reviewId) {
         var review = reviewRepository.findByIdWithReviews(reviewId)
                 .orElseThrow(() -> HttpException.notFound("Review not exist"));
         var author = review.getAuthor();
-
         return review.getReviews()
                 .stream()
-                .map(r -> new ReviewResponseDTO(
-                        author.getUsername(),
-                        r.getContent(),
-                        reviewVoteRepository.findUpvoteNumberByReviewId(r.getId()),
-                        reviewVoteRepository.findDownvoteNumberByReviewId(r.getId()),
-                        r.getCreatedAt())
-                ).toList();
+                .map(r -> reviewMapper.entityToReviewResponseDTO(r, author.getUsername()))
+                .toList();
     }
 
     @Transactional
@@ -64,20 +59,11 @@ public class ReviewService {
         var review = reviewRepository.findById(reviewOnReviewDTO.reviewId())
                 .orElseThrow(() -> HttpException.notFound("Review not exist"));
 
-        var newReview = reviewRepository.save(new Review(reviewOnReviewDTO.content(), null, null, new Date()));
+        var newReview = reviewRepository.save(new Review(reviewOnReviewDTO.content(), null, new Date()));
         user.addReview(newReview);
         review.addReview(newReview);
 
-        return new ReviewQuestionResponseDTO(
-                newReview.getId(),
-                user.getUsername(),
-                newReview.getCreatedAt(),
-                newReview.getContent(),
-                null,
-                0,
-                0,
-                List.of()
-        );
+        return reviewMapper.entityToReviewQuestionResponseDTO(newReview, user.getUsername());
     }
 
     @Transactional
@@ -144,13 +130,16 @@ public class ReviewService {
         var question = questionRepository.findByIdWithReviews(questionId)
                 .orElseThrow(() -> HttpException.notFound("This question does not exists"));
         var author = question.getAuthor();
-        return question.getReviews().stream().map(review -> {
-            var fileContent = new String(question.getFile(), StandardCharsets.UTF_8).split("\n");
-            var lineStart = review.getLineStart();
-            var lineEnd = review.getLineEnd();
-            var citedCode = (lineStart == null || lineEnd == null) ? null : Arrays.stream(fileContent, lineStart - 1, lineEnd)
-                    .collect(Collectors.joining("\n"));
 
+        return question.getReviews().stream().map(review -> {
+            String citedCode = null;
+            var fileContent = new String(question.getFile(), StandardCharsets.UTF_8).split("\n");
+            if(review.getCodePart() != null) {
+                var lineStart = review.getCodePart().getLineStart();
+                var lineEnd = review.getCodePart().getLineEnd();
+                citedCode = Arrays.stream(fileContent, lineStart - 1, lineEnd)
+                        .collect(Collectors.joining("\n"));
+            }
             return new ReviewResponseChildrenDTO(review.getId(), author.getUsername(), review.getContent(), citedCode, reviewVoteRepository.findUpvoteNumberByReviewId(review.getId()), reviewVoteRepository.findDownvoteNumberByReviewId(review.getId()), review.getCreatedAt(), getReviews(review.getId()));
         }).toList();
     }
@@ -162,26 +151,19 @@ public class ReviewService {
 
     private DetailReviewResponseDTO findDetailsFromReviewIdWithChildren(long userId, long reviewId) {
         var review = reviewRepository.findByIdWithReviews(reviewId).orElseThrow(() -> HttpException.notFound("This review does not exists"));
-
         String citedCode = null;
         if (review.getQuestion() != null) {
             var fileContent = new String(review.getQuestion().getFile(), StandardCharsets.UTF_8).split("\n");
-            var lineStart = review.getLineStart();
-            var lineEnd = review.getLineEnd();
-            citedCode = (lineStart == null || lineEnd == null) ? null : Arrays.stream(fileContent, lineStart - 1, lineEnd)
-                    .collect(Collectors.joining("\n"));
+            if(review.getCodePart() != null) {
+                var lineStart = review.getCodePart().getLineStart();
+                var lineEnd = review.getCodePart().getLineEnd();
+                citedCode = Arrays.stream(fileContent, lineStart - 1, lineEnd)
+                        .collect(Collectors.joining("\n"));
+            }
         }
+
         var doesUserVote = reviewVoteRepository.existsReviewVoteByReviewVoteId_Author_IdAndReviewVoteId_Review_Id(userId, reviewId);
-        return new DetailReviewResponseDTO(
-                review.getId(),
-                review.getAuthor().getUsername(),
-                review.getCreatedAt(),
-                review.getContent(),
-                citedCode,
-                reviewVoteRepository.findUpvoteNumberByReviewId(review.getId()),
-                reviewVoteRepository.findDownvoteNumberByReviewId(review.getId()),
-                doesUserVote, //TODO handle vote review from another user
-                review.getReviews().stream().map(childReview -> findDetailsFromReviewIdWithChildren(userId, childReview.getId())).toList()
-        );
+        var list = review.getReviews().stream().map(childReview -> findDetailsFromReviewIdWithChildren(userId, childReview.getId())).toList();
+        return reviewMapper.entityToDetailReviewResponseDTO(review, citedCode, doesUserVote, list);
     }
 }

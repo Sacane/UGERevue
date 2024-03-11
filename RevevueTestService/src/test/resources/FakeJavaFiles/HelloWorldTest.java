@@ -1,7 +1,7 @@
 package fr.uge.testingtestsfortest;
 
-import fr.uge.fakestringprovider.HelloWorld;
 import fr.uge.fakestringprovider.*;
+import fr.uge.fakestringprovider.HelloWorld;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

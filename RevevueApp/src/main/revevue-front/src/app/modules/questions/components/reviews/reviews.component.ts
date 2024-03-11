@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Review } from "../../models/review";
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Review} from "../../models/review";
 
 @Component({
     selector: 'app-reviews',

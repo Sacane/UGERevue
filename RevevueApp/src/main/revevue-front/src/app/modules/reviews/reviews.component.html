@@ -2,23 +2,24 @@
 <div class="details-header">
     <div style="padding: 20px; display: flex; flex-direction: column; row-gap: 20px;">
         <div style="display: flex; justify-content: space-between;">
-            <span style="font-size: 18px; font-weight: 500;">Review details</span>
-
+            <span style="font-size: 18px; font-weight: 500;">Review concernant la question</span>
             @if (canDelete) {
             <button mat-mini-fab color="primary" (click)="deleteReview()">
                 <mat-icon>delete</mat-icon>
             </button>
             }
         </div>
-        <span>{{ reviewDetail()?.content }}</span>
+        <markdown>{{ reviewDetail()?.content }}</markdown>
 
         @if (reviewDetail()?.citedCode) {
-        <pre><code [highlight]="(reviewDetail()!!.citedCode)" [languages]="['java']" [lineNumbers]="true"></code></pre>
+            <div>
+                <h1>Extrait du code</h1>
+                <pre><code [highlight]="(reviewDetail()!!.citedCode)" [languages]="['java']" [lineNumbers]="true"></code></pre>
+            </div>
         }
 
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <span>Published by {{ reviewDetail()?.author }} on {{ reviewDetail()?.creationDate | date }}</span>
-
             <div>
                 <button mat-icon-button
                     [ngStyle]="{'color': isFontPositive() ? 'white': 'green', 'background-color': isFontPositive() ? 'green': 'white'}"
@@ -33,6 +34,7 @@
                         class="red-badge">thumb_down</mat-icon>
                 </button>
             </div>
+
         </div>
     </div>
 </div>

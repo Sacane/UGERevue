@@ -1,16 +1,16 @@
-import { Component, computed, inject, signal, Signal, ViewEncapsulation, WritableSignal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Review } from "../../models/review";
-import { Role } from "../../models/role.model";
-import { QuestionService } from "../../../../shared/question.service";
-import { toSignal } from "@angular/core/rxjs-interop";
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { catchError, concat, of, switchMap } from 'rxjs';
-import { UserService } from '../../../../shared/HttpServices';
-import { ReviewDialogComponent } from '../../../../shared/components/review-dialog/review-dialog.component';
-import { ReviewService } from '../../../../shared';
+import {Component, computed, inject, signal, Signal, ViewEncapsulation} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Review} from "../../models/review";
+import {Role} from "../../models/role.model";
+import {QuestionService} from "../../../../shared/question.service";
+import {toSignal} from "@angular/core/rxjs-interop";
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatDialog} from '@angular/material/dialog';
+import {ConfirmDialogComponent} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import {catchError, concat, of, switchMap} from 'rxjs';
+import {UserService} from '../../../../shared/HttpServices';
+import {ReviewDialogComponent} from '../../../../shared/components/review-dialog/review-dialog.component';
+import {ReviewService} from '../../../../shared';
 
 @Component({
     selector: 'app-question',

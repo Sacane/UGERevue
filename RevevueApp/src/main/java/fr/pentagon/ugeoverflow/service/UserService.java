@@ -2,7 +2,10 @@ package fr.pentagon.ugeoverflow.service;
 
 import fr.pentagon.ugeoverflow.config.authorization.Role;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserFollowInfoDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserInfoUpdateDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserPasswordUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserFollowingDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.User;
@@ -63,20 +66,45 @@ public class UserService {
   }
 
   @Transactional
-  public List<UserFollowInfoDTO> userRegisteredList(long userId){
+  public List<UserFollowInfoDTO> userRegisteredList(long userId) {
     var follows = userRepository.findFollowsById(userId);
     return userRepository.findAllUsers()
-            .stream()
-            .map(user -> user.toUserFollowInfoDTO(follows.contains(user)))
-            .toList();
+        .stream()
+        .map(user -> user.toUserFollowInfoDTO(follows.contains(user)))
+        .toList();
   }
 
   @Transactional
-  public List<UserFollowInfoDTO> userRegisteredList(){
+  public List<UserFollowInfoDTO> userRegisteredList() {
     return userRepository.findAllUsers()
-            .stream()
-            .filter(u -> u.getRole() != Role.ADMIN)
-            .map(user -> user.toUserFollowInfoDTO(false))
-            .toList();
+        .stream()
+        .filter(u -> u.getRole() != Role.ADMIN)
+        .map(user -> user.toUserFollowInfoDTO(false))
+        .toList();
+  }
+
+  @Transactional
+  public void updateUser(String userId, UserInfoUpdateDTO userInfoUpdateDTO) {
+    var user = userRepository.findByLogin(userId).orElseThrow();
+    user.setUsername(userInfoUpdateDTO.username());
+    userRepository.save(user);
+  }
+
+  @Transactional
+  public void updateUserPassword(String userId, UserPasswordUpdateDTO userPasswordUpdateDTO) {
+    var user = userRepository.findByLogin(userId).orElseThrow();
+    if (!passwordEncoder.matches(userPasswordUpdateDTO.oldPassword(), user.getPassword())) {
+      throw HttpException.badRequest("Bad password");
+    }
+    user.setPassword(passwordEncoder.encode(userPasswordUpdateDTO.newPassword()));
+    userRepository.save(user);
+  }
+
+  @Transactional
+  public List<UserFollowingDTO> getUserFollowings(String userId) {
+    var user = userRepository.findByLogin(userId).orElseThrow();
+    return userRepository.findFollowing(user).stream()
+        .map(following -> new UserFollowingDTO(following.getId(), following.getUsername()))
+        .toList();
   }
 }

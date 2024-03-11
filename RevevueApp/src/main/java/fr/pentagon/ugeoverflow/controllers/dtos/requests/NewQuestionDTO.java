@@ -3,7 +3,7 @@ package fr.pentagon.ugeoverflow.controllers.dtos.requests;
 import java.util.Arrays;
 import java.util.Objects;
 
-public record NewQuestionDTO(String title, String description, byte[] javaFile, byte[] testFile) {
+public record NewQuestionDTO(String title, String description, byte[] javaFile, byte[] testFile, String javaFilename, String testFilename) {
 
     public NewQuestionDTO {
         Objects.requireNonNull(title);
