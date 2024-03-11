@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { UserService } from "../../shared/HttpServices";
+import {Component, inject} from '@angular/core';
+import {UserService} from "../../shared/HttpServices";
 
 @Component({
     selector: 'app-home',

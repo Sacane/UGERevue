@@ -1,9 +1,9 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, Observable, switchMap, tap, throwError } from 'rxjs';
-import { environment } from "../environment";
-import { UserCredentials, UserFollowInfo, UserRegister } from "./models-in";
-import { UserConnectedDTO, UserIdDTO } from "./models-out";
+import {inject, Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {catchError, Observable, switchMap, tap, throwError} from 'rxjs';
+import {environment} from "../environment";
+import {UserCredentials, UserFollowInfo, UserRegister} from "./models-in";
+import {UserConnectedDTO, UserIdDTO} from "./models-out";
 
 @Injectable({
     providedIn: 'root'

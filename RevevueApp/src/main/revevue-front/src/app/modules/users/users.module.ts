@@ -1,7 +1,7 @@
-import { NgModule } from "@angular/core";
-import { SharedModule } from "../../shared/shared.module";
-import { UsersComponent } from "./users.component";
-import { UsersRoutingModule } from "./users-routing.module";
+import {NgModule} from "@angular/core";
+import {SharedModule} from "../../shared/shared.module";
+import {UsersComponent} from "./users.component";
+import {UsersRoutingModule} from "./users-routing.module";
 import {NgForOf, NgIf} from "@angular/common";
 
 @NgModule({

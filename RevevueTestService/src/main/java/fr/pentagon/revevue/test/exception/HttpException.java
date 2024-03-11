@@ -1,4 +1,4 @@
-package fr.pentagon.revevue.test;
+package fr.pentagon.revevue.test.exception;
 
 import org.springframework.http.HttpStatus;
 

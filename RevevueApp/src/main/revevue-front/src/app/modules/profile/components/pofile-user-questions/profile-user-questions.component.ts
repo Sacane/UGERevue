@@ -5,7 +5,7 @@ import {Observable} from "rxjs";
 import {UserService} from "../../services/user.service";
 import {SimpleQuestion} from "../../../../shared/models/question";
 import {
-  ProfileUserQuestionsContentComponent
+    ProfileUserQuestionsContentComponent
 } from "./profile-user-questions-content/profile-user-questions-content.component";
 
 @Component({

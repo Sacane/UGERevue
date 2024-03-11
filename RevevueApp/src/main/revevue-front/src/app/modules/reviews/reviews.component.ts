@@ -9,7 +9,6 @@ import {ConfirmDialogComponent} from '../../shared/components/confirm-dialog/con
 import {Location} from '@angular/common';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {DetailReviewResponseDTO, Review} from "./models/review.model";
-import {toObservable, toSignal} from "@angular/core/rxjs-interop";
 
 @Component({
     selector: 'app-review-detail',
