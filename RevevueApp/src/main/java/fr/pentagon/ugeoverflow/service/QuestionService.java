@@ -10,6 +10,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponseDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.TestResultDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.Review;
@@ -22,20 +23,32 @@ import fr.pentagon.ugeoverflow.repository.ReviewRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.mapper.QuestionMapper;
 import jakarta.transaction.Transactional;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.format.datetime.DateFormatter;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
+
+  private final Logger logger = Logger.getLogger(QuestionService.class.getName());
+
   private final QuestionServiceWithFailure questionServiceWithFailure;
   private final QuestionRepository questionRepository;
   private final UserRepository userRepository;
   private final ReviewRepository reviewRepository;
   private final QuestionVoteRepository questionVoteRepository;
+  private final WebClient webClient;
   private final QuestionMapper questionMapper;
 
   public QuestionService(
@@ -43,14 +56,17 @@ public class QuestionService {
           QuestionRepository questionRepository,
           UserRepository userRepository,
           ReviewRepository reviewRepository,
-          QuestionVoteRepository questionVoteRepository, QuestionMapper questionMapper
+          QuestionVoteRepository questionVoteRepository,
+          WebClient webClient,
+          QuestionMapper questionMapper;
   ) {
     this.questionServiceWithFailure = questionServiceWithFailure;
     this.questionRepository = questionRepository;
     this.userRepository = userRepository;
     this.reviewRepository = reviewRepository;
     this.questionVoteRepository = questionVoteRepository;
-      this.questionMapper = questionMapper;
+    this.questionMapper = questionMapper;
+    this.webClient = webClient;
   }
 
     @Transactional
@@ -77,10 +93,38 @@ public class QuestionService {
   public long create(NewQuestionDTO questionCreateDTO, long authorId) {
     var user = userRepository.findById(authorId)
         .orElseThrow(() -> HttpException.notFound("User not exist"));
-    var question = questionRepository.save(new Question(questionCreateDTO.title(), questionCreateDTO.description(), questionCreateDTO.javaFile(), questionCreateDTO.testFile(), "TEST RESULT", true, new Date())); //TODO test
+    String result = "Test failed...";
+    if(questionCreateDTO.testFile() != null) {
+      var parts = getPartsTestEndpoints(questionCreateDTO, authorId);
+      var response = webClient.post()
+              .uri(builder -> builder.path("/tests/run").build())
+              .contentType(MediaType.MULTIPART_FORM_DATA)
+              .body(BodyInserters.fromMultipartData(parts))
+              .accept(MediaType.APPLICATION_JSON).exchangeToMono(r -> {
+                if (r.statusCode().is2xxSuccessful()) {
+                  return r.bodyToMono(TestResultDTO.class);
+                } else {
+                  logger.severe(r.statusCode().value() + "");
+                  return Mono.just(TestResultDTO.zero());
+                }
+              }).block();
+      if (response != null) {
+        result = response.toString();
+      }
+    }
+    var question = questionRepository.save(new Question(questionCreateDTO.title(), questionCreateDTO.description(), questionCreateDTO.javaFile(), questionCreateDTO.testFile(), result, true, new Date())); //TODO test
     user.addQuestion(question);
-
     return question.getId();
+  }
+
+  private static MultiValueMap<String, Object> getPartsTestEndpoints(NewQuestionDTO questionCreateDTO, long authorId) {
+    MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
+    parts.add("dependencyFile", new ByteArrayResource(questionCreateDTO.javaFile()));
+    parts.add("id", authorId);
+    parts.add("testFile", new ByteArrayResource(questionCreateDTO.testFile()));
+    parts.add("dependencyFilename", questionCreateDTO.javaFilename());
+    parts.add("testFilename", questionCreateDTO.testFilename());
+    return parts;
   }
 
   public void update(QuestionUpdateDTO questionUpdateDTO) {

@@ -63,13 +63,13 @@ public class QuestionController {
     public ResponseEntity<Long> createQuestion(
             @RequestPart("title") String title,
             @RequestPart("description") String description,
-            @RequestPart("javaFile")MultipartFile javaFile,
+            @RequestPart("javaFile") MultipartFile javaFile,
             @RequestPart(value = "testFile", required = false) MultipartFile testFile
     ) throws IOException {
         LOGGER.info("POST performed on /api/questions");
         var userDetail = SecurityContext.checkAuthentication();
-        return ok(questionService.create(new NewQuestionDTO(
-                title, description, javaFile.getBytes(), testFile == null ? null : testFile.getBytes()
+        return ResponseEntity.ok(questionService.create(new NewQuestionDTO(
+                title, description, javaFile.getBytes(), testFile == null ? null : testFile.getBytes(), javaFile.getOriginalFilename(), testFile == null ? null : testFile.getOriginalFilename()
         ), userDetail.id()));
     }
 

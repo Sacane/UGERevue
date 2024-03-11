@@ -1,13 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Review } from "../../models/review";
-import { UserService } from '../../../../shared/HttpServices';
-import { MatDialog } from '@angular/material/dialog';
-import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import { catchError, concat, of, switchMap } from 'rxjs';
-import { ReviewService } from '../../../../shared';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Role } from '../../models/role.model';
-import { Router } from '@angular/router';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Review} from "../../models/review";
+import {UserService} from '../../../../shared/HttpServices';
+import {MatDialog} from '@angular/material/dialog';
+import {ConfirmDialogComponent} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import {catchError, concat, of, switchMap} from 'rxjs';
+import {ReviewService} from '../../../../shared';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {Role} from '../../models/role.model';
+import {Router} from '@angular/router';
 
 import 'prismjs'; // Import Prism.js
 import 'prismjs/components/prism-java.js'; // Import the Java language syntax for Prism.js

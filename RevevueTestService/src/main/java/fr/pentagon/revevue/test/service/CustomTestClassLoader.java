@@ -5,7 +5,10 @@ import fr.pentagon.revevue.test.exception.CompilationException;
 
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -135,7 +138,8 @@ public final class CustomTestClassLoader {
                 // Drop all
             }
         });
-        JAVA_COMPILER.run(System.in, trashPrintStream, new PrintStream(errorByteArray), dependencyFileName, testFileName);
+        var args = new String[]{dependencyFileName, testFileName};
+        JAVA_COMPILER.run(System.in, trashPrintStream, new PrintStream(errorByteArray), args);
         var error = errorByteArray.toString();
         if (!error.isBlank()) {
             throw new CompilationException(error);

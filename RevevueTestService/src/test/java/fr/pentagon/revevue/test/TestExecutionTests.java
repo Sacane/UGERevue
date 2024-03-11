@@ -99,7 +99,7 @@ final class TestExecutionTests {
             var testClass = loader.load(TEST_FILE_NAME, DEPENDENCY_FILE_NAME);
             var tracker = TestTracker.runAndTrack(testClass);
             var dummyTestTracker = TestTracker.runAndTrack(RevevueTestServiceApplication.class);
-            System.out.println(dummyTestTracker.failedTestsDetails());
+            System.out.println(dummyTestTracker.failureDetails());
             var expectedDetail = """
                     Failed tests :
                                         
@@ -107,13 +107,13 @@ final class TestExecutionTests {
                     """;
             assertAll("TestTracker is working",
                     () -> assertFalse(tracker.allTestsPassed()),
-                    () -> assertEquals(1, tracker.failedTestsCount()),
-                    () -> assertEquals(1, tracker.passedTestsCount()),
-                    () -> assertEquals(expectedDetail, tracker.failedTestsDetails()),
+                    () -> assertEquals(1, tracker.failuresCount()),
+                    () -> assertEquals(1, tracker.passedCount()),
+                    () -> assertEquals(expectedDetail, tracker.failureDetails()),
                     () -> assertTrue(dummyTestTracker.allTestsPassed()),
-                    () -> assertEquals(0, dummyTestTracker.passedTestsCount()),
-                    () -> assertEquals(0, dummyTestTracker.failedTestsCount()),
-                    () -> assertTrue(dummyTestTracker.failedTestsDetails().isEmpty())
+                    () -> assertEquals(0, dummyTestTracker.passedCount()),
+                    () -> assertEquals(0, dummyTestTracker.failuresCount()),
+                    () -> assertTrue(dummyTestTracker.failureDetails().isEmpty())
             );
         }
 

@@ -1,6 +1,6 @@
 import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, Input} from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
-import { filter } from 'rxjs';
+import {NavigationEnd, Router} from '@angular/router';
+import {filter} from 'rxjs';
 
 @Component({
     selector: 'app-sidenav-bar',
