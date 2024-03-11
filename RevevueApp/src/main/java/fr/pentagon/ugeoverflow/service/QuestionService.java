@@ -58,7 +58,7 @@ public class QuestionService {
           ReviewRepository reviewRepository,
           QuestionVoteRepository questionVoteRepository,
           WebClient webClient,
-          QuestionMapper questionMapper;
+          QuestionMapper questionMapper
   ) {
     this.questionServiceWithFailure = questionServiceWithFailure;
     this.questionRepository = questionRepository;
