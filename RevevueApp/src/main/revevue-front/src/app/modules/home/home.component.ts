@@ -28,14 +28,6 @@ export class HomeComponent implements OnInit {
                     })
                 )
             );
-            /*this.questionService.getQuestionsFromFollowers().pipe(
-                catchError(err => {
-                    console.log(err);
-                    return of([]);
-                })
-            ).subscribe(response => {
-                console.log(response);
-            });*/
         }
     }
 

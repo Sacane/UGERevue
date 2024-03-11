@@ -218,7 +218,10 @@ public class QuestionService {
         visitedUserId.add(userId);
         for (var follow: follows) {
             for (var question: follow.getQuestions()) {
-                questionsWithScore.put(question, score);
+                var questionScore = questionsWithScore.get(question);
+                if (questionScore == 0 || score < questionScore) {
+                    questionsWithScore.put(question, score);
+                }
             }
 
             if (!visitedUserId.contains(follow.getId())) {
