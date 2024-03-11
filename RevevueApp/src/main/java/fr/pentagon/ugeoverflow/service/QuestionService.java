@@ -13,13 +13,14 @@ import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponse
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.Review;
+import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.model.embed.CodePart;
 import fr.pentagon.ugeoverflow.model.vote.QuestionVote;
-import fr.pentagon.ugeoverflow.model.vote.QuestionVoteId;
 import fr.pentagon.ugeoverflow.repository.QuestionRepository;
 import fr.pentagon.ugeoverflow.repository.QuestionVoteRepository;
 import fr.pentagon.ugeoverflow.repository.ReviewRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
+import fr.pentagon.ugeoverflow.service.mapper.QuestionMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
@@ -35,34 +36,29 @@ public class QuestionService {
   private final UserRepository userRepository;
   private final ReviewRepository reviewRepository;
   private final QuestionVoteRepository questionVoteRepository;
+  private final QuestionMapper questionMapper;
 
   public QuestionService(
-      QuestionServiceWithFailure questionServiceWithFailure,
-      QuestionRepository questionRepository,
-      UserRepository userRepository,
-      ReviewRepository reviewRepository,
-      QuestionVoteRepository questionVoteRepository
+          QuestionServiceWithFailure questionServiceWithFailure,
+          QuestionRepository questionRepository,
+          UserRepository userRepository,
+          ReviewRepository reviewRepository,
+          QuestionVoteRepository questionVoteRepository, QuestionMapper questionMapper
   ) {
     this.questionServiceWithFailure = questionServiceWithFailure;
     this.questionRepository = questionRepository;
     this.userRepository = userRepository;
     this.reviewRepository = reviewRepository;
     this.questionVoteRepository = questionVoteRepository;
+      this.questionMapper = questionMapper;
   }
 
     @Transactional
     public List<QuestionDTO> getQuestions() {
         return questionRepository.findAllWithAuthors()
                 .stream()
-                .map(question -> new QuestionDTO(
-                        question.getId(),
-                        question.getTitle(),
-                        question.getDescription(),
-                        question.getAuthor().getUsername(),
-                        question.getCreatedAt().toString(),
-                        questionVoteRepository.countAllById(question.getId()),
-                        question.getReviews().size()
-                )).toList();
+                .map(questionMapper::entityToQuestionDTO)
+                .toList();
     }
 
     @Transactional
@@ -73,15 +69,8 @@ public class QuestionService {
 
         return questionSorterStrategy.getQuestions(label, (username != null) ? QuestionSorterStrategy.WITH_AUTHOR.getQuestions(username, questions) : questions)
                 .stream()
-                .map(question -> new QuestionDTO(
-                        question.getId(),
-                        question.getTitle(),
-                        question.getDescription(),
-                        question.getAuthor().getUsername(),
-                        question.getCreatedAt().toString(),
-                        questionVoteRepository.countAllById(question.getId()),
-                        question.getReviews().size()
-                )).toList();
+                .map(questionMapper::entityToQuestionDTO)
+                .toList();
     }
 
   @Transactional
@@ -108,18 +97,19 @@ public class QuestionService {
     }
   }
 
+  record UserQuestion(User user, Question question){}
+  static UserQuestion findQuestionFromId(UserRepository userRepository, long userId, QuestionRepository questionRepository, long questionId) {
+    var userFind = userRepository.findById(userId)
+            .orElseThrow(() -> HttpException.notFound("The user number " + userId + " does not exists"));
+    var question = questionRepository.findById(questionId)
+            .orElseThrow(() -> HttpException.notFound("The question number " + questionId + " does not exists"));
+    return new UserQuestion(userFind, question);
+  }
   @Transactional
   public ReviewQuestionResponseDTO addReview(QuestionReviewCreateDTO questionReviewCreateDTO) {
-    var userFind = userRepository.findById(questionReviewCreateDTO.userId());
-    if (userFind.isEmpty()) {
-      throw HttpException.notFound("User not exist");
-    }
-    var questionFind = questionRepository.findById(questionReviewCreateDTO.questionId());
-    if (questionFind.isEmpty()) {
-      throw HttpException.notFound("Question not exist");
-    }
-    var user = userFind.get();
-    var question = questionFind.get();
+    var userQuestion = QuestionService.findQuestionFromId(userRepository, questionReviewCreateDTO.userId(), questionRepository, questionReviewCreateDTO.questionId());
+    var user = userQuestion.user();
+    var question = userQuestion.question();
     var codePart = (questionReviewCreateDTO.lineStart() == null || questionReviewCreateDTO.lineEnd() == null)
             ? null
             :  new CodePart(questionReviewCreateDTO.lineStart(), questionReviewCreateDTO.lineEnd());
@@ -179,16 +169,6 @@ public class QuestionService {
   }
 
   @Transactional
-  public void cancelVote(long authorId, long questionId) {
-    var user = userRepository.findById(authorId).orElseThrow(() -> HttpException.notFound("User does not exists"));
-    var question = questionRepository.findById(questionId).orElseThrow(() -> HttpException.notFound("Question does not exists"));
-    var questionVoteId = new QuestionVoteId();
-    questionVoteId.setQuestion(question);
-    questionVoteId.setAuthor(user);
-    questionVoteRepository.deleteById(questionVoteId);
-  }
-
-  @Transactional
   public QuestionDetailsDTO findById(long questionId) {
     var question = questionRepository.findByIdWithAuthorAndReviews(questionId).orElseThrow(() -> HttpException.notFound("Question " + questionId + " does not exists"));
     var dateFormatter = new DateFormatter("dd/MM/yyyy");
@@ -213,14 +193,7 @@ public class QuestionService {
     var user = userRepository.findByLogin(login).orElseThrow();
     return questionRepository.findByAuthorOrderByCreatedAtDesc(user)
         .stream()
-        .map(question -> new QuestionDTO(
-            question.getId(),
-            question.getTitle(),
-            question.getDescription(),
-            question.getAuthor().getUsername(),
-            question.getCreatedAt().toString(),
-            questionVoteRepository.countAllById(question.getId()),
-            question.getReviews().size()
-        )).toList();
+        .map(questionMapper::entityToQuestionDTO)
+        .toList();
   }
 }
