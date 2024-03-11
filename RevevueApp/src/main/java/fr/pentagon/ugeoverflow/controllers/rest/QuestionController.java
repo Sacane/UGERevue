@@ -22,6 +22,9 @@ import java.security.Principal;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static org.springframework.http.ResponseEntity.ok;
+
+
 @RestController
 public class QuestionController {
 
@@ -32,68 +35,74 @@ public class QuestionController {
     this.questionService = questionService;
   }
 
-  @GetMapping(Routes.Question.ROOT)
-  public ResponseEntity<List<QuestionDTO>> allQuestions() {
-    LOGGER.info("GET performed on /api/questions");
-    return ResponseEntity.ok(questionService.getQuestions());
-  }
-
-  @GetMapping(Routes.Question.CURRENT_USER)
-  public ResponseEntity<List<QuestionDTO>> getAllQuestionsFromCurrentUser(Principal principal) {
-    if (principal == null) {
-      throw HttpException.forbidden("No user currently authenticated");
+    @GetMapping(Routes.Question.ROOT)
+    public ResponseEntity<List<QuestionDTO>> allQuestions() {
+        LOGGER.info("GET performed on /api/questions");
+        return ok(questionService.getQuestions());
     }
-    return ResponseEntity.ok(questionService.getQuestionsFromCurrentUser(principal.getName()));
-  }
 
-  @PostMapping(
-      value = Routes.Question.ROOT,
-      consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-  )
-  @RequireUser
-  public ResponseEntity<Long> createQuestion(
-      @RequestPart("title") String title,
-      @RequestPart("description") String description,
-      @RequestPart("javaFile") MultipartFile javaFile,
-      @RequestPart(value = "testFile", required = false) MultipartFile testFile
-  ) throws IOException {
-    LOGGER.info("POST performed on /api/questions");
-    var userDetail = SecurityContext.checkAuthentication();
-    return ResponseEntity.ok(questionService.create(new NewQuestionDTO(
-        title, description, javaFile.getBytes(), testFile == null ? null : testFile.getBytes(), javaFile.getOriginalFilename(), testFile == null ? null : testFile.getOriginalFilename()
-    ), userDetail.id()));
-  }
+    @GetMapping(Routes.Question.SEARCH)
+    public ResponseEntity<List<QuestionDTO>> allQuestionByParameters(@RequestParam("label") String label, @RequestParam(required = false, value = "username") String username) {
+        LOGGER.info("Get performed on " + Routes.Question.SEARCH);
+        return ok(questionService.getQuestions(label, username));
+    }
 
-  @DeleteMapping(Routes.Question.ROOT + "/{questionId}")
-  @RequireUser
-  public ResponseEntity<Void> removeQuestion(@PathVariable(name = "questionId") long questionId) {
-    LOGGER.info("DELETE performed on /api/questions/" + questionId);
-    var user = SecurityContext.checkAuthentication();
-    questionService.remove(new QuestionRemoveDTO(user.id(), questionId));
-    return ResponseEntity.ok().build();
-  }
+    @GetMapping(Routes.Question.CURRENT_USER)
+    public ResponseEntity<List<QuestionDTO>> getAllQuestionsFromCurrentUser(Principal principal) {
+        if (principal == null) {
+            throw HttpException.forbidden("No user currently authenticated");
+        }
+        return ResponseEntity.ok(questionService.getQuestionsFromCurrentUser(principal.getName()));
+    }
+
+    @PostMapping(
+            value = Routes.Question.ROOT,
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    @RequireUser
+    public ResponseEntity<Long> createQuestion(
+            @RequestPart("title") String title,
+            @RequestPart("description") String description,
+            @RequestPart("javaFile")MultipartFile javaFile,
+            @RequestPart(value = "testFile", required = false) MultipartFile testFile
+    ) throws IOException {
+        LOGGER.info("POST performed on /api/questions");
+        var userDetail = SecurityContext.checkAuthentication();
+        return ok(questionService.create(new NewQuestionDTO(
+                title, description, javaFile.getBytes(), testFile == null ? null : testFile.getBytes()
+        ), userDetail.id()));
+    }
+
+    @DeleteMapping(Routes.Question.ROOT + "/{questionId}")
+    @RequireUser
+    public ResponseEntity<Void> removeQuestion(@PathVariable(name = "questionId") long questionId) {
+        LOGGER.info("DELETE performed on /api/questions/" + questionId);
+        var user = SecurityContext.checkAuthentication();
+        questionService.remove(new QuestionRemoveDTO(user.id(), questionId));
+        return ok().build();
+    }
 
 
   // TODO : Use commentaries and responses to create a "CompleteQuestionInfoDTO".
 
-  @GetMapping(Routes.Question.ROOT + "/{questionId}")
-  public ResponseEntity<QuestionDetailsDTO> getQuestion(@PathVariable(name = "questionId") long questionId) {
-    try {
-      LOGGER.info("GET performed on /api/questions/" + questionId);
-      return ResponseEntity.ok(questionService.findById(questionId));
-    } finally {
-      LOGGER.info("End of the method");
+    @GetMapping(Routes.Question.ROOT + "/{questionId}")
+    public ResponseEntity<QuestionDetailsDTO> getQuestion(@PathVariable(name = "questionId") long questionId) {
+        try {
+            LOGGER.info("GET performed on /api/questions/" + questionId);
+            return ok(questionService.findById(questionId));
+        }finally {
+            LOGGER.info("End of the method");
+        }
     }
-  }
 
   @PostMapping(Routes.Question.ROOT + "/reviews")
   public ResponseEntity<ReviewQuestionResponseDTO> addReview(@RequestBody QuestionReviewCreateBodyDTO questionReviewCreateBodyDTO) {
     try {
       var userDetail = SecurityContext.checkAuthentication();
 
-      return ResponseEntity.ok(questionService.addReview(new QuestionReviewCreateDTO(userDetail.id(), questionReviewCreateBodyDTO.questionId(), questionReviewCreateBodyDTO.content(), questionReviewCreateBodyDTO.lineStart(), questionReviewCreateBodyDTO.lineEnd())));
-    } finally {
-      LOGGER.info("End of the method");
+            return ok(questionService.addReview(new QuestionReviewCreateDTO(userDetail.id(), questionReviewCreateBodyDTO.questionId(), questionReviewCreateBodyDTO.content(), questionReviewCreateBodyDTO.lineStart(), questionReviewCreateBodyDTO.lineEnd())));
+        }finally {
+            LOGGER.info("End of the method");
+        }
     }
-  }
 }

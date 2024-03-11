@@ -1,5 +1,7 @@
 package fr.pentagon.ugeoverflow.service;
 
+import fr.pentagon.ugeoverflow.algorithm.QuestionSorterStrategy;
+import fr.pentagon.ugeoverflow.algorithm.SearchQuestionByLabelStrategy;
 import fr.pentagon.ugeoverflow.config.authorization.Role;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionRemoveDTO;
@@ -68,20 +70,39 @@ public class QuestionService {
       this.webClient = webClient;
   }
 
-  @Transactional
-  public List<QuestionDTO> getQuestions() {
-    return questionRepository.findAllWithAuthors()
-        .stream()
-        .map(question -> new QuestionDTO(
-            question.getId(),
-            question.getTitle(),
-            question.getDescription(),
-            question.getAuthor().getUsername(),
-            question.getCreatedAt().toString(),
-            questionVoteRepository.countAllById(question.getId()),
-            question.getReviews().size()
-        )).toList();
-  }
+    @Transactional
+    public List<QuestionDTO> getQuestions() {
+        return questionRepository.findAllWithAuthors()
+                .stream()
+                .map(question -> new QuestionDTO(
+                        question.getId(),
+                        question.getTitle(),
+                        question.getDescription(),
+                        question.getAuthor().getUsername(),
+                        question.getCreatedAt().toString(),
+                        questionVoteRepository.countAllById(question.getId()),
+                        question.getReviews().size()
+                )).toList();
+    }
+
+    @Transactional
+    public List<QuestionDTO> getQuestions(String label, String username) {
+        Objects.requireNonNull(label);
+        var questions = questionRepository.findAllWithAuthors();
+        QuestionSorterStrategy questionSorterStrategy = new SearchQuestionByLabelStrategy();
+
+        return questionSorterStrategy.getQuestions(label, (username != null) ? QuestionSorterStrategy.WITH_AUTHOR.getQuestions(username, questions) : questions)
+                .stream()
+                .map(question -> new QuestionDTO(
+                        question.getId(),
+                        question.getTitle(),
+                        question.getDescription(),
+                        question.getAuthor().getUsername(),
+                        question.getCreatedAt().toString(),
+                        questionVoteRepository.countAllById(question.getId()),
+                        question.getReviews().size()
+                )).toList();
+    }
 
   @Transactional
   public long create(NewQuestionDTO questionCreateDTO, long authorId) {
