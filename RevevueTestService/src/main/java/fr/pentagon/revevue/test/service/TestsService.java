@@ -18,15 +18,14 @@ public final class TestsService {
     public TestResultDTO runTest(TestBundle testBundle) throws IOException, CompilationException, ClassNotFoundException {
         Objects.requireNonNull(testBundle);
         try {
-            logger.info("initialisation...");
+            logger.info("Start running pipeline tests on the following files : "
+                    + testBundle.dependencyFileName() + ", " + testBundle.testFileName());
             initializeFolder(testBundle);
-            logger.info("Initialisation ok, folders has correctly been created");
+            logger.info("Folder initialized");
             var loader = CustomTestClassLoader.in(Paths.get(testBundle.idAsString()));
-            logger.info("trying to load the classLoader with test file => " + testBundle.testFileName() + " and dependency => " + testBundle.dependencyFileName());
-            String property = System.getProperty("java.class.path");
-            logger.info("classpath : " + property);
+            logger.info("Loading files...");
             var clazz = loader.load(testBundle.testFileName(), testBundle.dependencyFileName());
-            logger.info("Run test..");
+            logger.info("Running test...");
             var tracker = TestTracker.runAndTrack(clazz);
             logger.info("Test has been running successfully");
             TestResultDTO testResultDTO = new TestResultDTO(
@@ -35,7 +34,7 @@ public final class TestsService {
                     tracker.failuresCount(),
                     tracker.failureDetails()
             );
-            logger.info(testResultDTO.toString());
+            logger.info("Results : " + testResultDTO.toString());
             return testResultDTO;
         }finally {
             deleteFolder(testBundle.idAsString());

@@ -89,12 +89,7 @@ public class QuestionService {
         .orElseThrow(() -> HttpException.notFound("User not exist"));
     String result = "Test failed...";
     if(questionCreateDTO.testFile() != null) {
-      MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
-      parts.add("dependencyFile", new ByteArrayResource(questionCreateDTO.javaFile()));
-      parts.add("id", authorId);
-      parts.add("testFile", new ByteArrayResource(questionCreateDTO.testFile()));
-      parts.add("dependencyFilename", questionCreateDTO.javaFilename());
-      parts.add("testFilename", questionCreateDTO.testFilename());
+      var parts = getPartsTestEndpoints(questionCreateDTO, authorId);
       var response = webClient.post()
               .uri(builder -> builder.path("/tests/run").build())
               .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -114,6 +109,16 @@ public class QuestionService {
     var question = questionRepository.save(new Question(questionCreateDTO.title(), questionCreateDTO.description(), questionCreateDTO.javaFile(), questionCreateDTO.testFile(), result, true, new Date())); //TODO test
     user.addQuestion(question);
     return question.getId();
+  }
+
+  private static MultiValueMap<String, Object> getPartsTestEndpoints(NewQuestionDTO questionCreateDTO, long authorId) {
+    MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
+    parts.add("dependencyFile", new ByteArrayResource(questionCreateDTO.javaFile()));
+    parts.add("id", authorId);
+    parts.add("testFile", new ByteArrayResource(questionCreateDTO.testFile()));
+    parts.add("dependencyFilename", questionCreateDTO.javaFilename());
+    parts.add("testFilename", questionCreateDTO.testFilename());
+    return parts;
   }
 
   public void update(QuestionUpdateDTO questionUpdateDTO) {
