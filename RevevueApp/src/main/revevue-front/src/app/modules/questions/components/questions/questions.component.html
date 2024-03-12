@@ -2,20 +2,20 @@
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <span style="font-size: 25px; font-weight: 500;">Toutes les questions</span>
         @if(isLogin()){
-            <button mat-raised-button color="primary" (click)="navigateTo('/questions/ask')">Ask question</button>
+        <button mat-raised-button color="primary" (click)="navigateTo('/questions/ask')">Ask question</button>
         }
     </div>
     <span style="font-size: 17px;">
         {{numberQuestions()}} questions
     </span>
-    <div style="display: flex; flex-direction: column;">
+    <app-questions-displayer [questions]="questions()"></app-questions-displayer>
+    <!--<div style="display: flex; flex-direction: column;">
         @for (question of questions(); track question.title) {
             <div
                 style="display: flex; column-gap: 20px; border-top: 2px solid lightgray; padding-top: 10px; padding-bottom: 10px;">
                 <div style="flex-grow: 1; display: flex; flex-direction: column;">
                     <div style="display: flex; justify-content: end;">{{ question.nbVotes }} votes</div>
                     <div style="display: flex; justify-content: end; color: gray;">{{ question.nbAnswers }} answers</div>
-                    <!--<div style="display: flex; justify-content: end; color: gray;">{{ question.nbViews }} views</div>-->
                 </div>
                 <div style="flex-grow: 7; display: flex; flex-direction: column; row-gap: 20px;">
                     <button mat-raised-button color="primary" (click)="navigateTo('/questions/' + question.id)">
@@ -25,11 +25,6 @@
                         {{ question.description }}
                     </div>
                     <div style="display: flex; justify-content: space-between;">
-                        <!--<div>
-                            @for (tag of question.tags; track tag) {
-                                {{ tag }}
-                            }
-                        </div>-->
                         <div class="info">
                             <p>Posté par {{ question.userName }}</p>
                             <p>Le {{ question.date }}</p>
@@ -38,5 +33,5 @@
                 </div>
             </div>
         }
-    </div>
+    </div>-->
 </div>
