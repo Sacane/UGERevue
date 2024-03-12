@@ -11,21 +11,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/light/questions")
 public class MvcQuestionController {
-
     private final QuestionService questionService;
-
-
     public MvcQuestionController(QuestionService questionService) {
         this.questionService = questionService;
     }
 
     @GetMapping("/{questionId}")
     public String detail(@PathVariable("questionId") long questionId, Model model) {
-        // Charger les détails de la question en utilisant l'ID de la question
         var question = questionService.findById(questionId);
-        // Ajouter la question au modèle pour l'afficher dans la vue
         model.addAttribute("question", question);
-        // Retourner la vue pour afficher les détails de la question
         return "/pages/questions/detail";
+    }
+
+    @GetMapping
+    public String all(Model model) {
+        var questions = questionService.getQuestions();
+        model.addAttribute("questions", questions);
+        return "/pages/questions/all";
     }
 }

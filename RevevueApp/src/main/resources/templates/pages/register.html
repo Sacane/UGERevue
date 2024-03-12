@@ -30,60 +30,63 @@
             <li><a href="#">Socials</a></li>
         </ul>
     </div>
-    <div class="content">
-        <h1>Register</h1>
-        <p class="error" th:if="${accountExists != null}">Account name or display name already used</p>
-        <form method="post" th:action="@{/light/register}" th:object="${userRegisterDTO}">
-            <label for="login">Account name:</label><br>
-            <input id="login"
-                   maxlength="20"
-                   minlength="3"
-                   required
-                   th:field="*{login}"
-                   th:value="*{login}"
-                   type="text"><br>
-            <span th:errorclass="error"
-                  th:errors="*{login}"
-                  th:if="${#fields.hasErrors('login')}">Invalid account name</span><br>
+    <div class="login-container">
+        <div class="login-card">
+            <h1>Register</h1>
+            <p class="error" th:if="${accountExists != null}">Account name or display name already used</p>
+            <form method="post" th:action="@{/light/register}" th:object="${userRegisterDTO}">
+                <label for="login">Account name:</label><br>
+                <input id="login"
+                       maxlength="20"
+                       minlength="3"
+                       required
+                       th:field="*{login}"
+                       th:value="*{login}"
+                       type="text"><br>
+                <span th:errorclass="error"
+                      th:errors="*{login}"
+                      th:if="${#fields.hasErrors('login')}">Invalid account name</span><br>
 
-            <label for="username">Display name:</label><br>
-            <input id="username"
-                   maxlength="20"
-                   minlength="3"
-                   required
-                   th:field="*{username}"
-                   th:value="*{username}"
-                   type="text"><br>
-            <span th:errorclass="error"
-                  th:errors="*{username}"
-                  th:if="${#fields.hasErrors('username')}">Invalid display name</span><br>
+                <label for="username">Display name:</label><br>
+                <input id="username"
+                       maxlength="20"
+                       minlength="3"
+                       required
+                       th:field="*{username}"
+                       th:value="*{username}"
+                       type="text"><br>
+                <span th:errorclass="error"
+                      th:errors="*{username}"
+                      th:if="${#fields.hasErrors('username')}">Invalid display name</span><br>
 
-            <label for="email">Email:</label><br>
-            <input id="email"
-                   pattern="^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$"
-                   required
-                   th:field="*{email}"
-                   th:value="*{email}"
-                   type="text"><br>
-            <span th:errorclass="error"
-                  th:errors="*{email}"
-                  th:if="${#fields.hasErrors('email')}">Invalid email</span><br>
+                <label for="email">Email:</label><br>
+                <input id="email"
+                       pattern="^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$"
+                       required
+                       th:field="*{email}"
+                       th:value="*{email}"
+                       type="text"><br>
+                <span th:errorclass="error"
+                      th:errors="*{email}"
+                      th:if="${#fields.hasErrors('email')}">Invalid email</span><br>
 
-            <label for="password">Password:</label><br>
-            <input id="password"
-                   maxlength="20"
-                   minlength="3"
-                   required
-                   th:field="*{password}"
-                   th:value="*{password}"
-                   type="password"><br>
-            <span th:errorclass="error"
-                  th:errors="*{password}"
-                  th:if="${#fields.hasErrors('password')}">Invalid password</span><br>
+                <label for="password">Password:</label><br>
+                <input id="password"
+                       maxlength="20"
+                       minlength="3"
+                       required
+                       th:field="*{password}"
+                       th:value="*{password}"
+                       type="password"><br>
+                <span th:errorclass="error"
+                      th:errors="*{password}"
+                      th:if="${#fields.hasErrors('password')}">Invalid password</span><br>
 
-            <button type="submit">Register</button>
-        </form>
+                <button type="submit">Register</button>
+            </form>
+        </div>
     </div>
+
 </main>
 
 <footer th:replace="~{fragments/footer :: footer}">
