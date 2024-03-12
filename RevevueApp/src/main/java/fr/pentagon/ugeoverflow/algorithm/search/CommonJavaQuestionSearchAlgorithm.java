@@ -13,7 +13,8 @@ public class CommonJavaQuestionSearchAlgorithm implements QuestionSearchAlgorith
             "extends", "final", "finally", "float", "for", "if", "implements", "import",
             "instanceof", "int", "interface", "long", "native", "new", "package", "private",
             "protected", "public", "return", "short", "static", "strictfp", "super", "switch",
-            "synchronized", "this", "throw", "throws", "transient", "try", "void", "volatile", "while"
+            "synchronized", "this", "throw", "throws", "transient", "try", "void", "volatile", "while",
+            "thread", "heritage"
     ));
 
     private static final Set<String> JAVA_CORE_NOTIONS = new HashSet<>(Set.of(

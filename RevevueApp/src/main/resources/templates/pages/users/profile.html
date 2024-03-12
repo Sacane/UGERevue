@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Revevue</title>
+    <link href="../../static/styles/main.css" rel="stylesheet" th:href="@{/styles/main.css}"/>
+</head>
+
+<body>
+
+<header th:replace="~{fragments/header :: header}">
+    <div class="site-identity">
+        <h1><a href="/light">Revevue</a></h1>
+    </div>
+    <nav class="site-navigation">
+        <ul class="nav">
+            <li><a href="#">Login</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <script>
+        function redirectToQuestionDetail(row) {
+            const questionId = row.getAttribute('data-question-id');
+            window.location.href = '/light/questions/' + questionId;
+        }
+    </script>
+    <div class="nav" th:replace="~{fragments/sidenav :: sidenav}">
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Questions</a></li>
+            <li><a href="#">Socials</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <h1 style="align-self: center">Votre page de profil</h1>
+        <div class="flex justify-evenly">
+            <div class="flex flex-column">
+                <h2>Mes informations</h2>
+                <p th:text="'Votre nom d\'usage : ' + ${username}"></p>
+                <p th:text="'Votre nom de compte : ' + ${login}"></p>
+                <p th:text="'Votre email : ' + ${email}"></p>
+                <p th:text="'Votre role : ' + ${role}"></p>
+            </div>
+            <div class="flex flex-column table-container">
+                <h2>Ma liste de question</h2>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>User Name</th>
+                        <th>Date</th>
+                        <th>Nombre de votes</th>
+                        <th>Nombre de réponses</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="question : ${questions}" th:data-question-id="${question.id}" onclick="redirectToQuestionDetail(this)">
+                        <td th:text="${question.title}"></td>
+                        <td th:text="${question.userName}"></td>
+                        <td th:text="${question.date}"></td>
+                        <td th:text="${question.nbVotes}"></td>
+                        <td th:text="${question.nbAnswers}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="user-list">
+        <h2>Liste des utilisateurs suivis</h2>
+        <ul>
+            <li th:each="user : ${follows}">
+                <a th:href="@{'/light/user/' + ${user.id}}" th:text="${user.username}"></a>
+            </li>
+        </ul>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}">
+    &copy; 2024 Revevue
+</footer>
+
+</body>
+</html>

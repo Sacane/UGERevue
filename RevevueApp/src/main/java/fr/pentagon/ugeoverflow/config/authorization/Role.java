@@ -10,4 +10,7 @@ public enum Role {
   public String roleName() {
     return name();
   }
+  public String displayName() {
+    return this == USER ? "Utilisateur" : "Administrateur";
+  }
 }
