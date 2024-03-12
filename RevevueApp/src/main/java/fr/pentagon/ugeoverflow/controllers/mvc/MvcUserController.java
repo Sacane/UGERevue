@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
+
 @Controller
 @RequestMapping("/light/profile/")
 public class MvcUserController {
@@ -19,7 +21,7 @@ public class MvcUserController {
         this.questionService = questionService;
     }
     @GetMapping()
-    public String profilePage(Model model){
+    public String profilePage(Model model, Principal principal){
         var userResponse = SecurityContext.authentication();
         if(userResponse.isEmpty()){
             return "redirect:/light/forbidden";
@@ -32,6 +34,9 @@ public class MvcUserController {
 
         var questions = questionService.getQuestions();
         model.addAttribute("questions", questions);
+
+        var followed = userService.getUserFollowings(principal.getName());
+        model.addAttribute("follows", followed);
         return "pages/users/profile";
     }
 }

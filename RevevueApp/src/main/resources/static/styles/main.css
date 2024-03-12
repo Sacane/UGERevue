@@ -197,3 +197,14 @@ tr:hover {
     font-size: 20px;
     margin-bottom: 10px;
 }
+
+.user-list {
+    margin-top: 20px;
+}
+.user-list-item {
+    cursor: pointer;
+    padding: 5px;
+    border: 1px solid #dddddd;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
