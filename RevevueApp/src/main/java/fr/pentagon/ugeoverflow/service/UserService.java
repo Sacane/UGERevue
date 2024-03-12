@@ -7,6 +7,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserPasswordUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserFollowingDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserInfoDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
@@ -27,6 +28,13 @@ public class UserService {
   public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
     this.userRepository = Objects.requireNonNull(userRepository);
     this.passwordEncoder = Objects.requireNonNull(passwordEncoder);
+  }
+
+  @Transactional
+  public UserInfoDTO findById(long userId) {
+    return userRepository.findById(userId)
+            .map(u -> new UserInfoDTO(u.getUsername(), u.getLogin(), u.getEmail(), u.getRole()))
+            .orElseThrow(() -> HttpException.notFound("The user does not exists"));
   }
 
   @Transactional
