@@ -124,4 +124,12 @@ public class Review {
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
+    public boolean comparedWithAnotherReviewListBasedOnContent(List<Review> reviewList){
+        for (var review : reviewList) {
+            if (review.content.equalsIgnoreCase(this.content)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

@@ -116,12 +116,9 @@ public class UserController {
 
   @GetMapping(Routes.User.RECOMMENDED_REVIEW)
   @RequireUser
-  public ResponseEntity<List<ReviewContentDTO>> getRecommendedReview(@RequestBody @Valid QuestionUserIdDTO questionUserIdDTO,
-                                                                     Principal principal){
-    if (principal == null) {
-      throw HttpException.forbidden("No user currently authenticated");
-    }
-    var recommendedReview = userService.getRecommendedReviewForQuestion(principal.getName(), questionUserIdDTO.questionContent());
+  public ResponseEntity<List<ReviewContentDTO>> getRecommendedReview(@RequestBody @Valid QuestionUserIdDTO questionUserIdDTO){
+    var user = SecurityContext.checkAuthentication();
+    var recommendedReview = userService.getRecommendedReviewForQuestion(user.id(), questionUserIdDTO.questionContent());
     return ResponseEntity.ok(recommendedReview);
   }
 }

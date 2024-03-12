@@ -110,12 +110,14 @@ public class UserService {
   }
 
   @Transactional
-  public List<ReviewContentDTO> getRecommendedReviewForQuestion(String userId, String questionContent){
-    var user = userRepository.findByLogin(userId).orElseThrow();
-    return user.getReviews()
+  public List<ReviewContentDTO> getRecommendedReviewForQuestion(long userId, String questionContent){
+    var user = userRepository.findById(userId).orElseThrow();
+    var reviewList = user.getReviews();
+    return reviewList
             .stream()
             .filter(review -> QuestionMatcher.isPertinentRecommendation(questionContent,
-                    review.getQuestion().getDescription())).map(review -> new ReviewContentDTO(review.getContent()))
+                    review.getQuestion().getDescription()) && review.comparedWithAnotherReviewListBasedOnContent(reviewList))
+            .map(review -> new ReviewContentDTO(review.getContent()))
             .toList();
   }
 }

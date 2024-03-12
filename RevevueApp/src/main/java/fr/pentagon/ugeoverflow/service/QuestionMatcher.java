@@ -27,6 +27,7 @@ public final class QuestionMatcher {
     }
 
     //Plus le résultat est petit plus la similarité est grande
+    //le rapport entre le cardinal (la taille) de l'intersection des ensembles considérés et le cardinal de l'union des ensembles
     private static double jaccardDistanceImplementation(String s1, String s2) {
         var jaccardObj = new JaccardDistance();
         return jaccardObj.apply(s1, s2);
