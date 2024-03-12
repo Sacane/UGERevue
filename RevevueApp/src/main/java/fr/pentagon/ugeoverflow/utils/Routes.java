@@ -14,6 +14,7 @@ public final class Routes {
     public static final String CURRENT_USER = ROOT + "/current";
     public static final String PASSWORD = CURRENT_USER + "/password";
     public static final String FOLLOWING = CURRENT_USER + "/following";
+    public static final String RECOMMENDED_REVIEW = CURRENT_USER + "/recommendedReview";
 
     private User() {
     }

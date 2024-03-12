@@ -5,6 +5,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserFollowInfoDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserInfoUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserPasswordUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewContentDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserFollowingDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
@@ -106,5 +107,15 @@ public class UserService {
     return userRepository.findFollowing(user).stream()
         .map(following -> new UserFollowingDTO(following.getId(), following.getUsername()))
         .toList();
+  }
+
+  @Transactional
+  public List<ReviewContentDTO> getRecommendedReviewForQuestion(String userId, String questionContent){
+    var user = userRepository.findByLogin(userId).orElseThrow();
+    return user.getReviews()
+            .stream()
+            .filter(review -> QuestionMatcher.isPertinentRecommendation(questionContent,
+                    review.getQuestion().getDescription())).map(review -> new ReviewContentDTO(review.getContent()))
+            .toList();
   }
 }
