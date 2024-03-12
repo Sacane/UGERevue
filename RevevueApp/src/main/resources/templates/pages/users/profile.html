@@ -23,7 +23,7 @@
 <main>
     <script>
         function redirectToQuestionDetail(row) {
-            var questionId = row.getAttribute('data-question-id');
+            const questionId = row.getAttribute('data-question-id');
             window.location.href = '/light/questions/' + questionId;
         }
     </script>
@@ -44,12 +44,11 @@
                 <p th:text="'Votre email : ' + ${email}"></p>
                 <p th:text="'Votre role : ' + ${role}"></p>
             </div>
-            <div class="flex flex-column">
+            <div class="flex flex-column table-container">
                 <h2>Ma liste de question</h2>
                 <table>
                     <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Title</th>
                         <th>User Name</th>
                         <th>Date</th>
@@ -59,7 +58,6 @@
                     </thead>
                     <tbody>
                     <tr th:each="question : ${questions}" th:data-question-id="${question.id}" onclick="redirectToQuestionDetail(this)">
-                        <td th:text="${question.id}"></td>
                         <td th:text="${question.title}"></td>
                         <td th:text="${question.userName}"></td>
                         <td th:text="${question.date}"></td>

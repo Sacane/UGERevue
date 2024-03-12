@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Revevue</title>
     <link href="../../static/styles/main.css" rel="stylesheet" th:href="@{/styles/main.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism-okaidia.min.css">
 </head>
 
 <body>
@@ -29,7 +30,20 @@
         </ul>
     </div>
     <div class="content">
-        <div>QUESTION DETAIL</div>
+        <h1 th:text="${question.title}"></h1>
+        <div class="container">
+            <div class="code-container">
+                <div class="code-title">Code Java</div>
+                <pre><code class="language-java" th:text="${question.classContent}"></code></pre>
+            </div>
+            <div class="code-container">
+                <div class="code-title">Code de test</div>
+                <pre><code class="language-java" th:text="${question.testClassContent}"></code></pre>
+            </div>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-java.min.js"></script>
     </div>
 </main>
 
