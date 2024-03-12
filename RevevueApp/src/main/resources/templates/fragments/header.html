@@ -16,14 +16,18 @@
     </div>
     <form>
         <input>
-        <button type="submit">Search</button>
+        <button type="submit">Rechercher une question</button>
+    </form>
+    <form>
+        <input>
+        <button type="submit">Rechercher les questions d'un utilisateur</button>
     </form>
     <nav class="site-navigation">
         <ul class="nav">
-            <li th:if="${#authentication == null}"><a href="/light/login">Log in</a></li>
-            <li th:if="${#authentication == null}"><a href="/light/register">Register</a></li>
+            <li th:if="${#authentication == null}"><a href="/light/login">Se connecter</a></li>
+            <li th:if="${#authentication == null}"><a href="/light/register">S'enregistrer</a></li>
             <li sec:authorize="isAuthenticated()"><a href="/light/profile/" sec:authentication="name"></a></li>
-            <li sec:authorize="isAuthenticated()"><a href="/light/logout">Log out</a></li>
+            <li sec:authorize="isAuthenticated()"><a href="/light/logout">Se déconnecter</a></li>
         </ul>
     </nav>
 </header>
