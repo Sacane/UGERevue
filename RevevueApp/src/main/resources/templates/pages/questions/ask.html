@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Revevue</title>
+    <link href="../../static/styles/main.css" rel="stylesheet" th:href="@{/styles/main.css}"/>
+</head>
+
+<body>
+
+<header th:replace="~{fragments/header :: header}">
+    <div class="site-identity">
+        <h1><a href="/light">Revevue</a></h1>
+    </div>
+    <nav class="site-navigation">
+        <ul class="nav">
+            <li><a href="#">Login</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <script>
+        function redirectToQuestionDetail(row) {
+            const questionId = row.getAttribute('data-question-id');
+            window.location.href = '/light/questions/' + questionId;
+        }
+    </script>
+    <div class="nav" th:replace="~{fragments/sidenav :: sidenav}">
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Questions</a></li>
+            <li><a href="#">Socials</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <div class="ask-content">
+            <h1>Poser une question</h1>
+            <form method="post" th:action="@{/light/questions/ask}" enctype="multipart/form-data" th:object="${newQuestion}">
+                <label for="title">Title:</label><br>
+                <input id="title" required th:field="*{title}" type="text"><br>
+
+                <label for="description">Description:</label><br>
+                <textarea id="description" required th:field="*{description}"></textarea><br>
+
+                <label for="javaFile">Java File:</label><br>
+                <input id="javaFile" required th:field="*{javaFile}" type="file"><br>
+
+                <label for="testFile">Test File:</label><br>
+                <input id="testFile" th:field="*{testFile}" type="file"><br>
+
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}">
+    &copy; 2024 Revevue
+</footer>
+
+</body>
+</html>

@@ -36,9 +36,8 @@
     </div>
     <div class="content">
         <h1 style="align-self: center">Page de questions</h1>
-        <div class="flex justify-evenly">
+        <div class="flex justify-evenly code-content">
             <div class="flex flex-column table-container">
-                <h2>Ma liste de question</h2>
                 <table>
                     <thead>
                     <tr>
@@ -61,8 +60,8 @@
                 </table>
             </div>
         </div>
-        <div class="ask-question-button">
-            <a href="/light/ask" class="button">Poser une question</a>
+        <div th:if="${#authentication != null}" class="ask-question-button">
+            <a href="/light/questions/ask" class="button">Poser une question</a>
         </div>
     </div>
 </main>
