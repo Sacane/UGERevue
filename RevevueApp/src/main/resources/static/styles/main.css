@@ -568,3 +568,13 @@ button:hover {
 .sub-review-content {
     margin-bottom: 10px;
 }
+
+
+/* VOTES */
+
+.upvotes{
+    color: green;
+}
+.downvotes{
+    color: red;
+}

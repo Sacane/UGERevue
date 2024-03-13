@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MvcReviewController {
     record SubReviewAuthorContent(long id, String author, String content){}
     private final ReviewService reviewService;
+    private final MarkdownRenderer markdownRenderer;
 
-    public MvcReviewController(ReviewService reviewService) {
+    public MvcReviewController(ReviewService reviewService, MarkdownRenderer markdownRenderer) {
         this.reviewService = reviewService;
+        this.markdownRenderer = markdownRenderer;
     }
 
     @GetMapping("/{reviewId}")
@@ -25,7 +27,6 @@ public class MvcReviewController {
         Long userId = SecurityContext.authentication().map(RevevueUserDetail::id).orElse(null);
         var reviews = reviewService.findDetailFromReviewId(userId, reviewId);
         model.addAttribute("review", reviews);
-        MarkdownRenderer markdownRenderer = new MarkdownRenderer();
         model.addAttribute("content", markdownRenderer.markdownToHtml(reviews.content()));
         model.addAttribute("subReviews", reviews.reviews().stream().map(e -> new SubReviewAuthorContent(e.id(), e.author(), markdownRenderer.markdownToHtml(e.content()))));
         return "pages/reviews/detail";

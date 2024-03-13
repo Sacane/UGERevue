@@ -6,6 +6,8 @@
     <title>Revevue</title>
     <link href="../../static/styles/main.css" rel="stylesheet" th:href="@{/styles/main.css}"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism-okaidia.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 </head>
 
 <body>
@@ -31,14 +33,14 @@
     </div>
     <div class="content">
         <h1 th:text="${question.title}"></h1>
-        <p th:text="${question.questionContent}"></p>
+        <p th:utext="${question.questionContent}"></p>
         <div class="detail-container">
             <div class="container">
                 <div class="code-container">
                     <div class="code-title">Code Java</div>
                     <pre><code class="language-java" th:text="${question.classContent}"></code></pre>
                 </div>
-                <div class="code-container">
+                <div th:if="${question.testClassContent}" class="code-container">
                     <div class="code-title">Code de test</div>
                     <pre><code class="language-java" th:text="${question.testClassContent}"></code></pre>
                 </div>
@@ -49,12 +51,19 @@
                     <a th:href="@{'../../light/reviews/' + ${review.id}}">
                         <div class="review-container">
                             <div class="review-author" th:text="${review.author}">Author</div>
-                            <div class="review-content" th:text="${review.content}">Review Content</div>
+                            <div class="review-content" th:utext="${review.content}">Review Content</div>
                             <pre><code class="review-cited-code language-java" th:text="${review.citedCode}">Cited Code</code></pre>
                             <div class="review-votes">
-                                <span class="upvotes" th:text="${review.upvotes}">Upvotes</span>
-                                <span class="downvotes" th:text="${review.downvotes}">Downvotes</span>
+                                <span class="upvotes">
+                                    <i class="material-icons">thumb_up</i>
+                                    <span th:text="${review.upvotes}">0</span>
+                                </span>
+                                <span class="downvotes">
+                                    <i class="material-icons">thumb_down</i>
+                                    <span th:text="${review.downvotes}">0</span>
+                                </span>
                             </div>
+
                             <div class="review-date" th:text="${review.creationDate}">Creation Date</div>
                         </div>
                     </a>

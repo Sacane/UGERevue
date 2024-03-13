@@ -15,4 +15,19 @@ public record QuestionDetailsDTO(
     long voteCount,
     long commentCount
 ) {
+    public QuestionDetailsDTO withAnotherContent(String description) {
+        return new QuestionDetailsDTO(
+                id,
+                author,
+                creationDate,
+                tags,
+                title,
+                description,
+                classContent,
+                testClassContent,
+                testResults,
+                voteCount,
+                commentCount
+        );
+    }
 }
