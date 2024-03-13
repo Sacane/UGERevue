@@ -145,11 +145,11 @@ public class ReviewService {
     }
 
     @Transactional
-    public DetailReviewResponseDTO findDetailFromReviewId(long userId, long reviewId) {
+    public DetailReviewResponseDTO findDetailFromReviewId(Long userId, long reviewId) {
         return findDetailsFromReviewIdWithChildren(userId, reviewId);
     }
 
-    private DetailReviewResponseDTO findDetailsFromReviewIdWithChildren(long userId, long reviewId) {
+    private DetailReviewResponseDTO findDetailsFromReviewIdWithChildren(Long userId, long reviewId) {
         var review = reviewRepository.findByIdWithReviews(reviewId).orElseThrow(() -> HttpException.notFound("This review does not exists"));
         String citedCode = null;
         if (review.getQuestion() != null) {
@@ -161,8 +161,10 @@ public class ReviewService {
                         .collect(Collectors.joining("\n"));
             }
         }
-
-        var doesUserVote = reviewVoteRepository.existsReviewVoteByReviewVoteId_Author_IdAndReviewVoteId_Review_Id(userId, reviewId);
+        boolean doesUserVote = false;
+        if(userId != null) {
+            doesUserVote = reviewVoteRepository.existsReviewVoteByReviewVoteId_Author_IdAndReviewVoteId_Review_Id(userId, reviewId);
+        }
         var list = review.getReviews().stream().map(childReview -> findDetailsFromReviewIdWithChildren(userId, childReview.getId())).toList();
         return reviewMapper.entityToDetailReviewResponseDTO(review, citedCode, doesUserVote, list);
     }

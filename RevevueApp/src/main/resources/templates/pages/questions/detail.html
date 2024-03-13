@@ -32,17 +32,35 @@
     <div class="content">
         <h1 th:text="${question.title}"></h1>
         <p th:text="${question.questionContent}"></p>
-        <div class="container">
-            <div class="code-container">
-                <div class="code-title">Code Java</div>
-                <pre><code class="language-java" th:text="${question.classContent}"></code></pre>
+        <div class="detail-container">
+            <div class="container">
+                <div class="code-container">
+                    <div class="code-title">Code Java</div>
+                    <pre><code class="language-java" th:text="${question.classContent}"></code></pre>
+                </div>
+                <div class="code-container">
+                    <div class="code-title">Code de test</div>
+                    <pre><code class="language-java" th:text="${question.testClassContent}"></code></pre>
+                </div>
             </div>
-            <div class="code-container">
-                <div class="code-title">Code de test</div>
-                <pre><code class="language-java" th:text="${question.testClassContent}"></code></pre>
+            <div class="review-section">
+                <h2>Reviews</h2>
+                <div th:each="review : ${reviews}">
+                    <a th:href="@{'../../light/reviews/' + ${review.id}}">
+                        <div class="review-container">
+                            <div class="review-author" th:text="${review.author}">Author</div>
+                            <div class="review-content" th:text="${review.content}">Review Content</div>
+                            <pre><code class="review-cited-code language-java" th:text="${review.citedCode}">Cited Code</code></pre>
+                            <div class="review-votes">
+                                <span class="upvotes" th:text="${review.upvotes}">Upvotes</span>
+                                <span class="downvotes" th:text="${review.downvotes}">Downvotes</span>
+                            </div>
+                            <div class="review-date" th:text="${review.creationDate}">Creation Date</div>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
-
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-java.min.js"></script>
     </div>

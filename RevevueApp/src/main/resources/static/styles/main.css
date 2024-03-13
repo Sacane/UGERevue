@@ -182,9 +182,13 @@ tr:hover {
     display: flex;
     margin: 10px;
 }
+.detail-container{
+    display: flex;
+    flex-direction: column;
+}
 .code-container {
     max-width: 40%;
-    max-height: 40%;
+    max-height: 800px;
     overflow: auto;
 }
 .code-container pre {
@@ -478,4 +482,89 @@ button:hover {
 
 .ask-content{
     max-width: 800px;
+}
+
+/*Review section*/
+
+.review-section {
+    margin-top: 20px;
+}
+
+.review-container {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.review-author {
+    font-weight: bold;
+    color: #333;
+}
+
+.review-content {
+    margin-top: 5px;
+    color: #666;
+}
+
+.review-cited-code {
+    margin-top: 5px;
+    font-family: monospace;
+}
+
+.review-votes {
+    margin-top: 5px;
+}
+
+.review-votes span {
+    margin-right: 10px;
+    color: #666;
+}
+
+.review-date {
+    margin-top: 5px;
+    font-style: italic;
+    color: #999;
+}
+
+/* Responsive styles */
+@media only screen and (max-width: 768px) {
+    .review-container {
+        padding: 8px;
+    }
+
+    .review-votes span {
+        font-size: 0.8em;
+    }
+}
+
+
+/*review detail */
+
+.review-detail {
+    margin-bottom: 20px;
+}
+
+.sub-review-list {
+    margin-top: 20px;
+}
+
+.sub-review {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.sub-review-link {
+    text-decoration: none;
+    color: #333;
+}
+
+.sub-review-author {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.sub-review-content {
+    margin-bottom: 10px;
 }

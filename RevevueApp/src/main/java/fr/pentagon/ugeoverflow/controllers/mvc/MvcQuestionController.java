@@ -5,6 +5,7 @@ import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.thymleaf.NewQuestionThymeleafDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.service.QuestionService;
+import fr.pentagon.ugeoverflow.service.ReviewService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,15 +20,19 @@ import java.util.logging.Logger;
 @RequestMapping("/light/questions")
 public class MvcQuestionController {
     private final QuestionService questionService;
+    private final ReviewService reviewService;
     private final Logger logger = Logger.getLogger(MvcQuestionController.class.getName());
-    public MvcQuestionController(QuestionService questionService) {
+    public MvcQuestionController(QuestionService questionService, ReviewService reviewService) {
         this.questionService = questionService;
+        this.reviewService = reviewService;
     }
 
     @GetMapping("/{questionId}")
     public String detail(@PathVariable("questionId") long questionId, Model model) {
         var question = questionService.findById(questionId);
+        var reviews = reviewService.findReviewsByQuestionId(questionId);
         model.addAttribute("question", question);
+        model.addAttribute("reviews", reviews);
         return "/pages/questions/detail";
     }
 
@@ -63,4 +68,6 @@ public class MvcQuestionController {
         }
         return "redirect:";
     }
+
+
 }
