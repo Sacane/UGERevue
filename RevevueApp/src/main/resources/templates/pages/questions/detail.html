@@ -24,6 +24,12 @@
 </header>
 
 <main>
+    <script>
+        function goto(row) {
+            const reviewId = row.getAttribute('data-review-id');
+            window.location.href = '/light/reviews/' + reviewId;
+        }
+    </script>
     <div class="nav" th:replace="~{fragments/sidenav :: sidenav}">
         <ul>
             <li><a href="#">Home</a></li>
@@ -45,28 +51,31 @@
                     <pre><code class="language-java" th:text="${question.testClassContent}"></code></pre>
                 </div>
             </div>
+            <button class="button" onclick="location.href='../../light/reviews/create';">Créer une Review</button>
             <div class="review-section">
                 <h2>Reviews</h2>
                 <div th:each="review : ${reviews}">
-                    <a th:href="@{'../../light/reviews/' + ${review.id}}">
-                        <div class="review-container">
-                            <div class="review-author" th:text="${review.author}">Author</div>
-                            <div class="review-content" th:utext="${review.content}">Review Content</div>
+                    <div class="review-container">
+                        <div class="review-author" th:text="${review.author}">Author</div>
+                        <div class="review-content" th:utext="${review.content}">Review Content</div>
+                        <div th:if="${review.citedCode}">
                             <pre><code class="review-cited-code language-java" th:text="${review.citedCode}">Cited Code</code></pre>
-                            <div class="review-votes">
-                                <span class="upvotes">
-                                    <i class="material-icons">thumb_up</i>
-                                    <span th:text="${review.upvotes}">0</span>
-                                </span>
-                                <span class="downvotes">
-                                    <i class="material-icons">thumb_down</i>
-                                    <span th:text="${review.downvotes}">0</span>
-                                </span>
-                            </div>
-
-                            <div class="review-date" th:text="${review.creationDate}">Creation Date</div>
                         </div>
-                    </a>
+                        <div class="review-votes">
+                            <button class="upvote-button">
+                                <i class="material-icons">thumb_up</i>
+                                <span th:text="${review.upvotes}">0</span>
+                            </button>
+                            <button class="downvote-button">
+                                <i class="material-icons">thumb_down</i>
+                                <span th:text="${review.downvotes}">0</span>
+                            </button>
+                            <button class="details-button" th:data-review-id="${review.id}" onclick="goto(this)">
+                                Détails de la Review
+                            </button>
+                        </div>
+                        <div class="review-date" th:text="${review.creationDate}">Creation Date</div>
+                    </div>
                 </div>
             </div>
         </div>
