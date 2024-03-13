@@ -1,4 +1,5 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 
 @Component({
@@ -8,7 +9,9 @@ import { Router } from '@angular/router';
     encapsulation: ViewEncapsulation.None
 })
 export class QuestionsDisplayerComponent {
-    @Input() questions: any[] = [];
+    @ViewChild(MatPaginator) paginator: MatPaginator;
+
+    @Input() questions: any[];
 
     constructor(private router: Router) { }
 
