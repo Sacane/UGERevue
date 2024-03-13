@@ -31,6 +31,9 @@ public final class User {
   @ManyToMany(mappedBy = "follows")
   private Set<User> followers = new HashSet<>();
 
+  @ManyToMany(mappedBy = "usersOf")
+  private Set<Tag> tagsCreated = new HashSet<>();
+
   public User() {
   }
 
@@ -165,6 +168,28 @@ public final class User {
 
   public UserFollowInfoDTO toUserFollowInfoDTO(boolean isFollowing){
     return new UserFollowInfoDTO(this.username, isFollowing, this.id);
+  }
+
+  public void setReviews(List<Review> reviews) {
+    this.reviews = reviews;
+  }
+
+  public Set<Tag> getTagsCreated() {
+    return tagsCreated;
+  }
+
+  public void setTagsCreated(Set<Tag> tagsCreated) {
+    this.tagsCreated = tagsCreated;
+  }
+
+  public void addTag(Tag tag){
+    this.tagsCreated.add(tag);
+    tag.addUser(this);
+  }
+
+  public void removeTag(Tag tag){
+    this.tagsCreated.remove(tag);
+    tag.removeUser(this);
   }
 }
 

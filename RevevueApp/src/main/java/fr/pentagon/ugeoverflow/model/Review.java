@@ -3,9 +3,7 @@ package fr.pentagon.ugeoverflow.model;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "reviews")
@@ -28,6 +26,14 @@ public class Review {
     @Nullable
     private Integer lineEnd;
     private Date createdAt;
+
+    @ManyToMany
+    @JoinTable(
+            name = "review_tag",
+            joinColumns = @JoinColumn(name = "review_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tagsList = new HashSet<>();
 
     public Review() {
     }
@@ -131,5 +137,23 @@ public class Review {
             }
         }
         return true;
+    }
+
+    public Set<Tag> getTagsList() {
+        return tagsList;
+    }
+
+    public void setTagsList(Set<Tag> tagsList) {
+        this.tagsList = tagsList;
+    }
+
+    public void addTag(Tag tag){
+        this.tagsList.add(tag);
+        tag.addReview(this);
+    }
+
+    public void removeTag(Tag tag){
+        this.tagsList.remove(tag);
+        tag.removeReview(this);
     }
 }
