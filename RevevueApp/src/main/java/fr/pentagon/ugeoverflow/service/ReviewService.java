@@ -13,7 +13,6 @@ import fr.pentagon.ugeoverflow.model.Tag;
 import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.model.vote.ReviewVote;
 import fr.pentagon.ugeoverflow.model.vote.ReviewVoteId;
-import fr.pentagon.ugeoverflow.repository.QuestionRepository;
 import fr.pentagon.ugeoverflow.repository.*;
 import fr.pentagon.ugeoverflow.service.mapper.ReviewMapper;
 import jakarta.transaction.Transactional;
@@ -23,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,22 +60,11 @@ public class ReviewService {
                 .orElseThrow(() -> HttpException.notFound("User not exist"));
         var review = reviewRepository.findById(reviewOnReviewDTO.reviewId())
                 .orElseThrow(() -> HttpException.notFound("Review not exist"));
-        var newReview = reviewRepository.save(new Review(reviewOnReviewDTO.content(), null, null, new Date()));
+        var newReview = reviewRepository.save(new Review(reviewOnReviewDTO.content(), null, new Date()));
         user.addReview(newReview);
         review.addReview(newReview);
         addTags(reviewOnReviewDTO, user, review);
         return reviewMapper.entityToReviewQuestionResponseDTO(newReview, user.getUsername());
-        addTags(reviewOnReviewDTO, user, review);
-        return new ReviewQuestionResponseDTO(
-                newReview.getId(),
-                user.getUsername(),
-                newReview.getCreatedAt(),
-                newReview.getContent(),
-                null,
-                0,
-                0,
-                List.of()
-        );
     }
 
     private void addTags(ReviewOnReviewDTO reviewOnReviewDTO, User user, Review review){

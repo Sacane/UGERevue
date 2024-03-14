@@ -53,7 +53,7 @@ public class TagServiceTest {
         var mathis = userService.register(new UserRegisterDTO("verestah", "verestah@email.com", "verestah", "password"));
         assertNotNull(mathis);
         //Init une question
-        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null), mathis.id());
+        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "test.java", null), mathis.id());
         //Init une review avec des tags
         var review = questionService.addReview(new QuestionReviewCreateDTO(mathis.id(), questionId, "CONTENT", null, null, List.of("Test")));
         var tagList = tagRepository.findAll();
@@ -86,7 +86,7 @@ public class TagServiceTest {
         var mathis = userService.register(new UserRegisterDTO("verestah1", "verestah@email.com", "verestah1", "password"));
         assertNotNull(mathis);
         //Init une question
-        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null), mathis.id());
+        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "test.java", null), mathis.id());
         //Init une review avec des tags
         var review = questionService.addReview(new QuestionReviewCreateDTO(mathis.id(), questionId, "CONTENT", null, null, List.of("Test", "java", "compiler", "requireNonNull")));
         var tagList = tagRepository.findAll();

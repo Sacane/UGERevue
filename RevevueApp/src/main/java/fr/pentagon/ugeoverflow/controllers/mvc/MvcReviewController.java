@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Controller
 @RequestMapping("/light/reviews")
@@ -24,7 +25,7 @@ public class MvcReviewController {
     private final ReviewService reviewService;
     private final QuestionService questionService;
     private final MarkdownRenderer markdownRenderer;
-    public record ReviewBodyDTO(@NotNull @NotBlank String content, @Nullable Integer lineStart, @Nullable Integer lineEnd) {
+    public record ReviewBodyDTO(@NotNull @NotBlank String content, @Nullable Integer lineStart, @Nullable Integer lineEnd, List<String> tags) {
     }
     public MvcReviewController(ReviewService reviewService, MarkdownRenderer markdownRenderer, QuestionService questionService) {
         this.reviewService = reviewService;
@@ -44,7 +45,7 @@ public class MvcReviewController {
 
     @GetMapping("/create/{questionId}")
     public String createReviewPage(@ModelAttribute("body") ReviewBodyDTO questionReviewCreateDTO, @PathVariable("questionId") long questionId, Model model){
-        model.addAttribute("request", new QuestionReviewCreateBodyDTO(questionId, questionReviewCreateDTO.content(), questionReviewCreateDTO.lineStart(), questionReviewCreateDTO.lineEnd()));
+        model.addAttribute("request", new QuestionReviewCreateBodyDTO(questionId, questionReviewCreateDTO.content(), questionReviewCreateDTO.lineStart(), questionReviewCreateDTO.lineEnd(), questionReviewCreateDTO.tags()));
         return "pages/reviews/create";
     }
 
@@ -52,7 +53,7 @@ public class MvcReviewController {
     public String createReview( @ModelAttribute("request") QuestionReviewCreateBodyDTO questionReviewCreateDTO) {
         System.out.println("et la ");
         var currentUser = SecurityContext.checkAuthentication();
-        questionService.addReview(new QuestionReviewCreateDTO(currentUser.id(), questionReviewCreateDTO.questionId(), questionReviewCreateDTO.content(), questionReviewCreateDTO.lineStart(), questionReviewCreateDTO.lineEnd()));
+        questionService.addReview(new QuestionReviewCreateDTO(currentUser.id(), questionReviewCreateDTO.questionId(), questionReviewCreateDTO.content(), questionReviewCreateDTO.lineStart(), questionReviewCreateDTO.lineEnd(), questionReviewCreateDTO.tags()));
         return "redirect:../../light/questions/" + questionReviewCreateDTO.questionId();
     }
 }

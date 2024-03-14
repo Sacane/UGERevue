@@ -15,7 +15,6 @@ import fr.pentagon.ugeoverflow.model.Tag;
 import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.model.embed.CodePart;
 import fr.pentagon.ugeoverflow.model.vote.QuestionVote;
-import fr.pentagon.ugeoverflow.model.vote.QuestionVoteId;
 import fr.pentagon.ugeoverflow.repository.*;
 import fr.pentagon.ugeoverflow.service.mapper.QuestionMapper;
 import jakarta.transaction.Transactional;
@@ -27,6 +26,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
@@ -95,22 +95,24 @@ public class QuestionService {
         .orElseThrow(() -> HttpException.notFound("User not exist"));
     String result = "Test failed...";
     if(questionCreateDTO.testFile() != null) {
-      var parts = getPartsTestEndpoints(questionCreateDTO, authorId);
-      var response = webClient.post()
-              .uri(builder -> builder.path("/tests/run").build())
-              .contentType(MediaType.MULTIPART_FORM_DATA)
-              .body(BodyInserters.fromMultipartData(parts))
-              .accept(MediaType.APPLICATION_JSON).exchangeToMono(r -> {
-                if (r.statusCode().is2xxSuccessful()) {
-                  return r.bodyToMono(TestResultDTO.class);
-                } else {
-                  logger.severe(r.statusCode().value() + "");
-                  return Mono.just(TestResultDTO.zero());
-                }
-              }).block();
-      if (response != null) {
-        result = response.toString();
-      }
+      try {
+        var parts = getPartsTestEndpoints(questionCreateDTO, authorId);
+        var response = webClient.post()
+                .uri(builder -> builder.path("/tests/run").build())
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(parts))
+                .accept(MediaType.APPLICATION_JSON).exchangeToMono(r -> {
+                  if (r.statusCode().is2xxSuccessful()) {
+                    return r.bodyToMono(TestResultDTO.class);
+                  } else {
+                    logger.severe(r.statusCode().value() + "");
+                    return Mono.just(TestResultDTO.zero());
+                  }
+                }).block();
+        if (response != null) {
+          result = response.toString();
+        }
+      }catch (WebClientRequestException ignored) {/*Serveur non disponible pour lancer les tests*/}
     }
     var question = questionRepository.save(new Question(questionCreateDTO.title(), questionCreateDTO.description(), questionCreateDTO.javaFile(), questionCreateDTO.testFile(), result, true, new Date())); //TODO test
     user.addQuestion(question);
