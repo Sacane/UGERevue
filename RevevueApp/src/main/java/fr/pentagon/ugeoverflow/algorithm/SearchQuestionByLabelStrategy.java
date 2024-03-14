@@ -19,11 +19,9 @@ public class SearchQuestionByLabelStrategy implements QuestionSorterStrategy {
         QuestionSearchAlgorithm minimal = (label.isEmpty()) ? QuestionSearchAlgorithm.ALL_ACCEPTED : QuestionSearchAlgorithm.IDENTITY;
         for (Question question : origins) {
             int scoreByQuestion = getScoreByQuestion(question, tokens, minimal);
-            System.out.println(scoreByQuestion + " => " + question.getTitle());
             if(scoreByQuestion < QuestionSearchAlgorithm.MINIMAL_SCORE) {
                 continue;
             }
-            System.out.println(scoreByQuestion + " -> " + question.getTitle() + " || "+ question.getDescription());
             result.computeIfAbsent(scoreByQuestion, k -> new ArrayList<>()).add(question);
         }
         return result.values().stream()

@@ -49,7 +49,6 @@ public class MvcReviewController {
 
     @PostMapping("/create")
     public String createReview( @ModelAttribute("request") QuestionReviewCreateBodyDTO questionReviewCreateDTO) {
-        System.out.println("et la ");
         var currentUser = SecurityContext.checkAuthentication();
         questionService.addReview(new QuestionReviewCreateDTO(currentUser.id(), questionReviewCreateDTO.questionId(), questionReviewCreateDTO.content(), questionReviewCreateDTO.lineStart(), questionReviewCreateDTO.lineEnd(), questionReviewCreateDTO.tags() == null ? List.of() : questionReviewCreateDTO.tags()));
         return "redirect:../../light/questions/" + questionReviewCreateDTO.questionId();
