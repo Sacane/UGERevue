@@ -2,10 +2,8 @@ package fr.pentagon.ugeoverflow.controllers.rest;
 
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserFollowInfoDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserInfoUpdateDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserPasswordUpdateDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewContentDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserFollowingDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserInfoDTO;
@@ -114,5 +112,13 @@ public class UserController {
     }
     userService.updateUserPassword(principal.getName(), userPasswordUpdateDTO);
     return ResponseEntity.ok().build();
+  }
+
+  @GetMapping(Routes.User.RECOMMENDED_REVIEW)
+  @RequireUser
+  public ResponseEntity<List<ReviewContentDTO>> getRecommendedReview(@RequestBody @Valid QuestionUserIdDTO questionUserIdDTO){
+    var user = SecurityContext.checkAuthentication();
+    var recommendedReview = userService.getRecommendedReviewForQuestion(user.id(), questionUserIdDTO.questionContent());
+    return ResponseEntity.ok(recommendedReview);
   }
 }

@@ -4,9 +4,7 @@ import fr.pentagon.ugeoverflow.model.embed.CodePart;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "reviews")
@@ -27,6 +25,14 @@ public class Review {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Review parentReview;
+
+    @ManyToMany(cascade = CascadeType.DETACH)
+    @JoinTable(
+            name = "review_tag",
+            joinColumns = @JoinColumn(name = "review_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<Tag> tagsList = new HashSet<>();
 
     public Review() {
     }
@@ -112,5 +118,31 @@ public class Review {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+    public boolean comparedWithAnotherReviewListBasedOnContent(List<Review> reviewList){
+        for (var review : reviewList) {
+            if (review.content.equalsIgnoreCase(this.content)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public Set<Tag> getTagsList() {
+        return tagsList;
+    }
+
+    public void setTagsList(Set<Tag> tagsList) {
+        this.tagsList = tagsList;
+    }
+
+    public void addTag(Tag tag){
+        this.tagsList.add(tag);
+        tag.addReview(this);
+    }
+
+    public void removeTag(Tag tag){
+        this.tagsList.remove(tag);
+        tag.removeReview(this);
     }
 }

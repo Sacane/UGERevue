@@ -6,6 +6,7 @@ import fr.pentagon.ugeoverflow.config.SetupDataLoader;
 import fr.pentagon.ugeoverflow.config.authorization.Role;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.controllers.rest.UserController;
+import fr.pentagon.ugeoverflow.exception.HttpError;
 import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.UserService;
@@ -17,8 +18,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -84,11 +87,14 @@ public class UserControllerRegisterTest {
   void registerUserAlreadyExist() throws Exception {
     userService.register(new UserRegisterDTO("verestah1", "verestah@gmail.com", "login", "password"));
     var userRegisterDTO = new UserRegisterDTO("verestah1", "mathis@gmail.com", "login", "password");
-    mockMvc.perform(MockMvcRequestBuilders.post(Routes.User.ROOT)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(userRegisterDTO)))
-        .andExpect(MockMvcResultMatchers.status().isBadRequest())
-        .andExpect(MockMvcResultMatchers.content().string("User with this username or login already exist"))
-        .andDo(print());
+
+    MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post(Routes.User.ROOT)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(userRegisterDTO)))
+            .andExpect(MockMvcResultMatchers.status().isBadRequest())
+            .andReturn();
+    HttpError httpError = objectMapper.readValue(result.getResponse().getContentAsString(), HttpError.class);
+    assertEquals(HttpStatus.BAD_REQUEST.value(), httpError.statusCode());
+    assertEquals("User with this username or login already exist", httpError.message());
   }
 }

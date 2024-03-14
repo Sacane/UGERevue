@@ -9,12 +9,11 @@ import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseChildren
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Review;
+import fr.pentagon.ugeoverflow.model.Tag;
+import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.model.vote.ReviewVote;
 import fr.pentagon.ugeoverflow.model.vote.ReviewVoteId;
-import fr.pentagon.ugeoverflow.repository.QuestionRepository;
-import fr.pentagon.ugeoverflow.repository.ReviewRepository;
-import fr.pentagon.ugeoverflow.repository.ReviewVoteRepository;
-import fr.pentagon.ugeoverflow.repository.UserRepository;
+import fr.pentagon.ugeoverflow.repository.*;
 import fr.pentagon.ugeoverflow.service.mapper.ReviewMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -23,6 +22,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,14 +31,16 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final ReviewVoteRepository reviewVoteRepository;
+    private final TagRepository tagRepository;
     private final ReviewMapper reviewMapper;
-    //private final Logger logger = Logger.getLogger(ReviewService.class.getName());
+    private final Logger logger = Logger.getLogger(ReviewService.class.getName());
 
-    public ReviewService(QuestionRepository questionRepository, ReviewRepository reviewRepository, UserRepository userRepository, ReviewVoteRepository reviewVoteRepository, ReviewMapper reviewMapper) {
+    public ReviewService(QuestionRepository questionRepository, ReviewRepository reviewRepository, UserRepository userRepository, ReviewVoteRepository reviewVoteRepository, TagRepository tagRepository, ReviewMapper reviewMapper) {
         this.questionRepository = questionRepository;
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.reviewVoteRepository = reviewVoteRepository;
+        this.tagRepository = tagRepository;
         this.reviewMapper = reviewMapper;
     }
 
@@ -58,13 +60,31 @@ public class ReviewService {
                 .orElseThrow(() -> HttpException.notFound("User not exist"));
         var review = reviewRepository.findById(reviewOnReviewDTO.reviewId())
                 .orElseThrow(() -> HttpException.notFound("Review not exist"));
-
         var newReview = reviewRepository.save(new Review(reviewOnReviewDTO.content(), null, new Date()));
         user.addReview(newReview);
         review.addReview(newReview);
-
+        addTags(reviewOnReviewDTO, user, review);
         return reviewMapper.entityToReviewQuestionResponseDTO(newReview, user.getUsername());
     }
+
+    private void addTags(ReviewOnReviewDTO reviewOnReviewDTO, User user, Review review){
+        reviewOnReviewDTO.tagList().forEach(tag -> {
+            var existingTagOptional = tagRepository.findTagByName(tag);
+            if (existingTagOptional.isEmpty()) {
+                var newTag = new Tag(tag);
+                tagRepository.save(newTag);
+                user.addTag(newTag);
+                review.addTag(newTag);
+            } else {
+                var existingTag = existingTagOptional.get();
+                user.addTag(existingTag);
+                review.addTag(existingTag);
+            }
+        });
+    }
+
+
+
 
     @Transactional
     public void remove(ReviewRemoveDTO reviewRemoveDTO) {

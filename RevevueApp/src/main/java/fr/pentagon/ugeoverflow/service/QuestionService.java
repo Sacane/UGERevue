@@ -3,10 +3,7 @@ package fr.pentagon.ugeoverflow.service;
 import fr.pentagon.ugeoverflow.algorithm.QuestionSorterStrategy;
 import fr.pentagon.ugeoverflow.algorithm.SearchQuestionByLabelStrategy;
 import fr.pentagon.ugeoverflow.config.authorization.Role;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionRemoveDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionUpdateDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponseDTO;
@@ -14,13 +11,11 @@ import fr.pentagon.ugeoverflow.controllers.dtos.responses.TestResultDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.Review;
+import fr.pentagon.ugeoverflow.model.Tag;
 import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.model.embed.CodePart;
 import fr.pentagon.ugeoverflow.model.vote.QuestionVote;
-import fr.pentagon.ugeoverflow.repository.QuestionRepository;
-import fr.pentagon.ugeoverflow.repository.QuestionVoteRepository;
-import fr.pentagon.ugeoverflow.repository.ReviewRepository;
-import fr.pentagon.ugeoverflow.repository.UserRepository;
+import fr.pentagon.ugeoverflow.repository.*;
 import fr.pentagon.ugeoverflow.service.mapper.QuestionMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.core.io.ByteArrayResource;
@@ -31,6 +26,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
@@ -48,25 +44,29 @@ public class QuestionService {
   private final UserRepository userRepository;
   private final ReviewRepository reviewRepository;
   private final QuestionVoteRepository questionVoteRepository;
-  private final WebClient webClient;
-  private final QuestionMapper questionMapper;
+  private final TagRepository tagRepository;
+    private final WebClient webClient;
+    private final QuestionMapper questionMapper;
 
   public QuestionService(
-          QuestionServiceWithFailure questionServiceWithFailure,
-          QuestionRepository questionRepository,
-          UserRepository userRepository,
-          ReviewRepository reviewRepository,
-          QuestionVoteRepository questionVoteRepository,
-          WebClient webClient,
-          QuestionMapper questionMapper
+      QuestionServiceWithFailure questionServiceWithFailure,
+      ReviewService reviewService,
+      QuestionRepository questionRepository,
+      UserRepository userRepository,
+      ReviewRepository reviewRepository,
+      QuestionVoteRepository questionVoteRepository,
+      WebClient webClient,
+      QuestionMapper questionMapper,
+      TagRepository tagRepository
   ) {
     this.questionServiceWithFailure = questionServiceWithFailure;
     this.questionRepository = questionRepository;
     this.userRepository = userRepository;
     this.reviewRepository = reviewRepository;
     this.questionVoteRepository = questionVoteRepository;
-    this.questionMapper = questionMapper;
-    this.webClient = webClient;
+      this.questionMapper = questionMapper;
+      this.webClient = webClient;
+      this.tagRepository = tagRepository;
   }
 
     @Transactional
@@ -95,22 +95,24 @@ public class QuestionService {
         .orElseThrow(() -> HttpException.notFound("User not exist"));
     String result = "Test failed...";
     if(questionCreateDTO.testFile() != null) {
-      var parts = getPartsTestEndpoints(questionCreateDTO, authorId);
-      var response = webClient.post()
-              .uri(builder -> builder.path("/tests/run").build())
-              .contentType(MediaType.MULTIPART_FORM_DATA)
-              .body(BodyInserters.fromMultipartData(parts))
-              .accept(MediaType.APPLICATION_JSON).exchangeToMono(r -> {
-                if (r.statusCode().is2xxSuccessful()) {
-                  return r.bodyToMono(TestResultDTO.class);
-                } else {
-                  logger.severe(r.statusCode().value() + "");
-                  return Mono.just(TestResultDTO.zero());
-                }
-              }).block();
-      if (response != null) {
-        result = response.toString();
-      }
+      try {
+        var parts = getPartsTestEndpoints(questionCreateDTO, authorId);
+        var response = webClient.post()
+                .uri(builder -> builder.path("/tests/run").build())
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(parts))
+                .accept(MediaType.APPLICATION_JSON).exchangeToMono(r -> {
+                  if (r.statusCode().is2xxSuccessful()) {
+                    return r.bodyToMono(TestResultDTO.class);
+                  } else {
+                    logger.severe(r.statusCode().value() + "");
+                    return Mono.just(TestResultDTO.zero());
+                  }
+                }).block();
+        if (response != null) {
+          result = response.toString();
+        }
+      }catch (WebClientRequestException ignored) {/*Serveur non disponible pour lancer les tests*/}
     }
     var question = questionRepository.save(new Question(questionCreateDTO.title(), questionCreateDTO.description(), questionCreateDTO.javaFile(), questionCreateDTO.testFile(), result, true, new Date())); //TODO test
     user.addQuestion(question);
@@ -169,6 +171,7 @@ public class QuestionService {
       citedCode = Arrays.stream(fileContent, lineStart - 1, lineEnd).collect(Collectors.joining("\n"));
     }
 
+    addTags(questionReviewCreateDTO, user, review);
     return new ReviewQuestionResponseDTO(
         review.getId(),
         user.getUsername(),
@@ -179,6 +182,22 @@ public class QuestionService {
         0,
         List.of()
     );
+  }
+
+  private void addTags(QuestionReviewCreateDTO questionReviewCreateDTO, User user, Review review){
+    questionReviewCreateDTO.tagList().forEach(tag -> {
+      var existingTagOptional = tagRepository.findTagByName(tag);
+      if (existingTagOptional.isEmpty()) {
+        var newTag = new Tag(tag);
+        tagRepository.save(newTag);
+        user.addTag(newTag);
+        review.addTag(newTag);
+      } else {
+        var existingTag = existingTagOptional.get();
+        user.addTag(existingTag);
+        review.addTag(existingTag);
+      }
+    });
   }
 
   @Transactional

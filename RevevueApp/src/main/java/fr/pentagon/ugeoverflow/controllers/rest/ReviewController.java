@@ -43,8 +43,7 @@ public class ReviewController {
     @PostMapping(Routes.Review.ROOT)
     public ResponseEntity<ReviewQuestionResponseDTO> addReview(@RequestBody ReviewOnReviewBodyDTO reviewOnReviewBodyDTO) {
         var userDetail = SecurityContext.checkAuthentication();
-
-        return ResponseEntity.ok(reviewService.addReview(new ReviewOnReviewDTO(userDetail.id(), reviewOnReviewBodyDTO.reviewId(), reviewOnReviewBodyDTO.content())));
+        return ResponseEntity.ok(reviewService.addReview(new ReviewOnReviewDTO(userDetail.id(), reviewOnReviewBodyDTO.reviewId(), reviewOnReviewBodyDTO.content(), reviewOnReviewBodyDTO.tagList())));
     }
 
     @DeleteMapping(Routes.Review.ROOT + "/{reviewId}")
