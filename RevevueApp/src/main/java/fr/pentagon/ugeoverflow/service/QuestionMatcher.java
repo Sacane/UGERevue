@@ -39,15 +39,4 @@ public final class QuestionMatcher {
         return cosinusDistanceImplementation(question1, question2) > COSINUS_DISTANCE_ACCEPTATION
                 || jaccardDistanceImplementation(question1, question2) < JACCARD_ACCEPTATION;
     }
-
-    public static void main(String[] args) {
-        String question1 = "Quelle est votre couleur préférée ?";
-        String question2 = "Quelle couleur aimez-vous le plus parmis toute celle présente dans l'arc en ciel mais je ne comprend pas trop la différence entre les deux ?";
-        String question3 = "Quelle est votre couleur préféré ?";
-
-        var tokens = new ArrayList<>(Arrays.asList(question1.split("\\s+")));
-        tokens.forEach(System.out::println);
-
-        System.out.println(isPertinentRecommendation(question1, question3));
-    }
 }
