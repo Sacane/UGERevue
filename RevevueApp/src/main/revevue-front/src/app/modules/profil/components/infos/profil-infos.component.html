@@ -1,0 +1,7 @@
+@if (userInfo$ | async; as userinfo) {
+    <app-profil-infos-content [userInfo]="userinfo" (passwordChanged)="savePassword($event)" (usernameChanged)="saveUsername($event)">
+    </app-profil-infos-content>
+}
+@else {
+    <mat-spinner></mat-spinner>
+}

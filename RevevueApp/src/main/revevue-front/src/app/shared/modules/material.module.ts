@@ -1,7 +1,7 @@
 import {NgModule} from "@angular/core";
 
 import {MatButtonModule} from '@angular/material/button';
-import {MatInputModule} from '@angular/material/input';
+import {MatInputModule, MatLabel} from '@angular/material/input';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSidenavModule} from '@angular/material/sidenav';
@@ -12,7 +12,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatDividerModule} from '@angular/material/divider';
-
+import {MatTabsModule} from '@angular/material/tabs';
 
 @NgModule({
     imports: [
@@ -27,7 +27,9 @@ import {MatDividerModule} from '@angular/material/divider';
         MatDialogModule,
         MatProgressSpinnerModule,
         MatBadgeModule,
-        MatDividerModule
+        MatDividerModule,
+        MatTabsModule,
+        MatLabel
     ],
     exports: [
         MatButtonModule,
@@ -41,7 +43,9 @@ import {MatDividerModule} from '@angular/material/divider';
         MatDialogModule,
         MatProgressSpinnerModule,
         MatBadgeModule,
-        MatDividerModule
+        MatDividerModule,
+        MatTabsModule,
+        MatLabel
     ]
 })
 export class MaterialModule { }
