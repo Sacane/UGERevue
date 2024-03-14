@@ -1,31 +1,37 @@
 package fr.pentagon.ugeoverflow.testutils;
 
 import fr.pentagon.ugeoverflow.config.authorization.Role;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.repository.QuestionRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
+import fr.pentagon.ugeoverflow.service.QuestionService;
+import fr.pentagon.ugeoverflow.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class UserTestProvider {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final QuestionRepository questionRepository;
+    private final QuestionService questionService;
+    private final UserService userService;
     public UserTestProvider (
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
-            QuestionRepository questionRepository
+            QuestionRepository questionRepository, QuestionService questionService, UserService userService
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.questionRepository = questionRepository;
+        this.questionService = questionService;
+        this.userService = userService;
     }
 
     @Transactional
@@ -82,5 +88,33 @@ public class UserTestProvider {
         user3.addQuestion(entity6);
         user3.addQuestion(entity7);
         user3.addQuestion(entity8);
+    }
+
+    @Transactional
+    public void hugeSetup() {
+        var random = new Random();
+        for(var i = 0; i < 10000; i++) {
+            var username = "userNumber#" + i;
+            var password = passwordEncoder.encode("pwd#" + i);
+            var email = "userNumber#" + i + "@gmail.com";
+            var role = Role.USER;
+            User user = new User(username, username, password, email, role);
+            userRepository.save(user);
+            provideQuestions(user);
+        }
+        for(var i = 0; i < 10000; i++) {
+            var follower = random.nextLong(0, 10000);
+            var followed = random.nextLong(0, 10000);
+            while(followed == follower){
+                follower = random.nextLong(0, 10000);
+                followed = random.nextLong(0, 10000);
+            }
+            userService.follow(follower, followed);
+        }
+    }
+    private void provideQuestions(User user) {
+        for(var i = 0; i < 1000; i++) {
+            questionService.create(new NewQuestionDTO("My question number #" + i, "description of my question number #" + i, new byte[]{}, null, "test.java", null), user.getId());
+        }
     }
 }

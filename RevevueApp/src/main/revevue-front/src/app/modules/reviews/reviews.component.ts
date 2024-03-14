@@ -66,11 +66,11 @@ export class ReviewsComponent implements OnDestroy {
     }
 
     addReview(): void {
-
         this.dialog.open(ReviewDialogComponent, {
             data: {
                 onQuestion: false
             },
+            width: '60%',
             disableClose: true
         }).afterClosed().pipe(
             switchMap(reviewValue => {
