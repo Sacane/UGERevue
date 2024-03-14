@@ -1,4 +1,4 @@
-package fr.pentagon.ugeoverflow.service;
+package fr.pentagon.ugeoverflow.utils;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 

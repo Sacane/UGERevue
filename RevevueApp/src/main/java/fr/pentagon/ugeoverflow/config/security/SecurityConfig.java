@@ -2,7 +2,7 @@ package fr.pentagon.ugeoverflow.config.security;
 
 import fr.pentagon.ugeoverflow.config.authentication.CustomUserDetailsService;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
-import fr.pentagon.ugeoverflow.service.CustomPasswordEncoder;
+import fr.pentagon.ugeoverflow.utils.CustomPasswordEncoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

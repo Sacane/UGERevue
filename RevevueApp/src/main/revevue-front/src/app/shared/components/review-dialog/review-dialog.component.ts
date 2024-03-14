@@ -1,10 +1,12 @@
-import {Component, inject, Inject, signal} from "@angular/core";
+import {Component, ElementRef, inject, Inject, signal, ViewChild} from "@angular/core";
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {MarkdownService} from "ngx-markdown";
 import {ReviewService} from "../../services";
-import {Observable, tap} from "rxjs";
+import {tap} from "rxjs";
 import {ReviewQuestionTitleDTO} from "../../../modules/reviews/models/review.model";
+import {TagService} from "../../services/tag.service";
+import {toSignal} from "@angular/core/rxjs-interop";
+import {TagWrapperDTO} from "../../models/tag.model";
 
 @Component({
     selector: 'review-dialog',
@@ -12,26 +14,28 @@ import {ReviewQuestionTitleDTO} from "../../../modules/reviews/models/review.mod
     styleUrl: './review-dialog.component.scss'
 })
 export class ReviewDialogComponent {
+    @ViewChild('contentRef', { static: false }) contentRef!: ElementRef<HTMLTextAreaElement>;
+    @ViewChild('tagSearchBar', { static: false }) tagContentRef!: ElementRef<HTMLTextAreaElement>;
+
+
     form = new FormGroup({
         content: new FormControl('', [Validators.required]),
         lineStart: new FormControl(''),
-        lineEnd: new FormControl('')
+        lineEnd: new FormControl(''),
+        tag: new FormControl('')
     });
-    private markdownService = inject(MarkdownService)
     private reviewService = inject(ReviewService)
-    tagInput = signal('')
     markdownContent = signal('');
     tags = new FormArray<FormControl<string | null>>([])
+    tagService = inject(TagService)
+    selfTags = toSignal(this.tagService.getTags(), {initialValue: [] as TagWrapperDTO[]})
+    //questions = toSignal(this.questionService.getQuestions(), {initialValue: [] as SimpleQuestion[]})
 
     reviews = signal<ReviewQuestionTitleDTO[]>([])
 
     constructor(public dialogRef: MatDialogRef<ReviewDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { onQuestion: boolean },
                 private formBuilder: FormBuilder) {
         this.tags = this.formBuilder.array<string>([]);
-    }
-    updateMarkdownPreview($event: any) {
-        this.markdownContent.set($event.target.value)
-        this.form.value.content = $event.target.value
     }
     close(): void {
         this.dialogRef.close();
@@ -44,16 +48,13 @@ export class ReviewDialogComponent {
             tags: this.tags.value
         });
     }
-    searchReviewsByTag(tag: string) {
+    searchReviewsByTag() {
         this.reviewService
-            .findByTag(tag)
+            .findByTag(this.form.value.tag as string)
             .pipe(tap(result => {
                 this.reviews.set(result);
                 console.log(this.reviews())
             })).subscribe();
-    }
-    show() {
-        this.markdownService.reload();
     }
     addTag() {
         this.tags.push(this.formBuilder.control(''));
@@ -61,12 +62,18 @@ export class ReviewDialogComponent {
     removeTag(index: number) {
         this.tags.removeAt(index);
     }
-    showTags(): void {
-        const uniqueTags = new Set(this.tags.value);
-        console.log(Array.from(uniqueTags));
+    updateInputTag(event: any): void {
+        this.form.value.tag = event.target.value
     }
 
-    updateInputTag(event: any): void {
-        this.tagInput.set(event.target.value)
+    handleReviewClick(review: ReviewQuestionTitleDTO): void {
+        this.contentRef.nativeElement.value += review.reviewContent;
+        this.form.value.content += review.reviewContent;
+    }
+
+    searchTag(tag: TagWrapperDTO): void {
+        console.log(tag.tag)
+        this.form.value.tag = tag.tag;
+        this.tagContentRef.nativeElement.value = tag.tag
     }
 }

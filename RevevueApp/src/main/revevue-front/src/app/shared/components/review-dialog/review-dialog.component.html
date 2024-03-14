@@ -23,7 +23,7 @@
                 <mat-form-field>
                     <mat-label>Contenu</mat-label>
                     <div class="content-field">
-                        <textarea style="width: 100%; height: 200px;" matInput formControlName="content" (keyup)="show()"></textarea>
+                        <textarea #contentRef style="width: 100%; height: 200px;" matInput formControlName="content"></textarea>
                     </div>
                     @if (form.controls.content.hasError('required')) {
                         <mat-error>Required</mat-error>
@@ -54,16 +54,26 @@
 
     </div>
     <div class="review-suggestion">
+        @if (selfTags().length > 0){
+            <h2 mat-dialog-title>Mes tags</h2>
+            @for(tag of selfTags(); track tag.tag){
+                <div class="tag-card" (click)="searchTag(tag)">
+                    <p>{{tag.tag}}</p>
+                </div>
+            }
+        }
+
+
         <h2 mat-dialog-title align="center">Mes précédentes revues par tag</h2>
         <div style="text-align: right;">
             <mat-form-field>
-                <input matInput type="text" placeholder="Rechercher par tag" (keyup)="updateInputTag($event)">
+                <input matInput #tagSearchBar type="text" placeholder="Rechercher par tag" (keyup)="updateInputTag($event)">
             </mat-form-field>
-            <button mat-raised-button (click)="searchReviewsByTag(tagInput())">Rechercher</button>
+            <button mat-raised-button (click)="searchReviewsByTag()">Rechercher</button>
         </div>
         @if (reviews().length > 0) {
             @for(review of reviews(); track review.reviewContent) {
-                <div class="review-card">
+                <div class="review-card" (click)="handleReviewClick(review)">
                     <div class="review-container">
                         <b>Question : {{ review.questionTitle }}</b>
                         <p>{{ review.reviewContent }}</p>
