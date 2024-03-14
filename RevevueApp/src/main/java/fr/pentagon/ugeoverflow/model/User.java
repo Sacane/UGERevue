@@ -31,7 +31,7 @@ public final class User {
   @ManyToMany(mappedBy = "follows")
   private Set<User> followers = new HashSet<>();
 
-  @ManyToMany(mappedBy = "usersOf")
+  @ManyToMany(cascade = CascadeType.ALL, mappedBy = "usersOf")
   private Set<Tag> tagsCreated = new HashSet<>();
 
   public User() {

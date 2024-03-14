@@ -12,7 +12,7 @@ public class Tag {
     @GeneratedValue()
     private long id;
     private String name;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.DETACH)
     @JoinTable(
             name = "user_tag",
             joinColumns = @JoinColumn(name = "tag_id"),
@@ -69,11 +69,9 @@ public class Tag {
 
     public void removeUser(User user){
         this.usersOf.remove(user);
-        user.removeTag(this);
     }
 
     public void removeReview(Review review){
         this.reviewsOf.remove(review);
-        review.removeTag(this);
     }
 }

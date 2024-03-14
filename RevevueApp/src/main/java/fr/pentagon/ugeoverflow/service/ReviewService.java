@@ -1,7 +1,6 @@
 package fr.pentagon.ugeoverflow.service;
 
 import fr.pentagon.ugeoverflow.config.authorization.Role;
-import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewOnReviewDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewRemoveDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.DetailReviewResponseDTO;
@@ -11,12 +10,10 @@ import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Review;
 import fr.pentagon.ugeoverflow.model.Tag;
+import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.model.vote.ReviewVote;
 import fr.pentagon.ugeoverflow.model.vote.ReviewVoteId;
-import fr.pentagon.ugeoverflow.repository.QuestionRepository;
-import fr.pentagon.ugeoverflow.repository.ReviewRepository;
-import fr.pentagon.ugeoverflow.repository.ReviewVoteRepository;
-import fr.pentagon.ugeoverflow.repository.UserRepository;
+import fr.pentagon.ugeoverflow.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -33,14 +30,16 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final ReviewVoteRepository reviewVoteRepository;
+    private final TagRepository tagRepository;
 
     private final Logger logger = Logger.getLogger(ReviewService.class.getName());
 
-    public ReviewService(QuestionRepository questionRepository, ReviewRepository reviewRepository, UserRepository userRepository, ReviewVoteRepository reviewVoteRepository) {
+    public ReviewService(QuestionRepository questionRepository, ReviewRepository reviewRepository, UserRepository userRepository, ReviewVoteRepository reviewVoteRepository, TagRepository tagRepository) {
         this.questionRepository = questionRepository;
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.reviewVoteRepository = reviewVoteRepository;
+        this.tagRepository = tagRepository;
     }
 
     List<ReviewResponseDTO> getReviews(long reviewId) {
@@ -65,10 +64,11 @@ public class ReviewService {
                 .orElseThrow(() -> HttpException.notFound("User not exist"));
         var review = reviewRepository.findById(reviewOnReviewDTO.reviewId())
                 .orElseThrow(() -> HttpException.notFound("Review not exist"));
-
         var newReview = reviewRepository.save(new Review(reviewOnReviewDTO.content(), null, null, new Date()));
         user.addReview(newReview);
         review.addReview(newReview);
+
+        addTags(reviewOnReviewDTO, user, review);
         return new ReviewQuestionResponseDTO(
                 newReview.getId(),
                 user.getUsername(),
@@ -80,6 +80,25 @@ public class ReviewService {
                 List.of()
         );
     }
+
+    private void addTags(ReviewOnReviewDTO reviewOnReviewDTO, User user, Review review){
+        reviewOnReviewDTO.tagList().forEach(tag -> {
+            var existingTagOptional = tagRepository.findTagByName(tag);
+            if (existingTagOptional.isEmpty()) {
+                var newTag = new Tag(tag);
+                tagRepository.save(newTag);
+                user.addTag(newTag);
+                review.addTag(newTag);
+            } else {
+                var existingTag = existingTagOptional.get();
+                user.addTag(existingTag);
+                review.addTag(existingTag);
+            }
+        });
+    }
+
+
+
 
     @Transactional
     public void remove(ReviewRemoveDTO reviewRemoveDTO) {

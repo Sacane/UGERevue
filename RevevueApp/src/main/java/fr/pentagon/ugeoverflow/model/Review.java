@@ -27,7 +27,7 @@ public class Review {
     private Integer lineEnd;
     private Date createdAt;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.DETACH)
     @JoinTable(
             name = "review_tag",
             joinColumns = @JoinColumn(name = "review_id"),

@@ -1,16 +1,15 @@
 package fr.pentagon.ugeoverflow.service;
 
 import fr.pentagon.ugeoverflow.config.authorization.Role;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionRemoveDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionUpdateDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponseDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.Review;
+import fr.pentagon.ugeoverflow.model.Tag;
+import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.model.vote.QuestionVote;
 import fr.pentagon.ugeoverflow.model.vote.QuestionVoteId;
 import fr.pentagon.ugeoverflow.repository.*;
@@ -116,6 +115,7 @@ public class QuestionService {
       citedCode = Arrays.stream(fileContent, lineStart - 1, lineEnd).collect(Collectors.joining("\n"));
     }
 
+    addTags(questionReviewCreateDTO, user, review);
     return new ReviewQuestionResponseDTO(
         review.getId(),
         user.getUsername(),
@@ -126,6 +126,22 @@ public class QuestionService {
         0,
         List.of()
     );
+  }
+
+  private void addTags(QuestionReviewCreateDTO questionReviewCreateDTO, User user, Review review){
+    questionReviewCreateDTO.tagList().forEach(tag -> {
+      var existingTagOptional = tagRepository.findTagByName(tag);
+      if (existingTagOptional.isEmpty()) {
+        var newTag = new Tag(tag);
+        tagRepository.save(newTag);
+        user.addTag(newTag);
+        review.addTag(newTag);
+      } else {
+        var existingTag = existingTagOptional.get();
+        user.addTag(existingTag);
+        review.addTag(existingTag);
+      }
+    });
   }
 
   @Transactional
