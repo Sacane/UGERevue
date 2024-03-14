@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
-    @Query("SELECT t FROM Tag t WHERE t.name = :name")
+    @Query("SELECT t FROM Tag t LEFT JOIN FETCH t.usersOf LEFT JOIN FETCH t.reviewsOf WHERE t.name = :name")
     Optional<Tag> findTagByName(@Param("name") String name);
 }

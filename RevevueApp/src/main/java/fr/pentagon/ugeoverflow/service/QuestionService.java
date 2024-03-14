@@ -13,10 +13,7 @@ import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.Review;
 import fr.pentagon.ugeoverflow.model.vote.QuestionVote;
 import fr.pentagon.ugeoverflow.model.vote.QuestionVoteId;
-import fr.pentagon.ugeoverflow.repository.QuestionRepository;
-import fr.pentagon.ugeoverflow.repository.QuestionVoteRepository;
-import fr.pentagon.ugeoverflow.repository.ReviewRepository;
-import fr.pentagon.ugeoverflow.repository.UserRepository;
+import fr.pentagon.ugeoverflow.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.stereotype.Service;
@@ -36,14 +33,15 @@ public class QuestionService {
   private final UserRepository userRepository;
   private final ReviewRepository reviewRepository;
   private final QuestionVoteRepository questionVoteRepository;
+  private final TagRepository tagRepository;
 
   public QuestionService(
-      QuestionServiceWithFailure questionServiceWithFailure,
-      ReviewService reviewService,
-      QuestionRepository questionRepository,
-      UserRepository userRepository,
-      ReviewRepository reviewRepository,
-      QuestionVoteRepository questionVoteRepository
+          QuestionServiceWithFailure questionServiceWithFailure,
+          ReviewService reviewService,
+          QuestionRepository questionRepository,
+          UserRepository userRepository,
+          ReviewRepository reviewRepository,
+          QuestionVoteRepository questionVoteRepository, TagRepository tagRepository
   ) {
     this.questionServiceWithFailure = questionServiceWithFailure;
     this.reviewService = reviewService;
@@ -51,6 +49,7 @@ public class QuestionService {
     this.userRepository = userRepository;
     this.reviewRepository = reviewRepository;
     this.questionVoteRepository = questionVoteRepository;
+      this.tagRepository = tagRepository;
   }
 
   @Transactional

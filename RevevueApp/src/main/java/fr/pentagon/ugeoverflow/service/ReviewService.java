@@ -10,6 +10,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseChildren
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Review;
+import fr.pentagon.ugeoverflow.model.Tag;
 import fr.pentagon.ugeoverflow.model.vote.ReviewVote;
 import fr.pentagon.ugeoverflow.model.vote.ReviewVoteId;
 import fr.pentagon.ugeoverflow.repository.QuestionRepository;
@@ -32,6 +33,7 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final ReviewVoteRepository reviewVoteRepository;
+
     private final Logger logger = Logger.getLogger(ReviewService.class.getName());
 
     public ReviewService(QuestionRepository questionRepository, ReviewRepository reviewRepository, UserRepository userRepository, ReviewVoteRepository reviewVoteRepository) {
@@ -67,7 +69,6 @@ public class ReviewService {
         var newReview = reviewRepository.save(new Review(reviewOnReviewDTO.content(), null, null, new Date()));
         user.addReview(newReview);
         review.addReview(newReview);
-
         return new ReviewQuestionResponseDTO(
                 newReview.getId(),
                 user.getUsername(),

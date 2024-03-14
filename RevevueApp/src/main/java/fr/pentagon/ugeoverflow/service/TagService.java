@@ -30,17 +30,15 @@ public class TagService {
             tagRepository.save(newTag);
             user.addTag(newTag);
             review.addTag(newTag);
-            newTag.addUser(user);
-            newTag.addReview(review);
         } else {
             var existingTag = existingTagOptional.get();
             user.addTag(existingTag);
             review.addTag(existingTag);
-            existingTag.addUser(user);
-            existingTag.addReview(review);
         }
     }
 
+    //Pour le moment, on ne supprime pas les tags de la bdd
+    @Transactional
     public void delete(String tagName) {
         var tag = tagRepository.findTagByName(tagName).orElseThrow(() -> HttpException.notFound("Tag to delete not found"));
         var users = userRepository.findByTagName(tagName);
@@ -54,7 +52,5 @@ public class TagService {
             tag.removeReview(r);
         });
     }
-
-    //TODO : Modif la méthode HTTP de creation de review + lors de suppression d'un user
     //TODO TEST A FAIRE
 }

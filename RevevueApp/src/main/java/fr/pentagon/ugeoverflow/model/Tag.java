@@ -62,11 +62,9 @@ public class Tag {
 
     public void addUser(User user){
         this.usersOf.add(user);
-        user.addTag(this);
     }
     public void addReview(Review review){
         this.reviewsOf.add(review);
-        review.addTag(this);
     }
 
     public void removeUser(User user){
