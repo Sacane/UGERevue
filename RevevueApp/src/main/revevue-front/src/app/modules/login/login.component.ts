@@ -1,7 +1,7 @@
-import { Component, inject, ViewEncapsulation } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { UserService } from "../../shared/HttpServices";
-import { Router } from "@angular/router";
+import {Component, inject, ViewEncapsulation} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {UserService} from "../../shared/HttpServices";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-login',

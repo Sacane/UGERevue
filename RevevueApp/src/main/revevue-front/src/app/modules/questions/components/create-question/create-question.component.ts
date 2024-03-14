@@ -1,7 +1,7 @@
-import { Component, ViewEncapsulation, inject } from '@angular/core';
-import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { QuestionService } from "../../../../shared/question.service";
-import { Router } from "@angular/router";
+import {Component, inject, ViewEncapsulation} from '@angular/core';
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {QuestionService} from "../../../../shared/question.service";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-create-question',

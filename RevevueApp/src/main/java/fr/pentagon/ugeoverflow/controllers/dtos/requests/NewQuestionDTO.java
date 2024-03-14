@@ -1,9 +1,27 @@
 package fr.pentagon.ugeoverflow.controllers.dtos.requests;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Arrays;
 import java.util.Objects;
 
-public record NewQuestionDTO(String title, String description, byte[] javaFile, byte[] testFile) {
+public record NewQuestionDTO(
+        @NotNull
+        @NotBlank(message = "Un titre ne peut être vide.")
+        String title,
+        @NotNull
+        @NotBlank(message = "Une description ne peut être vide")
+        @Size(min = 8, message = "Veuillez détailler plus en détail votre problème.")
+        String description,
+        @NotNull
+        byte[] javaFile,
+        byte[] testFile,
+        @NotNull
+        @NotBlank(message = "le nom du fichier ne peut être vide.")
+        String javaFilename,
+        String testFilename
+) {
 
     public NewQuestionDTO {
         Objects.requireNonNull(title);

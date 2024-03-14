@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.model;
 
+import fr.pentagon.ugeoverflow.model.embed.TestKit;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
@@ -18,11 +19,9 @@ public class Question {
     @Lob
     @Column(columnDefinition = "BLOB")
     private byte[] file;
-    @Lob
-    @Column(columnDefinition = "BLOB")
-    private byte[] testFile;
+    @Embedded
+    private TestKit testKit;
 
-    private String testResult;
     private boolean open;
     @ManyToOne(fetch = FetchType.LAZY)
     private User author;
@@ -43,8 +42,7 @@ public class Question {
         this.title = title;
         this.description = description;
         this.file = file;
-        this.testFile = testFile;
-        this.testResult = testResult;
+        this.testKit = new TestKit(testFile, testResult);
         this.open = open;
         this.createdAt = createdAt;
     }
@@ -83,20 +81,25 @@ public class Question {
 
     @Nullable
     public byte[] getTestFile() {
-        return testFile;
+        return (testKit == null) ? null : testKit.getTestFile();
     }
 
     public void setTestFile(@Nullable byte[] testFile) {
-        this.testFile = testFile;
+        this.testKit.setTestFile(testFile);
     }
 
     @Nullable
     public String getTestResult() {
-        return testResult;
+        return (testKit == null) ? "Pas de résultats" : testKit.getTestResult();
     }
 
     public void setTestResult(@Nullable String testResult) {
-        this.testResult = testResult;
+        if(testKit == null) return;
+        this.testKit.setTestResult(testResult);
+    }
+
+    public void setTestKit(TestKit testKit) {
+        this.testKit = testKit;
     }
 
     public boolean isOpen() {
@@ -138,5 +141,20 @@ public class Question {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", testResult='" + testKit.getTestResult() + '\'' +
+                ", open=" + open +
+                ", author=" + author +
+                ", reviews=" + reviews +
+                ", createdAt=" + createdAt +
+                ", version=" + version +
+                '}';
     }
 }

@@ -1,6 +1,6 @@
-import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
-import { ReviewsComponent } from "./reviews.component";
+import {NgModule} from "@angular/core";
+import {RouterModule, Routes} from "@angular/router";
+import {ReviewsComponent} from "./reviews.component";
 
 const routes: Routes = [
     { path: '', pathMatch: 'full', redirectTo: '/home' },

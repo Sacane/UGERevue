@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.model;
 
+import fr.pentagon.ugeoverflow.model.embed.CodePart;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
@@ -16,16 +17,14 @@ public class Review {
     private Question question;
     @ManyToOne(fetch = FetchType.LAZY)
     private User author;
-    @Nullable
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Review parentReview;
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "parentReview")
     private List<Review> reviews;
-    @Nullable
-    private Integer lineStart;
-    @Nullable
-    private Integer lineEnd;
     private Date createdAt;
+    @Embedded
+    private CodePart codePart;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Review parentReview;
 
     @ManyToMany(cascade = CascadeType.DETACH)
     @JoinTable(
@@ -38,12 +37,11 @@ public class Review {
     public Review() {
     }
 
-    public Review(String content, @Nullable Integer lineStart, @Nullable Integer lineEnd, Date createdAt) {
+    public Review(String content, CodePart codePart, Date createdAt) {
         Objects.requireNonNull(content);
         Objects.requireNonNull(createdAt);
         this.content = content;
-        this.lineStart = lineStart;
-        this.lineEnd = lineEnd;
+        this.codePart = codePart;
         this.createdAt = createdAt;
     }
 
@@ -80,7 +78,7 @@ public class Review {
     }
 
     public Review getParentReview() {
-        return parentReview;
+        return this.parentReview;
     }
 
     public void setParentReview(@Nullable Review parentReview) {
@@ -102,30 +100,21 @@ public class Review {
 
     public void removeReview(Review review) {
         reviews.remove(review);
-        review.parentReview = null;
-    }
-
-    @Nullable
-    public Integer getLineStart() {
-        return lineStart;
-    }
-
-    public void setLineStart(@Nullable Integer lineStart) {
-        this.lineStart = lineStart;
-    }
-
-    @Nullable
-    public Integer getLineEnd() {
-        return lineEnd;
-    }
-
-    public void setLineEnd(@Nullable Integer lineEnd) {
-        this.lineEnd = lineEnd;
+        review.setParentReview(null);
     }
 
     public Date getCreatedAt() {
         return createdAt;
     }
+
+    public CodePart getCodePart() {
+        return codePart;
+    }
+
+    public void setCodePart(CodePart codePart) {
+        this.codePart = codePart;
+    }
+
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;

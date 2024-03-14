@@ -30,31 +30,34 @@
             <li><a href="#">Socials</a></li>
         </ul>
     </div>
-    <div class="content">
-        <h1>Login</h1>
-        <p class="error" th:if="${loginFailed != null}">Wrong username or password</p>
+    <div class="login-container">
+        <div class="login-card">
+            <h1>Se connecter</h1>
+            <p class="error" th:if="${loginFailed != null}">Wrong username or password</p>
 
-        <form method="post" th:action="@{/light/login}" th:object="${credentialsDTO}">
-            <label for="login">Account name:</label><br>
-            <input id="login"
-                   required
-                   th:field="*{login}"
-                   th:value="*{login}"
-                   type="text">
-            <span th:errorclass="error" th:errors="*{login}"
-                  th:if="${#fields.hasErrors('login')}">Invalid account name</span><br>
+            <form method="post" th:action="@{/light/login}" th:object="${credentialsDTO}">
+                <label for="login">Nom de compte</label><br>
+                <input id="login"
+                       required
+                       th:field="*{login}"
+                       th:value="*{login}"
+                       type="text">
+                <span th:errorclass="error" th:errors="*{login}"
+                      th:if="${#fields.hasErrors('login')}">Invalid account name</span><br>
 
-            <label for="password">Password:</label><br>
-            <input id="password"
-                   required
-                   th:field="*{password}"
-                   th:value="*{password}"
-                   type="password">
-            <span th:errorclass="error" th:errors="*{password}"
-                  th:if="${#fields.hasErrors('password')}">Invalid password</span><br>
-            <button type="submit">Log in</button>
-        </form>
+                <label for="password">Mot de passe</label><br>
+                <input id="password"
+                       required
+                       th:field="*{password}"
+                       th:value="*{password}"
+                       type="password">
+                <span th:errorclass="error" th:errors="*{password}"
+                      th:if="${#fields.hasErrors('password')}">Invalid password</span><br>
+                <button type="submit">Log in</button>
+            </form>
+        </div>
     </div>
+
 </main>
 
 <footer th:replace="~{fragments/footer :: footer}">

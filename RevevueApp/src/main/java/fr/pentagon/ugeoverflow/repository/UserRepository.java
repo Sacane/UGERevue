@@ -7,9 +7,9 @@ import fr.pentagon.ugeoverflow.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,6 +28,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByLogin(String login);
     @Query("SELECT u.followers FROM User u WHERE u = :user")
     Set<User> findFollowers(@Param("user") User user);
+    @Query("SELECT u.followers FROM User u WHERE u.id = :userId")
+    List<User> findFollowsByUserId(@Param("userId") long userId);
     @Query("SELECT u.follows FROM User u WHERE u = :user")
     Set<User> findFollowing(@Param("user") User user);
     @Query("SELECT u FROM User u")

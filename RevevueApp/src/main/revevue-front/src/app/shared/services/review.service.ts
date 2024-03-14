@@ -1,7 +1,7 @@
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Observable, catchError, throwError } from "rxjs";
-import { environment } from "../../environment";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {Injectable} from "@angular/core";
+import {catchError, Observable, throwError} from "rxjs";
+import {environment} from "../../environment";
 import {DetailReviewResponseDTO, Review} from "../../modules/reviews/models/review.model";
 
 @Injectable({

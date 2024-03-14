@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Revevue</title>
+    <link href="../../static/styles/main.css" rel="stylesheet" th:href="@{/styles/main.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism-okaidia.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+</head>
+
+<body>
+
+<header th:replace="~{fragments/header :: header}">
+    <div class="site-identity">
+        <h1><a href="/light">Revevue</a></h1>
+    </div>
+    <nav class="site-navigation">
+        <ul class="nav">
+            <li><a href="#">Login</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <script>
+        function goto(row) {
+            const reviewId = row.getAttribute('data-review-id');
+            window.location.href = '/light/reviews/' + reviewId;
+        }
+
+        function gotoCreateReview(row) {
+            const questionId = row.getAttribute('data-question-id');
+            window.location.href = '/light/reviews/create/' + questionId;
+        }
+    </script>
+    <div class="nav" th:replace="~{fragments/sidenav :: sidenav}">
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Questions</a></li>
+            <li><a href="#">Socials</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <h1 th:text="${question.title}"></h1>
+        <p th:utext="${question.questionContent}"></p>
+        <div class="detail-container">
+            <div class="container">
+                <div class="code-container">
+                    <div class="code-title">Code Java</div>
+                    <pre><code class="language-java" th:text="${question.classContent}"></code></pre>
+                </div>
+                <div th:if="${question.testClassContent}" class="code-container">
+                    <div class="code-title">Code de test</div>
+                    <pre><code class="language-java" th:text="${question.testClassContent}"></code></pre>
+                </div>
+            </div>
+            <button class="button" th:data-question-id="${question.id}" onclick="gotoCreateReview(this)">Créer une Review</button>
+            <div class="review-section">
+                <h2>Reviews</h2>
+                <div th:each="review : ${reviews}">
+                    <div class="review-container">
+                        <div class="review-author" th:text="${review.author}">Author</div>
+                        <div class="review-content" th:utext="${review.content}">Review Content</div>
+                        <div th:if="${review.citedCode}">
+                            <pre><code class="review-cited-code language-java" th:text="${review.citedCode}">Cited Code</code></pre>
+                        </div>
+                        <div class="review-votes">
+                            <button class="upvote-button">
+                                <i class="material-icons">thumb_up</i>
+                                <span th:text="${review.upvotes}">0</span>
+                            </button>
+                            <button class="downvote-button">
+                                <i class="material-icons">thumb_down</i>
+                                <span th:text="${review.downvotes}">0</span>
+                            </button>
+                            <button class="details-button" th:data-review-id="${review.id}" onclick="goto(this)">
+                                Détails de la Review
+                            </button>
+                        </div>
+                        <div class="review-date" th:text="${review.creationDate}">Creation Date</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-java.min.js"></script>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}">
+    &copy; 2024 Revevue
+</footer>
+
+</body>
+</html>

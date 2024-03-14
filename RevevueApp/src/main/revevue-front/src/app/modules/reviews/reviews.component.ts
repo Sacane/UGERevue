@@ -9,7 +9,6 @@ import {ConfirmDialogComponent} from '../../shared/components/confirm-dialog/con
 import {Location} from '@angular/common';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {DetailReviewResponseDTO, Review} from "./models/review.model";
-import {toObservable, toSignal} from "@angular/core/rxjs-interop";
 
 @Component({
     selector: 'app-review-detail',
@@ -57,7 +56,6 @@ export class ReviewsComponent implements OnDestroy {
     }
 
     initData(): void {
-        console.log('Hm ?')
         this.reviewId = this.activatedRoute.snapshot.params['id'];
         this.reviewService.getDetails(this.reviewId).subscribe(response => {
             console.log(response)
@@ -132,6 +130,7 @@ export class ReviewsComponent implements OnDestroy {
     }
 
     vote(review: DetailReviewResponseDTO, up: boolean): void {
+        if(!this.canReview) return;
         if (
             (up && review.upvotes > 0) ||
             (!up && review.downvotes > 0)

@@ -1,9 +1,9 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { catchError, Observable, switchMap, tap, throwError } from 'rxjs';
-import { environment } from "../environment";
-import { UserCredentials, UserFollowInfo, UserRegister } from "./models-in";
-import { UserConnectedDTO, UserIdDTO } from "./models-out";
+import {inject, Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
+import {catchError, Observable, switchMap, tap, throwError} from 'rxjs';
+import {environment} from "../environment";
+import {UserCredentials, UserFollowInfo, UserRegister} from "./models-in";
+import {UserConnectedDTO, UserIdDTO} from "./models-out";
 
 @Injectable({
     providedIn: 'root'
@@ -18,7 +18,7 @@ export class UserService {
 
     private client = inject(HttpClient)
 
-    public registerUser(registerInfos: UserRegister, onError: (error: Error) => any = (err) => { console.error(err) }): Observable<UserIdDTO> {
+    public registerUser(registerInfos: UserRegister, onError: (error: HttpErrorResponse) => any = (err) => { console.error(err.error.message) }): Observable<UserIdDTO> {
         return this.client.post<UserIdDTO>(this.ROOT, registerInfos, { headers: this.HEADERS }).pipe(
             switchMap(response => {
                 return this.login({ login: registerInfos.login, password: registerInfos.password }).pipe(
