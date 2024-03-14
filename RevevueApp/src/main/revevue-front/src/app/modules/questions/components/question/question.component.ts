@@ -79,13 +79,14 @@ export class QuestionComponent {
             data: {
                 onQuestion: true
             },
+            width: '60%',
             disableClose: true
         }).afterClosed().pipe(
             switchMap(reviewValue => {
                 console.log(reviewValue);
 
                 if (reviewValue) {
-                    return this.questionService.addReview(this.id, reviewValue.content, reviewValue.lineStart, reviewValue.lineEnd).pipe(
+                    return this.questionService.addReview(this.id, reviewValue.content, reviewValue.lineStart, reviewValue.lineEnd, reviewValue.tags).pipe(
                         catchError(err => {
                             console.log(err);
                             return of(err);

@@ -1,12 +1,10 @@
 package fr.pentagon.ugeoverflow.service;
 
 import fr.pentagon.ugeoverflow.config.authorization.Role;
+import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewOnReviewDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewRemoveDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.DetailReviewResponseDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponseDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseChildrenDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.*;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Review;
 import fr.pentagon.ugeoverflow.model.Tag;
@@ -187,5 +185,13 @@ public class ReviewService {
         }
         var list = review.getReviews().stream().map(childReview -> findDetailsFromReviewIdWithChildren(userId, childReview.getId())).toList();
         return reviewMapper.entityToDetailReviewResponseDTO(review, citedCode, doesUserVote, list);
+    }
+
+    @Transactional
+    public List<ReviewQuestionTitleDTO> findByTag(String tag) {
+        List<Review> reviews = reviewRepository.withTagsAndQuestion(SecurityContext.checkAuthentication().id());
+        return reviews.stream().filter(e -> e.getTagsList().stream().anyMatch(reviewTag -> reviewTag.getName().contains(tag)))
+                .map(e -> new ReviewQuestionTitleDTO(e.getContent(), e.getQuestion().getTitle()))
+                .toList();
     }
 }
