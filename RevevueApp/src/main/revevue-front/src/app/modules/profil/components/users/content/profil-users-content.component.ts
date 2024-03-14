@@ -1,5 +1,5 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
-import { UserFollowing } from '../../../../profile/models/UserFollowing';
+import { UserFollowing } from '../../../models/UserFollowing';
 
 @Component({
     selector: 'app-profil-users-content',
@@ -8,5 +8,5 @@ import { UserFollowing } from '../../../../profile/models/UserFollowing';
     encapsulation: ViewEncapsulation.None
 })
 export class ProfilUsersContentComponent {
-    @Input({required: true}) userFollowing: UserFollowing[];
+    @Input({ required: true }) userFollowing: UserFollowing[];
 }

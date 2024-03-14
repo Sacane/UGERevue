@@ -1,5 +1,0 @@
-<ng-container *ngIf="userInfo$ | async as userinfo">
-    <app-profile-info-content (passwordChanged)="savePassword($event)" (usernameChanged)="saveUsername($event)"
-                              [userInfo]="userinfo">
-    </app-profile-info-content>
-</ng-container>

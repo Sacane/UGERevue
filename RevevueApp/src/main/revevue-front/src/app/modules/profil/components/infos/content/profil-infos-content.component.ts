@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
-import { UserInfo } from '../../../../profile/models/UserInfo';
-import { UserPasswordUpdate } from '../../../../profile/models/UserPasswordUpdate';
+import { UserInfo } from '../../../models/UserInfo';
+import { UserPasswordUpdate } from '../../../models/UserPasswordUpdate';
 import { FormControl, Validators } from '@angular/forms';
 
 @Component({
@@ -44,10 +44,10 @@ export class ProfilInfosContentComponent {
         const oldPassword = this.oldPasswordControl.value;
         const newPassword = this.newPasswordControl.value;
 
-        if (this.oldPasswordControl.valid && this.newPasswordControl.valid&& oldPassword !== null && newPassword !== null) {
+        if (this.oldPasswordControl.valid && this.newPasswordControl.valid && oldPassword !== null && newPassword !== null) {
             this.oldPasswordControl.setValue('');
             this.newPasswordControl.setValue('');
-            this.passwordChanged.emit({oldPassword, newPassword});
+            this.passwordChanged.emit({ oldPassword, newPassword });
         }
     }
 }

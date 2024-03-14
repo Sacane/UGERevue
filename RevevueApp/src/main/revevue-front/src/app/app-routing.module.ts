@@ -36,10 +36,6 @@ export const routes: Routes = [
             },
             {
                 path: 'profile',
-                loadChildren: () => import('./modules').then(m => m.ProfileModule)
-            },
-            {
-                path: 'profil',
                 loadChildren: () => import('./modules').then(m => m.ProfilModule)
             }
         ]

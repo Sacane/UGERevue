@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UserInfo } from '../../../profile/models/UserInfo';
-import { UserService } from '../../../profile/services/user.service';
+import { UserInfo } from '../../models/UserInfo';
+import { UserService } from '../../services/user.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { UserPasswordUpdate } from '../../../profile/models/UserPasswordUpdate';
+import { UserPasswordUpdate } from '../../models/UserPasswordUpdate';
 
 @Component({
     selector: 'app-profil-infos',
@@ -14,7 +14,7 @@ import { UserPasswordUpdate } from '../../../profile/models/UserPasswordUpdate';
 export class ProfilInfosComponent implements OnInit {
     userInfo$: Observable<UserInfo>;
 
-    constructor(private userService: UserService, private snackBar: MatSnackBar) {}
+    constructor(private userService: UserService, private snackBar: MatSnackBar) { }
 
     ngOnInit() {
         this.userInfo$ = this.userService.getCurrentUserInfo();
@@ -23,9 +23,9 @@ export class ProfilInfosComponent implements OnInit {
     saveUsername(username: string) {
         this.userService.changeCurrentUserInfo({ username: username }).subscribe({
             next: response => {
-                this.snackBar.open('Nom d\'utilisateur mis à jour', 'Fermer', {duration: 3000});
+                this.snackBar.open('Nom d\'utilisateur mis à jour', 'Fermer', { duration: 3000 });
             }, error: error => {
-                this.snackBar.open('Erreur lors de mise à jour du nom d\'utilisateur', 'Fermer', {duration: 3000})
+                this.snackBar.open('Erreur lors de mise à jour du nom d\'utilisateur', 'Fermer', { duration: 3000 })
             }
         });
     }
@@ -34,9 +34,9 @@ export class ProfilInfosComponent implements OnInit {
         console.log(userPasswordUpdate);
         this.userService.changeCurrentUserPassword(userPasswordUpdate).subscribe({
             next: response => {
-                this.snackBar.open('Mot de passe mis à jour', 'Fermer', {duration: 3000});
+                this.snackBar.open('Mot de passe mis à jour', 'Fermer', { duration: 3000 });
             }, error: error => {
-                this.snackBar.open('Erreur lors de mise à jour du mot de passe', 'Fermer', {duration: 3000})
+                this.snackBar.open('Erreur lors de mise à jour du mot de passe', 'Fermer', { duration: 3000 })
             }
         });
     }

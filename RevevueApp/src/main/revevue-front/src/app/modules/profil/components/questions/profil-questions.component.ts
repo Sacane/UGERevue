@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SimpleQuestion } from '../../../../shared/models/question';
-import { UserService } from '../../../profile/services/user.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
     selector: 'app-profil-questions',
@@ -12,7 +12,7 @@ import { UserService } from '../../../profile/services/user.service';
 export class ProfilQuestionsComponent {
     userQuestions$!: Observable<SimpleQuestion[]>;
 
-    constructor(private userService: UserService) {}
+    constructor(private userService: UserService) { }
 
     ngOnInit(): void {
         this.userQuestions$ = this.userService.getCurrentUserQuestions();

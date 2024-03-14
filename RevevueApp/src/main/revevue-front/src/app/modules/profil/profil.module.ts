@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ProfilComponent } from "./profil.component";
 import { ProfilRoutingModule } from "./profil-routing.module";
 import { ProfilInfosComponent, ProfilInfosContentComponent, ProfilQuestionsComponent, ProfilUsersComponent, ProfilUsersContentComponent } from "./components";
-import { RolePipe } from "../profile/pipes/role.pipe";
+import { RolePipe } from "./pipes/role.pipe";
 
 @NgModule({
     declarations: [

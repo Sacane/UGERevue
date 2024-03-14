@@ -1,7 +1,7 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Observable } from 'rxjs';
-import { UserFollowing } from '../../../profile/models/UserFollowing';
-import { UserService } from '../../../profile/services/user.service';
+import { UserFollowing } from '../../models/UserFollowing';
+import { UserService } from '../../services/user.service';
 
 @Component({
     selector: 'app-profil-users',
@@ -12,7 +12,7 @@ import { UserService } from '../../../profile/services/user.service';
 export class ProfilUsersComponent {
     userFollowing$: Observable<UserFollowing[]>;
 
-    constructor(private userService: UserService) {}
+    constructor(private userService: UserService) { }
 
     ngOnInit() {
         this.userFollowing$ = this.userService.getCurrentUserFollowing();
