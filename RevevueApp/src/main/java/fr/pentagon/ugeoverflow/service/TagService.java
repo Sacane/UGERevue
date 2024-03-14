@@ -21,7 +21,7 @@ public class TagService {
     }
 
     @Transactional
-    public void registerTag(String tagName, long userId, long reviewId){
+    public void register(String tagName, long userId, long reviewId){
         var user = userRepository.findById(userId).orElseThrow(() -> HttpException.notFound("User not found"));
         var review = reviewRepository.findById(reviewId).orElseThrow(() -> HttpException.notFound("Review not found"));
         var existingTagOptional = tagRepository.findTagByName(tagName);
@@ -40,4 +40,21 @@ public class TagService {
             existingTag.addReview(review);
         }
     }
+
+    public void delete(String tagName) {
+        var tag = tagRepository.findTagByName(tagName).orElseThrow(() -> HttpException.notFound("Tag to delete not found"));
+        var users = userRepository.findByTagName(tagName);
+        users.forEach(u -> {
+            u.removeTag(tag);
+            tag.removeUser(u);
+        });
+        var reviews = reviewRepository.findByTagName(tagName);
+        reviews.forEach(r -> {
+            r.removeTag(tag);
+            tag.removeReview(r);
+        });
+    }
+
+    //TODO : Modif la méthode HTTP de creation de review + lors de suppression d'un user
+    //TODO TEST A FAIRE
 }

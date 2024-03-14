@@ -10,6 +10,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.responses.DetailReviewResponseDT
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponseDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseChildrenDTO;
 import fr.pentagon.ugeoverflow.service.ReviewService;
+import fr.pentagon.ugeoverflow.service.TagService;
 import fr.pentagon.ugeoverflow.utils.Routes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +21,12 @@ import java.util.logging.Logger;
 @RestController
 public class ReviewController {
     private final ReviewService reviewService;
+    private final TagService tagService;
     private static final Logger LOGGER = Logger.getLogger(ReviewController.class.getName());
 
-    public ReviewController(ReviewService reviewService) {
+    public ReviewController(ReviewService reviewService, TagService tagService) {
         this.reviewService = reviewService;
+        this.tagService = tagService;
     }
 
     @GetMapping(Routes.Review.ROOT + "/{reviewId}")
@@ -41,9 +44,11 @@ public class ReviewController {
     }
 
     @PostMapping(Routes.Review.ROOT)
-    public ResponseEntity<ReviewQuestionResponseDTO> addReview(@RequestBody ReviewOnReviewBodyDTO reviewOnReviewBodyDTO) {
+    public ResponseEntity<ReviewQuestionResponseDTO> addReview(@RequestBody ReviewOnReviewBodyDTO reviewOnReviewBodyDTO, @RequestParam(value = "tag", required = false) List<String> tagList) {
         var userDetail = SecurityContext.checkAuthentication();
-
+        if(tagList != null && !tagList.isEmpty()){
+            tagList.forEach(tag -> tagService.register(tag, userDetail.id(), reviewOnReviewBodyDTO.reviewId()));
+        }
         return ResponseEntity.ok(reviewService.addReview(new ReviewOnReviewDTO(userDetail.id(), reviewOnReviewBodyDTO.reviewId(), reviewOnReviewBodyDTO.content())));
     }
 

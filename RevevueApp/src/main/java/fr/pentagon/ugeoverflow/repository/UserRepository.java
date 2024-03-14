@@ -2,6 +2,7 @@ package fr.pentagon.ugeoverflow.repository;
 
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.Review;
+import fr.pentagon.ugeoverflow.model.Tag;
 import fr.pentagon.ugeoverflow.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -33,4 +34,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Set<User> findAllUsers();
     @Query("SELECT u.follows FROM User u WHERE u.id = :id")
     Set<User> findFollowsById(@Param("id") long id);
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.tagsCreated t WHERE t.name = :tagName")
+    Set<User> findByTagName(@Param("tagName") String tagName);
 }
