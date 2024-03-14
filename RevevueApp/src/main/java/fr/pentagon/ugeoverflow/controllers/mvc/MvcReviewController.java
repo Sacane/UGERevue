@@ -4,8 +4,6 @@ import fr.pentagon.ugeoverflow.config.authentication.RevevueUserDetail;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateBodyDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewOnReviewDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsDTO;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.service.ReviewService;
 import fr.pentagon.ugeoverflow.utils.MarkdownRenderer;
@@ -53,7 +51,7 @@ public class MvcReviewController {
     public String createReview( @ModelAttribute("request") QuestionReviewCreateBodyDTO questionReviewCreateDTO) {
         System.out.println("et la ");
         var currentUser = SecurityContext.checkAuthentication();
-        questionService.addReview(new QuestionReviewCreateDTO(currentUser.id(), questionReviewCreateDTO.questionId(), questionReviewCreateDTO.content(), questionReviewCreateDTO.lineStart(), questionReviewCreateDTO.lineEnd(), questionReviewCreateDTO.tags()));
+        questionService.addReview(new QuestionReviewCreateDTO(currentUser.id(), questionReviewCreateDTO.questionId(), questionReviewCreateDTO.content(), questionReviewCreateDTO.lineStart(), questionReviewCreateDTO.lineEnd(), questionReviewCreateDTO.tags() == null ? List.of() : questionReviewCreateDTO.tags()));
         return "redirect:../../light/questions/" + questionReviewCreateDTO.questionId();
     }
 }

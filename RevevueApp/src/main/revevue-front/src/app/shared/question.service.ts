@@ -4,6 +4,7 @@ import {environment} from "../environment";
 import {catchError, Observable, tap, throwError} from "rxjs";
 import {NewQuestionDTO} from "./models-out";
 import {Question, SimpleQuestion} from "./models/question";
+import {QuestionReviewCreateDTO} from "../modules/questions/models/review";
 
 
 @Injectable({
@@ -52,10 +53,11 @@ export class QuestionService {
             .pipe(catchError(err => throwError(() => onError(err))))
     }
 
-    public addReview(questionId: string, content: string, lineStart?: string, lineEnd?: string): Observable<any> {
+    public addReview(questionId: string, content: string, lineStart?: string, lineEnd?: string, tagList: Array<String> = []): Observable<any> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
-
-        return this.client.post<any>(`${this.ROOT}/reviews`, {questionId, content, lineStart, lineEnd}, {headers});
+        return this.client.post<QuestionReviewCreateDTO>(`${this.ROOT}/reviews`, {
+            questionId: questionId, content: content, lineStart: lineStart, lineEnd: lineEnd, tags: tagList
+        }, {headers});
     }
 
     public getQuestionsFromFollowers(): Observable<any[]> {

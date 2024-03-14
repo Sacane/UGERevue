@@ -8,5 +8,5 @@ import java.util.List;
 
 public record QuestionReviewCreateDTO(long userId, long questionId, @NotNull @NotBlank String content,
                                       @Nullable Integer lineStart, @Nullable Integer lineEnd,
-                                      List<String> tagList) {
+                                      @NotNull List<String> tagList) {
 }

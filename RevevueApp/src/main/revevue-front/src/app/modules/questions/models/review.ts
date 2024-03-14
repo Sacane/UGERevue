@@ -16,3 +16,11 @@ export interface Review {
     downvotes: number;
     reviews: ReviewFromReview[];
 }
+
+export interface QuestionReviewCreateDTO{
+    questionId: number;
+    content: string;
+    lineStart?: number;
+    lineEnd?: number;
+    tags: Array<string>
+}
