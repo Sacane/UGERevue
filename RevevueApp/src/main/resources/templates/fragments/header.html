@@ -12,21 +12,29 @@
 
 <header th:fragment="header">
     <div class="site-identity">
-        <h1><a href="/light">Revevue</a></h1>
+        <h1><a href="/light/">Revevue</a></h1>
     </div>
-    <form>
-        <input>
-        <button type="submit">Search</button>
+    <form class="search-form" method="POST" action="/light/search">
+        <div class="search-input">
+            <label for="searchByLabel">Rechercher par label:</label>
+            <input id="searchByLabel" type="text" name="label">
+        </div>
+        <div class="search-input">
+            <label for="searchByUser">Rechercher par utilisateur:</label>
+            <input id="searchByUser" type="text" name="user">
+        </div>
+        <button type="submit">Rechercher</button>
     </form>
     <nav class="site-navigation">
         <ul class="nav">
-            <li th:if="${#authentication == null}"><a href="/light/login">Log in</a></li>
-            <li th:if="${#authentication == null}"><a href="/light/register">Register</a></li>
+            <li th:if="${#authentication == null}"><a href="/light/login">Se connecter</a></li>
+            <li th:if="${#authentication == null}"><a href="/light/register">S'enregistrer</a></li>
             <li sec:authorize="isAuthenticated()"><a href="/light/profile/" sec:authentication="name"></a></li>
-            <li sec:authorize="isAuthenticated()"><a href="/light/logout">Log out</a></li>
+            <li sec:authorize="isAuthenticated()"><a href="/light/logout">Se déconnecter</a></li>
         </ul>
     </nav>
 </header>
+
 
 </body>
 </html>

@@ -32,7 +32,7 @@ public class MvcUserController {
         model.addAttribute("login", user.login());
         model.addAttribute("role", user.role().displayName());
 
-        var questions = questionService.getQuestions();
+        var questions = questionService.getQuestionsFromCurrentUser(principal.getName());
         model.addAttribute("questions", questions);
 
         var followed = userService.getUserFollowings(principal.getName());

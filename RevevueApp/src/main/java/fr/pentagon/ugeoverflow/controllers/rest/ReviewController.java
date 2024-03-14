@@ -32,7 +32,7 @@ public class ReviewController {
         var auth = SecurityContext.authentication();
         return auth.map(revevueUserDetail ->
                 ResponseEntity.ok(reviewService.findDetailFromReviewId(revevueUserDetail.id(), reviewId)))
-                .orElseGet(() -> ResponseEntity.ok(reviewService.findDetailFromReviewId(-1, reviewId)));
+                .orElseGet(() -> ResponseEntity.ok(reviewService.findDetailFromReviewId(null, reviewId)));
     }
 
     @GetMapping(Routes.Review.ROOT + Routes.Question.IDENT + "/{questionId}")

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Revevue</title>
+    <link href="../../static/styles/main.css" rel="stylesheet" th:href="@{/styles/main.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism-okaidia.min.css">
+    <!-- Include Prism.js for code highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-java.min.js"></script>
+</head>
+
+<body>
+
+<header th:replace="~{fragments/header :: header}">
+    <div class="site-identity">
+        <h1><a href="/light">Revevue</a></h1>
+    </div>
+    <nav class="site-navigation">
+        <ul class="nav">
+            <li><a href="#">Login</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <div class="nav" th:replace="~{fragments/sidenav :: sidenav}">
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Questions</a></li>
+            <li><a href="#">Socials</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <h2>Créer une revue</h2>
+        <form method="post" action="/light/reviews/create" th:object="${request}">
+            <input type="hidden" name="questionId" th:value="${questionId}" />
+            <div class="form-group">
+                <label for="content">Contenu de la revue :</label>
+                <textarea id="content" name="content" class="form-control" th:field="*{content}" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="lineStart">Ligne de début :</label>
+                <input id="lineStart" name="lineStart" class="form-control" type="number" th:field="*{lineStart}">
+            </div>
+            <div class="form-group">
+                <label for="lineEnd">Ligne de fin :</label>
+                <input id="lineEnd" name="lineEnd" class="form-control" type="number" th:field="*{lineEnd}">
+            </div>
+            <button type="submit" class="btn btn-primary">Créer la revue</button>
+        </form>
+    </div>
+
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}">
+    &copy; 2024 Revevue
+</footer>
+
+</body>
+</html>

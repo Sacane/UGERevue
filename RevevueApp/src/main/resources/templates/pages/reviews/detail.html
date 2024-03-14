@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Revevue</title>
+    <link href="../../static/styles/main.css" rel="stylesheet" th:href="@{/styles/main.css}"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism-okaidia.min.css">
+    <!-- Include Prism.js for code highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-java.min.js"></script>
+</head>
+
+<body>
+
+<header th:replace="~{fragments/header :: header}">
+    <div class="site-identity">
+        <h1><a href="/light">Revevue</a></h1>
+    </div>
+    <nav class="site-navigation">
+        <ul class="nav">
+            <li><a href="#">Login</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <div class="nav" th:replace="~{fragments/sidenav :: sidenav}">
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Questions</a></li>
+            <li><a href="#">Socials</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <div class="content">
+            <h1 th:text="${review.author}"></h1>
+            <div th:utext="${content}"></div>
+            <div class="cited-code" th:if="${review.citedCode}">
+                <h4>Cited Code:</h4>
+                <pre><code class="language-java" th:text="${review.citedCode}"></code></pre>
+            </div>
+            <div class="sub-review-list">
+                <h2>Sub Reviews:</h2>
+                <div th:each="subReview : ${subReviews}" class="sub-review">
+                    <a th:href="@{'../../light/reviews/' + ${subReview.id}}" class="sub-review-link">
+                        <div class="sub-review-author" th:text="${subReview.author}"></div>
+                        <div class="sub-review-content" th:utext="${subReview.content}"></div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/footer :: footer}">
+    &copy; 2024 Revevue
+</footer>
+
+</body>
+</html>
