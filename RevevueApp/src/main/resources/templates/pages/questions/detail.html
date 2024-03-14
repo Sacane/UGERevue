@@ -29,6 +29,11 @@
             const reviewId = row.getAttribute('data-review-id');
             window.location.href = '/light/reviews/' + reviewId;
         }
+
+        function gotoCreateReview(row) {
+            const questionId = row.getAttribute('data-question-id');
+            window.location.href = '/light/reviews/create/' + questionId;
+        }
     </script>
     <div class="nav" th:replace="~{fragments/sidenav :: sidenav}">
         <ul>
@@ -51,7 +56,7 @@
                     <pre><code class="language-java" th:text="${question.testClassContent}"></code></pre>
                 </div>
             </div>
-            <button class="button" onclick="location.href='../../light/reviews/create';">Créer une Review</button>
+            <button class="button" th:data-question-id="${question.id}" onclick="gotoCreateReview(this)">Créer une Review</button>
             <div class="review-section">
                 <h2>Reviews</h2>
                 <div th:each="review : ${reviews}">
