@@ -78,8 +78,11 @@ public class UserService {
     var follows = userRepository.findFollowsById(userId);
     return userRepository.findAllUsers()
         .stream()
-        .filter(u -> u.getId() != userId)
-        .map(user -> user.toUserFollowInfoDTO(follows.contains(user)))
+        .<UserFollowInfoDTO>mapMulti((user, consumer) -> {
+          if(user.getId() != userId) {
+            consumer.accept(user.toUserFollowInfoDTO(follows.contains(user)));
+          }
+        })
         .toList();
   }
 

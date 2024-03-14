@@ -3,6 +3,7 @@ import {SharedModule} from "../../shared/shared.module";
 import {ReactiveFormsModule} from "@angular/forms";
 import {SignupComponent} from "./signup.component";
 import {SignupRoutingModule} from "./signup-routing.module";
+import {ToastContainerDirective, ToastrModule} from "ngx-toastr";
 
 @NgModule({
     declarations: [
@@ -11,7 +12,9 @@ import {SignupRoutingModule} from "./signup-routing.module";
     imports: [
         ReactiveFormsModule,
         SignupRoutingModule,
-        SharedModule
+        SharedModule,
+        ToastrModule,
+        ToastContainerDirective
     ],
     exports: [SignupComponent],
     bootstrap: [SignupComponent]
