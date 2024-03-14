@@ -30,10 +30,10 @@ export class ReviewService {
         );
     }
 
-    public addReview(reviewId: string, content: string): Observable<Review> {
+    public addReview(reviewId: string, content: string, tagList: Array<string> = []): Observable<Review> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-        return this.httpclient.post<Review>(this.url, { reviewId, content }, { headers });
+        return this.httpclient.post<Review>(this.url, { reviewId: reviewId, content: content, tagList: tagList }, { headers });
     }
 
     public vote(reviewId: string, up: boolean): Observable<any> {

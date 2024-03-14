@@ -12,3 +12,15 @@ export interface Review {
 export interface DetailReviewResponseDTO extends Review{
     vote: boolean
 }
+
+/**
+ * public record ReviewOnReviewBodyDTO(long reviewId,
+ * @NotNull @NotBlank String content, List<String> tagList) {
+ * }
+ */
+
+export interface ReviewOnReviewBodyDTO {
+    reviewId: number;
+    content: String;
+    tagList: Array<string>;
+}
