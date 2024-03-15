@@ -23,18 +23,18 @@ public final class TestsService {
             initializeFolder(testBundle);
             logger.info("Folder initialized");
             var loader = CustomTestClassLoader.in(Paths.get(testBundle.idAsString()));
-            logger.info("Loading files...");
+            logger.info("Loading classes...");
             var clazz = loader.load(testBundle.testFileName(), testBundle.dependencyFileName());
-            logger.info("Running test...");
+            logger.info("Running tests...");
             var tracker = TestTracker.runAndTrack(clazz);
-            logger.info("Test has been running successfully");
+            logger.info("Tests has been running successfully");
             TestResultDTO testResultDTO = new TestResultDTO(
                     tracker.allTestsPassed(),
                     tracker.passedCount(),
                     tracker.failuresCount(),
                     tracker.failureDetails()
             );
-            logger.info("Results : " + testResultDTO.toString());
+            logger.info("Results : " + testResultDTO);
             return testResultDTO;
         }finally {
             deleteFolder(testBundle.idAsString());
