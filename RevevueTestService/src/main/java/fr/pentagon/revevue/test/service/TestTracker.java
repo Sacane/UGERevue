@@ -1,6 +1,7 @@
 package fr.pentagon.revevue.test.service;
 
 
+import org.junit.platform.launcher.Launcher;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
@@ -24,9 +25,21 @@ public final class TestTracker {
      *
      * @param summary the test execution summary to track
      */
-    private TestTracker(TestExecutionSummary summary){
+    private TestTracker(TestExecutionSummary summary) {
         this.summary = Objects.requireNonNull(summary);
     }
+
+//    private static void executeWithTimeout(Runnable runnable) throws TimeoutException {
+//        Objects.requireNonNull(runnable);
+//        try (var executor = Executors.newSingleThreadExecutor()) {
+//            var future = executor.submit(runnable);
+//            future.get(TIMEOUT, TimeUnit.SECONDS);
+//        } catch (TimeoutException e) {
+//            throw new TimeoutException();
+//        } catch (ExecutionException | InterruptedException e) {
+//            throw new AssertionError(e);
+//        }
+//    }
 
     /**
      * Executes the given test class and returns a TestTracker instance to track the results.
@@ -34,7 +47,7 @@ public final class TestTracker {
      * @param testClass the test class to execute
      * @return a TestTracker instance tracking the test execution summary
      */
-    public static TestTracker runAndTrack(Class<?> testClass){
+    public static TestTracker runAndTrack(Class<?> testClass) {
         Objects.requireNonNull(testClass);
         var request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(selectClass(testClass))
@@ -42,7 +55,7 @@ public final class TestTracker {
         var listener = new SummaryGeneratingListener();
         var launcher = LauncherFactory.create();
         launcher.registerTestExecutionListeners(listener);
-        launcher.execute(request);
+        launcher.execute(request); // Need timeout
         return new TestTracker(listener.getSummary());
     }
 
@@ -51,7 +64,7 @@ public final class TestTracker {
      *
      * @return true if all tests passed, false otherwise
      */
-    public boolean allTestsPassed(){
+    public boolean allTestsPassed() {
         return summary.getFailures().isEmpty();
     }
 
@@ -60,7 +73,7 @@ public final class TestTracker {
      *
      * @return the count of passed tests
      */
-    public long passedCount(){
+    public long passedCount() {
         return summary.getTestsSucceededCount();
     }
 
@@ -69,7 +82,7 @@ public final class TestTracker {
      *
      * @return the count of failed tests
      */
-    public long failuresCount(){
+    public long failuresCount() {
         return summary.getTestsFailedCount();
     }
 
@@ -78,11 +91,11 @@ public final class TestTracker {
      *
      * @return a string containing details about the failed tests
      */
-    public String failureDetails(){
-        if(summary.getFailures().isEmpty()) return "";
+    public String failureDetails() {
+        if (summary.getFailures().isEmpty()) return "";
         var details = new StringBuilder("Failed tests :\n\n");
         var failures = summary.getFailures();
-        for (var failure : failures){
+        for (var failure : failures) {
             details.append("\t- ").append(failure.getTestIdentifier().getDisplayName()).append(" : ");
             details.append(failure.getException()).append("\n");
         }

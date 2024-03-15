@@ -11,6 +11,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+
 import static org.junit.jupiter.api.Assertions.*;
 
 final class TestExecutionTests {
@@ -23,16 +24,6 @@ final class TestExecutionTests {
 
     @BeforeEach
     void initializeTempDirectory() throws IOException {
-        var f1 = Paths.get("src", "test", "resources", "FakeJavaFiles", "HelloWorld.java");
-        var f2 = Paths.get("src", "test", "resources", "FakeJavaFiles", "HelloWorldTest.java");
-        var d1 = Paths.get("src", "test", "resources", "TempDoNotRemove", "HelloWorld.java");
-        var d2 = Paths.get("src", "test", "resources", "TempDoNotRemove", "HelloWorldTest.java");
-        Files.copy(f1, d1);
-        Files.copy(f2, d2);
-    }
-
-    @AfterEach
-    void cleanTempDirectory() throws IOException {
         try (var files = Files.list(TEST_DIRECTORY)) {
             files.filter(p -> !p.endsWith(".gitkeep")).forEach(file -> {
                 try {
@@ -42,6 +33,12 @@ final class TestExecutionTests {
                 }
             });
         }
+        var f1 = Paths.get("src", "test", "resources", "FakeJavaFiles", "HelloWorld.java");
+        var f2 = Paths.get("src", "test", "resources", "FakeJavaFiles", "HelloWorldTest.java");
+        var d1 = Paths.get("src", "test", "resources", "TempDoNotRemove", "HelloWorld.java");
+        var d2 = Paths.get("src", "test", "resources", "TempDoNotRemove", "HelloWorldTest.java");
+        Files.copy(f1, d1);
+        Files.copy(f2, d2);
     }
 
     @Nested
@@ -99,7 +96,6 @@ final class TestExecutionTests {
             var testClass = loader.load(TEST_FILE_NAME, DEPENDENCY_FILE_NAME);
             var tracker = TestTracker.runAndTrack(testClass);
             var dummyTestTracker = TestTracker.runAndTrack(RevevueTestServiceApplication.class);
-            System.out.println(dummyTestTracker.failureDetails());
             var expectedDetail = """
                     Failed tests :
                                         
