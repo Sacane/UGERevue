@@ -8,7 +8,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatDialog} from '@angular/material/dialog';
 import {ConfirmDialogComponent} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import {catchError, concat, of, switchMap} from 'rxjs';
-import {UserService} from '../../../../shared/HttpServices';
+import {LoginService} from '../../../../shared/HttpServices';
 import {ReviewDialogComponent} from '../../../../shared/components/review-dialog/review-dialog.component';
 import {ReviewService} from '../../../../shared';
 
@@ -33,7 +33,7 @@ export class QuestionComponent {
     canReview: boolean;
     deleting: boolean = false;
 
-    constructor(private activatedRoute: ActivatedRoute, private userService: UserService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) {
+    constructor(private activatedRoute: ActivatedRoute, private userService: LoginService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) {
         this.canReview = this.userService.getLogin() !== '';
     }
 

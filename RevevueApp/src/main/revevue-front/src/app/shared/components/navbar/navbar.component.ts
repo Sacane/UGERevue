@@ -1,6 +1,6 @@
 import { Component, inject, signal, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserService } from "../../HttpServices";
+import { LoginService } from "../../HttpServices";
 
 @Component({
     selector: 'app-nav-bar',
@@ -9,7 +9,7 @@ import { UserService } from "../../HttpServices";
     encapsulation: ViewEncapsulation.None
 })
 export class NavBarComponent {
-    userService = inject(UserService)
+    userService = inject(LoginService)
     private router = inject(Router)
     label = signal('undefined')
     username = signal('undefined')

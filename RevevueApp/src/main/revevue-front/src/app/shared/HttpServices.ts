@@ -8,7 +8,7 @@ import {UserConnectedDTO, UserIdDTO} from "./models-out";
 @Injectable({
     providedIn: 'root'
 })
-export class UserService {
+export class LoginService {
     private readonly HEADERS = new HttpHeaders().set('Content-Type', 'application/json');
     private readonly ROOT = environment.apiUrl + 'users'
     private readonly LOGIN = environment.apiUrl + 'login'
