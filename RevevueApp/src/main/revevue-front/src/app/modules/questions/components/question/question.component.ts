@@ -79,7 +79,7 @@ export class QuestionComponent {
             data: {
                 onQuestion: true
             },
-            width: '60%',
+            width: '50%',
             disableClose: true
         }).afterClosed().pipe(
             switchMap(reviewValue => {

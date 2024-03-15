@@ -1,12 +1,25 @@
 
 .wrapper {
     display: flex;
+    overflow-y: scroll;
     .dialog-content{
         display: flex;
         flex-direction: column;
         .content-field {
             display: flex;
             flex-direction: column;
+        }
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            overflow-y: scroll;
+            max-height: 300px;
+        }
+        .add-tag-button{
+            width: 30%;
         }
     }
 
@@ -26,6 +39,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
+
+        }
+        .tag-card:hover {
+            transform: scale(1.1); /* Augmente la taille de 10% */
+            transition: transform 0.2s ease-in-out; /* Définis une transition fluide */
+            cursor: pointer;
         }
         .review-card {
             background-color: #fff;
@@ -52,6 +71,11 @@
                     margin-bottom: 0;
                 }
             }
+        }
+        .review-card:hover {
+            transform: scale(1.05); /* Augmente la taille de 10% */
+            transition: transform 0.2s ease-in-out; /* Définis une transition fluide */
+            cursor: pointer;
         }
     }
 }
