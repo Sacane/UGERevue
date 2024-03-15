@@ -1,41 +1,42 @@
-.search-content {
-    width: 100%;
+app-search-questions {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 20px auto; // Center the content horizontally
-}
+    flex-grow: 1;
+    padding: 20px;
 
-// Material elevation for the search results
-.mat-elevation-z8 {
-    width: 100%; // Ensure the table takes full width
-    border-radius: 8px;
-    overflow: hidden; // Hide any overflow content
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Add a subtle shadow
-}
-
-// Table styles
-table {
-    width: 100%;
-    border-collapse: collapse;
-
-    th, td {
-        padding: 12px 16px;
-        border-bottom: 1px solid #f0f0f0; // Light gray border between rows
-
-        th {
-            background-color: #f8f9fa; // Light gray background for header
+    .search-content {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 20px auto; // Center the content horizontally
+    }
+    
+    // Material elevation for the search results
+    .mat-elevation-z8 {
+        width: 100%; // Ensure the table takes full width
+        border-radius: 8px;
+        overflow: hidden; // Hide any overflow content
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Add a subtle shadow
+    }
+    
+    // Table styles
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    
+        th, td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f0f0f0; // Light gray border between rows
+    
+            th {
+                background-color: #f8f9fa; // Light gray background for header
+            }
         }
     }
-}
-
-// Paginator styles
-.mat-paginator {
-    justify-content: center; // Center the paginator
-    margin-top: 20px;
-}
-
-// Overall component styles
-app-search-questions {
-    width: 100%;
+    
+    // Paginator styles
+    .mat-paginator {
+        justify-content: center; // Center the paginator
+        margin-top: 20px;
+    }
 }

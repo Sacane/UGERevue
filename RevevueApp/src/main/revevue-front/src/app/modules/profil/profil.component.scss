@@ -1,0 +1,8 @@
+app-profil {
+    display: flex;
+    flex-grow: 1;
+
+    .mat-mdc-tab-body-wrapper {
+        flex-grow: 1;
+    }
+}

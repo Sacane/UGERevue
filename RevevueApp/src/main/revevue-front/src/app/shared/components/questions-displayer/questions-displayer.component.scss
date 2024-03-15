@@ -1,0 +1,9 @@
+app-questions-displayer {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    mat-form-field {
+        margin-top: 0;
+    }
+}

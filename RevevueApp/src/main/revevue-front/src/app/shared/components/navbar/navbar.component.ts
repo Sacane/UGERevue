@@ -1,4 +1,4 @@
-import {Component, inject, signal, ViewEncapsulation} from '@angular/core';
+import { Component, inject, signal, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from "../../HttpServices";
 

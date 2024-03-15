@@ -1,16 +1,17 @@
 app-questions {
+    display: flex;
     width: 100%;
-    .content{
-        max-width: 80%;
+
+    .content {
         align-content: center;
         justify-items: center;
         display: flex;
         flex-direction: column;
         row-gap: 30px;
         flex-grow: 1;
-
         padding: 20px;
-        .info{
+
+        .info {
             display: flex;
             flex-direction: column;
         }
