@@ -1,31 +1,3 @@
-<!--@if (paginator) {
-
-    <div style="height: 0; flex: 1 1 auto; overflow-y: auto;" class="question-list">
-        @for (item of [].constructor((displayedQuestions.length - (paginator.pageIndex * paginator.pageSize)) < paginator.pageSize ?(displayedQuestions.length - (paginator.pageIndex * paginator.pageSize)) : paginator.pageSize); track item; let i=$index) {
-            <div class="question-item" style="display: flex; column-gap: 20px; border-top: 2px solid lightgray; padding-top: 10px; padding-bottom: 10px;">
-                <div class="question-info" style="flex-grow: 1; display: flex; flex-direction: column;">
-                    <div style="display: flex; justify-content: end;">{{ displayedQuestions[i + (paginator.pageSize * paginator.pageIndex)].nbVotes }} votes</div>
-                    <div style="display: flex; justify-content: end; color: gray;">{{ displayedQuestions[i + (paginator.pageSize * paginator.pageIndex)].nbAnswers }} answers</div>
-                </div>
-                <div style="flex-grow: 7; display: flex; flex-direction: column; row-gap: 20px;">
-                    <button mat-raised-button color="primary" (click)="navigateTo('/questions/' + displayedQuestions[i + (paginator.pageSize * paginator.pageIndex)].id)">
-                        {{ displayedQuestions[i + (paginator.pageSize * paginator.pageIndex)].title }}
-                    </button>
-                    <div style="display: flex; justify-content: space-between;">
-                        <div class="info">
-                            <p>Posté par {{ displayedQuestions[i + (paginator.pageSize * paginator.pageIndex)].userName }}</p>
-                            <p>Le {{ displayedQuestions[i + (paginator.pageSize * paginator.pageIndex)].date }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-}
-
-<mat-paginator #paginator [length]="displayedQuestions.length" [pageSize]="10" [pageSizeOptions]="[4, 10, 20]">
-</mat-paginator>
--->
 @if (paginator) {
     <div class="question-list">
         @for (item of [].constructor((displayedQuestions.length - (paginator.pageIndex * paginator.pageSize)) < paginator.pageSize ?(displayedQuestions.length - (paginator.pageIndex * paginator.pageSize)) : paginator.pageSize); track item; let i=$index) {

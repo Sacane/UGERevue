@@ -1,6 +1,7 @@
 import { Component, inject, signal, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginService } from "../../HttpServices";
+import {UserService} from "../../../modules/profil/services/user.service";
 
 @Component({
     selector: 'app-nav-bar',
@@ -9,11 +10,11 @@ import { LoginService } from "../../HttpServices";
     encapsulation: ViewEncapsulation.None
 })
 export class NavBarComponent {
-    userService = inject(LoginService)
+    loginService = inject(LoginService)
+    userService = inject(UserService)
     private router = inject(Router)
     label = signal('undefined')
     username = signal('undefined')
-
     login(): void {
         this.router.navigateByUrl('/login').then();
     }
@@ -23,9 +24,8 @@ export class NavBarComponent {
     }
 
     logout(): void {
-        //TODO ajouter une modal de confirmation
-        this.userService.logout().subscribe(() => {
-            this.router.navigateByUrl('/home');
+        this.loginService.logout().subscribe(() => {
+            this.router.navigateByUrl('/home').then();
         });
     }
 
@@ -34,7 +34,7 @@ export class NavBarComponent {
     }
 
     isUserLogged(): boolean {
-        return this.userService.isLogin()
+        return this.loginService.isLogin()
     }
 
     search(): void {
@@ -48,5 +48,9 @@ export class NavBarComponent {
 
     updateUsername($event: any) {
         this.username.set($event.target.value)
+    }
+
+    gotoHome() {
+        this.router.navigateByUrl('/home').then()
     }
 }

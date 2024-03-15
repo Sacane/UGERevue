@@ -1,19 +1,26 @@
 app-questions-displayer {
+
     background-color: #f8f9fa;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     padding: 20px;
-    justify-content: space-evenly;
-    height: 100%;
+    justify-content: space-between;
+    align-content: center;
+    width: 100%;
     .question-list {
         display: flex;
         flex-wrap: wrap;
         gap: 30px;
-        margin-top: 20px;
+        justify-content: center;
+        align-content: center;
     }
 
     .question-item {
+
+        &:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
         overflow: hidden;
         display: flex;
         flex-direction: column;
@@ -71,13 +78,7 @@ app-questions-displayer {
 $primary-color: #0622a7;
 $accent-color: #ffc107;
 $gray-text-color: #757575;
-.question-item {
-    background-color: #fff;
 
-    &:hover {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-}
 
 .votes-and-answers,
 .gray-text,
