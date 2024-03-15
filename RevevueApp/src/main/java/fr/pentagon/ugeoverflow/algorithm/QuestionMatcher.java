@@ -1,4 +1,4 @@
-package fr.pentagon.ugeoverflow.service;
+package fr.pentagon.ugeoverflow.algorithm;
 
 import org.apache.commons.text.similarity.CosineDistance;
 import org.apache.commons.text.similarity.LevenshteinDistance;

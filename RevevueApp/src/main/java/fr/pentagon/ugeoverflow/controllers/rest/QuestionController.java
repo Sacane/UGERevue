@@ -90,13 +90,9 @@ public class QuestionController {
 
   @PostMapping(Routes.Question.ROOT + "/reviews")
   public ResponseEntity<ReviewQuestionResponseDTO> addReview(@RequestBody QuestionReviewCreateBodyDTO questionReviewCreateBodyDTO) {
-      try {
-          var userDetail = SecurityContext.checkAuthentication();
-
-          return ok(questionService.addReview(new QuestionReviewCreateDTO(userDetail.id(), questionReviewCreateBodyDTO.questionId(), questionReviewCreateBodyDTO.content(), questionReviewCreateBodyDTO.lineStart(), questionReviewCreateBodyDTO.lineEnd(), questionReviewCreateBodyDTO.tags())));
-      } finally {
-          LOGGER.info("End of the method");
-      }
+      LOGGER.info("review => " + questionReviewCreateBodyDTO);
+      var userDetail = SecurityContext.checkAuthentication();
+      return ok(questionService.addReview(new QuestionReviewCreateDTO(userDetail.id(), questionReviewCreateBodyDTO.questionId(), questionReviewCreateBodyDTO.content(), questionReviewCreateBodyDTO.lineStart(), questionReviewCreateBodyDTO.lineEnd(), questionReviewCreateBodyDTO.tags())));
   }
 
     @GetMapping(Routes.Question.ROOT + "/followers")

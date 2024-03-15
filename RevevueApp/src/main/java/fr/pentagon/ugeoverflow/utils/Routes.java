@@ -55,4 +55,9 @@ public final class Routes {
     private Review() {
     }
   }
+  public static final class Tag{
+    public static final String ROOT = Routes.ROOT + "/tags";
+
+    private Tag() {}
+  }
 }

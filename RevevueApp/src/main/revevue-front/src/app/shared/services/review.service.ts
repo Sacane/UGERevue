@@ -1,8 +1,8 @@
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {catchError, Observable, throwError} from "rxjs";
 import {environment} from "../../environment";
-import {DetailReviewResponseDTO, Review} from "../../modules/reviews/models/review.model";
+import {DetailReviewResponseDTO, Review, ReviewQuestionTitleDTO} from "../../modules/reviews/models/review.model";
 
 @Injectable({
     providedIn: 'root',
@@ -46,5 +46,13 @@ export class ReviewService {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
         return this.httpclient.delete<void>(`${this.url}/${reviewId}/cancelVote`, { headers });
+    }
+
+    public findByTag(tag: string, onError: (err: HttpErrorResponse) => any = (error) => {console.error(error.error.message)}): Observable<Array<ReviewQuestionTitleDTO>> {
+        const headers = new HttpHeaders().set('Content-Type', 'application/json');
+        return this.httpclient.get<Array<ReviewQuestionTitleDTO>>(`${this.url}/tags/` + tag)
+            .pipe(
+                catchError(err => throwError(() => onError(err)))
+            );
     }
 }

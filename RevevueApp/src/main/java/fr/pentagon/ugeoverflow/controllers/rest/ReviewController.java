@@ -6,9 +6,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewOnReviewBodyDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewOnReviewDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewRemoveDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.VoteBodyDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.DetailReviewResponseDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponseDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseChildrenDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.*;
 import fr.pentagon.ugeoverflow.service.ReviewService;
 import fr.pentagon.ugeoverflow.utils.Routes;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.logging.Logger;
+
+import static org.springframework.web.reactive.function.server.ServerResponse.ok;
 
 @RestController
 public class ReviewController {
@@ -72,5 +72,16 @@ public class ReviewController {
         reviewService.cancelVote(user.id(), reviewId);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping(Routes.Review.ROOT + "/tags/{tag}")
+    @RequireUser
+    public ResponseEntity<List<ReviewQuestionTitleDTO>> findByTag(
+            @PathVariable(name = "tag") String tag
+    ) {
+        LOGGER.info("perform request on " + Routes.Review.ROOT + "/tags/" + tag);
+        List<ReviewQuestionTitleDTO> byTag = reviewService.findByTag(tag);
+        byTag.forEach(e -> LOGGER.info("reviews => " + e));
+        return ResponseEntity.ok(byTag);
     }
 }
