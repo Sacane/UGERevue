@@ -40,7 +40,7 @@
             <button mat-button color="primary" (click)="close()">Cancel</button>
             <button mat-raised-button [disabled]="!form.valid" color="primary" (click)="confirm()">Confirm</button>
         </mat-dialog-actions>
-        <button class="add-tag-button" mat-raised-button (click)="addTag()">Ajouter un tag</button>
+        <!--<button class="add-tag-button" mat-raised-button (click)="addTag()">Ajouter un tag</button>
         <ul class="tag-list">
             <li *ngFor="let tag of tags.controls; let i = index">
                 <mat-form-field>
@@ -50,7 +50,33 @@
                     <mat-icon>delete</mat-icon>
                 </button>
             </li>
-        </ul>
+        </ul>-->
+        <form>
+            <mat-form-field class="chip-list">
+                <mat-label>Tags de la review</mat-label>
+                <mat-chip-grid #chipGrid aria-label="Tag selection">
+                    @for (tag of inputTags; track tag) {
+                        <mat-chip-row (removed)="remove(tag)">
+                            {{tag}}
+                            <button matChipRemove [attr.aria-label]="'remove ' + tag">
+                                <mat-icon>cancel</mat-icon>
+                            </button>
+                        </mat-chip-row>
+                    }
+                </mat-chip-grid>
+                <input placeholder="Ajouter un tag..." #inputTag [formControl]="tagCtrl"
+                [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+                       [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                       (matChipInputTokenEnd)="add($event)"/>
+                <mat-autocomplete #auto="matAutocomplete"
+                                  (optionSelected)="selected($event)">
+                    @for(tag of filteredTag(); track tag){
+                        <mat-option [value]="tag">{{tag}}</mat-option>
+                    }
+                </mat-autocomplete>
+            </mat-form-field>
+        </form>
+
 
     </div>
     <div class="review-suggestion">

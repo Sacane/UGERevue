@@ -19,6 +19,8 @@ import {authInterceptor} from "./shared/authInterceptor";
 import {CommonModule} from "@angular/common";
 import {MarkdownModule} from "ngx-markdown";
 import {provideToastr, ToastrModule} from "ngx-toastr";
+import {MatChipsModule} from "@angular/material/chips";
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
 
 @NgModule({
     declarations: [
@@ -44,7 +46,9 @@ import {provideToastr, ToastrModule} from "ngx-toastr";
         MarkdownModule,
         MarkdownModule.forRoot(),
         BrowserAnimationsModule,
-        ToastrModule.forRoot()
+        ToastrModule.forRoot(),
+        MatChipsModule,
+        MatAutocompleteModule
     ],
     bootstrap: [AppComponent]
 })
