@@ -11,15 +11,17 @@ import java.util.List;
 public class RevevueUserDetail implements UserDetails {
 
   private final long id;
+  private final String displayName;
   private final String password;
   private final String login;
   private final List<GrantedAuthority> authorities;
 
-  public RevevueUserDetail(long id, String password, String login, Role role) {
+  public RevevueUserDetail(long id, String password, String login, Role role, String displayName) {
     this.id = id;
     this.password = password;
     this.login = login;
     authorities = List.of(new SimpleGrantedAuthority(role.authorityName()));
+    this.displayName = displayName;
   }
 
   @Override
@@ -30,6 +32,9 @@ public class RevevueUserDetail implements UserDetails {
 
   public long id() {
     return id;
+  }
+  public String displayName() {
+    return displayName;
   }
 
   @Override

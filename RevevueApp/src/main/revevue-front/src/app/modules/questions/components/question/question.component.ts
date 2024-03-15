@@ -35,6 +35,8 @@ export class QuestionComponent {
 
     constructor(private activatedRoute: ActivatedRoute, private userService: LoginService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) {
         this.canReview = this.userService.getLogin() !== '';
+        console.log(this.canDelete())
+        console.log(this.userService.getLogin())
     }
 
     deleteQuestion(): void {

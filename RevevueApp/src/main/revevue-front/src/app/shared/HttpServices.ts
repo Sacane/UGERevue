@@ -41,7 +41,7 @@ export class LoginService {
         return this.client.post<UserConnectedDTO>(this.LOGIN, userCredentials, { headers: this.HEADERS }).pipe(
             tap(response => {
                 localStorage.setItem('isLoggin', 'true');
-                localStorage.setItem('username', response.username);
+                localStorage.setItem('username', response.displayName);
                 localStorage.setItem('role', response.role);
             }), catchError(err => {
                 return throwError(() => { onError(err); });
@@ -55,9 +55,14 @@ export class LoginService {
                 localStorage.setItem("isLoggin", "false");
                 localStorage.setItem('username', '');
                 localStorage.setItem('role', '');
+                localStorage.setItem('id', '')
+                localStorage.clear();
             }), catchError(err => {
                 return throwError(() => { onError(err); });
             }));
+    }
+    public getId(): string | null{
+        return localStorage.getItem('id')
     }
 
     public getRole(): string {
