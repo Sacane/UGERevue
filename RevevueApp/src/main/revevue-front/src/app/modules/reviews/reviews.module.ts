@@ -1,10 +1,11 @@
-import {NgModule} from "@angular/core";
-import {SharedModule} from "../../shared/shared.module";
-import {ReviewsComponent} from "./reviews.component";
-import {ReviewsRoutingModule} from "./reviews-routing.module";
-import {HIGHLIGHT_OPTIONS, HighlightModule} from "ngx-highlightjs";
-import {ChildReviewComponent} from "./child-review/child-review.component";
-import {CommonModule} from "@angular/common";
+import { NgModule } from "@angular/core";
+import { SharedModule } from "../../shared/shared.module";
+import { ReviewsComponent } from "./reviews.component";
+import { ReviewsRoutingModule } from "./reviews-routing.module";
+import { HIGHLIGHT_OPTIONS, HighlightModule } from "ngx-highlightjs";
+import { ChildReviewComponent } from "./child-review/child-review.component";
+import { CommonModule } from "@angular/common";
+import {MarkdownComponent} from "ngx-markdown";
 
 @NgModule({
     providers: [
@@ -27,7 +28,8 @@ import {CommonModule} from "@angular/common";
         CommonModule,
         ReviewsRoutingModule,
         HighlightModule,
-        SharedModule
+        SharedModule,
+        MarkdownComponent
     ],
     exports: [ReviewsComponent, ChildReviewComponent],
     bootstrap: [ReviewsComponent, ChildReviewComponent]

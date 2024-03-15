@@ -5,6 +5,7 @@ import {RouterModule} from "@angular/router";
 import {MaterialModule} from "./modules/material.module";
 import {NavBarComponent, ReviewDialogComponent, SideNavBarComponent} from "./components";
 import {MarkdownComponent} from "ngx-markdown";
+import {MatButtonToggle} from "@angular/material/button-toggle";
 
 const COMPONENTS: any[] = [
     NavBarComponent,
@@ -19,7 +20,8 @@ const COMPONENTS: any[] = [
         FormsModule,
         ReactiveFormsModule,
         MaterialModule,
-        MarkdownComponent
+        MarkdownComponent,
+        MatButtonToggle
     ],
     declarations: [
         COMPONENTS

@@ -19,16 +19,9 @@ public class QuestionServiceWithFailure {
 
     @Transactional
     public void update(QuestionUpdateDTO questionUpdateDTO) {
-        var userFind = userRepository.findById(questionUpdateDTO.userId());
-        if (userFind.isEmpty()) {
-            throw HttpException.notFound("User not exist");
-        }
-        var questionFind = questionRepository.findById(questionUpdateDTO.questionId());
-        if (questionFind.isEmpty()) {
-            throw HttpException.notFound("Question not exist");
-        }
-        var user = userFind.get();
-        var question = questionFind.get();
+        var userQuestion = QuestionService.findQuestionFromId(userRepository, questionUpdateDTO.userId(), questionRepository, questionUpdateDTO.questionId());
+        var user = userQuestion.user();
+        var question = userQuestion.question();
 
         if (!userRepository.containsQuestion(user.getId(), question)) {
             throw HttpException.unauthorized("Not your question");

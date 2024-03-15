@@ -1,5 +1,5 @@
 <div class="login-page">
-    <h3>Se connecter</h3>
+    <h3>Connexion</h3>
     <form [formGroup]="loginForm" (ngSubmit)="login()" style="display: flex; flex-direction: column;">
         <mat-form-field>
             <mat-label>Nom de compte</mat-label>
@@ -16,10 +16,10 @@
             <mat-error>Required</mat-error>
             }
         </mat-form-field>
-        <button mat-raised-button type="submit" color="primary">Log in</button>
+        <button mat-raised-button type="submit" color="primary">Se connecter</button>
     </form>
 </div>
 
 <span>
-    Don't have an account ? <a href="/signup">Sign up</a>
+    Vous n'avez pas encore de compte ? <a href="/signup">Inscrivez-vous</a>
 </span>

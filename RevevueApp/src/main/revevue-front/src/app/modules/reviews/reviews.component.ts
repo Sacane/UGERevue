@@ -56,7 +56,6 @@ export class ReviewsComponent implements OnDestroy {
     }
 
     initData(): void {
-        console.log('Hm ?')
         this.reviewId = this.activatedRoute.snapshot.params['id'];
         this.reviewService.getDetails(this.reviewId).subscribe(response => {
             console.log(response)
@@ -131,6 +130,7 @@ export class ReviewsComponent implements OnDestroy {
     }
 
     vote(review: DetailReviewResponseDTO, up: boolean): void {
+        if(!this.canReview) return;
         if (
             (up && review.upvotes > 0) ||
             (!up && review.downvotes > 0)
