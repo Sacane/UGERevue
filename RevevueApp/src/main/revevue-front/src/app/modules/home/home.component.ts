@@ -1,8 +1,10 @@
-import { Component, OnInit, ViewEncapsulation, inject } from '@angular/core';
-import { UserService } from "../../shared/HttpServices";
+import {Component, OnInit, ViewEncapsulation, inject, signal} from '@angular/core';
+import { LoginService } from "../../shared/HttpServices";
 import { QuestionService } from '../../shared/question.service';
-import { Observable, catchError, concat, map, of } from 'rxjs';
+import {Observable, catchError, concat, map, of, tap} from 'rxjs';
 import { Router } from '@angular/router';
+import {UserService} from "../profil/services/user.service";
+import {UserInfo} from "../profil/models/UserInfo";
 
 @Component({
     selector: 'app-home',
@@ -12,9 +14,15 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent implements OnInit {
     questions$: Observable<any> = of({ lines: [], loading: false });
-    private userService = inject(UserService);
+    private loginService = inject(LoginService);
 
-    constructor(private questionService: QuestionService, private router: Router) { }
+    userInfo = signal<UserInfo|null>(null)
+    private userService$ = inject(UserService).getCurrentUserInfo()
+    constructor(private questionService: QuestionService, private router: Router) {
+        if(this.isLogged()) {
+            this.userService$.subscribe(response => this.userInfo.set(response))
+        }
+    }
 
     ngOnInit(): void {
         if (this.isLogged()) {
@@ -32,7 +40,7 @@ export class HomeComponent implements OnInit {
     }
 
     isLogged(): boolean {
-        return this.userService.isLogin();
+        return this.loginService.isLogin();
     }
 
     navigateTo(url: string): void {

@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, inject, OnInit, ViewChild, ViewEncapsulation} from '@angular/core';
 import {UserFollowInfo} from "../../shared/models-in";
 import {MatPaginator} from "@angular/material/paginator";
-import {UserService} from "../../shared/HttpServices";
+import {LoginService} from "../../shared/HttpServices";
 
 @Component({
     selector: 'app-users',
@@ -12,7 +12,7 @@ import {UserService} from "../../shared/HttpServices";
 export class UsersComponent implements OnInit, AfterViewInit {
     userList: UserFollowInfo[] = [];
     usersFiltered: UserFollowInfo[] = [];
-    private readonly userService: UserService = inject(UserService)
+    private readonly userService: LoginService = inject(LoginService)
 
     @ViewChild(MatPaginator) paginator!: MatPaginator;
 

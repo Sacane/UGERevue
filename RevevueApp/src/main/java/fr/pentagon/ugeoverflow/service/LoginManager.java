@@ -41,7 +41,7 @@ public class LoginManager {
       }
       var currentUser = SecurityContext.checkAuthentication();
       var role = currentUser.getAuthorities().stream().findFirst().orElseThrow();
-      return Optional.of(new LoginResponseDTO(currentUser.getUsername(), role.getAuthority()));
+      return Optional.of(new LoginResponseDTO(currentUser.getUsername(), role.getAuthority(), currentUser.displayName()));
     } catch (AuthenticationException e) {
       return Optional.empty();
     }
