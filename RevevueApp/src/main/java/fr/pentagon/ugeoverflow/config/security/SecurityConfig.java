@@ -46,34 +46,37 @@ public class SecurityConfig {
   @Profile("prod")
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     // Source CSRF: https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#csrf-integration-javascript-spa
-    var config = http
+    return http
         .authorizeHttpRequests(authorize -> {
-          authorize.requestMatchers("/**", "/api/login", "/h2-console/**").permitAll(); //TODO turn "/**" matching to every front root
+          authorize.requestMatchers("/**", "/api/login").permitAll(); //TODO turn "/**" matching to every front root
           authorize.anyRequest().authenticated();
-        });
-    config.csrf((csrf) ->
+        })
+        .cors(Customizer.withDefaults())
+        .csrf((csrf) ->
             csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
-        .addFilterBefore(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
-    return config.build();  // TODO disable anonymous authentication
+        .addFilterBefore(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+        .httpBasic(AbstractHttpConfigurer::disable)
+        .anonymous(AbstractHttpConfigurer::disable)
+        .build();
   }
 
   @Bean
   @Profile("dev")
   public SecurityFilterChain securityFilterChainDev(HttpSecurity http) throws Exception {
     return http
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(Customizer.withDefaults())
-            .authorizeHttpRequests(authorize ->
+        .csrf(AbstractHttpConfigurer::disable)
+        .cors(Customizer.withDefaults())
+        .authorizeHttpRequests(authorize ->
             authorize.requestMatchers("/**", "/api/login", "/h2-console/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
-            )
-            .headers(c -> c.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-            .formLogin(c -> c.loginPage("http://localhost:4200/login"))
-            .httpBasic(AbstractHttpConfigurer::disable)
-            .anonymous(AbstractHttpConfigurer::disable)
-            .build();
+        )
+        .headers(c -> c.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+        .formLogin(c -> c.loginPage("http://localhost:4200/login"))
+        .httpBasic(AbstractHttpConfigurer::disable)
+        .anonymous(AbstractHttpConfigurer::disable)
+        .build();
   }
 }
