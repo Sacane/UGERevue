@@ -38,7 +38,6 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
   @Transactional
   public void createAdminIfNotFound() {
-    userRepository.deleteAll();
     var admin = userRepository.findByLogin("admin").orElse(null);
     if (admin == null) {
       LOGGER.info("Creating admin..");
