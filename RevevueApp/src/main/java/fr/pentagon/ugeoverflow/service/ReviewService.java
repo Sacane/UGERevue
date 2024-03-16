@@ -7,8 +7,6 @@ import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewRemoveDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.*;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Review;
-import fr.pentagon.ugeoverflow.model.Tag;
-import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.model.vote.ReviewVote;
 import fr.pentagon.ugeoverflow.model.vote.ReviewVoteId;
 import fr.pentagon.ugeoverflow.repository.*;
@@ -29,16 +27,22 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final ReviewVoteRepository reviewVoteRepository;
-    private final TagRepository tagRepository;
+    private final TagService tagService;
     private final ReviewMapper reviewMapper;
     private final Logger logger = Logger.getLogger(ReviewService.class.getName());
 
-    public ReviewService(QuestionRepository questionRepository, ReviewRepository reviewRepository, UserRepository userRepository, ReviewVoteRepository reviewVoteRepository, TagRepository tagRepository, ReviewMapper reviewMapper) {
+    public ReviewService(QuestionRepository questionRepository,
+                         ReviewRepository reviewRepository,
+                         UserRepository userRepository,
+                         ReviewVoteRepository reviewVoteRepository,
+                         TagService tagRepository,
+                         ReviewMapper reviewMapper
+    ) {
         this.questionRepository = questionRepository;
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.reviewVoteRepository = reviewVoteRepository;
-        this.tagRepository = tagRepository;
+        this.tagService = tagRepository;
         this.reviewMapper = reviewMapper;
     }
 
@@ -61,27 +65,9 @@ public class ReviewService {
         var newReview = reviewRepository.save(new Review(reviewOnReviewDTO.content(), null, new Date()));
         user.addReview(newReview);
         review.addReview(newReview);
-        addTags(reviewOnReviewDTO, user, review);
+        tagService.addTag(user, review, reviewOnReviewDTO.tagList());
         return reviewMapper.entityToReviewQuestionResponseDTO(newReview, user.getUsername());
     }
-
-    private void addTags(ReviewOnReviewDTO reviewOnReviewDTO, User user, Review review){
-        reviewOnReviewDTO.tagList().forEach(tag -> {
-            var existingTagOptional = tagRepository.findTagByName(tag);
-            if (existingTagOptional.isEmpty()) {
-                var newTag = new Tag(tag);
-                tagRepository.save(newTag);
-                user.addTag(newTag);
-                review.addTag(newTag);
-            } else {
-                var existingTag = existingTagOptional.get();
-                user.addTag(existingTag);
-                review.addTag(existingTag);
-            }
-        });
-    }
-
-
 
 
     @Transactional
