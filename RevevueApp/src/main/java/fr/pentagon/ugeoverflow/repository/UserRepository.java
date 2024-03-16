@@ -38,4 +38,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Set<User> findFollowsById(@Param("id") long id);
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.tagsCreated t WHERE t.name = :tagName")
     Set<User> findByTagName(@Param("tagName") String tagName);
+
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.tagsCreated WHERE u.id = :id")
+    Optional<User> findByIdWithTag(@Param("id") long id);
 }
