@@ -1,18 +1,19 @@
 package fr.pentagon.revevue.test;
 
 import fr.pentagon.revevue.test.exception.CompilationException;
-import fr.pentagon.revevue.test.exception.InfiniteLoopException;
 import fr.pentagon.revevue.test.service.CustomTestClassLoader;
 import fr.pentagon.revevue.test.service.TestTracker;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -102,7 +103,7 @@ final class TestExecutionTests {
 
         @Test
         @DisplayName("TestTracker is working")
-        void testTrackerWorking() throws CompilationException, IOException, ClassNotFoundException {
+        void testTrackerWorking() throws CompilationException, IOException, ClassNotFoundException, TimeoutException {
             var loader = CustomTestClassLoader.in(TEST_DIRECTORY);
             var testClass = loader.load(TEST_FILE_NAME, DEPENDENCY_FILE_NAME);
             var tracker = TestTracker.runAndTrack(testClass);
@@ -134,7 +135,7 @@ final class TestExecutionTests {
         void testTrackerTimeout() throws IOException, CompilationException, ClassNotFoundException {
             var loader = CustomTestClassLoader.in(TEST_DIRECTORY);
             var testClass = loader.load(TEST_INFINITE_FILE_NAME, DEPENDENCY_INFINITE_FILE_NAME);
-            assertThrows(InfiniteLoopException.class, () -> TestTracker.runAndTrack(testClass));
+            assertThrows(TimeoutException.class, () -> TestTracker.runAndTrack(testClass));
         }
     }
 }

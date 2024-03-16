@@ -1,16 +1,14 @@
 package fr.pentagon.revevue.test.service;
 
 
-import fr.pentagon.revevue.test.exception.InfiniteLoopException;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 
@@ -50,7 +48,7 @@ public final class TestTracker {
      * @param testClass the test class to execute
      * @return a TestTracker instance tracking the test execution summary
      */
-    public static TestTracker runAndTrack(Class<?> testClass) {
+    public static TestTracker runAndTrack(Class<?> testClass) throws TimeoutException {
         Objects.requireNonNull(testClass);
         var request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(selectClass(testClass))
@@ -73,7 +71,7 @@ public final class TestTracker {
         var anyFuture = CompletableFuture.anyOf(future1, future2);
         anyFuture.join();
         if(!timer.isFinished()){
-            throw new InfiniteLoopException("The program contains a too long treatment");
+            throw new TimeoutException("The program contains a too long treatment");
         }
         return new TestTracker(listener.getSummary());
     }
@@ -129,7 +127,6 @@ public final class TestTracker {
         }
         public void end() {
             synchronized (lock){
-                System.out.println("test");
                 isTaskFinish = true;
             }
         }

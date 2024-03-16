@@ -3,13 +3,13 @@ package fr.pentagon.revevue.test.service;
 import fr.pentagon.revevue.test.dto.TestBundle;
 import fr.pentagon.revevue.test.dto.TestResultDTO;
 import fr.pentagon.revevue.test.exception.CompilationException;
-import fr.pentagon.revevue.test.exception.InfiniteLoopException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 @Service
@@ -38,8 +38,8 @@ public final class TestsService {
             );
             logger.info("Results : " + testResultDTO);
             return testResultDTO;
-        }catch (InfiniteLoopException infiniteLoopException){
-            return new TestResultDTO(false, 0, 0, infiniteLoopException.getMessage());
+        }catch (TimeoutException timeoutException){
+            return new TestResultDTO(false, 0, 0, timeoutException.getMessage());
         }finally {
             deleteFolder(testBundle.idAsString());
         }
