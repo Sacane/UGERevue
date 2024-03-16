@@ -9,6 +9,10 @@ app-create-question {
         align-items: center;
         gap: 10px;
         .section {
+            .form-section{
+                display: flex;
+                flex-direction: column;
+            }
             background-color: rgb(240, 240, 240);
             border-radius: 5px;
             padding: 20px;
