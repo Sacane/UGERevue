@@ -32,18 +32,19 @@
             "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss",
-                "node_modules/prismjs/themes/prism-solarizedlight.min.css"
+              "node_modules/prismjs/themes/prism-solarizedlight.min.css"
             ],
             "scripts": [
-                "node_modules/prismjs/prism.js",
-                "node_modules/prismjs/components/prism-java.js",
-                "node_modules/prismjs/components/prism-java.min.js",
-                "node_modules/prismjs/components/prism-css.min.js",
-                "node_modules/prismjs/plugins/line-highlight/prism-line-highlight.js",
-                "node_modules/prismjs/components/prism-typescript.min.js"
-            ],"allowedCommonJsDependencies": [
-                  "highlight.js"
-              ]
+              "node_modules/prismjs/prism.js",
+              "node_modules/prismjs/components/prism-java.js",
+              "node_modules/prismjs/components/prism-java.min.js",
+              "node_modules/prismjs/components/prism-css.min.js",
+              "node_modules/prismjs/plugins/line-highlight/prism-line-highlight.js",
+              "node_modules/prismjs/components/prism-typescript.min.js"
+            ],
+            "allowedCommonJsDependencies": [
+              "highlight.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -51,12 +52,12 @@
                 {
                   "type": "initial",
                   "maximumWarning": "1mb",
-                  "maximumError": "5mb"
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "6kb"
+                  "maximumWarning": "6kb",
+                  "maximumError": "8kb"
                 }
               ],
               "outputHashing": "all"
@@ -103,15 +104,15 @@
             "styles": [
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.scss",
-                "node_modules/prismjs/themes/prism-okaidia.css"
+              "node_modules/prismjs/themes/prism-okaidia.css"
             ],
             "scripts": [
-                "node_modules/prismjs/prism.js",
-                "node_modules/prismjs/components/prism-java.js",
-                "node_modules/prismjs/components/prism-java.min.js",
-                "node_modules/prismjs/components/prism-css.min.js",
-                "node_modules/prismjs/plugins/line-highlight/prism-line-highlight.js",
-                "node_modules/prismjs/components/prism-typescript.min.js"
+              "node_modules/prismjs/prism.js",
+              "node_modules/prismjs/components/prism-java.js",
+              "node_modules/prismjs/components/prism-java.min.js",
+              "node_modules/prismjs/components/prism-css.min.js",
+              "node_modules/prismjs/plugins/line-highlight/prism-line-highlight.js",
+              "node_modules/prismjs/components/prism-typescript.min.js"
             ]
           }
         }
