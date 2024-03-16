@@ -74,6 +74,7 @@ public class LoginControllerTest {
   }
 
   @Test
+  @DisplayName("Successful logout")
   void logoutTest() throws Exception {
     userService.register(new UserRegisterDTO("verestah1", "verestah@gmail.com", "login1231", "password1"));
     var credentialsDTO = new CredentialsDTO("login1231", "password1");
@@ -84,5 +85,29 @@ public class LoginControllerTest {
     loginTestService.logout()
         .andExpect(status().isOk());
     assertTrue(SecurityContext.authentication().isEmpty());
+  }
+
+  @Test
+  @DisplayName("Case of exception : Null value given")
+  void nullValueAuth() throws Exception{
+    userService.register(new UserRegisterDTO("verestah", "verestah@gmail.com", "login1231", "password1"));
+    var credentialsDTO = new CredentialsDTO(null, "password1");
+    loginTestService.login(credentialsDTO)
+            .andExpect(status().isBadRequest())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.detail")
+                    .value("Invalid request content."))
+            .andDo(print());
+  }
+
+  @Test
+  @DisplayName("Case of exception : blank value given")
+  void blankValueAuth() throws Exception{
+    userService.register(new UserRegisterDTO("verestah", "verestah@gmail.com", "login1231", "password1"));
+    var credentialsDTO = new CredentialsDTO("", "password1");
+    loginTestService.login(credentialsDTO)
+            .andExpect(status().isBadRequest())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.detail")
+                    .value("Invalid request content."))
+            .andDo(print());
   }
 }

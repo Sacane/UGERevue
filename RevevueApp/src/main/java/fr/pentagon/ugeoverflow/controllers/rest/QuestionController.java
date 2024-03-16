@@ -79,7 +79,7 @@ public class QuestionController {
 
     @DeleteMapping(Routes.Question.ROOT + "/{questionId}")
     @RequireUser
-    public ResponseEntity<Void> removeQuestion(@PathVariable(name = "questionId") @Positive long questionId) {
+    public ResponseEntity<Void> removeQuestion(@PathVariable(name = "questionId") long questionId) {
         LOGGER.info("DELETE performed on /api/questions/" + questionId);
         var user = SecurityContext.checkAuthentication();
         questionService.remove(new QuestionRemoveDTO(user.id(), questionId));
@@ -87,7 +87,7 @@ public class QuestionController {
     }
 
     @GetMapping(Routes.Question.ROOT + "/{questionId}")
-    public ResponseEntity<QuestionDetailsDTO> getQuestion(@PathVariable(name = "questionId") @Positive long questionId) {
+    public ResponseEntity<QuestionDetailsDTO> getQuestion(@PathVariable(name = "questionId") long questionId) {
         LOGGER.info("GET performed on /api/questions/" + questionId);
         return ok(questionService.findById(questionId));
     }
@@ -102,7 +102,6 @@ public class QuestionController {
     @GetMapping(Routes.Question.ROOT + "/followers")
     public ResponseEntity<List<QuestionDTO>> getQuestionsFromFollowers() {
         var userDetail = SecurityContext.checkAuthentication();
-
         return ResponseEntity.ok(questionService.getQuestionsFromFollowers(userDetail.id()));
     }
 }

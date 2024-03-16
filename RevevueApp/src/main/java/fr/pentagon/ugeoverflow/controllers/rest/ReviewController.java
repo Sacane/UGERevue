@@ -19,8 +19,6 @@ import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static org.springframework.web.reactive.function.server.ServerResponse.ok;
-
 @RestController
 public class ReviewController {
     private final ReviewService reviewService;
