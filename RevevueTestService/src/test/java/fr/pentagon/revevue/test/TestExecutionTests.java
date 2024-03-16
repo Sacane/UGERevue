@@ -3,10 +3,7 @@ package fr.pentagon.revevue.test;
 import fr.pentagon.revevue.test.exception.CompilationException;
 import fr.pentagon.revevue.test.service.CustomTestClassLoader;
 import fr.pentagon.revevue.test.service.TestTracker;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,15 +27,6 @@ final class TestExecutionTests {
 
     @BeforeEach
     void initializeTempDirectory() throws IOException {
-        try (var files = Files.list(TEST_DIRECTORY)) {
-            files.filter(p -> !p.endsWith(".gitkeep")).forEach(file -> {
-                try {
-                    Files.delete(file);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-        }
         var f1 = Paths.get("src", "test", "resources", "FakeJavaFiles", "HelloWorld.java");
         var f2 = Paths.get("src", "test", "resources", "FakeJavaFiles", "HelloWorldTest.java");
         var f3 = Paths.get("src", "test", "resources", "FakeJavaFiles", "InfiniteLoop.java");
@@ -51,6 +39,19 @@ final class TestExecutionTests {
         Files.copy(f2, d2);
         Files.copy(f3, d3);
         Files.copy(f4, d4);
+    }
+
+    @AfterEach
+    void cleanTempDirectory() throws IOException {
+        try (var files = Files.list(TEST_DIRECTORY)) {
+            files.filter(p -> !p.endsWith(".gitkeep")).forEach(file -> {
+                try {
+                    Files.delete(file);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
     }
 
     @Nested
@@ -130,6 +131,7 @@ final class TestExecutionTests {
         void testTrackerAssertions() {
             assertThrows(NullPointerException.class, () -> TestTracker.runAndTrack(null));
         }
+
         @Test
         @DisplayName("TestTracker tracks also timeouts")
         void testTrackerTimeout() throws IOException, CompilationException, ClassNotFoundException {
@@ -137,5 +139,6 @@ final class TestExecutionTests {
             var testClass = loader.load(TEST_INFINITE_FILE_NAME, DEPENDENCY_INFINITE_FILE_NAME);
             assertThrows(TimeoutException.class, () -> TestTracker.runAndTrack(testClass));
         }
+
     }
 }
