@@ -1,8 +1,8 @@
 import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {catchError, Observable, throwError} from "rxjs";
-import {environment} from "../../environment";
 import {DetailReviewResponseDTO, Review, ReviewQuestionTitleDTO} from "../../modules/reviews/models/review.model";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
     providedIn: 'root',
@@ -10,7 +10,8 @@ import {DetailReviewResponseDTO, Review, ReviewQuestionTitleDTO} from "../../mod
 export class ReviewService {
     private url: string = environment.apiUrl + 'reviews';
 
-    constructor(private httpclient: HttpClient) { }
+    constructor(private httpclient: HttpClient) {
+    }
 
     public getDetails(reviewId: string): Observable<DetailReviewResponseDTO> {
         return this.httpclient.get<any>(`${this.url}/${reviewId}`);
@@ -19,13 +20,17 @@ export class ReviewService {
     public deleteReview(reviewId: string): Observable<any> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-        return this.httpclient.delete<any>(`${this.url}/${reviewId}`, { headers });
+        return this.httpclient.delete<any>(`${this.url}/${reviewId}`, {headers});
     }
 
-    public findReviewByQuestionId(questionId: number, onError: (error: Error) => any = (err) => { console.error(err) }): Observable<Review[]> {
+    public findReviewByQuestionId(questionId: number, onError: (error: Error) => any = (err) => {
+        console.error(err)
+    }): Observable<Review[]> {
         return this.httpclient.get<Review[]>(environment.apiUrl + 'reviews/questions/' + questionId).pipe(
             catchError(err => {
-                return throwError(() => { onError(err); });
+                return throwError(() => {
+                    onError(err);
+                });
             })
         );
     }
@@ -33,22 +38,28 @@ export class ReviewService {
     public addReview(reviewId: string, content: string, tagList: Array<string> = []): Observable<Review> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-        return this.httpclient.post<Review>(this.url, { reviewId: reviewId, content: content, tagList: tagList }, { headers });
+        return this.httpclient.post<Review>(this.url, {
+            reviewId: reviewId,
+            content: content,
+            tagList: tagList
+        }, {headers});
     }
 
     public vote(reviewId: string, up: boolean): Observable<any> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-        return this.httpclient.post<void>(`${this.url}/${reviewId}/vote`, { up }, { headers });
+        return this.httpclient.post<void>(`${this.url}/${reviewId}/vote`, {up}, {headers});
     }
 
     public cancelVote(reviewId: string): Observable<any> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
 
-        return this.httpclient.delete<void>(`${this.url}/${reviewId}/cancelVote`, { headers });
+        return this.httpclient.delete<void>(`${this.url}/${reviewId}/cancelVote`, {headers});
     }
 
-    public findByTag(tag: string, onError: (err: HttpErrorResponse) => any = (error) => {console.error(error.error.message)}): Observable<Array<ReviewQuestionTitleDTO>> {
+    public findByTag(tag: string, onError: (err: HttpErrorResponse) => any = (error) => {
+        console.error(error.error.message)
+    }): Observable<Array<ReviewQuestionTitleDTO>> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
         return this.httpclient.get<Array<ReviewQuestionTitleDTO>>(`${this.url}/tags/` + tag)
             .pipe(
