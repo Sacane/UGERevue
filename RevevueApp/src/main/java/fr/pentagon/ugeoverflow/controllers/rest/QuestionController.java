@@ -28,12 +28,12 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 public class QuestionController {
 
-  private static final Logger LOGGER = Logger.getLogger(QuestionController.class.getName());
-  private final QuestionService questionService;
+    private static final Logger LOGGER = Logger.getLogger(QuestionController.class.getName());
+    private final QuestionService questionService;
 
-  public QuestionController(QuestionService questionService) {
-    this.questionService = questionService;
-  }
+    public QuestionController(QuestionService questionService) {
+        this.questionService = questionService;
+    }
 
     @GetMapping(Routes.Question.ROOT)
     public ResponseEntity<List<QuestionDTO>> allQuestions() {
@@ -88,21 +88,21 @@ public class QuestionController {
         return ok(questionService.findById(questionId));
     }
 
-  @PostMapping(Routes.Question.ROOT + "/reviews")
-  public ResponseEntity<ReviewQuestionResponseDTO> addReview(@RequestBody QuestionReviewCreateBodyDTO questionReviewCreateBodyDTO) {
-      try {
-          var userDetail = SecurityContext.checkAuthentication();
+    @PostMapping(Routes.Question.ROOT + "/reviews")
+    public ResponseEntity<ReviewQuestionResponseDTO> addReview(@RequestBody QuestionReviewCreateBodyDTO questionReviewCreateBodyDTO) {
+        try {
+            var userDetail = SecurityContext.checkAuthentication();
 
-          return ok(questionService.addReview(new QuestionReviewCreateDTO(userDetail.id(), questionReviewCreateBodyDTO.questionId(), questionReviewCreateBodyDTO.content(), questionReviewCreateBodyDTO.lineStart(), questionReviewCreateBodyDTO.lineEnd(), questionReviewCreateBodyDTO.tags())));
-      } finally {
-          LOGGER.info("End of the method");
-      }
-  }
+            return ok(questionService.addReview(new QuestionReviewCreateDTO(userDetail.id(), questionReviewCreateBodyDTO.questionId(), questionReviewCreateBodyDTO.content(), questionReviewCreateBodyDTO.lineStart(), questionReviewCreateBodyDTO.lineEnd(), questionReviewCreateBodyDTO.tags())));
+        } finally {
+            LOGGER.info("End of the method");
+        }
+    }
 
     @GetMapping(Routes.Question.ROOT + "/followers")
     public ResponseEntity<List<QuestionDTO>> getQuestionsFromFollowers() {
         var userDetail = SecurityContext.checkAuthentication();
 
-        return ResponseEntity.ok(questionService.getQuestionsFromFollowers(userDetail.id()));
+        return ResponseEntity.ok(questionService.getQuestionsFromFollows(userDetail.id()));
     }
 }

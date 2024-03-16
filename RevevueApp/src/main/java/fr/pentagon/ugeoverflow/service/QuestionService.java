@@ -266,7 +266,7 @@ public class QuestionService {
     private record ScoreFollower(long userId, int score) {}
 
     @Transactional
-    public List<QuestionDTO> getQuestionsFromFollowers(long userId) {
+    public List<QuestionDTO> getQuestionsFromFollows(long userId) {
         var questions = questionRepository.findAll();
         var questionsWithScore = new HashMap<Question, Integer>();
         var toVisitUsers = new ArrayDeque<ScoreFollower>();
@@ -299,8 +299,6 @@ public class QuestionService {
             }
         }
 
-        // visitQuestionWithScore(userId, visitedUserId, questionsWithScore, 1);
-
         return questionsWithScore.entrySet().stream().sorted((entry1, entry2) -> (entry1.getValue() == 0) ? 1 : ((entry2.getValue() == 0) ? -1 : entry1.getValue() - entry2.getValue())).map(entrySet -> {
             var question = entrySet.getKey();
 
@@ -315,22 +313,4 @@ public class QuestionService {
             );
         }).toList();
     }
-
-    /*private void visitQuestionWithScore(long userId, List<Long> visitedUserId, Map<Question, Integer> questionsWithScore, int score) {
-        var follows = userRepository.findFollowsById(userId);
-
-        visitedUserId.add(userId);
-        for (var follow : follows) {
-            for (var question : follow.getQuestions()) {
-                var questionScore = questionsWithScore.get(question);
-                if (questionScore == 0 || score < questionScore) {
-                    questionsWithScore.put(question, score);
-                }
-            }
-
-            if (!visitedUserId.contains(follow.getId())) {
-                visitQuestionWithScore(follow.getId(), visitedUserId, questionsWithScore, score + 1);
-            }
-        }
-    }*/
 }
