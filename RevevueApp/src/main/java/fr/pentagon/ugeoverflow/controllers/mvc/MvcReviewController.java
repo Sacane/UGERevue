@@ -8,12 +8,14 @@ import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.service.ReviewService;
 import fr.pentagon.ugeoverflow.utils.MarkdownRenderer;
 import jakarta.annotation.Nullable;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.List;
 
 @Controller
@@ -23,7 +25,7 @@ public class MvcReviewController {
     private final ReviewService reviewService;
     private final QuestionService questionService;
     private final MarkdownRenderer markdownRenderer;
-    public record ReviewBodyDTO(@NotNull @NotBlank String content, @Nullable Integer lineStart, @Nullable Integer lineEnd, List<String> tags) {
+    public record ReviewBodyDTO(@NotNull @NotBlank String content, @Nullable Integer lineStart, @Nullable Integer lineEnd, @NotNull List<String> tags) {
     }
     public MvcReviewController(ReviewService reviewService, MarkdownRenderer markdownRenderer, QuestionService questionService) {
         this.reviewService = reviewService;
@@ -32,7 +34,7 @@ public class MvcReviewController {
     }
 
     @GetMapping("/{reviewId}")
-    public String detailPage(@PathVariable("reviewId") long reviewId, Model model) {
+    public String detailPage(@PathVariable("reviewId") @Positive long reviewId, Model model) {
         Long userId = SecurityContext.authentication().map(RevevueUserDetail::id).orElse(null);
         var reviews = reviewService.findDetailFromReviewId(userId, reviewId);
         model.addAttribute("review", reviews);
@@ -42,13 +44,13 @@ public class MvcReviewController {
     }
 
     @GetMapping("/create/{questionId}")
-    public String createReviewPage(@ModelAttribute("body") ReviewBodyDTO questionReviewCreateDTO, @PathVariable("questionId") long questionId, Model model){
+    public String createReviewPage(@Valid @ModelAttribute("body") ReviewBodyDTO questionReviewCreateDTO, @PathVariable("questionId") @Positive long questionId, Model model){
         model.addAttribute("request", new QuestionReviewCreateBodyDTO(questionId, questionReviewCreateDTO.content(), questionReviewCreateDTO.lineStart(), questionReviewCreateDTO.lineEnd(), questionReviewCreateDTO.tags()));
         return "pages/reviews/create";
     }
 
     @PostMapping("/create")
-    public String createReview( @ModelAttribute("request") QuestionReviewCreateBodyDTO questionReviewCreateDTO) {
+    public String createReview(@Valid @ModelAttribute("request") QuestionReviewCreateBodyDTO questionReviewCreateDTO) {
         var currentUser = SecurityContext.checkAuthentication();
         questionService.addReview(new QuestionReviewCreateDTO(currentUser.id(), questionReviewCreateDTO.questionId(), questionReviewCreateDTO.content(), questionReviewCreateDTO.lineStart(), questionReviewCreateDTO.lineEnd(), questionReviewCreateDTO.tags() == null ? List.of() : questionReviewCreateDTO.tags()));
         return "redirect:../../light/questions/" + questionReviewCreateDTO.questionId();

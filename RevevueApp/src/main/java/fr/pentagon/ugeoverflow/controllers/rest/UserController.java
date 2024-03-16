@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Positive;
 import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
@@ -33,14 +34,14 @@ public class UserController {
   }
 
   @PostMapping(Routes.User.ROOT)
-  public ResponseEntity<UserIdDTO> registerUser(@RequestBody UserRegisterDTO userRegisterDTO) {
+  public ResponseEntity<UserIdDTO> registerUser(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
     LOGGER.info("try to register");
     return ResponseEntity.ok(userService.register(userRegisterDTO));
   }
 
   @PostMapping(Routes.User.FOLLOW + "/{id}")
   @RequireUser
-  public ResponseEntity<Void> followUser(@PathVariable("id") long id, Principal principal) {
+  public ResponseEntity<Void> followUser(@PathVariable("id") @Positive long id, Principal principal) {
     LOGGER.info("Trying to follow");
     if (principal == null) {
       throw HttpException.unauthorized("no user logged in");
@@ -52,7 +53,7 @@ public class UserController {
 
   @PostMapping(Routes.User.UNFOLLOW + "/{id}")
   @RequireUser
-  public ResponseEntity<Void> unfollowUser(@PathVariable("id") long id, Principal principal) {
+  public ResponseEntity<Void> unfollowUser(@PathVariable("id") @Positive long id, Principal principal) {
     LOGGER.info("Trying to unfollow");
     if (principal == null) {
       throw HttpException.unauthorized("no user logged in");

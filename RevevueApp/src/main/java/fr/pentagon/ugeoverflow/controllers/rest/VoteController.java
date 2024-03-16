@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.Positive;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -25,7 +26,7 @@ public class VoteController {
   }
 
   @GetMapping(Routes.Vote.ROOT + "/questions/{questionId}")
-  public ResponseEntity<VoteDTO> howManyVotes(@PathVariable long questionId) {
+  public ResponseEntity<VoteDTO> howManyVotes(@PathVariable @Positive long questionId) {
     LOGGER.info("GET performed on " + Routes.Vote.ROOT + "/" + questionId);
     var votes = voteService.votes(questionId);
     if (votes.isPresent()) {
@@ -35,7 +36,7 @@ public class VoteController {
   }
 
   @PostMapping(Routes.Vote.UP_VOTE + "/questions/{questionId}")
-  public ResponseEntity<Void> upVoteQuestion(@PathVariable long questionId) {
+  public ResponseEntity<Void> upVoteQuestion(@PathVariable @Positive long questionId) {
     var vote = voteService.votesQuestion(questionId, true);
     if (vote.isPresent()) {
       return ResponseEntity.ok().build();
@@ -44,7 +45,7 @@ public class VoteController {
   }
 
   @PostMapping(Routes.Vote.DOWN_VOTE + "/questions/{questionId}")
-  public ResponseEntity<Void> downVoteQuestion(@PathVariable long questionId) {
+  public ResponseEntity<Void> downVoteQuestion(@PathVariable @Positive long questionId) {
     voteService.votesQuestion(questionId, false);
     return ResponseEntity.ok().build();
   }

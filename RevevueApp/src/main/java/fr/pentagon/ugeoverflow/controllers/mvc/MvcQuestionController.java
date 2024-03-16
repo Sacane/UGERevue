@@ -1,21 +1,20 @@
 package fr.pentagon.ugeoverflow.controllers.mvc;
 
-import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseChildrenDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.thymleaf.NewQuestionThymeleafDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.service.ReviewMarkdownService;
-import fr.pentagon.ugeoverflow.service.ReviewService;
+
 import fr.pentagon.ugeoverflow.utils.MarkdownRenderer;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -33,7 +32,7 @@ public class MvcQuestionController {
     }
 
     @GetMapping("/{questionId}")
-    public String detail(@PathVariable("questionId") long questionId, Model model) {
+    public String detail(@PathVariable("questionId") @Positive long questionId, Model model) {
         var question = questionService.findById(questionId);
         var reviews = reviewService.findReviewsByQuestionId(questionId);
         model.addAttribute("question", question.withAnotherContent(markdownRenderer.markdownToHtml(question.questionContent())));
@@ -49,7 +48,7 @@ public class MvcQuestionController {
     }
 
     @GetMapping("/ask")
-    public String askPage(@ModelAttribute("newQuestion") NewQuestionThymeleafDTO newQuestionDTO) {
+    public String askPage(@Valid @ModelAttribute("newQuestion") NewQuestionThymeleafDTO newQuestionDTO) {
         if(SecurityContext.authentication().isEmpty()){
             return "redirect:/light/forbidden";
         }

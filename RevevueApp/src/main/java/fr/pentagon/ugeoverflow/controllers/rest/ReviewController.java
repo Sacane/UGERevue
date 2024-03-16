@@ -9,9 +9,13 @@ import fr.pentagon.ugeoverflow.controllers.dtos.requests.VoteBodyDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.*;
 import fr.pentagon.ugeoverflow.service.ReviewService;
 import fr.pentagon.ugeoverflow.utils.Routes;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -27,7 +31,7 @@ public class ReviewController {
     }
 
     @GetMapping(Routes.Review.ROOT + "/{reviewId}")
-    public ResponseEntity<DetailReviewResponseDTO> findDetailsReview(@PathVariable(name = "reviewId") long reviewId) {
+    public ResponseEntity<DetailReviewResponseDTO> findDetailsReview(@PathVariable(name = "reviewId") @Positive long reviewId) {
         LOGGER.info("fetch on " + Routes.Review.ROOT + " => " + reviewId);
         var auth = SecurityContext.authentication();
         return auth.map(revevueUserDetail ->
@@ -36,19 +40,19 @@ public class ReviewController {
     }
 
     @GetMapping(Routes.Review.ROOT + Routes.Question.IDENT + "/{questionId}")
-    public ResponseEntity<List<ReviewResponseChildrenDTO>> findAllReviews(@PathVariable(name = "questionId") long questionId) {
+    public ResponseEntity<List<ReviewResponseChildrenDTO>> findAllReviews(@PathVariable(name = "questionId") @Positive long questionId) {
         return ResponseEntity.ok(reviewService.findReviewsByQuestionId(questionId));
     }
 
     @PostMapping(Routes.Review.ROOT)
-    public ResponseEntity<ReviewQuestionResponseDTO> addReview(@RequestBody ReviewOnReviewBodyDTO reviewOnReviewBodyDTO) {
+    public ResponseEntity<ReviewQuestionResponseDTO> addReview(@Valid @RequestBody ReviewOnReviewBodyDTO reviewOnReviewBodyDTO) {
         var userDetail = SecurityContext.checkAuthentication();
         return ResponseEntity.ok(reviewService.addReview(new ReviewOnReviewDTO(userDetail.id(), reviewOnReviewBodyDTO.reviewId(), reviewOnReviewBodyDTO.content(), reviewOnReviewBodyDTO.tagList())));
     }
 
     @DeleteMapping(Routes.Review.ROOT + "/{reviewId}")
     @RequireUser
-    public ResponseEntity<Void> removeReview(@PathVariable(name = "reviewId") long reviewId) {
+    public ResponseEntity<Void> removeReview(@PathVariable(name = "reviewId") @Positive long reviewId) {
         var user = SecurityContext.authentication().orElseThrow();
         LOGGER.info("perform delete on " + Routes.Review.ROOT);
         reviewService.remove(new ReviewRemoveDTO(user.id(), reviewId));
@@ -57,7 +61,7 @@ public class ReviewController {
     }
 
     @PostMapping(Routes.Review.ROOT + "/{reviewId}/vote")
-    public ResponseEntity<Void> voteReview(@PathVariable(name = "reviewId") long reviewId, @RequestBody VoteBodyDTO voteBodyDTO) {
+    public ResponseEntity<Void> voteReview(@PathVariable(name = "reviewId") @Positive long reviewId, @Valid @RequestBody VoteBodyDTO voteBodyDTO) {
         var user = SecurityContext.checkAuthentication();
 
         reviewService.vote(user.id(), reviewId, voteBodyDTO.up());
@@ -66,7 +70,7 @@ public class ReviewController {
     }
 
     @DeleteMapping(Routes.Review.ROOT + "/{reviewId}/cancelVote")
-    public ResponseEntity<Void> cancelVoteReview(@PathVariable(name = "reviewId") long reviewId) {
+    public ResponseEntity<Void> cancelVoteReview(@PathVariable(name = "reviewId") @Positive long reviewId) {
         var user = SecurityContext.checkAuthentication();
 
         reviewService.cancelVote(user.id(), reviewId);
@@ -77,7 +81,7 @@ public class ReviewController {
     @GetMapping(Routes.Review.ROOT + "/tags/{tag}")
     @RequireUser
     public ResponseEntity<List<ReviewQuestionTitleDTO>> findByTag(
-            @PathVariable(name = "tag") String tag
+            @PathVariable(name = "tag") @NotNull @NotBlank String tag
     ) {
         LOGGER.info("perform request on " + Routes.Review.ROOT + "/tags/" + tag);
         List<ReviewQuestionTitleDTO> byTag = reviewService.findByTag(tag);
