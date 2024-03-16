@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 @Controller
-@RequestMapping("/light/questions")
+@RequestMapping("/light/questions/")
 public class MvcQuestionController {
     private final QuestionService questionService;
     private final ReviewMarkdownService reviewService;
@@ -38,14 +38,14 @@ public class MvcQuestionController {
         var reviews = reviewService.findReviewsByQuestionId(questionId);
         model.addAttribute("question", question.withAnotherContent(markdownRenderer.markdownToHtml(question.questionContent())));
         model.addAttribute("reviews", reviews);
-        return "/pages/questions/detail";
+        return "pages/questions/detail";
     }
 
-    @GetMapping("/")
+    @GetMapping
     public String all(Model model) {
         var questions = questionService.getQuestions();
         model.addAttribute("questions", questions);
-        return "/pages/questions/all";
+        return "pages/questions/all";
     }
 
     @GetMapping("/ask")
@@ -53,7 +53,7 @@ public class MvcQuestionController {
         if(SecurityContext.authentication().isEmpty()){
             return "redirect:/light/forbidden";
         }
-        return "/pages/questions/ask";
+        return "pages/questions/ask";
     }
 
     @PostMapping("/ask")
