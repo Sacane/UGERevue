@@ -3,13 +3,17 @@ package fr.pentagon.revevue.test;
 import fr.pentagon.revevue.test.exception.CompilationException;
 import fr.pentagon.revevue.test.service.CustomTestClassLoader;
 import fr.pentagon.revevue.test.service.TestTracker;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,19 +24,12 @@ final class TestExecutionTests {
     private static final String TEST_FILE_NAME = "HelloWorldTest.java";
 
     private static final String DEPENDENCY_FILE_NAME = "HelloWorld.java";
+    private static final String DEPENDENCY_INFINITE_FILE_NAME = "InfiniteLoop.java";
+    private static final String TEST_INFINITE_FILE_NAME = "InfiniteLoopTest.java";
+
 
     @BeforeEach
     void initializeTempDirectory() throws IOException {
-        var f1 = Paths.get("src", "test", "resources", "FakeJavaFiles", "HelloWorld.java");
-        var f2 = Paths.get("src", "test", "resources", "FakeJavaFiles", "HelloWorldTest.java");
-        var d1 = Paths.get("src", "test", "resources", "TempDoNotRemove", "HelloWorld.java");
-        var d2 = Paths.get("src", "test", "resources", "TempDoNotRemove", "HelloWorldTest.java");
-        Files.copy(f1, d1);
-        Files.copy(f2, d2);
-    }
-
-    @AfterEach
-    void cleanTempDirectory() throws IOException {
         try (var files = Files.list(TEST_DIRECTORY)) {
             files.filter(p -> !p.endsWith(".gitkeep")).forEach(file -> {
                 try {
@@ -42,6 +39,18 @@ final class TestExecutionTests {
                 }
             });
         }
+        var f1 = Paths.get("src", "test", "resources", "FakeJavaFiles", "HelloWorld.java");
+        var f2 = Paths.get("src", "test", "resources", "FakeJavaFiles", "HelloWorldTest.java");
+        var f3 = Paths.get("src", "test", "resources", "FakeJavaFiles", "InfiniteLoop.java");
+        var f4 = Paths.get("src", "test", "resources", "FakeJavaFiles", "InfiniteLoopTest.java");
+        var d1 = Paths.get("src", "test", "resources", "TempDoNotRemove", "HelloWorld.java");
+        var d2 = Paths.get("src", "test", "resources", "TempDoNotRemove", "HelloWorldTest.java");
+        var d3 = Paths.get("src", "test", "resources", "TempDoNotRemove", DEPENDENCY_INFINITE_FILE_NAME);
+        var d4 = Paths.get("src", "test", "resources", "TempDoNotRemove", TEST_INFINITE_FILE_NAME);
+        Files.copy(f1, d1);
+        Files.copy(f2, d2);
+        Files.copy(f3, d3);
+        Files.copy(f4, d4);
     }
 
     @Nested
@@ -60,7 +69,7 @@ final class TestExecutionTests {
                         loader.clean();
                         assertDoesNotThrow(loader::clean);
                         try (var files = Files.list(TEST_DIRECTORY)) {
-                            assertEquals(3, files.toList().size());
+                            assertEquals(5, files.toList().size());
                         }
                     }
             );
@@ -94,12 +103,11 @@ final class TestExecutionTests {
 
         @Test
         @DisplayName("TestTracker is working")
-        void testTrackerWorking() throws CompilationException, IOException, ClassNotFoundException {
+        void testTrackerWorking() throws CompilationException, IOException, ClassNotFoundException, TimeoutException {
             var loader = CustomTestClassLoader.in(TEST_DIRECTORY);
             var testClass = loader.load(TEST_FILE_NAME, DEPENDENCY_FILE_NAME);
             var tracker = TestTracker.runAndTrack(testClass);
             var dummyTestTracker = TestTracker.runAndTrack(RevevueTestServiceApplication.class);
-            System.out.println(dummyTestTracker.failureDetails());
             var expectedDetail = """
                     Failed tests :
                                         
@@ -122,6 +130,12 @@ final class TestExecutionTests {
         void testTrackerAssertions() {
             assertThrows(NullPointerException.class, () -> TestTracker.runAndTrack(null));
         }
-
+        @Test
+        @DisplayName("TestTracker tracks also timeouts")
+        void testTrackerTimeout() throws IOException, CompilationException, ClassNotFoundException {
+            var loader = CustomTestClassLoader.in(TEST_DIRECTORY);
+            var testClass = loader.load(TEST_INFINITE_FILE_NAME, DEPENDENCY_INFINITE_FILE_NAME);
+            assertThrows(TimeoutException.class, () -> TestTracker.runAndTrack(testClass));
+        }
     }
 }
