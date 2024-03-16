@@ -3,6 +3,7 @@ package fr.pentagon.revevue.test.service;
 import fr.pentagon.revevue.test.dto.TestBundle;
 import fr.pentagon.revevue.test.dto.TestResultDTO;
 import fr.pentagon.revevue.test.exception.CompilationException;
+import fr.pentagon.revevue.test.exception.InfiniteLoopException;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -17,6 +18,7 @@ public final class TestsService {
 
     public TestResultDTO runTest(TestBundle testBundle) throws IOException, CompilationException, ClassNotFoundException {
         Objects.requireNonNull(testBundle);
+
         try {
             logger.info("Start running pipeline tests on the following files : "
                     + testBundle.dependencyFileName() + ", " + testBundle.testFileName());
@@ -36,6 +38,8 @@ public final class TestsService {
             );
             logger.info("Results : " + testResultDTO);
             return testResultDTO;
+        }catch (InfiniteLoopException infiniteLoopException){
+            return new TestResultDTO(false, 0, 0, infiniteLoopException.getMessage());
         }finally {
             deleteFolder(testBundle.idAsString());
         }

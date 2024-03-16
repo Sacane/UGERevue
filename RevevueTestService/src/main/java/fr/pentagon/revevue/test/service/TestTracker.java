@@ -1,13 +1,16 @@
 package fr.pentagon.revevue.test.service;
 
 
-import org.junit.platform.launcher.Launcher;
+import fr.pentagon.revevue.test.exception.InfiniteLoopException;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 
@@ -55,7 +58,23 @@ public final class TestTracker {
         var listener = new SummaryGeneratingListener();
         var launcher = LauncherFactory.create();
         launcher.registerTestExecutionListeners(listener);
-        launcher.execute(request); // Need timeout
+        var timer = Timer.start();
+        var future1 = CompletableFuture.runAsync(() -> {
+            launcher.execute(request);
+            timer.end();
+        });
+        var future2 = CompletableFuture.runAsync(() -> {
+            try {
+                Thread.sleep(5_000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        var anyFuture = CompletableFuture.anyOf(future1, future2);
+        anyFuture.join();
+        if(!timer.isFinished()){
+            throw new InfiniteLoopException("The program contains a too long treatment");
+        }
         return new TestTracker(listener.getSummary());
     }
 
@@ -102,4 +121,22 @@ public final class TestTracker {
         return details.toString();
     }
 
+    private static class Timer{
+        private final Object lock = new Object();
+        private boolean isTaskFinish = false;
+        static Timer start() {
+            return new Timer();
+        }
+        public void end() {
+            synchronized (lock){
+                System.out.println("test");
+                isTaskFinish = true;
+            }
+        }
+        public boolean isFinished() {
+            synchronized (lock){
+                return isTaskFinish;
+            }
+        }
+    }
 }

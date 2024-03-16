@@ -22,14 +22,4 @@ public class HelloWorldTest {
         HelloWorld var1 = new HelloWorld();
         Assertions.assertEquals("Hello world ?", var1.helloWorld());
     }
-
-    @Test
-    void infinite(){
-        var i = 0;
-        while (true){
-            i++;
-            i--;
-        }
-    }
-
 }
