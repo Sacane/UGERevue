@@ -2,7 +2,7 @@
     <div class="dialog-content">
         <h2 mat-dialog-title align="center">Ajouter une revue</h2>
         <mat-dialog-content>
-            <form [formGroup]="form">
+            <form [formGroup]="form" class="review-create-form">
                 @if (data.onQuestion) {
                     <mat-form-field>
                         <mat-label>Ligne de début</mat-label>
@@ -40,17 +40,6 @@
             <button mat-button color="primary" (click)="close()">Cancel</button>
             <button mat-raised-button [disabled]="!form.valid" color="primary" (click)="confirm()">Confirm</button>
         </mat-dialog-actions>
-        <!--<button class="add-tag-button" mat-raised-button (click)="addTag()">Ajouter un tag</button>
-        <ul class="tag-list">
-            <li *ngFor="let tag of tags.controls; let i = index">
-                <mat-form-field>
-                    <input matInput type="text" [formControl]="tag" placeholder="Tag">
-                </mat-form-field>
-                <button mat-icon-button (click)="removeTag(i)">
-                    <mat-icon>delete</mat-icon>
-                </button>
-            </li>
-        </ul>-->
         <form>
             <mat-form-field class="chip-list">
                 <mat-label>Tags de la review</mat-label>
@@ -76,19 +65,19 @@
                 </mat-autocomplete>
             </mat-form-field>
         </form>
-
-
     </div>
     <div class="review-suggestion">
         @if (selfTags().length > 0){
             <h2 mat-dialog-title>Cliquer sur un tag pour récupérer les reviews concernés</h2>
-            @for(tag of selfTags(); track tag.tag){
-                <div class="tag-card" (click)="searchTag(tag)">
-                    <p>{{tag.tag}}</p>
-                </div>
-            }
+            <div class="selfTags">
+                @for(tag of selfTags(); track tag.tag){
+                    <div class="tag-card" (click)="searchTag(tag)">
+                        <p>{{tag.tag}}</p>
+                    </div>
+                }
+            </div>
         }
-        <div style="text-align: right;">
+        <div style="text-align: center;">
             <mat-form-field>
                 <input matInput #tagSearchBar type="text" placeholder="Rechercher par tag" (keyup)="updateInputTag($event)">
             </mat-form-field>

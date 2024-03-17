@@ -1,10 +1,10 @@
 import {inject, Injectable} from "@angular/core";
 import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {environment} from "../environment";
 import {catchError, Observable, tap, throwError} from "rxjs";
 import {NewQuestionDTO} from "./models-out";
 import {Question, SimpleQuestion} from "./models/question";
 import {QuestionReviewCreateDTO} from "../modules/questions/models/review";
+import {environment} from "../../environments/environment";
 
 
 @Injectable({
@@ -18,12 +18,13 @@ export class QuestionService {
 
     public searchQuestion(label: string, username?: string, onError: (error: Error) => any = (err) => console.error(err)): Observable<SimpleQuestion[]> {
         let params = new HttpParams().append('label', label)
-        if(username !== undefined) {
+        if (username !== undefined) {
             params = params.append('username', username)
         }
         return this.client.get<SimpleQuestion[]>(this.SEARCH, {params: params})
             .pipe(tap(), catchError(err => throwError(() => onError(err))))
     }
+
     public createQuestion(newQuestionDTO: NewQuestionDTO, onError: (error: Error) => any = (err) => console.error(err)): Observable<number> {
         const formData = new FormData();
         formData.append('title', newQuestionDTO.title);

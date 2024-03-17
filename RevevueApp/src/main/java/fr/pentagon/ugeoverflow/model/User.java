@@ -191,5 +191,9 @@ public final class User {
     this.tagsCreated.remove(tag);
     tag.removeUser(this);
   }
+
+  public boolean doesTagUseByReviews(Tag tag){
+    return reviews.stream().anyMatch(t -> t.getTagsList().contains(tag));
+  }
 }
 
