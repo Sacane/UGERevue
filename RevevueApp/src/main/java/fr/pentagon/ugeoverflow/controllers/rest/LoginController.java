@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.controllers.rest;
 
+import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.LoginResponseDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
@@ -31,6 +32,7 @@ public class LoginController {
   }
 
   @PostMapping(Routes.Auth.LOGOUT)
+  @RequireUser
   public void logout(HttpServletRequest request, HttpServletResponse response) {
     loginManager.logout(request, response);
   }
