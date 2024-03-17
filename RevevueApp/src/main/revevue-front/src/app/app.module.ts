@@ -16,7 +16,7 @@ import {
 } from "./modules";
 import {provideHttpClient, withFetch, withInterceptors, withXsrfConfiguration} from "@angular/common/http";
 import {authInterceptor} from "./shared/authInterceptor";
-import {CommonModule} from "@angular/common";
+import {CommonModule, HashLocationStrategy, LocationStrategy} from "@angular/common";
 import {MarkdownModule} from "ngx-markdown";
 import {provideToastr, ToastrModule} from "ngx-toastr";
 import {MatChipsModule} from "@angular/material/chips";
@@ -31,8 +31,10 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
                 cookieName: 'XSRF-TOKEN',
                 headerName: 'X-XSRF-TOKEN'
             })
-        ), provideToastr(), provideAnimations(),
-
+        ),
+        provideToastr(),
+        provideAnimations(),
+        {provide: LocationStrategy, useClass: HashLocationStrategy}
     ],
     imports: [
         CommonModule,
