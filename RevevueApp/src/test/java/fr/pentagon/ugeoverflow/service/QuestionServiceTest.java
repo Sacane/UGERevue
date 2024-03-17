@@ -53,7 +53,7 @@ public class QuestionServiceTest {
     @Test
     @DisplayName("Create a question with non-existent user")
     void createWithNonExistentUser() {
-        assertThrows(HttpException.class, () -> questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "", ""), 50));
+        assertThrows(HttpException.class, () -> questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "", ""), 9999));
     }
 
     @Test

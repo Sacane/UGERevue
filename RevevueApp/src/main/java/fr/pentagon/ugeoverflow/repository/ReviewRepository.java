@@ -14,6 +14,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Optional<Review> findByIdWithReviews(long id);
     @Query(value = "SELECT r FROM Review r LEFT JOIN FETCH r.question WHERE r.id = ?1")
     Optional<Review> findByIdWithQuestion(long id);
+    @Query(value = "SELECT r FROM Review r LEFT JOIN FETCH r.tagsList WHERE r.id = ?1")
+    Optional<Review> findByIdWithTags(long id);
     @Query("SELECT r FROM Review r LEFT JOIN FETCH r.tagsList t WHERE t.name = :tagName")
     Set<Review> findByTagName(@Param("tagName") String tagName);
 
