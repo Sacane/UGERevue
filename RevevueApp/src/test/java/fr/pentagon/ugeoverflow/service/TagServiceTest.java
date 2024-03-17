@@ -6,12 +6,14 @@ import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewRemoveDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.model.Review;
+import fr.pentagon.ugeoverflow.model.Tag;
 import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.repository.QuestionRepository;
 import fr.pentagon.ugeoverflow.repository.ReviewRepository;
 import fr.pentagon.ugeoverflow.repository.TagRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.testutils.UserTestProvider;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -167,6 +169,49 @@ public class TagServiceTest {
         assertTrue(tag.isPresent());
         var t = tag.get();
         assertFalse(t.getUsersOf().contains(userId));
+    }
+
+    @Test
+    @DisplayName("""
+            If a user delete its tagged review but the tag still exists on another one,
+            then the tag should not be detach from the user
+            """)
+    void removeReviewShouldNotDetachTagIfUserStillContainsTagReference() throws IOException {
+        userTestProvider.addSomeUserIntoDatabase();
+        final var userId = userRepository.findByLogin("loginSacane").orElseThrow();
+        final var question = questionRepository.findByAuthorOrderByCreatedAtDesc(userId).get(0);
+        var review = questionService.addReview(
+                new QuestionReviewCreateDTO(
+                        userId.getId(),
+                        question.getId(),
+                        "Je ne sais pas quoi mettre dans cette review",
+                        null,
+                        null,
+                        List.of("test")
+                )
+        );
+        var review2 = questionService.addReview(
+                new QuestionReviewCreateDTO(
+                        userId.getId(),
+                        question.getId(),
+                        "Je ne sais pas quoi mettre dans cette review non plus",
+                        null,
+                        null,
+                        List.of("test")
+                )
+        );
+
+        reviewService.remove(new ReviewRemoveDTO(userId.getId(), review.id()));
+
+        var tag = tagRepository.findTagByNameWithUsers("test");
+        assertTrue(tag.isPresent());
+        assertTrue(tag.get().getUsersOf().contains(userId));
+        var users = userRepository.findByTagName("test");
+        assertTrue(users.contains(userId));
+
+        var userNow = userRepository.findByIdWithTag(userId.getId());
+        assertTrue(userNow.isPresent());
+        assertTrue(userNow.get().getTagsCreated().contains(tag.get()));
     }
 
 }

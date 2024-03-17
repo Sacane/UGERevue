@@ -89,12 +89,7 @@ public class ReviewService {
         if (user.getRole() != Role.ADMIN && !userRepository.containsReview(user.getId(), review)) {
             throw HttpException.unauthorized("Not your review");
         }
-        review.getTagsList().forEach(tag -> {
-            tag.removeReview(review);
-            tagRepository.findTagByNameWithUsers(tag.getName())
-                    .flatMap(t -> t.getUsersOf().stream().filter(u -> u.getId() == user.getId()).findFirst())
-                    .ifPresent(u -> u.removeTag(tag));
-        });
+
         reviewVoteRepository.deleteAll(reviewVoteRepository.findAllVoteByReviewId(review.getId()));
         removeReviewsChildren(review);
         if (review.getParentReview() != null) {
@@ -107,6 +102,12 @@ public class ReviewService {
             var question = questionOptional.get();
             question.removeReview(review);
         }
+        review.getTagsList().forEach(tag -> {
+            review.removeTag(tag);
+            if(!userRepository.hasReviewWithTag(user.getId(), tag.getId())){
+                user.removeTag(tag);
+            }
+        });
         reviewRepository.delete(review);
     }
 
