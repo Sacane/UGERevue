@@ -3,33 +3,30 @@ package fr.pentagon.ugeoverflow.service;
 import fr.pentagon.ugeoverflow.algorithm.QuestionSorterStrategy;
 import fr.pentagon.ugeoverflow.algorithm.SearchQuestionByLabelStrategy;
 import fr.pentagon.ugeoverflow.config.authorization.Role;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionRemoveDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponseDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.TestResultDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.Review;
-import fr.pentagon.ugeoverflow.model.Tag;
 import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.model.embed.CodePart;
 import fr.pentagon.ugeoverflow.model.vote.QuestionVote;
-import fr.pentagon.ugeoverflow.repository.*;
+import fr.pentagon.ugeoverflow.repository.QuestionRepository;
+import fr.pentagon.ugeoverflow.repository.QuestionVoteRepository;
+import fr.pentagon.ugeoverflow.repository.ReviewRepository;
+import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.mapper.QuestionMapper;
 import jakarta.transaction.Transactional;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.format.datetime.DateFormatter;
 import org.springframework.http.MediaType;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientRequestException;
-import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -38,32 +35,33 @@ import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
+
     private final Logger logger = Logger.getLogger(QuestionService.class.getName());
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final QuestionVoteRepository questionVoteRepository;
-    private final TagRepository tagRepository;
-    private final WebClient webClient;
+    private final TagService tagRepository;
     private final QuestionMapper questionMapper;
+    private final TestServiceRunner testServiceRunner;
+
 
     public QuestionService(
-            ReviewService reviewService,
             QuestionRepository questionRepository,
             UserRepository userRepository,
             ReviewRepository reviewRepository,
             QuestionVoteRepository questionVoteRepository,
-            WebClient webClient,
             QuestionMapper questionMapper,
-            TagRepository tagRepository
+            TagService tagRepository,
+            TestServiceRunner testServiceRunner
     ) {
         this.questionRepository = questionRepository;
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
         this.questionVoteRepository = questionVoteRepository;
         this.questionMapper = questionMapper;
-        this.webClient = webClient;
         this.tagRepository = tagRepository;
+        this.testServiceRunner = testServiceRunner;
     }
 
     @Transactional
@@ -89,41 +87,22 @@ public class QuestionService {
     @Transactional
     public long create(NewQuestionDTO questionCreateDTO, long authorId) {
         var user = userRepository.findById(authorId)
-                .orElseThrow(() -> HttpException.notFound("User not exist"));
-        String result = "Test failed...";
-        if (questionCreateDTO.testFile() != null) {
-            try {
-                var parts = getPartsTestEndpoints(questionCreateDTO, authorId);
-                var response = webClient.post()
-                        .uri(builder -> builder.path("/tests/run").build())
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-                        .body(BodyInserters.fromMultipartData(parts))
-                        .accept(MediaType.APPLICATION_JSON).exchangeToMono(r -> {
-                            if (r.statusCode().is2xxSuccessful()) {
-                                return r.bodyToMono(TestResultDTO.class);
-                            } else {
-                                logger.severe(r.statusCode().value() + "");
-                                return Mono.just(TestResultDTO.zero());
-                            }
-                        }).block();
-                if (response != null) {
-                    result = response.toString();
-                }
-            } catch (WebClientRequestException ignored) {/*Serveur non disponible pour lancer les tests*/}
+                .orElseThrow(() -> HttpException.notFound("User does not exists"));
+        String result;
+        if(questionCreateDTO.testFile() != null) {
+            result = testServiceRunner.sendTestAndGetFeedback(
+                    questionCreateDTO.javaFilename(),
+                    questionCreateDTO.testFilename(),
+                    questionCreateDTO.javaFile(),
+                    questionCreateDTO.testFile(),
+                    authorId
+            );
+        } else {
+            result = "Pas de fichier de test fourni...";
         }
-        var question = questionRepository.save(new Question(questionCreateDTO.title(), questionCreateDTO.description(), questionCreateDTO.javaFile(), questionCreateDTO.testFile(), result, true, new Date())); //TODO test
+        var question = questionRepository.save(new Question(questionCreateDTO.title(), questionCreateDTO.description(), questionCreateDTO.javaFile(), questionCreateDTO.testFile(), result, true, new Date()));
         user.addQuestion(question);
         return question.getId();
-    }
-
-    private static MultiValueMap<String, Object> getPartsTestEndpoints(NewQuestionDTO questionCreateDTO, long authorId) {
-        MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
-        parts.add("dependencyFile", new ByteArrayResource(questionCreateDTO.javaFile()));
-        parts.add("id", authorId);
-        parts.add("testFile", new ByteArrayResource(questionCreateDTO.testFile()));
-        parts.add("dependencyFilename", questionCreateDTO.javaFilename());
-        parts.add("testFilename", questionCreateDTO.testFilename());
-        return parts;
     }
 
     @Transactional
@@ -152,9 +131,7 @@ public class QuestionService {
         }
     }
 
-    record UserQuestion(User user, Question question) {
-    }
-
+    record UserQuestion(User user, Question question){}
     static UserQuestion findQuestionFromId(UserRepository userRepository, long userId, QuestionRepository questionRepository, long questionId) {
         var userFind = userRepository.findById(userId)
                 .orElseThrow(() -> HttpException.notFound("The user number " + userId + " does not exists"));
@@ -162,7 +139,6 @@ public class QuestionService {
                 .orElseThrow(() -> HttpException.notFound("The question number " + questionId + " does not exists"));
         return new UserQuestion(userFind, question);
     }
-
     @Transactional
     public ReviewQuestionResponseDTO addReview(QuestionReviewCreateDTO questionReviewCreateDTO) {
         var userQuestion = QuestionService.findQuestionFromId(userRepository, questionReviewCreateDTO.userId(), questionRepository, questionReviewCreateDTO.questionId());
@@ -170,7 +146,7 @@ public class QuestionService {
         var question = userQuestion.question();
         var codePart = (questionReviewCreateDTO.lineStart() == null || questionReviewCreateDTO.lineEnd() == null)
                 ? null
-                : new CodePart(questionReviewCreateDTO.lineStart(), questionReviewCreateDTO.lineEnd());
+                :  new CodePart(questionReviewCreateDTO.lineStart(), questionReviewCreateDTO.lineEnd());
         var review = reviewRepository.save(new Review(questionReviewCreateDTO.content(), codePart, new Date()));
         question.addReview(review);
         user.addReview(review);
@@ -182,8 +158,7 @@ public class QuestionService {
         if (lineStart != null && lineEnd != null && lineStart > 0 && lineEnd <= fileContent.length) {
             citedCode = Arrays.stream(fileContent, lineStart - 1, lineEnd).collect(Collectors.joining("\n"));
         }
-
-        addTags(questionReviewCreateDTO, user, review);
+        tagRepository.addTag(user, review, questionReviewCreateDTO.tagList());
         return new ReviewQuestionResponseDTO(
                 review.getId(),
                 user.getUsername(),
@@ -196,21 +171,6 @@ public class QuestionService {
         );
     }
 
-    private void addTags(QuestionReviewCreateDTO questionReviewCreateDTO, User user, Review review) {
-        questionReviewCreateDTO.tagList().forEach(tag -> {
-            var existingTagOptional = tagRepository.findTagByName(tag);
-            if (existingTagOptional.isEmpty()) {
-                var newTag = new Tag(tag);
-                tagRepository.save(newTag);
-                user.addTag(newTag);
-                review.addTag(newTag);
-            } else {
-                var existingTag = existingTagOptional.get();
-                user.addTag(existingTag);
-                review.addTag(existingTag);
-            }
-        });
-    }
 
     @Transactional
     public void remove(QuestionRemoveDTO questionRemoveDTO) {
@@ -257,7 +217,7 @@ public class QuestionService {
                 question.getDescription(),
                 new String(question.getFile(), StandardCharsets.UTF_8),
                 question.getTestFile() != null ? new String(question.getTestFile(), StandardCharsets.UTF_8) : null,
-                "",
+                question.getTestResult(),
                 voteCount,
                 question.getReviews().size()
 
@@ -273,17 +233,43 @@ public class QuestionService {
                 .toList();
     }
 
+    private record ScoreFollower(long userId, int score) {}
+
     @Transactional
-    public List<QuestionDTO> getQuestionsFromFollowers(long userId) {
+    public List<QuestionDTO> getQuestionsFromFollows(long userId) {
         var questions = questionRepository.findAll();
         var questionsWithScore = new HashMap<Question, Integer>();
-        var visitedUserId = new ArrayList<Long>();
+        var toVisitUsers = new ArrayDeque<ScoreFollower>();
+        var visitedUsers = new ArrayList<Long>();
 
         questions.forEach(question -> questionsWithScore.put(question, 0));
+        userRepository.findFollowsById(userId).forEach(user -> toVisitUsers.add(new ScoreFollower(user.getId(), 1)));
+        visitedUsers.add(userId);
 
-        visitQuestionWithScore(userId, visitedUserId, questionsWithScore, 1);
+        while (!toVisitUsers.isEmpty()) {
+            var visitScoreFollower = toVisitUsers.poll();
+            var userOptional = userRepository.findByIdWithQuestions(visitScoreFollower.userId);
 
-        return questionsWithScore.entrySet().stream().sorted(Comparator.comparingInt(Map.Entry::getValue)).map(entrySet -> {
+            if (userOptional.isPresent()) {
+                var user = userOptional.get();
+
+                for (var question: user.getQuestions()) {
+                    var questionScore = questionsWithScore.get(question);
+                    if (questionScore == 0 || visitScoreFollower.score < questionScore) {
+                        questionsWithScore.put(question, visitScoreFollower.score);
+                    }
+                }
+
+                user.getFollows().forEach(follow -> {
+                    if (!visitedUsers.contains(follow.getId())) {
+                        toVisitUsers.add(new ScoreFollower(follow.getId(), visitScoreFollower.score + 1));
+                    }
+                });
+                visitedUsers.add(user.getId());
+            }
+        }
+
+        return questionsWithScore.entrySet().stream().sorted((entry1, entry2) -> (entry1.getValue() == 0) ? 1 : ((entry2.getValue() == 0) ? -1 : entry1.getValue() - entry2.getValue())).map(entrySet -> {
             var question = entrySet.getKey();
 
             return new QuestionDTO(
@@ -296,23 +282,5 @@ public class QuestionService {
                     question.getReviews().size()
             );
         }).toList();
-    }
-
-    private void visitQuestionWithScore(long userId, List<Long> visitedUserId, Map<Question, Integer> questionsWithScore, int score) {
-        var follows = userRepository.findFollowsById(userId);
-
-        visitedUserId.add(userId);
-        for (var follow : follows) {
-            for (var question : follow.getQuestions()) {
-                var questionScore = questionsWithScore.get(question);
-                if (questionScore == 0 || score < questionScore) {
-                    questionsWithScore.put(question, score);
-                }
-            }
-
-            if (!visitedUserId.contains(follow.getId())) {
-                visitQuestionWithScore(follow.getId(), visitedUserId, questionsWithScore, score + 1);
-            }
-        }
     }
 }

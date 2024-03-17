@@ -187,9 +187,13 @@ public final class User {
         tag.addUser(this);
     }
 
-    public void removeTag(Tag tag) {
-        this.tagsCreated.remove(tag);
-        tag.removeUser(this);
-    }
+  public void removeTag(Tag tag){
+    this.tagsCreated.remove(tag);
+    tag.removeUser(this);
+  }
+
+  public boolean doesTagUseByReviews(Tag tag){
+    return reviews.stream().anyMatch(t -> t.getTagsList().contains(tag));
+  }
 }
 

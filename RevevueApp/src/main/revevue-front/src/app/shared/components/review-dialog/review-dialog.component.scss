@@ -1,9 +1,13 @@
 
 .wrapper {
     display: flex;
+    width: 100%;
     .dialog-content{
-        display: flex;
-        flex-direction: column;
+        flex-grow: 1;
+        .review-create-form{
+            display: flex;
+            flex-direction: column;
+        }
         .content-field {
             display: flex;
             flex-direction: column;
@@ -23,27 +27,28 @@
     }
 
     .review-suggestion{
-        h1{
-
-        }
+        flex-grow: 1;
         display: flex;
         flex-direction: column;
-        .tag-card {
-            width: 20%;
-            background-color: #fff;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-            margin: 8px;
-            padding: 8px;
+        .selfTags{
             display: flex;
-            justify-content: center;
-            align-items: center;
+            .tag-card {
+                width: 20%;
+                background-color: #fff;
+                border-radius: 4px;
+                box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+                margin: 8px;
+                padding: 8px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
 
-        }
-        .tag-card:hover {
-            transform: scale(1.1); /* Augmente la taille de 10% */
-            transition: transform 0.2s ease-in-out; /* Définis une transition fluide */
-            cursor: pointer;
+            }
+            .tag-card:hover {
+                transform: scale(1.1); /* Augmente la taille de 10% */
+                transition: transform 0.2s ease-in-out; /* Définis une transition fluide */
+                cursor: pointer;
+            }
         }
         .review-card {
             background-color: #fff;
@@ -51,7 +56,7 @@
             box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
             margin: 16px;
             padding: 16px;
-
+            overflow-y: scroll;
             h2 {
                 margin-top: 0;
                 margin-bottom: 8px;

@@ -7,8 +7,7 @@ import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
 
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 
@@ -18,6 +17,8 @@ import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
  * and retrieve details about the failed tests.
  */
 public final class TestTracker {
+
+    private static final int TIMEOUT_IN_SECONDS = 15;
 
     private final TestExecutionSummary summary;
 
@@ -30,17 +31,24 @@ public final class TestTracker {
         this.summary = Objects.requireNonNull(summary);
     }
 
-//    private static void executeWithTimeout(Runnable runnable) throws TimeoutException {
-//        Objects.requireNonNull(runnable);
-//        try (var executor = Executors.newSingleThreadExecutor()) {
-//            var future = executor.submit(runnable);
-//            future.get(TIMEOUT, TimeUnit.SECONDS);
-//        } catch (TimeoutException e) {
-//            throw new TimeoutException();
-//        } catch (ExecutionException | InterruptedException e) {
-//            throw new AssertionError(e);
-//        }
-//    }
+    /**
+     * Executes a {@link Runnable} with a specified timeout.
+     *
+     * @param runnable the {@link Runnable} to execute
+     * @throws TimeoutException if the execution exceeds the specified timeout
+     * @throws NullPointerException if the {@code runnable} is {@code null}
+     */
+    private static void executeWithTimeout(Runnable runnable) throws TimeoutException {
+        Objects.requireNonNull(runnable);
+        try {
+            var completableFuture = CompletableFuture.runAsync(runnable);
+            completableFuture.get(TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
+        } catch (TimeoutException e) { // If execution exceeds the timeout, throw a TimeoutException
+            throw new TimeoutException("Tests timed out, maximum duration is " + TIMEOUT_IN_SECONDS + " seconds.");
+        } catch (ExecutionException | InterruptedException e) { // Wrap unexpected exceptions in an AssertionError
+            throw new AssertionError(e);
+        }
+    }
 
     /**
      * Executes the given test class and returns a TestTracker instance to track the results.
@@ -56,23 +64,7 @@ public final class TestTracker {
         var listener = new SummaryGeneratingListener();
         var launcher = LauncherFactory.create();
         launcher.registerTestExecutionListeners(listener);
-        var timer = Timer.start();
-        var future1 = CompletableFuture.runAsync(() -> {
-            launcher.execute(request);
-            timer.end();
-        });
-        var future2 = CompletableFuture.runAsync(() -> {
-            try {
-                Thread.sleep(5_000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        var anyFuture = CompletableFuture.anyOf(future1, future2);
-        anyFuture.join();
-        if(!timer.isFinished()){
-            throw new TimeoutException("The program contains a too long treatment");
-        }
+        executeWithTimeout(() -> launcher.execute(request));
         return new TestTracker(listener.getSummary());
     }
 
@@ -119,21 +111,4 @@ public final class TestTracker {
         return details.toString();
     }
 
-    private static class Timer{
-        private final Object lock = new Object();
-        private boolean isTaskFinish = false;
-        static Timer start() {
-            return new Timer();
-        }
-        public void end() {
-            synchronized (lock){
-                isTaskFinish = true;
-            }
-        }
-        public boolean isFinished() {
-            synchronized (lock){
-                return isTaskFinish;
-            }
-        }
-    }
 }

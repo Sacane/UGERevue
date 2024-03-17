@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.controllers.mvc;
 
+import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.service.UserService;
@@ -13,30 +14,32 @@ import java.security.Principal;
 @Controller
 @RequestMapping("/light/profile/")
 public class MvcUserController {
-    private final UserService userService;
-    private final QuestionService questionService;
+  private final UserService userService;
+  private final QuestionService questionService;
 
-    public MvcUserController(UserService userService, QuestionService questionService) {
-        this.userService = userService;
-        this.questionService = questionService;
+  public MvcUserController(UserService userService, QuestionService questionService) {
+    this.userService = userService;
+    this.questionService = questionService;
+  }
+
+  @GetMapping
+  @RequireUser
+  public String profilePage(Model model, Principal principal) {
+    var userResponse = SecurityContext.authentication();
+    if (userResponse.isEmpty()) {
+      return "redirect:/light/forbidden";
     }
-    @GetMapping()
-    public String profilePage(Model model, Principal principal){
-        var userResponse = SecurityContext.authentication();
-        if(userResponse.isEmpty()){
-            return "redirect:/light/forbidden";
-        }
-        var user = userService.findById(userResponse.get().id());
-        model.addAttribute("username", user.username());
-        model.addAttribute("email", user.email());
-        model.addAttribute("login", user.login());
-        model.addAttribute("role", user.role().displayName());
+    var user = userService.findById(userResponse.get().id());
+    model.addAttribute("username", user.username());
+    model.addAttribute("email", user.email());
+    model.addAttribute("login", user.login());
+    model.addAttribute("role", user.role().displayName());
 
-        var questions = questionService.getQuestionsFromCurrentUser(principal.getName());
-        model.addAttribute("questions", questions);
+    var questions = questionService.getQuestionsFromCurrentUser(principal.getName());
+    model.addAttribute("questions", questions);
 
-        var followed = userService.getUserFollowings(principal.getName());
-        model.addAttribute("follows", followed);
-        return "pages/users/profile";
-    }
+    var followed = userService.getUserFollowings(principal.getName());
+    model.addAttribute("follows", followed);
+    return "pages/users/profile";
+  }
 }
