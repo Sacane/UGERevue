@@ -1,13 +1,13 @@
 import {inject, Injectable} from "@angular/core";
-import {environment} from "../../environment";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {TagWrapperDTO} from "../models/tag.model";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
     providedIn: 'root',
 })
-export class TagService{
+export class TagService {
     private url: string = environment.apiUrl + 'tags';
 
     private client = inject(HttpClient)

@@ -368,4 +368,40 @@ public class QuestionServiceTest {
                 }
                 """, questionResponse.classContent());
     }
+
+    @Test
+    void getQuestionsFromFollowsWithOneFollow() {
+        var quentin = userRepository.save(new User("quentin", "quentin", "quentin", "quentin", Role.USER));
+        var quentin2 = userRepository.save(new User("quentin2", "quentin2", "quentin2", "quentin2", Role.USER));
+
+        userService.follow(quentin.getId(), quentin2.getId());
+
+        var followQuestion = questionService.create(new NewQuestionDTO("TITLE2", "DESCRIPTION2", new byte[0], null, "", ""), quentin2.getId());
+        questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "", ""), quentin.getId());
+
+        var questions = questionService.getQuestionsFromFollows(quentin.getId());
+
+        assertEquals(questions.getFirst().id(), followQuestion);
+    }
+
+    @Test
+    void getQuestionsFromFollowsWithManyFollow() {
+        var quentin = userRepository.save(new User("quentin", "quentin", "quentin", "quentin", Role.USER));
+        var lastUser = quentin;
+
+        for (var i = 0; i < 1000; i++) {
+            var user = userRepository.save(new User("quentin" + i, "quentin" + i, "quentin" + i, "quentin" + i, Role.USER));
+
+            userService.follow(lastUser.getId(), user.getId());
+            lastUser = user;
+
+            if (i == 999) {
+                questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "", ""), user.getId());
+            }
+        }
+
+        var questions = questionService.getQuestionsFromFollows(quentin.getId());
+
+        assertEquals(questions.getFirst().title(), "TITLE");
+    }
 }
