@@ -23,6 +23,9 @@ import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.mapper.QuestionMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.format.datetime.DateFormatter;
+import org.springframework.http.MediaType;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -34,7 +37,6 @@ import java.util.stream.Collectors;
 public class QuestionService {
 
     private final Logger logger = Logger.getLogger(QuestionService.class.getName());
-    private final QuestionServiceWithFailure questionServiceWithFailure;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
@@ -45,7 +47,6 @@ public class QuestionService {
 
 
     public QuestionService(
-            QuestionServiceWithFailure questionServiceWithFailure,
             QuestionRepository questionRepository,
             UserRepository userRepository,
             ReviewRepository reviewRepository,
@@ -54,7 +55,6 @@ public class QuestionService {
             TagService tagRepository,
             TestServiceRunner testServiceRunner
     ) {
-        this.questionServiceWithFailure = questionServiceWithFailure;
         this.questionRepository = questionRepository;
         this.userRepository = userRepository;
         this.reviewRepository = reviewRepository;
@@ -105,17 +105,29 @@ public class QuestionService {
         return question.getId();
     }
 
+    @Transactional
+    @Retryable(retryFor = ObjectOptimisticLockingFailureException.class)
     public void update(QuestionUpdateDTO questionUpdateDTO) {
-        var retry = true;
+        var userQuestion = QuestionService.findQuestionFromId(userRepository, questionUpdateDTO.userId(), questionRepository, questionUpdateDTO.questionId());
+        var user = userQuestion.user();
+        var question = userQuestion.question();
 
-        while (retry) {
-            retry = false;
+        if (!userRepository.containsQuestion(user.getId(), question)) {
+            throw HttpException.unauthorized("Not your question");
+        }
 
-            try {
-                questionServiceWithFailure.update(questionUpdateDTO);
-            } catch (org.springframework.orm.ObjectOptimisticLockingFailureException e) {
-                retry = true;
-            }
+        if (questionUpdateDTO.title() != null) {
+            question.setTitle(questionUpdateDTO.title());
+        }
+        if (questionUpdateDTO.description() != null) {
+            question.setDescription(questionUpdateDTO.description());
+        }
+        if (questionUpdateDTO.file() != null) {
+            question.setFile(questionUpdateDTO.file());
+        }
+        if (questionUpdateDTO.testFile() != null) {
+            question.setTestFile(questionUpdateDTO.testFile());
+            question.setTestResult("TEST RESULT"); //TODO test
         }
     }
 
