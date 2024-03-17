@@ -15,9 +15,8 @@ public class TagService {
         this.tagRepository = tagRepository;
     }
 
-    public List<String> tagByCurrentUser() {
-        var currentUser = SecurityContext.checkAuthentication();
-        return tagRepository.findByUser(currentUser.id())
+    public List<String> tagByCurrentUser(long userId) {
+        return tagRepository.findByUser(userId)
                 .stream()
                 .map(Tag::getName)
                 .toList();

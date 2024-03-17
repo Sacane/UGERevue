@@ -170,12 +170,21 @@ public class UserTestProvider {
 
         review1.setAuthor(user2);
         var javaTag = new Tag("Java");
+        user2.addTag(javaTag);
         tagRepository.save(javaTag);
         review1.addTag(javaTag);
         reviewRepository.save(review1);
         user2.addReview(review1);
 
         reviewOf1.setAuthor(user3);
+        var tag = new Tag("Obscure");
+        var tag1 = new Tag("RequireNull");
+        user3.addTag(tag);
+        user3.addTag(tag1);
+        tagRepository.save(tag);
+        reviewOf1.addTag(tag);
+        tagRepository.save(tag1);
+        reviewOf1.addTag(tag1);
         review1.addReview(reviewOf1);
         reviewRepository.save(reviewOf1);
         user3.addReview(reviewOf1);

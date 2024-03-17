@@ -47,8 +47,6 @@ public class ReviewControllerTest {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private UserService userService;
-    @Autowired
     private QuestionService questionService;
     @Autowired
     private ReviewRepository reviewRepository;
