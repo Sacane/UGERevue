@@ -48,15 +48,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Import(DatasourceTestConfig.class)
 class QuestionControllerTest {
-
     private final ObjectMapper objectMapper = new ObjectMapper();
-
     @Autowired
     private UserService userService;
     @Autowired
     private QuestionService questionService;
-    @Autowired
-    private LoginManager authenticationManager;
     @Autowired
     private UserTestProvider userTestProvider;
     private MockMvc questionMVC;
@@ -76,7 +72,7 @@ class QuestionControllerTest {
                 .build();
     }
     @AfterEach
-    void clearUp() throws Exception {
+    void clearUp() {
         userRepository.deleteAll();
         questionRepository.deleteAll();
     }
@@ -96,7 +92,8 @@ class QuestionControllerTest {
             questionMVC = MockMvcBuilders.standaloneSetup(new QuestionController(questionService))
                     .setControllerAdvice(httpExceptionHandler)
                     .build();
-            request = questionMVC.perform(MockMvcRequestBuilders.get(Routes.Question.ROOT).contentType(MediaType.APPLICATION_JSON));
+            request = questionMVC.perform(MockMvcRequestBuilders.get(Routes.Question.ROOT)
+                    .contentType(MediaType.APPLICATION_JSON));
             var responseBody = request.andReturn().getResponse().getContentAsString();
             var typeReference = new TypeReference<List<QuestionDTO>>() {
             };
@@ -323,6 +320,7 @@ class QuestionControllerTest {
         questionMVC.perform(MockMvcRequestBuilders.post(Routes.Question.ROOT+ "/reviews")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isUnauthorized())
                 .andDo(print());
     }
 

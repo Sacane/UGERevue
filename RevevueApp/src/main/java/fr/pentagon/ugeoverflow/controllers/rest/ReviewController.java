@@ -29,7 +29,7 @@ public class ReviewController {
     }
 
     @GetMapping(Routes.Review.ROOT + "/{reviewId}")
-    public ResponseEntity<DetailReviewResponseDTO> findDetailsReview(@PathVariable(name = "reviewId") @Positive long reviewId) {
+    public ResponseEntity<DetailReviewResponseDTO> findDetailsReview(@PathVariable(name = "reviewId") long reviewId) {
         LOGGER.info("fetch on " + Routes.Review.ROOT + " => " + reviewId);
         var auth = SecurityContext.authentication();
         return auth.map(revevueUserDetail ->
@@ -38,7 +38,7 @@ public class ReviewController {
     }
 
     @GetMapping(Routes.Review.ROOT + Routes.Question.IDENT + "/{questionId}")
-    public ResponseEntity<List<ReviewResponseChildrenDTO>> findAllReviews(@PathVariable(name = "questionId") @Positive long questionId) {
+    public ResponseEntity<List<ReviewResponseChildrenDTO>> findAllReviews(@PathVariable(name = "questionId") long questionId) {
         return ResponseEntity.ok(reviewService.findReviewsByQuestionId(questionId));
     }
 
@@ -50,7 +50,7 @@ public class ReviewController {
 
     @DeleteMapping(Routes.Review.ROOT + "/{reviewId}")
     @RequireUser
-    public ResponseEntity<Void> removeReview(@PathVariable(name = "reviewId") @Positive long reviewId) {
+    public ResponseEntity<Void> removeReview(@PathVariable(name = "reviewId") long reviewId) {
         var user = SecurityContext.authentication().orElseThrow();
         LOGGER.info("perform delete on " + Routes.Review.ROOT);
         reviewService.remove(new ReviewRemoveDTO(user.id(), reviewId));
@@ -59,7 +59,7 @@ public class ReviewController {
     }
 
     @PostMapping(Routes.Review.ROOT + "/{reviewId}/vote")
-    public ResponseEntity<Void> voteReview(@PathVariable(name = "reviewId") @Positive long reviewId, @Valid @RequestBody VoteBodyDTO voteBodyDTO) {
+    public ResponseEntity<Void> voteReview(@PathVariable(name = "reviewId") long reviewId, @Valid @RequestBody VoteBodyDTO voteBodyDTO) {
         var user = SecurityContext.checkAuthentication();
 
         reviewService.vote(user.id(), reviewId, voteBodyDTO.up());
@@ -68,7 +68,7 @@ public class ReviewController {
     }
 
     @DeleteMapping(Routes.Review.ROOT + "/{reviewId}/cancelVote")
-    public ResponseEntity<Void> cancelVoteReview(@PathVariable(name = "reviewId") @Positive long reviewId) {
+    public ResponseEntity<Void> cancelVoteReview(@PathVariable(name = "reviewId") long reviewId) {
         var user = SecurityContext.checkAuthentication();
 
         reviewService.cancelVote(user.id(), reviewId);

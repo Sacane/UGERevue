@@ -18,7 +18,7 @@ public class Review {
     @ManyToOne(fetch = FetchType.LAZY)
     private User author;
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "parentReview")
-    private List<Review> reviews;
+    private List<Review> reviews = new ArrayList<>();
     private Date createdAt;
     @Embedded
     private CodePart codePart;

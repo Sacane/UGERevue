@@ -128,7 +128,7 @@ public class ReviewService {
     @Transactional
     public void vote(long authorId, long reviewId, boolean isUpVote) {
         var user = userRepository.findById(authorId).orElseThrow(() -> HttpException.notFound("The user does not exists"));
-        var review = reviewRepository.findById(reviewId).orElseThrow(() -> HttpException.notFound("the review does not exists"));
+        var review = reviewRepository.findById(reviewId).orElseThrow(() -> HttpException.notFound("The review does not exists"));
         var vote = (isUpVote) ? ReviewVote.upvote(user, review) : ReviewVote.downvote(user, review);
         reviewVoteRepository.save(vote);
     }
@@ -136,7 +136,7 @@ public class ReviewService {
     @Transactional
     public void cancelVote(long authorId, long reviewId) {
         var user = userRepository.findById(authorId).orElseThrow(() -> HttpException.notFound("The user does not exists"));
-        var review = reviewRepository.findById(reviewId).orElseThrow(() -> HttpException.notFound("the review does not exists"));
+        var review = reviewRepository.findById(reviewId).orElseThrow(() -> HttpException.notFound("The review does not exists"));
         var reviewVoteId = new ReviewVoteId();
         reviewVoteId.setAuthor(user);
         reviewVoteId.setReview(review);
