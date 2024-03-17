@@ -48,6 +48,7 @@ public final class TestsController {
             return ResponseEntity.ok(results);
         } catch (CompilationException e) {
             // e.getMessage() of CompilationException log only the reason why the compilation failed
+            logger.severe(e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
             throw HttpException.badRequest(e.getMessage().lines().limit(MAX_ERROR_DESCRIPTION)
                     .collect(Collectors.joining("\n", "", "...")));
         }catch (ClassNotFoundException | IOException e){

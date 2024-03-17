@@ -5,7 +5,7 @@ import {catchError, concat, of, switchMap} from 'rxjs';
 import {MatDialog} from '@angular/material/dialog';
 import {ConfirmDialogComponent} from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {UserService} from '../../../shared/HttpServices';
+import {LoginService} from '../../../shared/HttpServices';
 import {Role} from '../../questions/models/role.model';
 
 @Component({
@@ -19,7 +19,7 @@ export class ChildReviewComponent implements OnInit {
 
     canDelete: boolean = false;
 
-    constructor(private router: Router, private userService: UserService, private reviewService: ReviewService, private dialog: MatDialog, private snackBar: MatSnackBar) { }
+    constructor(private router: Router, private userService: LoginService, private reviewService: ReviewService, private dialog: MatDialog, private snackBar: MatSnackBar) { }
 
     ngOnInit(): void {
         this.canDelete = this.review.author === this.userService.getLogin() || this.userService.getRole() === Role.ADMIN;
@@ -34,7 +34,7 @@ export class ChildReviewComponent implements OnInit {
         }).afterClosed().pipe(
             switchMap(reviewValue => {
                 if (reviewValue) {
-                    return this.reviewService.addReview(this.review.id, reviewValue.content).pipe(
+                    return this.reviewService.addReview(this.review.id, reviewValue.content, reviewValue.tags).pipe(
                         catchError(err => {
                             console.log(err);
                             return of(err);

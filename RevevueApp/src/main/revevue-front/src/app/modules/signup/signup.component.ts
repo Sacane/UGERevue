@@ -1,6 +1,6 @@
 import {Component, inject, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {UserService} from "../../shared/HttpServices";
+import {LoginService} from "../../shared/HttpServices";
 import {Router} from "@angular/router";
 import {ToastrService} from "ngx-toastr";
 
@@ -18,7 +18,7 @@ export class SignupComponent{
         password: new FormControl('', [Validators.required]),
         accountName: new FormControl('', [Validators.required])
     });
-    userService = inject(UserService)
+    userService = inject(LoginService)
     private router = inject(Router)
     private toastService = inject(ToastrService)
 

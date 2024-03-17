@@ -14,18 +14,27 @@ import {
     TagsModule,
     UsersModule
 } from "./modules";
-import {provideHttpClient, withFetch, withInterceptors} from "@angular/common/http";
+import {provideHttpClient, withFetch, withInterceptors, withXsrfConfiguration} from "@angular/common/http";
 import {authInterceptor} from "./shared/authInterceptor";
-import {CommonModule} from "@angular/common";
+import {CommonModule, HashLocationStrategy, LocationStrategy} from "@angular/common";
 import {MarkdownModule} from "ngx-markdown";
 import {provideToastr, ToastrModule} from "ngx-toastr";
+import {MatChipsModule} from "@angular/material/chips";
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
 
 @NgModule({
     declarations: [
         AppComponent
     ],
     providers: [
-        provideHttpClient(withFetch(), withInterceptors([authInterceptor])), provideToastr(), provideAnimations()
+        provideHttpClient(withFetch(), withInterceptors([authInterceptor]), withXsrfConfiguration({
+                cookieName: 'XSRF-TOKEN',
+                headerName: 'X-XSRF-TOKEN'
+            })
+        ),
+        provideToastr(),
+        provideAnimations(),
+        {provide: LocationStrategy, useClass: HashLocationStrategy}
     ],
     imports: [
         CommonModule,
@@ -44,7 +53,9 @@ import {provideToastr, ToastrModule} from "ngx-toastr";
         MarkdownModule,
         MarkdownModule.forRoot(),
         BrowserAnimationsModule,
-        ToastrModule.forRoot()
+        ToastrModule.forRoot(),
+        MatChipsModule,
+        MatAutocompleteModule
     ],
     bootstrap: [AppComponent]
 })

@@ -1,45 +1,111 @@
-<div class="dialog-content">
-    <h2 mat-dialog-title align="center">Add review</h2>
-    <mat-dialog-content>
-        <form [formGroup]="form">
-            @if (data.onQuestion) {
-                <mat-form-field>
-                    <mat-label>Ligne de début</mat-label>
-                    <input matInput type="text" formControlName="lineStart">
-                    @if (form.controls.lineStart.hasError('required')) {
-                        <mat-error>Required</mat-error>
-                    }
-                </mat-form-field>
-                <mat-form-field>
-                    <mat-label>Ligne de fin</mat-label>
-                    <input matInput type="text" formControlName="lineEnd">
-                    @if (form.controls.lineEnd.hasError('required')) {
-                        <mat-error>Required</mat-error>
-                    }
-                </mat-form-field>
-            }
-
-            <mat-form-field>
-                <mat-label>Contenu</mat-label>
-                <div class="content-field">
-                    <textarea style="width: 100%; height: 200px;" matInput formControlName="content" (keyup)="show()"></textarea>
-                </div>
-                @if (form.controls.content.hasError('required')) {
-                    <mat-error>Required</mat-error>
+<div class="wrapper">
+    <div class="dialog-content">
+        <h2 mat-dialog-title align="center">Ajouter une revue</h2>
+        <mat-dialog-content>
+            <form [formGroup]="form">
+                @if (data.onQuestion) {
+                    <mat-form-field>
+                        <mat-label>Ligne de début</mat-label>
+                        <input matInput type="text" formControlName="lineStart">
+                        @if (form.controls.lineStart.hasError('required')) {
+                            <mat-error>Required</mat-error>
+                        }
+                    </mat-form-field>
+                    <mat-form-field>
+                        <mat-label>Ligne de fin</mat-label>
+                        <input matInput type="text" formControlName="lineEnd">
+                        @if (form.controls.lineEnd.hasError('required')) {
+                            <mat-error>Required</mat-error>
+                        }
+                    </mat-form-field>
                 }
-            </mat-form-field>
-            <div style="width: 100%; height: 200px;">
-                <h2>Preview</h2>
-                <markdown  [data]="form.value.content"></markdown>
-            </div>
 
+                <mat-form-field>
+                    <mat-label>Contenu</mat-label>
+                    <div class="content-field">
+                        <textarea #contentRef style="width: 100%; height: 200px;" matInput formControlName="content"></textarea>
+                    </div>
+                    @if (form.controls.content.hasError('required')) {
+                        <mat-error>Required</mat-error>
+                    }
+                </mat-form-field>
+                <div style="width: 100%; height: 200px;">
+                    <h2>Preview</h2>
+                    <markdown  [data]="form.value.content"></markdown>
+                </div>
+
+            </form>
+        </mat-dialog-content>
+        <mat-dialog-actions align="center">
+            <button mat-button color="primary" (click)="close()">Cancel</button>
+            <button mat-raised-button [disabled]="!form.valid" color="primary" (click)="confirm()">Confirm</button>
+        </mat-dialog-actions>
+        <!--<button class="add-tag-button" mat-raised-button (click)="addTag()">Ajouter un tag</button>
+        <ul class="tag-list">
+            <li *ngFor="let tag of tags.controls; let i = index">
+                <mat-form-field>
+                    <input matInput type="text" [formControl]="tag" placeholder="Tag">
+                </mat-form-field>
+                <button mat-icon-button (click)="removeTag(i)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+            </li>
+        </ul>-->
+        <form>
+            <mat-form-field class="chip-list">
+                <mat-label>Tags de la review</mat-label>
+                <mat-chip-grid #chipGrid aria-label="Tag selection">
+                    @for (tag of inputTags; track tag) {
+                        <mat-chip-row (removed)="remove(tag)">
+                            {{tag}}
+                            <button matChipRemove [attr.aria-label]="'remove ' + tag">
+                                <mat-icon>cancel</mat-icon>
+                            </button>
+                        </mat-chip-row>
+                    }
+                </mat-chip-grid>
+                <input placeholder="Ajouter un tag..." #inputTag [formControl]="tagCtrl"
+                [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+                       [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                       (matChipInputTokenEnd)="add($event)"/>
+                <mat-autocomplete #auto="matAutocomplete"
+                                  (optionSelected)="selected($event)">
+                    @for(tag of filteredTag(); track tag){
+                        <mat-option [value]="tag">{{tag}}</mat-option>
+                    }
+                </mat-autocomplete>
+            </mat-form-field>
         </form>
 
-    </mat-dialog-content>
-    <mat-dialog-actions align="center">
-        <button mat-button color="primary" (click)="close()">Cancel</button>
-        <button mat-raised-button [disabled]="!form.valid" color="primary" (click)="confirm()">Confirm</button>
-    </mat-dialog-actions>
 
+    </div>
+    <div class="review-suggestion">
+        @if (selfTags().length > 0){
+            <h2 mat-dialog-title>Cliquer sur un tag pour récupérer les reviews concernés</h2>
+            @for(tag of selfTags(); track tag.tag){
+                <div class="tag-card" (click)="searchTag(tag)">
+                    <p>{{tag.tag}}</p>
+                </div>
+            }
+        }
+        <div style="text-align: right;">
+            <mat-form-field>
+                <input matInput #tagSearchBar type="text" placeholder="Rechercher par tag" (keyup)="updateInputTag($event)">
+            </mat-form-field>
+            <button mat-raised-button (click)="searchReviewsByTag()">Rechercher</button>
+        </div>
+        @if (reviews().length > 0) {
+            @for(review of reviews(); track review.reviewContent) {
+                <div class="review-card" (click)="handleReviewClick(review)">
+                    <div class="review-container">
+                        <b>Question : {{ review.questionTitle }}</b>
+                        <p>{{ review.reviewContent }}</p>
+                    </div>
+                </div>
+            }
+        }
+
+    </div>
 
 </div>
+

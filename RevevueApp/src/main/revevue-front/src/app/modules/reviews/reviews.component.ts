@@ -3,7 +3,7 @@ import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {ReviewDialogComponent, ReviewService} from '../../shared';
 import {BehaviorSubject, catchError, concat, of, Subject, switchMap, takeUntil, tap} from 'rxjs';
 import {MatDialog} from '@angular/material/dialog';
-import {UserService} from '../../shared/HttpServices';
+import {LoginService} from '../../shared/HttpServices';
 import {Role} from '../questions/models/role.model';
 import {ConfirmDialogComponent} from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import {Location} from '@angular/common';
@@ -23,7 +23,7 @@ export class ReviewsComponent implements OnDestroy {
 
     private router = inject(Router);
     private activatedRoute = inject(ActivatedRoute)
-    private userService = inject(UserService)
+    private userService = inject(LoginService)
     private reviewService = inject(ReviewService)
     private dialog = inject(MatDialog)
     private snackBar = inject(MatSnackBar)
@@ -66,11 +66,11 @@ export class ReviewsComponent implements OnDestroy {
     }
 
     addReview(): void {
-
         this.dialog.open(ReviewDialogComponent, {
             data: {
                 onQuestion: false
             },
+            width: '60%',
             disableClose: true
         }).afterClosed().pipe(
             switchMap(reviewValue => {

@@ -7,6 +7,8 @@ import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
 
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeoutException;
 
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 
@@ -24,9 +26,21 @@ public final class TestTracker {
      *
      * @param summary the test execution summary to track
      */
-    private TestTracker(TestExecutionSummary summary){
+    private TestTracker(TestExecutionSummary summary) {
         this.summary = Objects.requireNonNull(summary);
     }
+
+//    private static void executeWithTimeout(Runnable runnable) throws TimeoutException {
+//        Objects.requireNonNull(runnable);
+//        try (var executor = Executors.newSingleThreadExecutor()) {
+//            var future = executor.submit(runnable);
+//            future.get(TIMEOUT, TimeUnit.SECONDS);
+//        } catch (TimeoutException e) {
+//            throw new TimeoutException();
+//        } catch (ExecutionException | InterruptedException e) {
+//            throw new AssertionError(e);
+//        }
+//    }
 
     /**
      * Executes the given test class and returns a TestTracker instance to track the results.
@@ -34,7 +48,7 @@ public final class TestTracker {
      * @param testClass the test class to execute
      * @return a TestTracker instance tracking the test execution summary
      */
-    public static TestTracker runAndTrack(Class<?> testClass){
+    public static TestTracker runAndTrack(Class<?> testClass) throws TimeoutException {
         Objects.requireNonNull(testClass);
         var request = LauncherDiscoveryRequestBuilder.request()
                 .selectors(selectClass(testClass))
@@ -42,7 +56,23 @@ public final class TestTracker {
         var listener = new SummaryGeneratingListener();
         var launcher = LauncherFactory.create();
         launcher.registerTestExecutionListeners(listener);
-        launcher.execute(request);
+        var timer = Timer.start();
+        var future1 = CompletableFuture.runAsync(() -> {
+            launcher.execute(request);
+            timer.end();
+        });
+        var future2 = CompletableFuture.runAsync(() -> {
+            try {
+                Thread.sleep(5_000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        var anyFuture = CompletableFuture.anyOf(future1, future2);
+        anyFuture.join();
+        if(!timer.isFinished()){
+            throw new TimeoutException("The program contains a too long treatment");
+        }
         return new TestTracker(listener.getSummary());
     }
 
@@ -51,7 +81,7 @@ public final class TestTracker {
      *
      * @return true if all tests passed, false otherwise
      */
-    public boolean allTestsPassed(){
+    public boolean allTestsPassed() {
         return summary.getFailures().isEmpty();
     }
 
@@ -60,7 +90,7 @@ public final class TestTracker {
      *
      * @return the count of passed tests
      */
-    public long passedCount(){
+    public long passedCount() {
         return summary.getTestsSucceededCount();
     }
 
@@ -69,7 +99,7 @@ public final class TestTracker {
      *
      * @return the count of failed tests
      */
-    public long failuresCount(){
+    public long failuresCount() {
         return summary.getTestsFailedCount();
     }
 
@@ -78,15 +108,32 @@ public final class TestTracker {
      *
      * @return a string containing details about the failed tests
      */
-    public String failureDetails(){
-        if(summary.getFailures().isEmpty()) return "";
+    public String failureDetails() {
+        if (summary.getFailures().isEmpty()) return "";
         var details = new StringBuilder("Failed tests :\n\n");
         var failures = summary.getFailures();
-        for (var failure : failures){
+        for (var failure : failures) {
             details.append("\t- ").append(failure.getTestIdentifier().getDisplayName()).append(" : ");
             details.append(failure.getException()).append("\n");
         }
         return details.toString();
     }
 
+    private static class Timer{
+        private final Object lock = new Object();
+        private boolean isTaskFinish = false;
+        static Timer start() {
+            return new Timer();
+        }
+        public void end() {
+            synchronized (lock){
+                isTaskFinish = true;
+            }
+        }
+        public boolean isFinished() {
+            synchronized (lock){
+                return isTaskFinish;
+            }
+        }
+    }
 }

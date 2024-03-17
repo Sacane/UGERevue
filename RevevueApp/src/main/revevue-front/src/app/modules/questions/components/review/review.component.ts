@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Review} from "../../models/review";
-import {UserService} from '../../../../shared/HttpServices';
+import {LoginService} from '../../../../shared/HttpServices';
 import {MatDialog} from '@angular/material/dialog';
 import {ConfirmDialogComponent} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import {catchError, concat, of, switchMap} from 'rxjs';
@@ -27,7 +27,7 @@ export class ReviewComponent implements OnInit {
 
     codeTest = "public record Point(int x, int y){\n}"
 
-    constructor(private userService: UserService, private reviewService: ReviewService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) { }
+    constructor(private userService: LoginService, private reviewService: ReviewService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) { }
 
     ngOnInit(): void {
         this.canDelete = this.review.author === this.userService.getLogin() || this.userService.getRole() === Role.ADMIN;

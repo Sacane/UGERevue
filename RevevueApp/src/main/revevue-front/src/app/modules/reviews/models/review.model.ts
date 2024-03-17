@@ -24,3 +24,8 @@ export interface ReviewOnReviewBodyDTO {
     content: String;
     tagList: Array<string>;
 }
+
+export interface ReviewQuestionTitleDTO {
+    reviewContent: string;
+    questionTitle: string;
+}

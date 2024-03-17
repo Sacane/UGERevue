@@ -234,25 +234,26 @@ public class QuestionService {
         questionVoteRepository.save(vote);
     }
 
-    @Transactional
-    public QuestionDetailsDTO findById(long questionId) {
-        var question = questionRepository.findByIdWithAuthorAndReviews(questionId).orElseThrow(() -> HttpException.notFound("Question " + questionId + " does not exists"));
-        var dateFormatter = new DateFormatter("dd/MM/yyyy");
-        var voteCount = questionVoteRepository.countAllById(questionId);
-        return new QuestionDetailsDTO(
-                question.getId(),
-                question.getAuthor().getUsername(),
-                dateFormatter.print(question.getCreatedAt(), Locale.FRANCE),
-                List.of(),
-                question.getTitle(),
-                question.getDescription(),
-                new String(question.getFile(), StandardCharsets.UTF_8),
-                question.getTestFile() != null ? new String(question.getTestFile(), StandardCharsets.UTF_8) : null,
-                "",
-                question.getReviews().size(),
-                voteCount
-        );
-    }
+  @Transactional
+  public QuestionDetailsDTO findById(long questionId) {
+    var question = questionRepository.findByIdWithAuthorAndReviews(questionId).orElseThrow(() -> HttpException.notFound("Question " + questionId + " does not exists"));
+    var dateFormatter = new DateFormatter("dd/MM/yyyy");
+    var voteCount = questionVoteRepository.countAllById(questionId);
+    return new QuestionDetailsDTO(
+        question.getId(),
+        question.getAuthor().getUsername(),
+        dateFormatter.print(question.getCreatedAt(), Locale.FRANCE),
+        List.of(),
+        question.getTitle(),
+        question.getDescription(),
+        new String(question.getFile(), StandardCharsets.UTF_8),
+        question.getTestFile() != null ? new String(question.getTestFile(), StandardCharsets.UTF_8) : null,
+        "",
+        voteCount,
+        question.getReviews().size()
+
+    );
+  }
 
     @Transactional
     public List<QuestionDTO> getQuestionsFromCurrentUser(String login) {

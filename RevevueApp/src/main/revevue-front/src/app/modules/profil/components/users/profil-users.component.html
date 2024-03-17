@@ -1,0 +1,6 @@
+@if (userFollowing$ | async; as userFollowing) {
+    <app-profil-users-content [userFollowing]="userFollowing"></app-profil-users-content>
+}
+@else {
+    <mat-spinner></mat-spinner>
+}

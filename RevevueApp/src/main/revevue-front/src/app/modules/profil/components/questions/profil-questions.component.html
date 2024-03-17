@@ -1,0 +1,8 @@
+@if (userQuestions$ | async; as userQuestions) {
+    <div style="display: flex; padding: 20px; flex-grow: 1">
+        <app-questions-displayer [questions]="userQuestions"></app-questions-displayer>
+    </div>
+}
+@else {
+    <mat-spinner></mat-spinner>
+}

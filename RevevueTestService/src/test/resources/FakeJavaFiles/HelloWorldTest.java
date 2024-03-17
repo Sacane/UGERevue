@@ -22,5 +22,4 @@ public class HelloWorldTest {
         HelloWorld var1 = new HelloWorld();
         Assertions.assertEquals("Hello world ?", var1.helloWorld());
     }
-
 }

@@ -1,83 +1,61 @@
 @if (!isLogged()) {
-
-<body>
-    <div class="container">
-        <div class="topdiv">
-            <div class="three">
-                <h1>UGE ReveVue</h1>
-            </div>
-        </div>
-        <div class="bottomdiv">
-            <mat-card class="card">
-                <mat-card-header>
-                    <mat-card-title  class="card-title">Posez vos questions</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p class="card-text">
-                        Un problème dans votre code Java ? Posez votre question la communeauté vous répondra !
-                    </p>
-                </mat-card-content>
-            </mat-card>
-            <mat-card class="card">
-                <mat-card-header>
-                    <mat-card-title  class="card-title">Reviewez !</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p class="card-text">
-                        Reviewez le code des autres ! Notre plateforme de codage social vous permet de résoudre les problèmes des développeurs du monde entier.
-                    </p>
-                </mat-card-content>
-            </mat-card>
-            <mat-card class="card">
-                <mat-card-header>
-                    <mat-card-title  class="card-title">Suivez les autres utilisateurs</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                    <p class="card-text">
-                        Suivez les utilisateurs que vous jugez les plus pertinents pour observer leurs activités et leurs propre questions !
-                    </p>
-                </mat-card-content>
-            </mat-card>
-        </div>
-    </div>
-</body>
-}
-@else {
-@if (questions$ | async; as questions) {
-@if (!questions.loading) {
-<div style="background-color: white; padding: 20px; display: flex; flex-direction: column; row-gap: 20px;">
-    <span style="font-size: 25px; font-weight: 500;">Questions</span>
-
-    <span style="font-size: 17px;">{{ questions.lines.length }} questions</span>
-
-    @for (question of questions.lines; track question.title) {
-    <div
-        style="display: flex; column-gap: 20px; border-top: 2px solid lightgray; padding-top: 10px; padding-bottom: 10px;">
-        <div style="flex-grow: 1; display: flex; flex-direction: column;">
-            <div style="display: flex; justify-content: end;">{{ question.nbVotes }} votes</div>
-            <div style="display: flex; justify-content: end; color: gray;">{{ question.nbAnswers }} answers</div>
-        </div>
-
-        <div style="flex-grow: 7; display: flex; flex-direction: column; row-gap: 20px;">
-            <button mat-raised-button color="primary" (click)="navigateTo('/questions/' + question.id)">
-                {{ question.title }}
-            </button>
-            <div>
-                {{ question.description }}
-            </div>
-            <div style="display: flex; justify-content: space-between;">
-                <div class="info">
-                    <p>Posté par {{ question.userName }}</p>
-                    <p>Le {{ question.date }}</p>
+    <body>
+        <div class="container">
+            <div class="topdiv">
+                <div class="three">
+                    <h1>UGE ReveVue</h1>
                 </div>
             </div>
+            <div class="bottomdiv">
+                <mat-card class="card">
+                    <mat-card-header>
+                        <mat-card-title  class="card-title">Posez vos questions</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <p class="card-text">
+                            Un problème dans votre code Java ? Posez votre question la communeauté vous répondra !
+                        </p>
+                    </mat-card-content>
+                </mat-card>
+                <mat-card class="card">
+                    <mat-card-header>
+                        <mat-card-title  class="card-title">Reviewez !</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <p class="card-text">
+                            Reviewez le code des autres ! Notre plateforme de codage social vous permet de résoudre les problèmes des développeurs du monde entier.
+                        </p>
+                    </mat-card-content>
+                </mat-card>
+                <mat-card class="card">
+                    <mat-card-header>
+                        <mat-card-title  class="card-title">Suivez les autres utilisateurs</mat-card-title>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <p class="card-text">
+                            Suivez les utilisateurs que vous jugez les plus pertinents pour observer leurs activités et leurs propre questions !
+                        </p>
+                    </mat-card-content>
+                </mat-card>
+            </div>
         </div>
-    </div>
-    }
-</div>
+    </body>
 }
 @else {
-<mat-spinner></mat-spinner>
-}
-}
+    <div class="container" style="width: 100%; height: 100%;">
+        <h2 style="margin: 20px">Bonjour {{userInfo()?.username}} !</h2>
+        @if (questions$ | async; as questions) {
+            <h3 style="margin: 20px">Voici les questions de tes followers</h3>
+            @if (!questions.loading) {
+                <div style="width: 100%; height: 100%; display: flex;">
+                    <div style="background-color: whitesmoke; padding: 20px; flex-grow: 1; display: flex;">
+                        <app-questions-displayer [questions]="questions.lines"></app-questions-displayer>
+                    </div>
+                </div>
+            }
+            @else {
+                <mat-spinner></mat-spinner>
+            }
+        }
+    </div>
 }

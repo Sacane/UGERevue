@@ -2,7 +2,7 @@ package fr.pentagon.ugeoverflow.config.security;
 
 import fr.pentagon.ugeoverflow.config.authentication.CustomUserDetailsService;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
-import fr.pentagon.ugeoverflow.service.CustomPasswordEncoder;
+import fr.pentagon.ugeoverflow.utils.CustomPasswordEncoder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -46,34 +46,33 @@ public class SecurityConfig {
   @Profile("prod")
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     // Source CSRF: https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#csrf-integration-javascript-spa
-    var config = http
-        .authorizeHttpRequests(authorize -> {
-          authorize.requestMatchers("/**", "/api/login", "/h2-console/**").permitAll(); //TODO turn "/**" matching to every front root
-          authorize.anyRequest().authenticated();
-        });
-    config.csrf((csrf) ->
+    return http
+        .cors(Customizer.withDefaults())
+        .csrf(csrf ->
             csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
-        .addFilterBefore(new CsrfCookieFilter(), BasicAuthenticationFilter.class);
-    return config.build();  // TODO disable anonymous authentication
+        .addFilterBefore(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+        .httpBasic(AbstractHttpConfigurer::disable)
+        .anonymous(AbstractHttpConfigurer::disable)
+        .build();
   }
 
   @Bean
   @Profile("dev")
   public SecurityFilterChain securityFilterChainDev(HttpSecurity http) throws Exception {
     return http
-            .csrf(AbstractHttpConfigurer::disable)
-            .cors(Customizer.withDefaults())
-            .authorizeHttpRequests(authorize ->
+        .csrf(AbstractHttpConfigurer::disable)
+        .cors(Customizer.withDefaults())
+        .authorizeHttpRequests(authorize ->
             authorize.requestMatchers("/**", "/api/login", "/h2-console/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
-            )
-            .headers(c -> c.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
-            .formLogin(c -> c.loginPage("http://localhost:4200/login"))
-            .httpBasic(AbstractHttpConfigurer::disable)
-            .anonymous(AbstractHttpConfigurer::disable)
-            .build();
+        )
+        .headers(c -> c.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+        .formLogin(c -> c.loginPage("http://localhost:4200/login"))
+        .httpBasic(AbstractHttpConfigurer::disable)
+        .anonymous(AbstractHttpConfigurer::disable)
+        .build();
   }
 }

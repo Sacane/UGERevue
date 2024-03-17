@@ -1,0 +1,26 @@
+@if (paginator) {
+    <div class="question-list">
+        @for (item of [].constructor((displayedQuestions.length - (paginator.pageIndex * paginator.pageSize)) < paginator.pageSize ?(displayedQuestions.length - (paginator.pageIndex * paginator.pageSize)) : paginator.pageSize); track item; let i=$index) {
+            <div class="question-item" (click)="navigateTo('/questions/' + displayedQuestions[i + (paginator.pageSize * paginator.pageIndex)].id)">
+                <div class="question-info">
+                    <div class="votes-and-answers">
+                        <span>{{ displayedQuestions[i + (paginator.pageSize * paginator.pageIndex)].nbVotes }} votes</span>
+                        <span class="gray-text">{{ displayedQuestions[i + (paginator.pageSize * paginator.pageIndex)].nbAnswers }} answers</span>
+                    </div>
+                    <div class="question-title">
+                        {{ displayedQuestions[i + (paginator.pageSize * paginator.pageIndex)].title }}
+                    </div>
+                </div>
+                <div class="question-details">
+                    <div class="posted-info">
+                        <p>Posté par {{ displayedQuestions[i + (paginator.pageSize * paginator.pageIndex)].userName }}</p>
+                        <p>Le {{ displayedQuestions[i + (paginator.pageSize * paginator.pageIndex)].date }}</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<mat-paginator #paginator [length]="displayedQuestions.length" [pageSize]="10" [pageSizeOptions]="[4, 10, 20]">
+</mat-paginator>

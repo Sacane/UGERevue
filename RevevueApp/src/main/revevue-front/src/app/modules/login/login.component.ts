@@ -1,6 +1,6 @@
-import {Component, inject, ViewEncapsulation} from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {UserService} from "../../shared/HttpServices";
+import {LoginService} from "../../shared/HttpServices";
 import {Router} from "@angular/router";
 
 @Component({
@@ -14,12 +14,13 @@ export class LoginComponent {
         accountName: new FormControl('', [Validators.required]),
         password: new FormControl('', [Validators.required])
     });
-    userService = inject(UserService)
-    private router = inject(Router)
+
+    constructor(private loginService: LoginService, private router: Router) {
+    }
 
     login(): void {
         if (this.loginForm.valid) {
-            this.userService.login({
+            this.loginService.login({
                 login: this.loginForm.value.accountName as string,
                 password: this.loginForm.value.password as string
             }).subscribe(result => {

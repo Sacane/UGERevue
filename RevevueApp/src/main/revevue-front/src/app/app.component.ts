@@ -19,7 +19,7 @@ export class AppComponent{
       icon: 'chat'
     },
     {
-      name: 'Social',
+      name: 'Communauté',
       url: '/users',
       icon: 'account_circle'
     }

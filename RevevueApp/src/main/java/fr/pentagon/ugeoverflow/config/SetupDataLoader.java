@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
+import java.util.logging.Logger;
 
 
 // Source used: https://www.baeldung.com/role-and-privilege-for-spring-security-registration
@@ -17,6 +18,7 @@ import java.util.Objects;
 public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+  private static final Logger LOGGER = Logger.getLogger(SetupDataLoader.class.getName());
   boolean alreadySetup = false;
 
   public SetupDataLoader(PasswordEncoder passwordEncoder, UserRepository userRepository) {
@@ -38,6 +40,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
   public void createAdminIfNotFound() {
     var admin = userRepository.findByLogin("admin").orElse(null);
     if (admin == null) {
+      LOGGER.info("Creating admin..");
       admin = new User("admin", "admin", passwordEncoder.encode("password"), "admin@admin.fr", Role.ADMIN);
       userRepository.save(admin);
     }
