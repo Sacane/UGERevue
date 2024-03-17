@@ -47,12 +47,8 @@ public class SecurityConfig {
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     // Source CSRF: https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#csrf-integration-javascript-spa
     return http
-        .authorizeHttpRequests(authorize -> {
-          authorize.requestMatchers("/**", "/api/login").permitAll(); //TODO turn "/**" matching to every front root
-          authorize.anyRequest().authenticated();
-        })
         .cors(Customizer.withDefaults())
-        .csrf((csrf) ->
+        .csrf(csrf ->
             csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
         .addFilterBefore(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
