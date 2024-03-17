@@ -28,12 +28,12 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 public class QuestionController {
 
-  private static final Logger LOGGER = Logger.getLogger(QuestionController.class.getName());
-  private final QuestionService questionService;
+    private static final Logger LOGGER = Logger.getLogger(QuestionController.class.getName());
+    private final QuestionService questionService;
 
-  public QuestionController(QuestionService questionService) {
-    this.questionService = questionService;
-  }
+    public QuestionController(QuestionService questionService) {
+        this.questionService = questionService;
+    }
 
   @GetMapping(Routes.Question.ROOT)
   public ResponseEntity<List<QuestionDTO>> allQuestions() {
@@ -101,6 +101,6 @@ public class QuestionController {
   public ResponseEntity<List<QuestionDTO>> getQuestionsFromFollowers() {
     var userDetail = SecurityContext.checkAuthentication();
 
-    return ResponseEntity.ok(questionService.getQuestionsFromFollowers(userDetail.id()));
-  }
+        return ResponseEntity.ok(questionService.getQuestionsFromFollows(userDetail.id()));
+    }
 }
