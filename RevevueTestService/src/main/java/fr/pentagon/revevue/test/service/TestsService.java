@@ -30,14 +30,12 @@ public final class TestsService {
             logger.info("Running tests...");
             var tracker = TestTracker.runAndTrack(clazz);
             logger.info("Tests has been running successfully");
-            TestResultDTO testResultDTO = new TestResultDTO(
+            return new TestResultDTO(
                     tracker.allTestsPassed(),
                     tracker.passedCount(),
                     tracker.failuresCount(),
                     tracker.failureDetails()
             );
-            logger.info("Results : " + testResultDTO);
-            return testResultDTO;
         }catch (TimeoutException timeoutException){
             return new TestResultDTO(false, 0, 0, timeoutException.getMessage());
         }finally {

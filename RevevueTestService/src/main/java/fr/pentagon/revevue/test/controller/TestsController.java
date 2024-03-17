@@ -43,11 +43,10 @@ public final class TestsController {
     ){
         try {
             logger.info("Called run on /api/tests");
-            var bundle = new TestBundle(id, testFilename, testFile,dependencyFilename, dependencyFile);
+            var bundle = new TestBundle(id, testFilename, testFile, dependencyFilename, dependencyFile);
             var results = testsService.runTest(bundle);
             return ResponseEntity.ok(results);
         } catch (CompilationException e) {
-            // e.getMessage() of CompilationException log only the reason why the compilation failed
             logger.severe(e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
             throw HttpException.badRequest(e.getMessage().lines().limit(MAX_ERROR_DESCRIPTION)
                     .collect(Collectors.joining("\n", "", "...")));

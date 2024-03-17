@@ -44,7 +44,7 @@ public final class TestTracker {
             var completableFuture = CompletableFuture.runAsync(runnable);
             completableFuture.get(TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
         } catch (TimeoutException e) { // If execution exceeds the timeout, throw a TimeoutException
-            throw new TimeoutException();
+            throw new TimeoutException("Tests timed out, maximum duration is " + TIMEOUT_IN_SECONDS + " seconds.");
         } catch (ExecutionException | InterruptedException e) { // Wrap unexpected exceptions in an AssertionError
             throw new AssertionError(e);
         }
