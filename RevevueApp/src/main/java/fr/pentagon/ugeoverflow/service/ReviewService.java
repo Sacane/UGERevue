@@ -65,7 +65,7 @@ public class ReviewService {
         return reviewMapper.entityToReviewQuestionResponseDTO(newReview, user.getUsername());
     }
 
-    private void addTags(ReviewOnReviewDTO reviewOnReviewDTO, User user, Review review){
+    private void addTags(ReviewOnReviewDTO reviewOnReviewDTO, User user, Review review) {
         reviewOnReviewDTO.tagList().forEach(tag -> {
             var existingTagOptional = tagRepository.findTagByName(tag);
             if (existingTagOptional.isEmpty()) {
@@ -80,9 +80,6 @@ public class ReviewService {
             }
         });
     }
-
-
-
 
     @Transactional
     public void remove(ReviewRemoveDTO reviewRemoveDTO) {
@@ -152,7 +149,7 @@ public class ReviewService {
         return question.getReviews().stream().map(review -> {
             String citedCode = null;
             var fileContent = new String(question.getFile(), StandardCharsets.UTF_8).split("\n");
-            if(review.getCodePart() != null) {
+            if (review.getCodePart() != null) {
                 var lineStart = review.getCodePart().getLineStart();
                 var lineEnd = review.getCodePart().getLineEnd();
                 citedCode = Arrays.stream(fileContent, lineStart - 1, lineEnd)
@@ -172,7 +169,7 @@ public class ReviewService {
         String citedCode = null;
         if (review.getQuestion() != null) {
             var fileContent = new String(review.getQuestion().getFile(), StandardCharsets.UTF_8).split("\n");
-            if(review.getCodePart() != null) {
+            if (review.getCodePart() != null) {
                 var lineStart = review.getCodePart().getLineStart();
                 var lineEnd = review.getCodePart().getLineEnd();
                 citedCode = Arrays.stream(fileContent, lineStart - 1, lineEnd)
@@ -180,7 +177,7 @@ public class ReviewService {
             }
         }
         boolean doesUserVote = false;
-        if(userId != null) {
+        if (userId != null) {
             doesUserVote = reviewVoteRepository.existsReviewVoteByReviewVoteId_Author_IdAndReviewVoteId_Review_Id(userId, reviewId);
         }
         var list = review.getReviews().stream().map(childReview -> findDetailsFromReviewIdWithChildren(userId, childReview.getId())).toList();
