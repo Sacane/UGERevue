@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+<html lang="en"
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Revevue</title>
     <link href="../../static/styles/main.css" rel="stylesheet" th:href="@{/styles/main.css}"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism-okaidia.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism-okaidia.min.css" rel="stylesheet">
     <!-- Include Prism.js for code highlighting -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-java.min.js"></script>
@@ -34,21 +34,21 @@
     </div>
     <div class="content">
         <h2>Créer une revue</h2>
-        <form method="post" action="/light/reviews/create" th:object="${request}">
-            <input type="hidden" name="questionId" th:value="${questionId}" />
+        <form method="post" th:action="@{/light/reviews/create}" th:object="${request}">
+            <input name="questionId" th:value="${questionId}" type="hidden"/>
             <div class="form-group">
                 <label for="content">Contenu de la revue :</label>
-                <textarea id="content" name="content" class="form-control" th:field="*{content}" required></textarea>
+                <textarea class="form-control" id="content" name="content" required th:field="*{content}"></textarea>
             </div>
             <div class="form-group">
                 <label for="lineStart">Ligne de début :</label>
-                <input id="lineStart" name="lineStart" class="form-control" type="number" th:field="*{lineStart}">
+                <input class="form-control" id="lineStart" name="lineStart" th:field="*{lineStart}" type="number">
             </div>
             <div class="form-group">
                 <label for="lineEnd">Ligne de fin :</label>
-                <input id="lineEnd" name="lineEnd" class="form-control" type="number" th:field="*{lineEnd}">
+                <input class="form-control" id="lineEnd" name="lineEnd" th:field="*{lineEnd}" type="number">
             </div>
-            <button type="submit" class="btn btn-primary">Créer la revue</button>
+            <button class="btn btn-primary" type="submit">Créer la revue</button>
         </form>
     </div>
 

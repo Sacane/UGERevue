@@ -91,7 +91,7 @@ public class Question {
 
     @Nullable
     public String getTestResult() {
-        return (testKit == null) ? "Pas de résultats" : testKit.getTestResult();
+        return testKit.getTestResult();
     }
 
     public void setTestResult(@Nullable String testResult) {

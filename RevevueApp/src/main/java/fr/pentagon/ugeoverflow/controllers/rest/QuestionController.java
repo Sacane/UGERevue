@@ -32,18 +32,18 @@ import static org.springframework.http.ResponseEntity.ok;
 @RestController
 public class QuestionController {
 
-  private static final Logger LOGGER = Logger.getLogger(QuestionController.class.getName());
-  private final QuestionService questionService;
+    private static final Logger LOGGER = Logger.getLogger(QuestionController.class.getName());
+    private final QuestionService questionService;
 
-  public QuestionController(QuestionService questionService) {
-    this.questionService = questionService;
-  }
-
-    @GetMapping(Routes.Question.ROOT)
-    public ResponseEntity<List<QuestionDTO>> allQuestions() {
-        LOGGER.info("GET performed on /api/questions");
-        return ok(questionService.getQuestions());
+    public QuestionController(QuestionService questionService) {
+        this.questionService = questionService;
     }
+
+  @GetMapping(Routes.Question.ROOT)
+  public ResponseEntity<List<QuestionDTO>> allQuestions() {
+    LOGGER.info("GET performed on /api/questions");
+    return ok(questionService.getQuestions());
+  }
 
     @GetMapping(Routes.Question.SEARCH)
     public ResponseEntity<List<QuestionDTO>> allQuestionByParameters(@RequestParam("label") @NotBlank String label, @RequestParam(required = false, value = "username") String username) {
@@ -51,13 +51,13 @@ public class QuestionController {
         return ok(questionService.getQuestions(label, username));
     }
 
-    @GetMapping(Routes.Question.CURRENT_USER)
-    public ResponseEntity<List<QuestionDTO>> getAllQuestionsFromCurrentUser(Principal principal) {
-        if (principal == null) {
-            throw HttpException.forbidden("No user currently authenticated");
-        }
-        return ResponseEntity.ok(questionService.getQuestionsFromCurrentUser(principal.getName()));
+  @GetMapping(Routes.Question.CURRENT_USER)
+  public ResponseEntity<List<QuestionDTO>> getAllQuestionsFromCurrentUser(Principal principal) {
+    if (principal == null) {
+      throw HttpException.forbidden("No user currently authenticated");
     }
+    return ResponseEntity.ok(questionService.getQuestionsFromCurrentUser(principal.getName()));
+  }
 
     @PostMapping(
             value = Routes.Question.ROOT,
@@ -77,22 +77,23 @@ public class QuestionController {
         ), userDetail.id()));
     }
 
-    @DeleteMapping(Routes.Question.ROOT + "/{questionId}")
-    @RequireUser
-    public ResponseEntity<Void> removeQuestion(@PathVariable(name = "questionId") long questionId) {
-        LOGGER.info("DELETE performed on /api/questions/" + questionId);
-        var user = SecurityContext.checkAuthentication();
-        questionService.remove(new QuestionRemoveDTO(user.id(), questionId));
-        return ok().build();
-    }
+  @DeleteMapping(Routes.Question.ROOT + "/{questionId}")
+  @RequireUser
+  public ResponseEntity<Void> removeQuestion(@PathVariable(name = "questionId") long questionId) {
+    LOGGER.info("DELETE performed on /api/questions/" + questionId);
+    var user = SecurityContext.checkAuthentication();
+    questionService.remove(new QuestionRemoveDTO(user.id(), questionId));
+    return ok().build();
+  }
 
-    @GetMapping(Routes.Question.ROOT + "/{questionId}")
-    public ResponseEntity<QuestionDetailsDTO> getQuestion(@PathVariable(name = "questionId") long questionId) {
-        LOGGER.info("GET performed on /api/questions/" + questionId);
-        return ok(questionService.findById(questionId));
-    }
+  @GetMapping(Routes.Question.ROOT + "/{questionId}")
+  public ResponseEntity<QuestionDetailsDTO> getQuestion(@PathVariable(name = "questionId") long questionId) {
+    LOGGER.info("GET performed on /api/questions/" + questionId);
+    return ok(questionService.findById(questionId));
+  }
 
   @PostMapping(Routes.Question.ROOT + "/reviews")
+  @RequireUser
   public ResponseEntity<ReviewQuestionResponseDTO> addReview(@Valid @RequestBody QuestionReviewCreateBodyDTO questionReviewCreateBodyDTO) {
       LOGGER.info("review => " + questionReviewCreateBodyDTO);
       var userDetail = SecurityContext.checkAuthentication();
@@ -100,6 +101,7 @@ public class QuestionController {
   }
 
     @GetMapping(Routes.Question.ROOT + "/followers")
+    @RequireUser
     public ResponseEntity<List<QuestionDTO>> getQuestionsFromFollowers() {
         var userDetail = SecurityContext.checkAuthentication();
         return ResponseEntity.ok(questionService.getQuestionsFromFollowers(userDetail.id()));

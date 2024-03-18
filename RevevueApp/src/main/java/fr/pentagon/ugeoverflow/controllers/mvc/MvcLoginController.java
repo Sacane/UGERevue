@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.controllers.mvc;
 
+import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
 import fr.pentagon.ugeoverflow.service.LoginManager;
 import jakarta.servlet.http.HttpServletRequest;
@@ -50,6 +51,7 @@ public class MvcLoginController {
   }
 
   @GetMapping("/logout")
+  @RequireUser
   public String logout(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
     if (authentication == null) {
       return "redirect:/light/home";

@@ -1,6 +1,7 @@
 package fr.pentagon.ugeoverflow.controllers.mvc;
 
 import fr.pentagon.ugeoverflow.config.authentication.RevevueUserDetail;
+import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateBodyDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
@@ -44,12 +45,14 @@ public class MvcReviewController {
     }
 
     @GetMapping("/create/{questionId}")
-    public String createReviewPage(@Valid @ModelAttribute("body") ReviewBodyDTO questionReviewCreateDTO, @PathVariable("questionId") @Positive long questionId, Model model){
+    @RequireUser
+    public String createReviewPage(@Valid @ModelAttribute("body") ReviewBodyDTO questionReviewCreateDTO, @PathVariable("questionId") long questionId, Model model){
         model.addAttribute("request", new QuestionReviewCreateBodyDTO(questionId, questionReviewCreateDTO.content(), questionReviewCreateDTO.lineStart(), questionReviewCreateDTO.lineEnd(), questionReviewCreateDTO.tags()));
         return "pages/reviews/create";
     }
 
     @PostMapping("/create")
+    @RequireUser
     public String createReview(@Valid @ModelAttribute("request") QuestionReviewCreateBodyDTO questionReviewCreateDTO) {
         var currentUser = SecurityContext.checkAuthentication();
         questionService.addReview(new QuestionReviewCreateDTO(currentUser.id(), questionReviewCreateDTO.questionId(), questionReviewCreateDTO.content(), questionReviewCreateDTO.lineStart(), questionReviewCreateDTO.lineEnd(), questionReviewCreateDTO.tags() == null ? List.of() : questionReviewCreateDTO.tags()));

@@ -1,4 +1,4 @@
-import {Component, computed, inject, signal, Signal, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, computed, inject, OnInit, signal, Signal, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Review} from "../../models/review";
 import {Role} from "../../models/role.model";
@@ -37,7 +37,10 @@ export class QuestionComponent {
         this.canReview = this.userService.getLogin() !== '';
         console.log(this.canDelete())
         console.log(this.userService.getLogin())
+
     }
+
+
 
     deleteQuestion(): void {
         this.dialog.open(ConfirmDialogComponent, {
@@ -107,5 +110,9 @@ export class QuestionComponent {
 
     onUpdateDelete(reviews: Review[]): void {
         this.reviews = signal(reviews);
+    }
+
+    test() {
+        console.log(this.question())
     }
 }

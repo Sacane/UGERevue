@@ -1,6 +1,7 @@
 package fr.pentagon.ugeoverflow.controllers.dtos.responses;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public record TestResultDTO(
         boolean isSuccess,
@@ -15,8 +16,15 @@ public record TestResultDTO(
         if(amountFailures < 0) throw new IllegalArgumentException("Must me positive");
     }
 
+    public String result(){
+        return isSuccess ? "Succes ! Tous les tests ont été réussi !" : "Erreur, vous avez " + amountFailures + " tests écohué sur " + (amountFailures + amountValid);
+    }
+
     public static TestResultDTO zero() {
-        return new TestResultDTO(false, 0, 0, UNDEFINED_RESULT);
+        return zero(UNDEFINED_RESULT);
+    }
+    public static TestResultDTO zero(String result) {
+        return new TestResultDTO(false, 0, 0, result);
     }
     public boolean isZero() {
         return failuresDetails.equals(UNDEFINED_RESULT);

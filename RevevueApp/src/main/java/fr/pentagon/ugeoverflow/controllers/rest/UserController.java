@@ -76,7 +76,11 @@ public class UserController {
   @GetMapping(Routes.User.ROOT)
   public ResponseEntity<List<UserFollowInfoDTO>> getAllRegisteredUsers() {
     LOGGER.info("Trying to get all registered Users");
-    if (SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")) { // TODO fix it
+    var authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication == null) {
+      throw HttpException.forbidden("no authentication");
+    }
+    if (authentication.getName().equals("anonymousUser")) { // TODO fix it
       return ResponseEntity.ok(userService.userRegisteredList());
     }
     var userConnected = SecurityContext.checkAuthentication();
@@ -117,7 +121,7 @@ public class UserController {
 
   @GetMapping(Routes.User.RECOMMENDED_REVIEW)
   @RequireUser
-  public ResponseEntity<List<ReviewContentDTO>> getRecommendedReview(@RequestBody @Valid QuestionUserIdDTO questionUserIdDTO){
+  public ResponseEntity<List<ReviewContentDTO>> getRecommendedReview(@RequestBody @Valid QuestionUserIdDTO questionUserIdDTO) {
     var user = SecurityContext.checkAuthentication();
     var recommendedReview = userService.getRecommendedReviewForQuestion(user.id(), questionUserIdDTO.questionContent());
     return ResponseEntity.ok(recommendedReview);

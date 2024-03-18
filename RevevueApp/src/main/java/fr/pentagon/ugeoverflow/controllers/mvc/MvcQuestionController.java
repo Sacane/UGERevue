@@ -5,7 +5,6 @@ import fr.pentagon.ugeoverflow.controllers.dtos.thymleaf.NewQuestionThymeleafDTO
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.service.ReviewMarkdownService;
-
 import fr.pentagon.ugeoverflow.utils.MarkdownRenderer;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -21,15 +20,16 @@ import java.util.logging.Logger;
 @Controller
 @RequestMapping("/light/questions/")
 public class MvcQuestionController {
-    private final QuestionService questionService;
-    private final ReviewMarkdownService reviewService;
-    private final MarkdownRenderer markdownRenderer;
-    private final Logger logger = Logger.getLogger(MvcQuestionController.class.getName());
-    public MvcQuestionController(QuestionService questionService, ReviewMarkdownService reviewService, MarkdownRenderer markdownRenderer) {
-        this.questionService = questionService;
-        this.reviewService = reviewService;
-        this.markdownRenderer = markdownRenderer;
-    }
+  private final QuestionService questionService;
+  private final ReviewMarkdownService reviewService;
+  private final MarkdownRenderer markdownRenderer;
+  private final Logger logger = Logger.getLogger(MvcQuestionController.class.getName());
+
+  public MvcQuestionController(QuestionService questionService, ReviewMarkdownService reviewService, MarkdownRenderer markdownRenderer) {
+    this.questionService = questionService;
+    this.reviewService = reviewService;
+    this.markdownRenderer = markdownRenderer;
+  }
 
     @GetMapping("/{questionId}")
     public String detail(@PathVariable("questionId") @Positive long questionId, Model model) {
@@ -40,12 +40,12 @@ public class MvcQuestionController {
         return "pages/questions/detail";
     }
 
-    @GetMapping
-    public String all(Model model) {
-        var questions = questionService.getQuestions();
-        model.addAttribute("questions", questions);
-        return "pages/questions/all";
-    }
+  @GetMapping
+  public String all(Model model) {
+    var questions = questionService.getQuestions();
+    model.addAttribute("questions", questions);
+    return "pages/questions/all";
+  }
 
     @GetMapping("/ask")
     public String askPage(@Valid @ModelAttribute("newQuestion") NewQuestionThymeleafDTO newQuestionDTO) {
@@ -55,23 +55,24 @@ public class MvcQuestionController {
         return "pages/questions/ask";
     }
 
-    @PostMapping("/ask")
-    public String ask(@Valid @ModelAttribute("newQuestion") NewQuestionThymeleafDTO newQuestionDTO,
-                      BindingResult bindingResult, Authentication authentication
-    ){
-        logger.info("Post question : " + newQuestionDTO.javaFile().getOriginalFilename());
-        if(authentication == null) return "redirect:light/login";
-        if(bindingResult.hasErrors()) {
-            return "pages/questions/ask";
-        }
-        try {
-            questionService.create(newQuestionDTO.toNewQuestionDTO(), SecurityContext.checkAuthentication().id());
-        }catch (IOException e){
-            logger.severe(e.getMessage());
-            throw HttpException.badRequest("Le fichier n'a pas été correctement ouvert");
-        }
-        return "redirect:";
+  @PostMapping("/ask")
+  @RequireUser
+  public String ask(@Valid @ModelAttribute("newQuestion") NewQuestionThymeleafDTO newQuestionDTO,
+                    BindingResult bindingResult, Authentication authentication
+  ) {
+    logger.info("Post question : " + newQuestionDTO.javaFile().getOriginalFilename());
+    if (authentication == null) return "redirect:light/login";
+    if (bindingResult.hasErrors()) {
+      return "pages/questions/ask";
     }
+    try {
+      questionService.create(newQuestionDTO.toNewQuestionDTO(), SecurityContext.checkAuthentication().id());
+    } catch (IOException e) {
+      logger.severe(e.getMessage());
+      throw HttpException.badRequest("Le fichier n'a pas été correctement ouvert");
+    }
+    return "redirect:";
+  }
 
 
 }

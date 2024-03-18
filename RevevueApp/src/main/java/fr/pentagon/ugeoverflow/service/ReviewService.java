@@ -8,7 +8,6 @@ import fr.pentagon.ugeoverflow.controllers.dtos.responses.*;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Review;
 import fr.pentagon.ugeoverflow.model.Tag;
-import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.model.vote.ReviewVote;
 import fr.pentagon.ugeoverflow.model.vote.ReviewVoteId;
 import fr.pentagon.ugeoverflow.repository.*;
@@ -29,17 +28,25 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final ReviewVoteRepository reviewVoteRepository;
-    private final TagRepository tagRepository;
+    private final TagService tagService;
     private final ReviewMapper reviewMapper;
     private final Logger logger = Logger.getLogger(ReviewService.class.getName());
+    private final TagRepository tagRepository;
 
-    public ReviewService(QuestionRepository questionRepository, ReviewRepository reviewRepository, UserRepository userRepository, ReviewVoteRepository reviewVoteRepository, TagRepository tagRepository, ReviewMapper reviewMapper) {
+    public ReviewService(QuestionRepository questionRepository,
+                         ReviewRepository reviewRepository,
+                         UserRepository userRepository,
+                         ReviewVoteRepository reviewVoteRepository,
+                         TagService tagService,
+                         ReviewMapper reviewMapper,
+                         TagRepository tagRepository) {
         this.questionRepository = questionRepository;
         this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.reviewVoteRepository = reviewVoteRepository;
-        this.tagRepository = tagRepository;
+        this.tagService = tagService;
         this.reviewMapper = reviewMapper;
+        this.tagRepository = tagRepository;
     }
 
     List<ReviewResponseDTO> getReviews(long reviewId) {
@@ -61,41 +68,23 @@ public class ReviewService {
         var newReview = reviewRepository.save(new Review(reviewOnReviewDTO.content(), null, new Date()));
         user.addReview(newReview);
         review.addReview(newReview);
-        addTags(reviewOnReviewDTO, user, review);
+        tagService.addTag(user, review, reviewOnReviewDTO.tagList());
         return reviewMapper.entityToReviewQuestionResponseDTO(newReview, user.getUsername());
     }
-
-    private void addTags(ReviewOnReviewDTO reviewOnReviewDTO, User user, Review review){
-        reviewOnReviewDTO.tagList().forEach(tag -> {
-            var existingTagOptional = tagRepository.findTagByName(tag);
-            if (existingTagOptional.isEmpty()) {
-                var newTag = new Tag(tag);
-                tagRepository.save(newTag);
-                user.addTag(newTag);
-                review.addTag(newTag);
-            } else {
-                var existingTag = existingTagOptional.get();
-                user.addTag(existingTag);
-                review.addTag(existingTag);
-            }
-        });
-    }
-
-
 
 
     @Transactional
     public void remove(ReviewRemoveDTO reviewRemoveDTO) {
-        var userFind = userRepository.findById(reviewRemoveDTO.userId());
+        var userFind = userRepository.findByIdWithTag(reviewRemoveDTO.userId());
         if (userFind.isEmpty()) {
             throw HttpException.notFound("User not exist");
         }
-        var reviewFind = reviewRepository.findById(reviewRemoveDTO.reviewId());
+        var reviewFind = reviewRepository.findByIdWithTags(reviewRemoveDTO.reviewId());
         if (reviewFind.isEmpty()) {
             throw HttpException.notFound("Review not exist");
         }
         var user = userFind.get();
-        var review = reviewFind.get();
+        Review review = reviewFind.get();
 
         if (user.getRole() != Role.ADMIN && !userRepository.containsReview(user.getId(), review)) {
             throw HttpException.unauthorized("Not your review");
@@ -113,6 +102,12 @@ public class ReviewService {
             var question = questionOptional.get();
             question.removeReview(review);
         }
+        review.getTagsList().forEach(tag -> {
+            review.removeTag(tag);
+            if(!userRepository.hasReviewWithTag(user.getId(), tag.getId())){
+                user.removeTag(tag);
+            }
+        });
         reviewRepository.delete(review);
     }
 
@@ -152,7 +147,7 @@ public class ReviewService {
         return question.getReviews().stream().map(review -> {
             String citedCode = null;
             var fileContent = new String(question.getFile(), StandardCharsets.UTF_8).split("\n");
-            if(review.getCodePart() != null) {
+            if (review.getCodePart() != null) {
                 var lineStart = review.getCodePart().getLineStart();
                 var lineEnd = review.getCodePart().getLineEnd();
                 citedCode = Arrays.stream(fileContent, lineStart - 1, lineEnd)
@@ -172,7 +167,7 @@ public class ReviewService {
         String citedCode = null;
         if (review.getQuestion() != null) {
             var fileContent = new String(review.getQuestion().getFile(), StandardCharsets.UTF_8).split("\n");
-            if(review.getCodePart() != null) {
+            if (review.getCodePart() != null) {
                 var lineStart = review.getCodePart().getLineStart();
                 var lineEnd = review.getCodePart().getLineEnd();
                 citedCode = Arrays.stream(fileContent, lineStart - 1, lineEnd)
@@ -180,7 +175,7 @@ public class ReviewService {
             }
         }
         boolean doesUserVote = false;
-        if(userId != null) {
+        if (userId != null) {
             doesUserVote = reviewVoteRepository.existsReviewVoteByReviewVoteId_Author_IdAndReviewVoteId_Review_Id(userId, reviewId);
         }
         var list = review.getReviews().stream().map(childReview -> findDetailsFromReviewIdWithChildren(userId, childReview.getId())).toList();
