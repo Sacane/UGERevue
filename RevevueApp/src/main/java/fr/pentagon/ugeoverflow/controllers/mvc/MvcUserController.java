@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.controllers.mvc;
 
+import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.service.QuestionService;
@@ -27,7 +28,7 @@ public class MvcUserController {
   public String profilePage(Model model, Principal principal) {
     var userResponse = SecurityContext.authentication();
     if (userResponse.isEmpty()) {
-      return "redirect:/light/forbidden";
+      throw HttpException.unauthorized("Non connecté");
     }
     var user = userService.findById(userResponse.get().id());
     model.addAttribute("username", user.username());

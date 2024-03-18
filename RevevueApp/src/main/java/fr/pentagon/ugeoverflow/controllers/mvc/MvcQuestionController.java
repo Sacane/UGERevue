@@ -49,9 +49,9 @@ public class MvcQuestionController {
   }
 
   @GetMapping("/ask")
-  public String askPage(@Valid @ModelAttribute("newQuestion") NewQuestionThymeleafDTO newQuestionDTO) {
+  public String askPage(@ModelAttribute("newQuestion") NewQuestionThymeleafDTO newQuestionDTO) {
     if (SecurityContext.authentication().isEmpty()) {
-      return "redirect:/light/forbidden";
+      throw HttpException.unauthorized("Non connecté");
     }
     return "pages/questions/ask";
   }
