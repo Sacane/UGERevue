@@ -27,10 +27,8 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 public class QuestionController {
-
     private static final Logger LOGGER = Logger.getLogger(QuestionController.class.getName());
     private final QuestionService questionService;
-
     public QuestionController(QuestionService questionService) {
         this.questionService = questionService;
     }

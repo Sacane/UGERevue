@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.service;
 
+import fr.pentagon.revevue.common.dto.TestBundle;
 import fr.pentagon.ugeoverflow.algorithm.QuestionSorterStrategy;
 import fr.pentagon.ugeoverflow.algorithm.SearchQuestionByLabelStrategy;
 import fr.pentagon.ugeoverflow.config.authorization.Role;
@@ -107,7 +108,7 @@ public class QuestionService {
     @Transactional
     @Retryable(retryFor = ObjectOptimisticLockingFailureException.class)
     public void update(QuestionUpdateDTO questionUpdateDTO) {
-        var userQuestion = QuestionService.findQuestionFromId(userRepository, questionUpdateDTO.userId(), questionRepository, questionUpdateDTO.questionId());
+        var userQuestion = findQuestionFromId(userRepository, questionUpdateDTO.userId(), questionRepository, questionUpdateDTO.questionId());
         var user = userQuestion.user();
         var question = userQuestion.question();
 
@@ -126,7 +127,7 @@ public class QuestionService {
         }
         if (questionUpdateDTO.testFile() != null) {
             question.setTestFile(questionUpdateDTO.testFile());
-            question.setTestResult("TEST RESULT"); //TODO test
+            question.setTestResult(question.getTestResult());
         }
     }
 
@@ -271,5 +272,12 @@ public class QuestionService {
             var question = entrySet.getKey();
             return questionMapper.entityToQuestionDTO(question);
         }).toList();
+    }
+    @Transactional
+    public void updateTest(long questionId, String testResult) {
+        questionRepository.findById(questionId)
+                .ifPresent(question -> {
+                    question.setTestResult(testResult);
+                });
     }
 }

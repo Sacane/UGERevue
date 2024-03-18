@@ -15,7 +15,6 @@ import java.util.Objects;
 @Service
 public class TestServiceRunner {
     private final WebClient webClient;
-
     public TestServiceRunner(WebClient webClient) {
         this.webClient = webClient;
     }
