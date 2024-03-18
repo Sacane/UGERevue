@@ -25,6 +25,7 @@ public class MvcReviewController {
   private final ReviewService reviewService;
   private final QuestionService questionService;
   private final MarkdownRenderer markdownRenderer;
+
   public MvcReviewController(ReviewService reviewService, MarkdownRenderer markdownRenderer, QuestionService questionService) {
     this.reviewService = reviewService;
     this.markdownRenderer = markdownRenderer;
@@ -41,9 +42,25 @@ public class MvcReviewController {
     return "pages/reviews/detail";
   }
 
+  @PostMapping("/upvote/{reviewId}")
+  @RequireUser
+  public String upvoteReview(@PathVariable("reviewId") @Positive long reviewId) {
+    var user = SecurityContext.checkAuthentication();
+    reviewService.vote(user.id(), reviewId, true);
+    return "pages/return";
+  }
+
+  @PostMapping("/downvote/{reviewId}")
+  @RequireUser
+  public String downvoteReview(@PathVariable("reviewId") @Positive long reviewId) {
+    var user = SecurityContext.checkAuthentication();
+    reviewService.vote(user.id(), reviewId, false);
+    return "pages/return";
+  }
+  
   @GetMapping("/create/{questionId}")
   @RequireUser
-  public String createReviewPage(@Valid @ModelAttribute("body") ReviewBodyDTO questionReviewCreateDTO, @PathVariable("questionId") long questionId, Model model) {
+  public String createReviewPage(@ModelAttribute("body") ReviewBodyDTO questionReviewCreateDTO, @PathVariable("questionId") long questionId, Model model) {
     model.addAttribute("request", new QuestionReviewCreateBodyDTO(questionId, questionReviewCreateDTO.content(), questionReviewCreateDTO.lineStart(), questionReviewCreateDTO.lineEnd(), questionReviewCreateDTO.tags()));
     return "pages/reviews/create";
   }

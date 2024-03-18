@@ -9,5 +9,10 @@ import java.util.List;
 
 public record QuestionReviewCreateBodyDTO(@Positive long questionId, @NotNull @NotBlank String content,
                                           @Nullable Integer lineStart, @Nullable Integer lineEnd,
-                                          @NotNull List<String> tags) {
+                                          List<String> tags) {
+  public QuestionReviewCreateBodyDTO {
+    if (tags == null) {
+      tags = List.of();
+    }
+  }
 }

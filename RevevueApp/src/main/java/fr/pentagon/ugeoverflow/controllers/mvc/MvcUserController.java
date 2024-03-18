@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.security.Principal;
 
 @Controller
-@RequestMapping("/light/profile/")
+@RequestMapping("/light/profile")
 public class MvcUserController {
   private final UserService userService;
   private final QuestionService questionService;

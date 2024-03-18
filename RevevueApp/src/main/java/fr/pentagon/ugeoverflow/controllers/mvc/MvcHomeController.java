@@ -13,7 +13,7 @@ public class MvcHomeController {
     return "pages/home";
   }
 
-  @GetMapping("")
+  @GetMapping(value = {"", "/"})
   public String redirectToHome() {
     return "redirect:/light/home";
   }

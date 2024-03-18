@@ -41,6 +41,22 @@ public class MvcQuestionController {
     return "pages/questions/detail";
   }
 
+  @PostMapping("/upvote/{questionId}")
+  @RequireUser
+  public String upvoteQuestion(@PathVariable("questionId") @Positive long questionId) {
+    var user = SecurityContext.checkAuthentication();
+    questionService.vote(user.id(), questionId, true);
+    return "pages/return";
+  }
+
+  @PostMapping("/downvote/{questionId}")
+  @RequireUser
+  public String downvoteQuestion(@PathVariable("questionId") @Positive long questionId) {
+    var user = SecurityContext.checkAuthentication();
+    questionService.vote(user.id(), questionId, false);
+    return "pages/return";
+  }
+
   @GetMapping
   public String all(Model model) {
     var questions = questionService.getQuestions();
