@@ -114,9 +114,7 @@ public class ReviewService {
     private void removeTagsFromReview(Review review, User user) {
         review.getTagsList().forEach(tag -> {
             review.removeTag(tag);
-            System.out.println("OK...");
             if (!userRepository.hasReviewWithTag(user.getId(), tag.getId())) {
-                System.out.println("POPO PITIE");
                 user.removeTag(tag);
             }
         });
