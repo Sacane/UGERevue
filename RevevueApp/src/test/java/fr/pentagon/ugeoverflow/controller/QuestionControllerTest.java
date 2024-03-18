@@ -33,7 +33,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.Principal;
@@ -343,11 +342,24 @@ class QuestionControllerTest {
     }
 
     @Test
+    @DisplayName("Add review to from a negative questionId should send badRequest")
+    void addReviewWhenQuestionIdIsNegative() throws Exception {
+        userTestProvider.addSomeUserIntoDatabase();
+        loginTestService.login(new CredentialsDTO("loginSacane", "SacanePassword"));
+        var dto = new QuestionReviewCreateBodyDTO(-1, "Ceci est une review", null, null, List.of());
+        questionMVC.perform(MockMvcRequestBuilders.post(Routes.Question.ROOT+ "/reviews")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
     @DisplayName("Add review to a question which doesn't exist")
     void addReviewWhenQuestionDoesntExist() throws Exception {
         userTestProvider.addSomeUserIntoDatabase();
         loginTestService.login(new CredentialsDTO("loginSacane", "SacanePassword"));
-        var dto = new QuestionReviewCreateBodyDTO(-1, "Ceci est une review", null, null, List.of());
+        var dto = new QuestionReviewCreateBodyDTO(99999, "Ceci est une review", null, null, List.of());
         questionMVC.perform(MockMvcRequestBuilders.post(Routes.Question.ROOT+ "/reviews")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
