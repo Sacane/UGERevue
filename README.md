@@ -3,10 +3,10 @@
 ## Contributors 
 
 - Ramaroson Rakotomihamina Johan (Tech lead) ```johan.ramaroson@gmail.com```
-- Menaa Mathis (Scrum master) ```mathis.menaa2@gmail.com```
-- Tellier Quentin (Product owner) ```quentintellier01@yahoo.com```
-- Gaudet Clément (Security engineer) ```derkeethus96@gmail.com```
-- Regueme Yohann (Security expert) ```reguemeyohannsup@gmail.com```
+- Menaa Mathis ```mathis.menaa2@gmail.com```
+- Tellier Quentin ```quentintellier01@yahoo.com```
+- Gaudet Clément  ```derkeethus96@gmail.com```
+- Regueme Yohann ```reguemeyohannsup@gmail.com```
 
 ## Requires
 
