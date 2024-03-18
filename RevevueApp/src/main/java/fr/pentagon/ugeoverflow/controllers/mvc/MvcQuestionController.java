@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.controllers.mvc;
 
+import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.thymleaf.NewQuestionThymeleafDTO;
 import fr.pentagon.ugeoverflow.exception.HttpException;

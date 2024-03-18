@@ -31,7 +31,7 @@ public class VoteController {
 
   @GetMapping(Routes.Vote.ROOT + "/questions/{questionId}")
   @RequireUser
-  public ResponseEntity<VoteDTO> howManyVotes(@PathVariable long questionId) {
+  public ResponseEntity<VoteDTO> howManyVotes(@PathVariable(name = "questionId") long questionId) {
     LOGGER.info("GET performed on " + Routes.Vote.ROOT + "/" + questionId);
     SecurityContext.checkAuthentication();
     return ResponseEntity.ok(questionService.getVoteOnQuestionById(questionId));

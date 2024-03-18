@@ -1,7 +1,6 @@
 package fr.pentagon.ugeoverflow.controllers.rest;
 
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
-import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.service.TagService;
 import fr.pentagon.ugeoverflow.utils.Routes;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,6 @@ public class TagController {
     @GetMapping(Routes.Tag.ROOT)
     @RequireUser
     public ResponseEntity<List<TagWrapperDTO>> getAllOfUser(){
-        var currentUser = SecurityContext.checkAuthentication();
-        return ResponseEntity.ok(tagService.tagByCurrentUser(currentUser.id()).stream().map(TagWrapperDTO::new).toList());
+        return ResponseEntity.ok(tagService.tagByCurrentUser().stream().map(TagWrapperDTO::new).toList());
     }
 }

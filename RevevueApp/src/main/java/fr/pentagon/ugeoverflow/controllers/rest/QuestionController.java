@@ -104,6 +104,7 @@ public class QuestionController {
     @RequireUser
     public ResponseEntity<List<QuestionDTO>> getQuestionsFromFollowers() {
         var userDetail = SecurityContext.checkAuthentication();
-        return ResponseEntity.ok(questionService.getQuestionsFromFollowers(userDetail.id()));
+
+        return ResponseEntity.ok(questionService.getQuestionsFromFollows(userDetail.id()));
     }
 }
