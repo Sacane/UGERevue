@@ -1,9 +1,9 @@
 package fr.pentagon.ugeoverflow.controllers.mvc;
 
+import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.thymleaf.NewQuestionThymeleafDTO;
-import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.service.ReviewMarkdownService;
 import fr.pentagon.ugeoverflow.utils.MarkdownRenderer;
@@ -32,14 +32,14 @@ public class MvcQuestionController {
     this.markdownRenderer = markdownRenderer;
   }
 
-    @GetMapping("/{questionId}")
-    public String detail(@PathVariable("questionId") @Positive long questionId, Model model) {
-        var question = questionService.findById(questionId);
-        var reviews = reviewService.findReviewsByQuestionId(questionId);
-        model.addAttribute("question", question.withAnotherContent(markdownRenderer.markdownToHtml(question.questionContent())));
-        model.addAttribute("reviews", reviews);
-        return "pages/questions/detail";
-    }
+  @GetMapping("/{questionId}")
+  public String detail(@PathVariable("questionId") @Positive long questionId, Model model) {
+    var question = questionService.findById(questionId);
+    var reviews = reviewService.findReviewsByQuestionId(questionId);
+    model.addAttribute("question", question.withAnotherContent(markdownRenderer.markdownToHtml(question.questionContent())));
+    model.addAttribute("reviews", reviews);
+    return "pages/questions/detail";
+  }
 
   @GetMapping
   public String all(Model model) {
@@ -48,13 +48,13 @@ public class MvcQuestionController {
     return "pages/questions/all";
   }
 
-    @GetMapping("/ask")
-    public String askPage(@Valid @ModelAttribute("newQuestion") NewQuestionThymeleafDTO newQuestionDTO) {
-        if(SecurityContext.authentication().isEmpty()){
-            return "redirect:/light/forbidden";
-        }
-        return "pages/questions/ask";
+  @GetMapping("/ask")
+  public String askPage(@Valid @ModelAttribute("newQuestion") NewQuestionThymeleafDTO newQuestionDTO) {
+    if (SecurityContext.authentication().isEmpty()) {
+      return "redirect:/light/forbidden";
     }
+    return "pages/questions/ask";
+  }
 
   @PostMapping("/ask")
   @RequireUser
