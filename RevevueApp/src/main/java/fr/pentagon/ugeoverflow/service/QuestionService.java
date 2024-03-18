@@ -1,12 +1,11 @@
 package fr.pentagon.ugeoverflow.service;
 
-import fr.pentagon.revevue.common.dto.TestBundle;
+import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.algorithm.QuestionSorterStrategy;
 import fr.pentagon.ugeoverflow.algorithm.SearchQuestionByLabelStrategy;
 import fr.pentagon.ugeoverflow.config.authorization.Role;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.*;
-import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.Review;
 import fr.pentagon.ugeoverflow.model.User;
