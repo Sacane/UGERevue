@@ -8,6 +8,7 @@ import fr.pentagon.ugeoverflow.service.LoginManager;
 import fr.pentagon.ugeoverflow.utils.Routes;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,7 @@ public class LoginController {
   }
 
   @PostMapping(Routes.Auth.LOGIN)
-  public ResponseEntity<LoginResponseDTO> login(@RequestBody CredentialsDTO credentialsDTO, HttpServletRequest request, HttpServletResponse response) {
+  public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody CredentialsDTO credentialsDTO, HttpServletRequest request, HttpServletResponse response) {
     return ResponseEntity.ok(
         loginManager.login(credentialsDTO, request, response)
             .orElseThrow(() -> HttpException.unauthorized("Bad credentials"))

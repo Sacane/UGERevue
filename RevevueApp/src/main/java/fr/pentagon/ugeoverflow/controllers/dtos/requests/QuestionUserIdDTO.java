@@ -1,4 +1,7 @@
 package fr.pentagon.ugeoverflow.controllers.dtos.requests;
 
-public record QuestionUserIdDTO(String questionContent) {
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+public record QuestionUserIdDTO(@NotNull @NotBlank String questionContent) {
 }

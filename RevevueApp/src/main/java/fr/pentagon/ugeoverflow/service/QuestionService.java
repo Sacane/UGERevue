@@ -4,14 +4,9 @@ import fr.pentagon.revevue.common.dto.TestBundle;
 import fr.pentagon.ugeoverflow.algorithm.QuestionSorterStrategy;
 import fr.pentagon.ugeoverflow.algorithm.SearchQuestionByLabelStrategy;
 import fr.pentagon.ugeoverflow.config.authorization.Role;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionRemoveDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionUpdateDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponseDTO;
-import fr.pentagon.revevue.common.exception.HttpException;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.*;
+import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.Review;
 import fr.pentagon.ugeoverflow.model.User;
@@ -272,6 +267,11 @@ public class QuestionService {
             var question = entrySet.getKey();
             return questionMapper.entityToQuestionDTO(question);
         }).toList();
+    }
+    @Transactional
+    public VoteDTO getVoteOnQuestionById(long questionId) {
+        questionRepository.findById(questionId).orElseThrow(() -> HttpException.notFound("This question doesn't exist"));
+        return new VoteDTO(questionVoteRepository.findUpvoteNumberByQuestionId(questionId), questionVoteRepository.findDownvoteNumberByQuestionId(questionId));
     }
     @Transactional
     public void updateTest(long questionId, String testResult) {
