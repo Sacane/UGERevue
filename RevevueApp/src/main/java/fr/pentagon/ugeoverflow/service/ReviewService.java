@@ -1,12 +1,13 @@
 package fr.pentagon.ugeoverflow.service;
 
+import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.config.authorization.Role;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewOnReviewDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewRemoveDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.*;
-import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Review;
+import fr.pentagon.ugeoverflow.model.Tag;
 import fr.pentagon.ugeoverflow.model.vote.ReviewVote;
 import fr.pentagon.ugeoverflow.model.vote.ReviewVoteId;
 import fr.pentagon.ugeoverflow.repository.*;
@@ -169,7 +170,9 @@ public class ReviewService {
                 citedCode = Arrays.stream(fileContent, lineStart - 1, lineEnd)
                         .collect(Collectors.joining("\n"));
             }
-            return new ReviewResponseChildrenDTO(review.getId(), author.getUsername(), review.getContent(), citedCode, reviewVoteRepository.findUpvoteNumberByReviewId(review.getId()), reviewVoteRepository.findDownvoteNumberByReviewId(review.getId()), review.getCreatedAt(), getReviews(review.getId()));
+            var start = review.getCodePart() == null ? null : review.getCodePart().getLineStart();
+            var end = review.getCodePart() == null ? null : review.getCodePart().getLineEnd();
+            return new ReviewResponseChildrenDTO(review.getId(), author.getUsername(), review.getContent(), citedCode, reviewVoteRepository.findUpvoteNumberByReviewId(review.getId()), reviewVoteRepository.findDownvoteNumberByReviewId(review.getId()), review.getCreatedAt(), getReviews(review.getId()), start, end, review.getTagsList().stream().map(Tag::getName).toList());
         }).toList();
     }
 

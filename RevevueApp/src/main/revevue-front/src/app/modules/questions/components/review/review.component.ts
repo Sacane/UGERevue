@@ -4,7 +4,7 @@ import {LoginService} from '../../../../shared/HttpServices';
 import {MatDialog} from '@angular/material/dialog';
 import {ConfirmDialogComponent} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import {catchError, concat, of, switchMap} from 'rxjs';
-import {ReviewService} from '../../../../shared';
+import {ReviewDialogComponent, ReviewService} from '../../../../shared';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Role} from '../../models/role.model';
 import {Router} from '@angular/router';
@@ -24,13 +24,13 @@ export class ReviewComponent implements OnInit {
 
     canDelete: boolean = false;
     deleting: boolean = false;
-
-    codeTest = "public record Point(int x, int y){\n}"
+    canUpdate: boolean = false;
 
     constructor(private userService: LoginService, private reviewService: ReviewService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) { }
 
     ngOnInit(): void {
         this.canDelete = this.review.author === this.userService.getLogin() || this.userService.getRole() === Role.ADMIN;
+        this.canUpdate = this.review.author === this.userService.getLogin()
     }
 
     deleteReview(): void {
@@ -73,5 +73,23 @@ export class ReviewComponent implements OnInit {
 
     detailsReview(): void {
         this.router.navigateByUrl(`/reviews/${this.review.id}`).then();
+    }
+
+    /**
+     * export interface QuestionReviewCreateDTO{
+     *     questionId: number;
+     *     content: string;
+     *     lineStart?: number;
+     *     lineEnd?: number;
+     *     tags: Array<string>
+     * }
+     */
+    updateReview(): void {
+        this.dialog.open(ReviewDialogComponent, {data: {onQuestion: true, template: {
+                    content: this.review.content,
+                    tags: this.review.tags,
+                    lineStart: this.review.lineStart,
+                    lineEnd: this.review.lineEnd
+                }}}).afterClosed().subscribe();
     }
 }

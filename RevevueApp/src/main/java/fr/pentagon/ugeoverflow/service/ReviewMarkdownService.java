@@ -18,7 +18,7 @@ public class ReviewMarkdownService {
 
     public List<ReviewResponseChildrenDTO> findReviewsByQuestionId(long questionId){
         return reviewService.findReviewsByQuestionId(questionId)
-                .stream().map(e -> new ReviewResponseChildrenDTO(e.id(), e.author(), markdownRenderer.markdownToHtml(e.content()), e.citedCode(), e.upvotes(), e.downvotes(), e.creationDate(), e.reviews()))
+                .stream().map(e -> new ReviewResponseChildrenDTO(e.id(), e.author(), markdownRenderer.markdownToHtml(e.content()), e.citedCode(), e.upvotes(), e.downvotes(), e.creationDate(), e.reviews(), e.lineStart(), e.lineEnd(), e.tags()))
                 .toList();
     }
 

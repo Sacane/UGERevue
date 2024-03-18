@@ -11,7 +11,10 @@ public record ReviewResponseChildrenDTO(
         long upvotes,
         long downvotes,
         Date creationDate,
-        List<ReviewResponseDTO> reviews
+        List<ReviewResponseDTO> reviews,
+        Integer lineStart,
+        Integer lineEnd,
+        List<String> tags
 ) {}
 /**
  * export interface Review {
