@@ -33,8 +33,8 @@ public final class Routes {
   public static final class Vote {
     public static final String IDENT = "/votes";
     public static final String ROOT = Routes.ROOT + "/votes";
-    public static final String UP_VOTE = ROOT + "/upvote/";
-    public static final String DOWN_VOTE = ROOT + "/downvote/";
+    public static final String UP_VOTE = ROOT + "/upvote";
+    public static final String DOWN_VOTE = ROOT + "/downvote";
 
     private Vote() {
     }

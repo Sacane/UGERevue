@@ -10,7 +10,6 @@ import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
 import fr.pentagon.ugeoverflow.repository.*;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.service.ReviewService;
-import fr.pentagon.ugeoverflow.service.UserService;
 import fr.pentagon.ugeoverflow.testutils.LoginTestService;
 import fr.pentagon.ugeoverflow.testutils.UserTestProvider;
 import fr.pentagon.ugeoverflow.utils.Routes;
@@ -284,7 +283,7 @@ public class ReviewControllerTest {
     void voteAReviewNotExist() throws Exception {
         userTestProvider.addSomeUserIntoDatabaseWithReview();
         loginTestService.login(new CredentialsDTO("loginSacane3", "SacanePassword3"));
-        reviewMVC.perform(MockMvcRequestBuilders.post(Routes.Review.ROOT + "/{reviewId}/vote", 100)
+        reviewMVC.perform(MockMvcRequestBuilders.post(Routes.Review.ROOT + "/{reviewId}/vote", 1000)
                         .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(new VoteBodyDTO(false))))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("The review does not exists"))

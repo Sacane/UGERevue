@@ -1,14 +1,10 @@
 package fr.pentagon.ugeoverflow.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.pentagon.ugeoverflow.DatasourceTestConfig;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
-import fr.pentagon.ugeoverflow.controllers.rest.ReviewController;
 import fr.pentagon.ugeoverflow.controllers.rest.TagController;
 import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
 import fr.pentagon.ugeoverflow.repository.*;
-import fr.pentagon.ugeoverflow.service.QuestionService;
-import fr.pentagon.ugeoverflow.service.ReviewService;
 import fr.pentagon.ugeoverflow.service.TagService;
 import fr.pentagon.ugeoverflow.testutils.LoginTestService;
 import fr.pentagon.ugeoverflow.testutils.UserTestProvider;
@@ -33,20 +29,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Import(DatasourceTestConfig.class)
 public class TagControllerTest {
-    private final ObjectMapper objectMapper = new ObjectMapper();
     private MockMvc tagMVC;
     @Autowired
     private UserTestProvider userTestProvider;
     @Autowired
     private LoginTestService loginTestService;
     @Autowired
-    private ReviewService reviewService;
-    @Autowired
     private QuestionRepository questionRepository;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private QuestionService questionService;
     @Autowired
     private ReviewRepository reviewRepository;
     @Autowired
