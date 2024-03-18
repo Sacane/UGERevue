@@ -1,7 +1,6 @@
-package fr.pentagon.ugeoverflow.controllers.dtos.responses;
+package fr.pentagon.revevue.common.dto;
 
 import java.util.Objects;
-import java.util.Optional;
 
 public record TestResultDTO(
         boolean isSuccess,

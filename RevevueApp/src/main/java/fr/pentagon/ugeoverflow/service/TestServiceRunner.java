@@ -1,6 +1,6 @@
 package fr.pentagon.ugeoverflow.service;
 
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.TestResultDTO;
+import fr.pentagon.revevue.common.dto.TestResultDTO;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -38,6 +38,25 @@ public class TestServiceRunner {
         }catch (WebClientRequestException ignored) {
             return "Le serveur est indisponible...";
         }
+    }
+
+    public String runTestOrQueueIt(String dependencyFilename, String testFilename, byte[] javaFile, byte[] testFile, long authorId){
+//        try {
+//            var parts = getPartsTestEndpoints(dependencyFilename, testFilename, javaFile, testFile, authorId);
+//            var response = webClient.post()
+//                    .uri(builder -> builder.path("/tests/run").build())
+//                    .contentType(MediaType.MULTIPART_FORM_DATA)
+//                    .body(BodyInserters.fromMultipartData(parts))
+//                    .accept(MediaType.APPLICATION_JSON).exchangeToMono(r -> r.bodyToMono(TestResultDTO.class))
+//                    .block();
+//            if (response != null) {
+//                return response.result();
+//            }
+//            return "Une erreur est survenue lors du lancement du serveur";
+//        }catch (WebClientRequestException ignored) {
+//            return "Le serveur est indisponible...";
+//        }
+        return "";
     }
 
     private static MultiValueMap<String, Object> getPartsTestEndpoints(String dependencyFilename, String testFilename, byte[] javaFile, byte[] testFile, long authorId) {

@@ -1,4 +1,4 @@
-package fr.pentagon.revevue.test.dto;
+package fr.pentagon.revevue.common.dto;
 
 import java.util.Arrays;
 import java.util.Objects;

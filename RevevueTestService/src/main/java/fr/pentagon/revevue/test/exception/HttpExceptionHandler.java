@@ -1,5 +1,6 @@
 package fr.pentagon.revevue.test.exception;
 
+import fr.pentagon.revevue.common.exception.HttpException;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
