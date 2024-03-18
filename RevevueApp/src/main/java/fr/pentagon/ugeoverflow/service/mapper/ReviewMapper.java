@@ -5,6 +5,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponse
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseDTO;
 import fr.pentagon.ugeoverflow.model.Review;
 import fr.pentagon.ugeoverflow.repository.ReviewVoteRepository;
+import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -41,7 +42,8 @@ public class ReviewMapper {
                 List.of()
         );
     }
-    public DetailReviewResponseDTO entityToDetailReviewResponseDTO(Review review, String citedCode, boolean doesUserVote, List<DetailReviewResponseDTO> list) {
+    public DetailReviewResponseDTO entityToDetailReviewResponseDTO(Review review, String citedCode, @Nullable Boolean doesUserVote, List<DetailReviewResponseDTO> list) {
+        System.out.println(doesUserVote);
         return new DetailReviewResponseDTO(
                 review.getId(),
                 review.getAuthor().getUsername(),
@@ -50,7 +52,7 @@ public class ReviewMapper {
                 citedCode,
                 reviewVoteRepository.findUpvoteNumberByReviewId(review.getId()),
                 reviewVoteRepository.findDownvoteNumberByReviewId(review.getId()),
-                doesUserVote, //TODO handle vote review from another user
+                doesUserVote,
                 list
         );
     }

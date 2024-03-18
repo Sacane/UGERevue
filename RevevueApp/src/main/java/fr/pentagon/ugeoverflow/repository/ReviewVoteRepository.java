@@ -2,6 +2,7 @@ package fr.pentagon.ugeoverflow.repository;
 
 import fr.pentagon.ugeoverflow.model.vote.ReviewVote;
 import fr.pentagon.ugeoverflow.model.vote.ReviewVoteId;
+import jakarta.annotation.Nullable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -41,5 +42,8 @@ public interface ReviewVoteRepository extends JpaRepository<ReviewVote, ReviewVo
             nativeQuery = true)
     List<ReviewVote> findAllVoteByReviewId(@Param("reviewId") long reviewId);
 
-    boolean existsReviewVoteByReviewVoteId_Author_IdAndReviewVoteId_Review_Id(long authorId, long reviewId);
+    @Query(value = """
+    SELECT is_up FROM "REVIEW_VOTE" v WHERE v.review_id = :reviewId AND v.author_id = :authorId
+    """, nativeQuery = true)
+    Boolean findReviewVote(@Param("authorId") long authorId, @Param("reviewId") long reviewId);
 }

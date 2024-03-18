@@ -190,9 +190,9 @@ public class ReviewService {
                         .collect(Collectors.joining("\n"));
             }
         }
-        boolean doesUserVote = false;
+        Boolean doesUserVote = null;
         if (userId != null) {
-            doesUserVote = reviewVoteRepository.existsReviewVoteByReviewVoteId_Author_IdAndReviewVoteId_Review_Id(userId, reviewId);
+            doesUserVote = reviewVoteRepository.findReviewVote(userId, reviewId);
         }
         var list = review.getReviews().stream().map(childReview -> findDetailsFromReviewIdWithChildren(userId, childReview.getId())).toList();
         return reviewMapper.entityToDetailReviewResponseDTO(review, citedCode, doesUserVote, list);
