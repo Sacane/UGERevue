@@ -1,6 +1,8 @@
 package fr.pentagon.ugeoverflow;
 
 import fr.pentagon.ugeoverflow.repository.QuestionRepository;
+import fr.pentagon.ugeoverflow.repository.ReviewRepository;
+import fr.pentagon.ugeoverflow.repository.TagRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.service.UserService;
@@ -15,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class TestConfiguration {
 
     @Bean
-    public UserTestProvider userTestProvider(UserRepository userRepository, PasswordEncoder passwordEncoder, QuestionRepository questionRepository, UserService userService, QuestionService questionService) {
-        return new UserTestProvider(userRepository, passwordEncoder, questionRepository, questionService, userService);
+    public UserTestProvider userTestProvider(UserRepository userRepository, PasswordEncoder passwordEncoder, QuestionRepository questionRepository, UserService userService, QuestionService questionService, ReviewRepository reviewRepository, TagRepository tagRepository) {
+        return new UserTestProvider(userRepository, passwordEncoder, questionRepository, questionService, userService, reviewRepository, tagRepository);
     }
 }

@@ -3,13 +3,8 @@ package fr.pentagon.ugeoverflow.service;
 import fr.pentagon.ugeoverflow.algorithm.QuestionSorterStrategy;
 import fr.pentagon.ugeoverflow.algorithm.SearchQuestionByLabelStrategy;
 import fr.pentagon.ugeoverflow.config.authorization.Role;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionRemoveDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionUpdateDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponseDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.*;
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.Review;
@@ -282,5 +277,11 @@ public class QuestionService {
                     question.getReviews().size()
             );
         }).toList();
+    }
+
+    @Transactional
+    public VoteDTO getVoteOnQuestionById(long questionId) {
+        questionRepository.findById(questionId).orElseThrow(() -> HttpException.notFound("This question doesn't exist"));
+        return new VoteDTO(questionVoteRepository.findUpvoteNumberByQuestionId(questionId), questionVoteRepository.findDownvoteNumberByQuestionId(questionId));
     }
 }

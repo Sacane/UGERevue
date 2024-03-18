@@ -12,11 +12,15 @@ import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponse
 import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.utils.Routes;
+import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
@@ -41,11 +45,11 @@ public class QuestionController {
     return ok(questionService.getQuestions());
   }
 
-  @GetMapping(Routes.Question.SEARCH)
-  public ResponseEntity<List<QuestionDTO>> allQuestionByParameters(@RequestParam("label") String label, @RequestParam(required = false, value = "username") String username) {
-    LOGGER.info("Get performed on " + Routes.Question.SEARCH);
-    return ok(questionService.getQuestions(label, username));
-  }
+    @GetMapping(Routes.Question.SEARCH)
+    public ResponseEntity<List<QuestionDTO>> allQuestionByParameters(@RequestParam("label") @NotBlank String label, @RequestParam(required = false, value = "username") String username) {
+        LOGGER.info("Get performed on " + Routes.Question.SEARCH);
+        return ok(questionService.getQuestions(label, username));
+    }
 
   @GetMapping(Routes.Question.CURRENT_USER)
   public ResponseEntity<List<QuestionDTO>> getAllQuestionsFromCurrentUser(Principal principal) {
@@ -55,23 +59,23 @@ public class QuestionController {
     return ResponseEntity.ok(questionService.getQuestionsFromCurrentUser(principal.getName()));
   }
 
-  @PostMapping(
-      value = Routes.Question.ROOT,
-      consumes = MediaType.MULTIPART_FORM_DATA_VALUE
-  )
-  @RequireUser
-  public ResponseEntity<Long> createQuestion(
-      @RequestPart("title") String title,
-      @RequestPart("description") String description,
-      @RequestPart("javaFile") MultipartFile javaFile,
-      @RequestPart(value = "testFile", required = false) MultipartFile testFile
-  ) throws IOException {
-    LOGGER.info("POST performed on /api/questions");
-    var userDetail = SecurityContext.checkAuthentication();
-    return ResponseEntity.ok(questionService.create(new NewQuestionDTO(
-        title, description, javaFile.getBytes(), testFile == null ? null : testFile.getBytes(), javaFile.getOriginalFilename(), testFile == null ? null : testFile.getOriginalFilename()
-    ), userDetail.id()));
-  }
+    @PostMapping(
+            value = Routes.Question.ROOT,
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+    )
+    @RequireUser
+    public ResponseEntity<Long> createQuestion(
+            @RequestPart("title") @NotBlank @NotNull String title,
+            @RequestPart("description") @NotBlank @NotNull String description,
+            @RequestPart("javaFile") @NotNull MultipartFile javaFile,
+            @RequestPart(value = "testFile", required = false) MultipartFile testFile
+    ) throws IOException {
+        LOGGER.info("POST performed on /api/questions");
+        var userDetail = SecurityContext.checkAuthentication();
+        return ResponseEntity.ok(questionService.create(new NewQuestionDTO(
+                title, description, javaFile.getBytes(), testFile == null ? null : testFile.getBytes(), javaFile.getOriginalFilename(), testFile == null ? null : testFile.getOriginalFilename()
+        ), userDetail.id()));
+    }
 
   @DeleteMapping(Routes.Question.ROOT + "/{questionId}")
   @RequireUser
@@ -90,16 +94,16 @@ public class QuestionController {
 
   @PostMapping(Routes.Question.ROOT + "/reviews")
   @RequireUser
-  public ResponseEntity<ReviewQuestionResponseDTO> addReview(@RequestBody QuestionReviewCreateBodyDTO questionReviewCreateBodyDTO) {
-    LOGGER.info("review => " + questionReviewCreateBodyDTO);
-    var userDetail = SecurityContext.checkAuthentication();
-    return ok(questionService.addReview(new QuestionReviewCreateDTO(userDetail.id(), questionReviewCreateBodyDTO.questionId(), questionReviewCreateBodyDTO.content(), questionReviewCreateBodyDTO.lineStart(), questionReviewCreateBodyDTO.lineEnd(), questionReviewCreateBodyDTO.tags())));
+  public ResponseEntity<ReviewQuestionResponseDTO> addReview(@Valid @RequestBody QuestionReviewCreateBodyDTO questionReviewCreateBodyDTO) {
+      LOGGER.info("review => " + questionReviewCreateBodyDTO);
+      var userDetail = SecurityContext.checkAuthentication();
+      return ok(questionService.addReview(new QuestionReviewCreateDTO(userDetail.id(), questionReviewCreateBodyDTO.questionId(), questionReviewCreateBodyDTO.content(), questionReviewCreateBodyDTO.lineStart(), questionReviewCreateBodyDTO.lineEnd(), questionReviewCreateBodyDTO.tags())));
   }
 
-  @GetMapping(Routes.Question.ROOT + "/followers")
-  @RequireUser
-  public ResponseEntity<List<QuestionDTO>> getQuestionsFromFollowers() {
-    var userDetail = SecurityContext.checkAuthentication();
+    @GetMapping(Routes.Question.ROOT + "/followers")
+    @RequireUser
+    public ResponseEntity<List<QuestionDTO>> getQuestionsFromFollowers() {
+        var userDetail = SecurityContext.checkAuthentication();
 
         return ResponseEntity.ok(questionService.getQuestionsFromFollows(userDetail.id()));
     }

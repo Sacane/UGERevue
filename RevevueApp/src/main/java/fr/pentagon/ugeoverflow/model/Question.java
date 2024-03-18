@@ -4,6 +4,7 @@ import fr.pentagon.ugeoverflow.model.embed.TestKit;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -26,7 +27,7 @@ public class Question {
     @ManyToOne(fetch = FetchType.LAZY)
     private User author;
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "question")
-    private List<Review> reviews;
+    private List<Review> reviews = new ArrayList<>();
     private Date createdAt;
     @Version
     Long version;
