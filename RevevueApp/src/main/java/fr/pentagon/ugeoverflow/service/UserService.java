@@ -78,12 +78,12 @@ public class UserService {
     }
 
     @Transactional
-    public List<UserFollowInfoDTO> userRegisteredList(long userId) {
+    public List<UserFollowInfoDTO> userRegisteredList(Long userId) {
         var follows = userRepository.findFollowsById(userId);
         return userRepository.findAllUsers()
                 .stream()
                 .<UserFollowInfoDTO>mapMulti((user, consumer) -> {
-                    if (user.getId() != userId) {
+                    if (user.getId() != userId && user.getRole() != Role.ADMIN) {
                         consumer.accept(user.toUserFollowInfoDTO(follows.contains(user)));
                     }
                 })

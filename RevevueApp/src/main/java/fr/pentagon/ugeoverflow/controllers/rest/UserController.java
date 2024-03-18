@@ -76,15 +76,10 @@ public class UserController {
   @GetMapping(Routes.User.ROOT)
   public ResponseEntity<List<UserFollowInfoDTO>> getAllRegisteredUsers() {
     LOGGER.info("Trying to get all registered Users");
-    var authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (authentication == null) {
-      throw HttpException.forbidden("no authentication");
-    }
-    if (authentication.getName().equals("anonymousUser")) { // TODO fix it
-      return ResponseEntity.ok(userService.userRegisteredList());
-    }
-    var userConnected = SecurityContext.checkAuthentication();
-    return ResponseEntity.ok(userService.userRegisteredList(userConnected.id()));
+    var auth = SecurityContext.authentication();
+    return auth.map(u -> ResponseEntity.ok(userService.userRegisteredList(u.id())))
+            .orElse(ResponseEntity.ok(userService.userRegisteredList()));
+
   }
 
   @GetMapping(Routes.User.CURRENT_USER)
