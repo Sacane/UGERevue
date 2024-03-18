@@ -2,6 +2,7 @@ package fr.pentagon.ugeoverflow.service;
 
 import fr.pentagon.ugeoverflow.algorithm.QuestionSorterStrategy;
 import fr.pentagon.ugeoverflow.algorithm.SearchQuestionByLabelStrategy;
+import fr.pentagon.ugeoverflow.config.authentication.RevevueUserDetail;
 import fr.pentagon.ugeoverflow.config.authorization.Role;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.*;
@@ -11,6 +12,8 @@ import fr.pentagon.ugeoverflow.model.Review;
 import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.model.embed.CodePart;
 import fr.pentagon.ugeoverflow.model.vote.QuestionVote;
+import fr.pentagon.ugeoverflow.model.vote.QuestionVoteId;
+import fr.pentagon.ugeoverflow.model.vote.ReviewVoteId;
 import fr.pentagon.ugeoverflow.repository.QuestionRepository;
 import fr.pentagon.ugeoverflow.repository.QuestionVoteRepository;
 import fr.pentagon.ugeoverflow.repository.ReviewRepository;
@@ -215,7 +218,30 @@ public class QuestionService {
                 question.getTestResult(),
                 voteCount,
                 question.getReviews().size()
+        );
+    }
 
+    @Transactional
+    public QuestionDetailsWithVotesDTO findByIdWithVotes(Optional<RevevueUserDetail> user, long questionId) {
+        var question = questionRepository.findByIdWithAuthorAndReviews(questionId).orElseThrow(() -> HttpException.notFound("Question " + questionId + " does not exists"));
+        var dateFormatter = new DateFormatter("dd/MM/yyyy");
+        var voteCount = questionVoteRepository.countAllById(questionId);
+
+        return new QuestionDetailsWithVotesDTO(
+                question.getId(),
+                question.getAuthor().getUsername(),
+                dateFormatter.print(question.getCreatedAt(), Locale.FRANCE),
+                List.of(),
+                question.getTitle(),
+                question.getDescription(),
+                new String(question.getFile(), StandardCharsets.UTF_8),
+                question.getTestFile() != null ? new String(question.getTestFile(), StandardCharsets.UTF_8) : null,
+                question.getTestResult(),
+                voteCount,
+                question.getReviews().size(),
+                questionVoteRepository.findUpvoteNumberByQuestionId(questionId),
+                questionVoteRepository.findDownvoteNumberByQuestionId(questionId),
+                user.map(revevueUserDetail -> questionVoteRepository.findQuestionVote(revevueUserDetail.id(), questionId)).orElse(null)
         );
     }
 
@@ -283,5 +309,15 @@ public class QuestionService {
     public VoteDTO getVoteOnQuestionById(long questionId) {
         questionRepository.findById(questionId).orElseThrow(() -> HttpException.notFound("This question doesn't exist"));
         return new VoteDTO(questionVoteRepository.findUpvoteNumberByQuestionId(questionId), questionVoteRepository.findDownvoteNumberByQuestionId(questionId));
+    }
+
+    @Transactional
+    public void cancelVote(long authorId, long questionId) {
+        var user = userRepository.findById(authorId).orElseThrow(() -> HttpException.notFound("The user does not exists"));
+        var question = questionRepository.findById(questionId).orElseThrow(() -> HttpException.notFound("The question does not exists"));
+        var questionVoteId = new QuestionVoteId();
+        questionVoteId.setAuthor(user);
+        questionVoteId.setQuestion(question);
+        questionVoteRepository.deleteById(questionVoteId);
     }
 }

@@ -2,6 +2,15 @@ app-question {
     padding: 20px;
     flex-grow: 1;
     width: 85%;
+
+    .green-badge .mat-badge-content {
+        background-color: green;
+    }
+
+    .red-badge .mat-badge-content {
+        background-color: red;
+    }
+    
     .title {
         font-size: 25px;
         font-weight: 500;

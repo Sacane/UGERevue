@@ -10,6 +10,9 @@ export interface Question {
     testResults?: string;
     voteCount: number;
     commentCount: number;
+    upvotes?: number;
+    downvotes?: number;
+    vote?: boolean | null;
 }
 //TODO rajouter les tags plus tard
 export interface SimpleQuestion {

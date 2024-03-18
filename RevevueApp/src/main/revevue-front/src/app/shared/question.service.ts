@@ -64,4 +64,21 @@ export class QuestionService {
     public getQuestionsFromFollowers(): Observable<any[]> {
         return this.client.get<any[]>(`${this.ROOT}/followers`);
     }
+
+    public vote(questionId: string, up: boolean): Observable<any> {
+        const headers = new HttpHeaders().set('Content-Type', 'application/json');
+
+        if (up) {
+            return this.client.post<void>(`${environment.apiUrl}votes/upvote/questions/${questionId}`, {}, {headers});
+        }
+        else {
+            return this.client.post<void>(`${environment.apiUrl}votes/downvote/questions/${questionId}`, {}, {headers});
+        }
+    }
+
+    public cancelVote(questionId: string): Observable<any> {
+        const headers = new HttpHeaders().set('Content-Type', 'application/json');
+
+        return this.client.delete<void>(`${this.ROOT}/${questionId}/cancelVote`, {headers});
+    }
 }

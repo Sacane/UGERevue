@@ -32,6 +32,22 @@
             <div class="stats">
                 <mat-list>
                     <mat-list-item>
+                        <div>
+                            <button mat-icon-button
+                                [ngStyle]="{ 'color': question()?.vote === true ? 'white': 'green', 'background-color': question()?.vote === true ? 'green': '#e6e6e6' }"
+                                (click)="vote(true)">
+                                <mat-icon aria-hidden="false" matBadge="{{ question()?.upvotes }}" matBadgeSize="small"
+                                    class="green-badge">thumb_up</mat-icon>
+                            </button>
+                            <button mat-icon-button
+                                [ngStyle]="{ 'color': question()?.vote === false ? 'white': 'red', 'background-color': question()?.vote === false ? 'red': '#e6e6e6' }"
+                                (click)="vote(false)">
+                                <mat-icon aria-hidden="false" matBadge="{{ question()?.downvotes }}" matBadgeSize="small"
+                                    class="red-badge">thumb_down</mat-icon>
+                            </button>
+                        </div>
+                    </mat-list-item>
+                    <mat-list-item>
                         <b>Auteur:</b> {{ question()?.author }}
                     </mat-list-item>
                     <mat-divider></mat-divider>

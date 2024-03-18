@@ -7,10 +7,11 @@ import {toSignal} from "@angular/core/rxjs-interop";
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatDialog} from '@angular/material/dialog';
 import {ConfirmDialogComponent} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import {catchError, concat, of, switchMap} from 'rxjs';
+import {catchError, concat, map, of, switchMap} from 'rxjs';
 import {LoginService} from '../../../../shared/HttpServices';
 import {ReviewDialogComponent} from '../../../../shared/components/review-dialog/review-dialog.component';
 import {ReviewService} from '../../../../shared';
+import { U } from '@angular/cdk/keycodes';
 
 @Component({
     selector: 'app-question',
@@ -35,12 +36,7 @@ export class QuestionComponent {
 
     constructor(private activatedRoute: ActivatedRoute, private userService: LoginService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) {
         this.canReview = this.userService.getLogin() !== '';
-        console.log(this.canDelete())
-        console.log(this.userService.getLogin())
-
     }
-
-
 
     deleteQuestion(): void {
         this.dialog.open(ConfirmDialogComponent, {
@@ -114,5 +110,49 @@ export class QuestionComponent {
 
     test() {
         console.log(this.question())
+    }
+
+    vote(up: boolean): void {
+        if (this.userService.isLogin()) {
+            if (this.question()!!.vote === null || (this.question()!!.vote !== null && this.question()!!.vote !== up)) {
+                this.questionService.vote(this.question()!!.id.toString(), up).subscribe(() => {
+                    if (up) {
+                        if (this.question()!!.vote !== null) {
+                            this.question()!!.downvotes!! -= 1;
+                        }
+    
+                        this.question()!!.upvotes!! += 1;
+                    }
+                    else {
+                        if (this.question()!!.vote !== null) {
+                            this.question()!!.upvotes!! -= 1;
+                        }
+    
+                        this.question()!!.downvotes!! += 1;
+                    }
+                    if (this.question()!!.vote === null) {
+                        this.question()!!.voteCount += 1;
+                    }
+    
+                    this.question()!!.vote = up;
+                });
+            }
+            else {
+                this.questionService.cancelVote(this.question()!!.id.toString()).subscribe(() => {
+                    if (up) {
+                        this.question()!!.upvotes!! -= 1;
+                    }
+                    else {
+                        this.question()!!.downvotes!! -= 1;
+                    }
+    
+                    this.question()!!.voteCount -= 1;
+                    this.question()!!.vote = null;
+                });
+            }
+        }
+        else {
+            this.snackBar.open('Vous ne pouvez pas voter en étant déconnecter', 'OK', { duration: 5000 });
+        }
     }
 }
