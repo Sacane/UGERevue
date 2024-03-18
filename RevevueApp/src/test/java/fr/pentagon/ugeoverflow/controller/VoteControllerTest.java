@@ -40,8 +40,6 @@ public class VoteControllerTest {
     @Autowired
     private QuestionRepository questionRepository;
     @Autowired
-    private VoteService voteService;
-    @Autowired
     private QuestionVoteRepository questionVoteRepository;
     @Autowired
     private UserRepository userRepository;
