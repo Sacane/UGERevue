@@ -9,6 +9,7 @@ import {ConfirmDialogComponent} from '../../shared/components/confirm-dialog/con
 import {Location} from '@angular/common';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {DetailReviewResponseDTO, Review} from "./models/review.model";
+import { U } from '@angular/cdk/keycodes';
 
 @Component({
     selector: 'app-review-detail',
@@ -58,7 +59,7 @@ export class ReviewsComponent implements OnDestroy {
     initData(): void {
         this.reviewId = this.activatedRoute.snapshot.params['id'];
         this.reviewService.getDetails(this.reviewId).subscribe(response => {
-            console.log(response)
+            console.log(response);
             this.reviewDetail.set(response)
             this.subReviews.set(response.reviews as Review[])
             this.canDelete = response.author === this.userService.getLogin() || this.userService.getRole() === Role.ADMIN;
@@ -129,83 +130,43 @@ export class ReviewsComponent implements OnDestroy {
         this.subReviews.update(old => old.filter((review) => review.id !== id))
     }
 
-    vote(review: DetailReviewResponseDTO, up: boolean): void {
-        if(!this.canReview) return;
-        if (
-            (up && review.upvotes > 0) ||
-            (!up && review.downvotes > 0)
-        ) {
-            console.log("cancel vote")
-            this.reviewService.cancelVote(review.id).pipe(
-                catchError(err => {
-                    console.log(err);
-                    return of(err);
-                })
-            ).subscribe(() => {
-
-                /*review.upvotes = review.vote ? review.upvotes - 1 : review.upvotes;
-                review.downvotes = review.vote ? review.downvotes : review.downvotes - 1;*/
-                let upvote: number = review.upvotes;
-                let downvote: number = review.downvotes;
-                if(!up) {
-                    if(downvote > 0) {
-                        downvote -= 1;
-                    } else if(downvote === 0 ){
-                        downvote += 1;
+    vote(up: boolean): void {
+        if (this.userService.isLogin()) {
+            if (this.reviewDetail()!!.vote === null || (this.reviewDetail()!!.vote !== null && this.reviewDetail()!!.vote !== up)) {
+                this.reviewService.vote(this.reviewDetail()!!.id, up).subscribe(() => {
+                    if (up) {
+                        if (this.reviewDetail()!!.vote !== null) {
+                            this.reviewDetail()!!.downvotes!! -= 1;
+                        }
+    
+                        this.reviewDetail()!!.upvotes!! += 1;
                     }
-                    if(upvote > 0) {
-                        upvote -= 1;
+                    else {
+                        if (this.reviewDetail()!!.vote !== null) {
+                            this.reviewDetail()!!.upvotes!! -= 1;
+                        }
+    
+                        this.reviewDetail()!!.downvotes!! += 1;
                     }
-                } else {
-                    if(upvote > 0) {
-                        upvote -= 1;
-                    } else if(upvote === 0) {
-                        upvote += 1;
+    
+                    this.reviewDetail()!!.vote = up;
+                });
+            }
+            else {
+                this.reviewService.cancelVote(this.reviewDetail()!!.id).subscribe(() => {
+                    if (up) {
+                        this.reviewDetail()!!.upvotes!! -= 1;
                     }
-                }
-                this.reviewDetail.update((old) => {
-                    return {...old, upvotes: upvote, downvotes: downvote} as DetailReviewResponseDTO
-                })
-
-            });
+                    else {
+                        this.reviewDetail()!!.downvotes!! -= 1;
+                    }
+    
+                    this.reviewDetail()!!.vote = null;
+                });
+            }
         }
         else {
-            console.log("vote => " + up);
-            this.reviewService.vote(review.id, up).pipe(
-                catchError(err => {
-                    console.log(err);
-                    return of(err);
-                })
-            ).subscribe(() => {
-                let upvote: number = review.upvotes;
-                let downvote: number = review.downvotes;
-                if(up) {
-                    if(upvote > 0) {
-                        upvote -= 1;
-                    } else if(upvote === 0) {
-                        upvote += 1;
-                    }
-                    if(downvote > 0) {
-                        downvote -= 1;
-                    }
-                }
-                else{
-                    if(downvote >= 1) {
-                        console.log('> 1')
-                        downvote -= 1;
-                    } else if(downvote === 0) {
-                        console.log('=== 0')
-                        downvote += 1;
-                    }
-                    if(upvote > 0) {
-                        upvote -= 1;
-                    }
-                }
-                this.reviewDetail.update((old) => {
-                    return {...old, upvotes: upvote, downvotes: downvote} as DetailReviewResponseDTO
-                })
-                review.vote = up;
-            });
+            this.snackBar.open('Vous ne pouvez pas voter en étant déconnecter', 'OK', { duration: 5000 });
         }
     }
 }

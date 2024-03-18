@@ -22,14 +22,14 @@
             <span>Published by {{ reviewDetail()?.author }} on {{ reviewDetail()?.creationDate | date }}</span>
             <div>
                 <button mat-icon-button
-                    [ngStyle]="{'color': isFontPositive() ? 'white': 'green', 'background-color': isFontPositive() ? 'green': 'white'}"
-                    (click)="vote(reviewDetail()!!, true)">
+                    [ngStyle]="{'color': reviewDetail()?.vote === true ? 'white': 'green', 'background-color': reviewDetail()?.vote === true ? 'green': 'white'}"
+                    (click)="vote(true)">
                     <mat-icon aria-hidden="false" matBadge="{{ reviewDetail()?.upvotes }}" matBadgeSize="small"
                         class="green-badge">thumb_up</mat-icon>
                 </button>
                 <button mat-icon-button
-                    [ngStyle]="{'color': isFontNegative() ? 'white': 'red', 'background-color': isFontNegative() ? 'red': 'white'}"
-                    (click)="vote(reviewDetail()!!, false)">
+                    [ngStyle]="{'color': reviewDetail()?.vote === false ? 'white': 'red', 'background-color': reviewDetail()?.vote === false ? 'red': 'white'}"
+                    (click)="vote(false)">
                     <mat-icon aria-hidden="false" matBadge="{{ reviewDetail()?.downvotes }}" matBadgeSize="small"
                         class="red-badge">thumb_down</mat-icon>
                 </button>

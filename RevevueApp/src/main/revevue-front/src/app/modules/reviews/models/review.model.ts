@@ -10,7 +10,7 @@ export interface Review {
 }
 
 export interface DetailReviewResponseDTO extends Review{
-    vote: boolean
+    vote: boolean | null
 }
 
 /**
