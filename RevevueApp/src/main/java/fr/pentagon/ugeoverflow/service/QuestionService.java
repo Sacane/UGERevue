@@ -249,37 +249,27 @@ public class QuestionService {
             var visitScoreFollower = toVisitUsers.poll();
             var userOptional = userRepository.findByIdWithQuestions(visitScoreFollower.userId);
 
-            if (userOptional.isPresent()) {
-                var user = userOptional.get();
-
-                for (var question: user.getQuestions()) {
-                    var questionScore = questionsWithScore.get(question);
-                    if (questionScore == 0 || visitScoreFollower.score < questionScore) {
-                        questionsWithScore.put(question, visitScoreFollower.score);
-                    }
-                }
-
-                user.getFollows().forEach(follow -> {
-                    if (!visitedUsers.contains(follow.getId())) {
-                        toVisitUsers.add(new ScoreFollower(follow.getId(), visitScoreFollower.score + 1));
-                    }
-                });
-                visitedUsers.add(user.getId());
+            if (userOptional.isEmpty()) {
+                continue;
             }
+            var user = userOptional.get();
+
+            for (var question: user.getQuestions()) {
+                var questionScore = questionsWithScore.get(question);
+                if (questionScore == 0 || visitScoreFollower.score < questionScore) {
+                    questionsWithScore.put(question, visitScoreFollower.score);
+                }
+            }
+
+            user.getFollows().stream().filter(e -> !visitedUsers.contains(e.getId())).forEach(follow -> {
+                toVisitUsers.add(new ScoreFollower(follow.getId(), visitScoreFollower.score + 1));
+            });
+            visitedUsers.add(user.getId());
         }
 
-        return questionsWithScore.entrySet().stream().sorted((entry1, entry2) -> (entry1.getValue() == 0) ? 1 : ((entry2.getValue() == 0) ? -1 : entry1.getValue() - entry2.getValue())).map(entrySet -> {
+        return questionsWithScore.entrySet().stream().sorted((entry1, entry2) -> (entry1.getValue() == 0) ? 1 : entry2.getValue() == 0 ? -1 : entry1.getValue() - entry2.getValue()).map(entrySet -> {
             var question = entrySet.getKey();
-
-            return new QuestionDTO(
-                    question.getId(),
-                    question.getTitle(),
-                    question.getDescription(),
-                    question.getAuthor().getUsername(),
-                    question.getCreatedAt().toString(),
-                    questionVoteRepository.countAllById(question.getId()),
-                    question.getReviews().size()
-            );
+            return questionMapper.entityToQuestionDTO(question);
         }).toList();
     }
 }
