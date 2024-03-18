@@ -6,7 +6,7 @@ import fr.pentagon.ugeoverflow.config.SetupDataLoader;
 import fr.pentagon.ugeoverflow.config.authorization.Role;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.controllers.rest.UserController;
-import fr.pentagon.ugeoverflow.exception.HttpError;
+import fr.pentagon.revevue.common.exception.HttpError;
 import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.UserService;

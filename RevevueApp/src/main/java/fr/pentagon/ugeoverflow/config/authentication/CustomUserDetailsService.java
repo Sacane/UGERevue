@@ -1,6 +1,6 @@
 package fr.pentagon.ugeoverflow.config.authentication;
 
-import fr.pentagon.ugeoverflow.exception.HttpException;
+import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

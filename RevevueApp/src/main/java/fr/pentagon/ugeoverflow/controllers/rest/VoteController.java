@@ -3,15 +3,11 @@ package fr.pentagon.ugeoverflow.controllers.rest;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.VoteDTO;
-import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.service.QuestionService;
-import fr.pentagon.ugeoverflow.service.VoteServiceAdapter;
 import fr.pentagon.ugeoverflow.utils.Routes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Positive;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 @RestController

@@ -1,7 +1,7 @@
 package fr.pentagon.ugeoverflow.config.security;
 
 import fr.pentagon.ugeoverflow.config.authentication.RevevueUserDetail;
-import fr.pentagon.ugeoverflow.exception.HttpException;
+import fr.pentagon.revevue.common.exception.HttpException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;

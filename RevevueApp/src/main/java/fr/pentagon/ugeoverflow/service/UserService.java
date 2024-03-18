@@ -10,7 +10,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewContentDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserFollowingDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserInfoDTO;
-import fr.pentagon.ugeoverflow.exception.HttpException;
+import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import jakarta.transaction.Transactional;

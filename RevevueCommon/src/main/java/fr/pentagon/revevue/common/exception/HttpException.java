@@ -1,6 +1,8 @@
-package fr.pentagon.revevue.test.exception;
+package fr.pentagon.revevue.common.exception;
+
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 public class HttpException extends RuntimeException{
     private final int statusCode;
@@ -43,5 +45,8 @@ public class HttpException extends RuntimeException{
             case 500 -> "Internal Server Error";
             default -> "HTTP Error";
         };
+    }
+    public ResponseEntity<HttpError> toResponseEntity(){
+        return ResponseEntity.status(statusCode).body(new HttpError(statusCode, getMessage()));
     }
 }

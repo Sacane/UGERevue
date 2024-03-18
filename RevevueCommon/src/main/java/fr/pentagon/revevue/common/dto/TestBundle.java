@@ -1,9 +1,9 @@
-package fr.pentagon.revevue.test.dto;
+package fr.pentagon.revevue.common.dto;
 
 import java.util.Arrays;
 import java.util.Objects;
 
-public record TestBundle(int id, String testFileName, byte[] testFile, String dependencyFileName, byte[] dependencyFile) {
+public record TestBundle(long id, String testFileName, byte[] testFile, String dependencyFileName, byte[] dependencyFile) {
 
     public TestBundle {
         Objects.requireNonNull(testFileName);
@@ -29,7 +29,7 @@ public record TestBundle(int id, String testFileName, byte[] testFile, String de
 
     @Override
     public int hashCode() {
-        return Integer.hashCode(id) ^ testFileName.hashCode() ^ dependencyFileName.hashCode()
+        return Long.hashCode(id) ^ testFileName.hashCode() ^ dependencyFileName.hashCode()
                 ^ Arrays.hashCode(testFile) ^ Arrays.hashCode(dependencyFile);
     }
 

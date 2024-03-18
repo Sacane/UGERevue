@@ -10,7 +10,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsWithVotesDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponseDTO;
-import fr.pentagon.ugeoverflow.exception.HttpException;
+import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.utils.Routes;
 import jakarta.validation.Valid;
@@ -32,10 +32,8 @@ import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 public class QuestionController {
-
     private static final Logger LOGGER = Logger.getLogger(QuestionController.class.getName());
     private final QuestionService questionService;
-
     public QuestionController(QuestionService questionService) {
         this.questionService = questionService;
     }

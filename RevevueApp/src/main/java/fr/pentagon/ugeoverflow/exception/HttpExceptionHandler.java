@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.exception;
 
+import fr.pentagon.revevue.common.exception.HttpException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

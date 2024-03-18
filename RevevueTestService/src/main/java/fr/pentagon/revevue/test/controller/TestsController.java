@@ -1,9 +1,9 @@
 package fr.pentagon.revevue.test.controller;
 
-import fr.pentagon.revevue.test.dto.TestBundle;
-import fr.pentagon.revevue.test.dto.TestResultDTO;
+import fr.pentagon.revevue.common.dto.TestBundle;
+import fr.pentagon.revevue.common.dto.TestResultDTO;
+import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.revevue.test.exception.CompilationException;
-import fr.pentagon.revevue.test.exception.HttpException;
 import fr.pentagon.revevue.test.service.TestsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

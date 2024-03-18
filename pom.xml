@@ -9,8 +9,9 @@
     <name>UGERevue</name>
     <description>Spring + Angular application</description>
     <modules>
-        <module>RevevueApp</module>
+        <module>RevevueCommon</module>
         <module>RevevueTestService</module>
+        <module>RevevueApp</module>
     </modules>
     <properties>
         <java.version>21</java.version>

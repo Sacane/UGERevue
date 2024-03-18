@@ -1,12 +1,12 @@
 package fr.pentagon.ugeoverflow.service;
 
+import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.algorithm.QuestionSorterStrategy;
 import fr.pentagon.ugeoverflow.algorithm.SearchQuestionByLabelStrategy;
 import fr.pentagon.ugeoverflow.config.authentication.RevevueUserDetail;
 import fr.pentagon.ugeoverflow.config.authorization.Role;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.*;
-import fr.pentagon.ugeoverflow.exception.HttpException;
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.Review;
 import fr.pentagon.ugeoverflow.model.User;
@@ -21,7 +21,6 @@ import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.mapper.QuestionMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.format.datetime.DateFormatter;
-import org.springframework.http.MediaType;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -107,7 +106,7 @@ public class QuestionService {
     @Transactional
     @Retryable(retryFor = ObjectOptimisticLockingFailureException.class)
     public void update(QuestionUpdateDTO questionUpdateDTO) {
-        var userQuestion = QuestionService.findQuestionFromId(userRepository, questionUpdateDTO.userId(), questionRepository, questionUpdateDTO.questionId());
+        var userQuestion = findQuestionFromId(userRepository, questionUpdateDTO.userId(), questionRepository, questionUpdateDTO.questionId());
         var user = userQuestion.user();
         var question = userQuestion.question();
 
@@ -126,7 +125,7 @@ public class QuestionService {
         }
         if (questionUpdateDTO.testFile() != null) {
             question.setTestFile(questionUpdateDTO.testFile());
-            question.setTestResult("TEST RESULT"); //TODO test
+            question.setTestResult(question.getTestResult());
         }
     }
 
@@ -278,40 +277,29 @@ public class QuestionService {
             var visitScoreFollower = toVisitUsers.poll();
             var userOptional = userRepository.findByIdWithQuestions(visitScoreFollower.userId);
 
-            if (userOptional.isPresent()) {
-                var user = userOptional.get();
-
-                for (var question: user.getQuestions()) {
-                    var questionScore = questionsWithScore.get(question);
-                    if (questionScore == 0 || visitScoreFollower.score < questionScore) {
-                        questionsWithScore.put(question, visitScoreFollower.score);
-                    }
-                }
-
-                user.getFollows().forEach(follow -> {
-                    if (!visitedUsers.contains(follow.getId())) {
-                        toVisitUsers.add(new ScoreFollower(follow.getId(), visitScoreFollower.score + 1));
-                    }
-                });
-                visitedUsers.add(user.getId());
+            if (userOptional.isEmpty()) {
+                continue;
             }
+            var user = userOptional.get();
+
+            for (var question: user.getQuestions()) {
+                var questionScore = questionsWithScore.get(question);
+                if (questionScore == 0 || visitScoreFollower.score < questionScore) {
+                    questionsWithScore.put(question, visitScoreFollower.score);
+                }
+            }
+
+            user.getFollows().stream().filter(e -> !visitedUsers.contains(e.getId())).forEach(follow -> {
+                toVisitUsers.add(new ScoreFollower(follow.getId(), visitScoreFollower.score + 1));
+            });
+            visitedUsers.add(user.getId());
         }
 
-        return questionsWithScore.entrySet().stream().sorted((entry1, entry2) -> (entry1.getValue() == 0) ? 1 : ((entry2.getValue() == 0) ? -1 : entry1.getValue() - entry2.getValue())).map(entrySet -> {
+        return questionsWithScore.entrySet().stream().sorted((entry1, entry2) -> (entry1.getValue() == 0) ? 1 : entry2.getValue() == 0 ? -1 : entry1.getValue() - entry2.getValue()).map(entrySet -> {
             var question = entrySet.getKey();
-
-            return new QuestionDTO(
-                    question.getId(),
-                    question.getTitle(),
-                    question.getDescription(),
-                    question.getAuthor().getUsername(),
-                    question.getCreatedAt().toString(),
-                    questionVoteRepository.countAllById(question.getId()),
-                    question.getReviews().size()
-            );
+            return questionMapper.entityToQuestionDTO(question);
         }).toList();
     }
-
     @Transactional
     public VoteDTO getVoteOnQuestionById(long questionId) {
         questionRepository.findById(questionId).orElseThrow(() -> HttpException.notFound("This question doesn't exist"));
@@ -326,5 +314,12 @@ public class QuestionService {
         questionVoteId.setAuthor(user);
         questionVoteId.setQuestion(question);
         questionVoteRepository.deleteById(questionVoteId);
+    }
+    @Transactional
+    public void updateTest(long questionId, String testResult) {
+        questionRepository.findById(questionId)
+                .ifPresent(question -> {
+                    question.setTestResult(testResult);
+                });
     }
 }
