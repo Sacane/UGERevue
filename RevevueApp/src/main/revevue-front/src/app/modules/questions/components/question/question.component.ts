@@ -120,20 +120,20 @@ export class QuestionComponent {
                         if (this.question()!!.vote !== null) {
                             this.question()!!.downvotes!! -= 1;
                         }
-    
+
                         this.question()!!.upvotes!! += 1;
                     }
                     else {
                         if (this.question()!!.vote !== null) {
                             this.question()!!.upvotes!! -= 1;
                         }
-    
+
                         this.question()!!.downvotes!! += 1;
                     }
                     if (this.question()!!.vote === null) {
                         this.question()!!.voteCount += 1;
                     }
-    
+
                     this.question()!!.vote = up;
                 });
             }
@@ -145,7 +145,7 @@ export class QuestionComponent {
                     else {
                         this.question()!!.downvotes!! -= 1;
                     }
-    
+
                     this.question()!!.voteCount -= 1;
                     this.question()!!.vote = null;
                 });

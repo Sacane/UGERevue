@@ -45,6 +45,13 @@ public class Review {
         this.createdAt = createdAt;
     }
 
+    public void update(String newContent, CodePart codePart, Set<Tag> tags){
+        this.content = newContent;
+        this.codePart = codePart;
+        this.tagsList = Set.copyOf(tags);
+        tags.forEach(tag -> author.addTag(tag));
+    }
+
     public long getId() {
         return id;
     }

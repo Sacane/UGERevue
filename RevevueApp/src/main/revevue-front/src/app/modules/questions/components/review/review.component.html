@@ -8,6 +8,13 @@
                     </span>
 
                     <div style="display: flex; align-items: center; column-gap: 10px;">
+                        @if(canUpdate){
+                            <button mat-raised-button color="primary" (click)="updateReview()">
+                                <div style="display: flex; column-gap: 10px;">
+                                    <span>Update review</span>
+                                </div>
+                            </button>
+                        }
                         @if (canDelete) {
                         <button mat-raised-button color="primary" (click)="deleteReview()" [disabled]="deleting"
                             align="end">

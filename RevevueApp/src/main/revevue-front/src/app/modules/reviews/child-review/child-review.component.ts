@@ -34,6 +34,7 @@ export class ChildReviewComponent implements OnInit {
         }).afterClosed().pipe(
             switchMap(reviewValue => {
                 if (reviewValue) {
+
                     return this.reviewService.addReview(this.review.id, reviewValue.content, reviewValue.tags).pipe(
                         catchError(err => {
                             console.log(err);
