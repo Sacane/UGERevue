@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
-
     private final Logger logger = Logger.getLogger(QuestionService.class.getName());
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
@@ -42,7 +41,7 @@ public class QuestionService {
     private final TagService tagRepository;
     private final QuestionMapper questionMapper;
     private final TestServiceRunner testServiceRunner;
-
+    private final ReviewService reviewService;
 
     public QuestionService(
             QuestionRepository questionRepository,
@@ -51,7 +50,8 @@ public class QuestionService {
             QuestionVoteRepository questionVoteRepository,
             QuestionMapper questionMapper,
             TagService tagRepository,
-            TestServiceRunner testServiceRunner
+            TestServiceRunner testServiceRunner,
+            ReviewService reviewService
     ) {
         this.questionRepository = questionRepository;
         this.userRepository = userRepository;
@@ -60,6 +60,7 @@ public class QuestionService {
         this.questionMapper = questionMapper;
         this.tagRepository = tagRepository;
         this.testServiceRunner = testServiceRunner;
+        this.reviewService = reviewService;
     }
 
     @Transactional
@@ -182,7 +183,13 @@ public class QuestionService {
         }
         var user = userFind.get();
         var question = questionFind.get();
+        var reviews = List.copyOf(question.getReviews());
 
+        for (var review : reviews) {
+            reviewService.removeWithoutUser(review.getId());
+        }
+
+        questionVoteRepository.deleteAll(questionVoteRepository.findAllVoteByQuestionId(question.getId()));
         var containsQuestion = userRepository.containsQuestion(user.getId(), question);
         if (!containsQuestion && user.getRole() != Role.ADMIN) {
             throw HttpException.unauthorized("Not your question");

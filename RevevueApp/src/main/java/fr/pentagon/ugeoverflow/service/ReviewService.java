@@ -104,10 +104,27 @@ public class ReviewService {
         }
         review.getTagsList().forEach(tag -> {
             review.removeTag(tag);
-            if(!userRepository.hasReviewWithTag(user.getId(), tag.getId())){
+            if (!userRepository.hasReviewWithTag(user.getId(), tag.getId())) {
                 user.removeTag(tag);
             }
         });
+        reviewRepository.delete(review);
+    }
+
+    public void removeWithoutUser(long reviewId) {
+        var reviewFind = reviewRepository.findByIdWithTags(reviewId);
+        if (reviewFind.isEmpty()) {
+            throw HttpException.notFound("Review not exist");
+        }
+        Review review = reviewFind.get();
+
+        reviewVoteRepository.deleteAll(reviewVoteRepository.findAllVoteByReviewId(review.getId()));
+        review.getAuthor().removeReview(review);
+        if (review.getQuestion() != null) {
+            review.getQuestion().removeReview(review);
+        }
+        removeReviewsChildren(review);
+
         reviewRepository.delete(review);
     }
 
