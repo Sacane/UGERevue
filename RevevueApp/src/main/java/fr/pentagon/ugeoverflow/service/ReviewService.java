@@ -8,16 +8,21 @@ import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewRemoveDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.*;
 import fr.pentagon.ugeoverflow.model.Review;
 import fr.pentagon.ugeoverflow.model.Tag;
+import fr.pentagon.ugeoverflow.model.User;
+import fr.pentagon.ugeoverflow.model.embed.CodePart;
 import fr.pentagon.ugeoverflow.model.vote.ReviewVote;
 import fr.pentagon.ugeoverflow.model.vote.ReviewVoteId;
 import fr.pentagon.ugeoverflow.repository.*;
 import fr.pentagon.ugeoverflow.service.mapper.ReviewMapper;
 import jakarta.transaction.Transactional;
+import org.hibernate.dialect.lock.OptimisticEntityLockException;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -91,7 +96,7 @@ public class ReviewService {
         }
 
         reviewVoteRepository.deleteAll(reviewVoteRepository.findAllVoteByReviewId(review.getId()));
-        removeReviewsChildren(review);
+        removeReviewsChildren(review, user);
         if (review.getParentReview() != null) {
             review.getParentReview().removeReview(review);
         } else {
@@ -102,16 +107,22 @@ public class ReviewService {
             var question = questionOptional.get();
             question.removeReview(review);
         }
-        review.getTagsList().forEach(tag -> {
-            review.removeTag(tag);
-            if (!userRepository.hasReviewWithTag(user.getId(), tag.getId())) {
-                user.removeTag(tag);
-            }
-        });
+        removeTagsFromReview(review, user);
         reviewRepository.delete(review);
     }
 
-    public void removeWithoutUser(long reviewId) {
+    private void removeTagsFromReview(Review review, User user) {
+        review.getTagsList().forEach(tag -> {
+            review.removeTag(tag);
+            System.out.println("OK...");
+            if (!userRepository.hasReviewWithTag(user.getId(), tag.getId())) {
+                System.out.println("POPO PITIE");
+                user.removeTag(tag);
+            }
+        });
+    }
+
+    public void removeWithoutUser(long reviewId, User user) {
         var reviewFind = reviewRepository.findByIdWithTags(reviewId);
         if (reviewFind.isEmpty()) {
             throw HttpException.notFound("Review not exist");
@@ -123,17 +134,18 @@ public class ReviewService {
         if (review.getQuestion() != null) {
             review.getQuestion().removeReview(review);
         }
-        removeReviewsChildren(review);
+        removeReviewsChildren(review, user);
 
         reviewRepository.delete(review);
     }
 
-    private void removeReviewsChildren(Review review) {
+    private void removeReviewsChildren(Review review, User user) {
         reviewVoteRepository.deleteAll(reviewVoteRepository.findAllVoteByReviewId(review.getId()));
         review.getAuthor().removeReview(review);
 
         for (var r : review.getReviews()) {
-            removeReviewsChildren(r);
+            removeTagsFromReview(review, user);
+            removeReviewsChildren(r, user);
         }
     }
 
@@ -207,5 +219,17 @@ public class ReviewService {
         return reviews.stream().filter(e -> e.getTagsList().stream().anyMatch(reviewTag -> reviewTag.getName().contains(tag)))
                 .map(e -> new ReviewQuestionTitleDTO(e.getContent(), e.getQuestion().getTitle()))
                 .toList();
+    }
+
+    @Transactional
+    @Retryable(retryFor = OptimisticEntityLockException.class)
+    public ReviewUpdateDTO updateById(long reviewId, ReviewUpdateDTO reviewUpdateDTO) {
+        var review = reviewRepository.findByIdWithTags(reviewId)
+                .orElseThrow(() -> HttpException.notFound("This review does not exists"));
+        var codePart = (reviewUpdateDTO.lineStart() == null || reviewUpdateDTO.lineEnd() == null) ? null : new CodePart(reviewUpdateDTO.lineStart(), reviewUpdateDTO.lineEnd());
+        var tags = tagRepository.findAllByNames(reviewUpdateDTO.tags());
+        review.getTagsList().clear();
+        review.update(reviewUpdateDTO.content(), codePart, new HashSet<>(tags));
+        return reviewUpdateDTO;
     }
 }

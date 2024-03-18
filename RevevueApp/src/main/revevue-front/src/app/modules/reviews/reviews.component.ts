@@ -9,7 +9,6 @@ import {ConfirmDialogComponent} from '../../shared/components/confirm-dialog/con
 import {Location} from '@angular/common';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {DetailReviewResponseDTO, Review} from "./models/review.model";
-import { U } from '@angular/cdk/keycodes';
 
 @Component({
     selector: 'app-review-detail',
@@ -76,7 +75,9 @@ export class ReviewsComponent implements OnDestroy {
         }).afterClosed().pipe(
             switchMap(reviewValue => {
                 if (reviewValue) {
-                    return this.reviewService.addReview(this.reviewId, reviewValue.content).pipe(tap(response => this.subReviews.update(old => [...old, response])),
+                    console.log('pitie')
+                    console.log(reviewValue)
+                    return this.reviewService.addReview(this.reviewId, reviewValue.content, reviewValue.tags).pipe(tap(response => this.subReviews.update(old => [...old, response])),
                         catchError(err => {
                             console.log(err);
                             return of(err);
@@ -138,17 +139,17 @@ export class ReviewsComponent implements OnDestroy {
                         if (this.reviewDetail()!!.vote !== null) {
                             this.reviewDetail()!!.downvotes!! -= 1;
                         }
-    
+
                         this.reviewDetail()!!.upvotes!! += 1;
                     }
                     else {
                         if (this.reviewDetail()!!.vote !== null) {
                             this.reviewDetail()!!.upvotes!! -= 1;
                         }
-    
+
                         this.reviewDetail()!!.downvotes!! += 1;
                     }
-    
+
                     this.reviewDetail()!!.vote = up;
                 });
             }
@@ -160,7 +161,7 @@ export class ReviewsComponent implements OnDestroy {
                     else {
                         this.reviewDetail()!!.downvotes!! -= 1;
                     }
-    
+
                     this.reviewDetail()!!.vote = null;
                 });
             }

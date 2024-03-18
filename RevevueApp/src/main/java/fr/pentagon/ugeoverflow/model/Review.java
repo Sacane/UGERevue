@@ -48,7 +48,8 @@ public class Review {
     public void update(String newContent, CodePart codePart, Set<Tag> tags){
         this.content = newContent;
         this.codePart = codePart;
-        this.tagsList = tags;
+        this.tagsList = Set.copyOf(tags);
+        tags.forEach(tag -> author.addTag(tag));
     }
 
     public long getId() {

@@ -147,7 +147,7 @@ public class TagServiceTest {
     void removeReviewThenDetachTagsUserTest() throws IOException {
         userTestProvider.addSomeUserIntoDatabase();
         final var userId = userRepository.findByLogin("loginSacane").orElseThrow();
-        final var question = questionRepository.findByAuthorOrderByCreatedAtDesc(userId).get(0);
+        final var question = questionRepository.findByAuthorOrderByCreatedAtDesc(userId).getFirst();
         var review = questionService.addReview(
                 new QuestionReviewCreateDTO(
                         userId.getId(),
@@ -159,6 +159,9 @@ public class TagServiceTest {
                 )
         );
 
+        var afterAddReview = userRepository.findByIdWithTag(userId.getId()).orElseThrow();
+        assertFalse(afterAddReview.getTagsCreated().isEmpty());
+
         assertEquals(1, tagRepository.findAll().size());
         reviewService.remove(new ReviewRemoveDTO(userId.getId(), review.id()));
 
@@ -168,7 +171,7 @@ public class TagServiceTest {
         var tag = tagRepository.findTagByNameWithUsers("test");
         assertTrue(tag.isPresent());
         var t = tag.get();
-        assertFalse(t.getUsersOf().contains(userId));
+        assertFalse(t.getUsersOf().stream().anyMatch(u -> u.getId() == userId.getId()));
     }
 
     @Test
