@@ -3,15 +3,12 @@ package fr.pentagon.ugeoverflow.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.pentagon.ugeoverflow.DatasourceTestConfig;
-import fr.pentagon.ugeoverflow.config.authorization.Role;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateBodyDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.rest.QuestionController;
 import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
-import fr.pentagon.ugeoverflow.model.Question;
-import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.repository.QuestionRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.QuestionService;
@@ -19,24 +16,18 @@ import fr.pentagon.ugeoverflow.service.UserService;
 import fr.pentagon.ugeoverflow.testutils.LoginTestService;
 import fr.pentagon.ugeoverflow.testutils.UserTestProvider;
 import fr.pentagon.ugeoverflow.utils.Routes;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.Principal;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -223,8 +214,8 @@ class QuestionControllerTest {
 
             MockMultipartFile titlePart = new MockMultipartFile("title", "title.txt", "text/plain", "Your Title".getBytes());
             MockMultipartFile descriptionPart = new MockMultipartFile("description", "description.txt", "text/plain", "Your Description".getBytes());
-            MockMultipartFile javaFilePart = new MockMultipartFile("javaFile", "javaFile.txt", "text/plain", "Your Java File Content".getBytes());
-            MockMultipartFile testFilePart = new MockMultipartFile("testFile", "testFile.txt", "text/plain", "Your Test File Content".getBytes());
+            MockMultipartFile javaFilePart = new MockMultipartFile("javaFile", "test.java", "text/plain", "Your Java File Content".getBytes());
+            MockMultipartFile testFilePart = new MockMultipartFile("testFile", "test.java", "text/plain", "Your Test File Content".getBytes());
             questionMVC.perform(
                     MockMvcRequestBuilders.multipart(Routes.Question.ROOT)
                             .file(titlePart)

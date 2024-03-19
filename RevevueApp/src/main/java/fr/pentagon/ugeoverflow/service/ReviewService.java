@@ -57,10 +57,9 @@ public class ReviewService {
     List<ReviewResponseDTO> getReviews(long reviewId) {
         var review = reviewRepository.findByIdWithReviews(reviewId)
                 .orElseThrow(() -> HttpException.notFound("Review not exist"));
-        var author = review.getAuthor();
         return review.getReviews()
                 .stream()
-                .map(r -> reviewMapper.entityToReviewResponseDTO(r, author.getUsername()))
+                .map(reviewMapper::entityToReviewResponseDTO)
                 .toList();
     }
 

@@ -10,6 +10,7 @@ import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
 import fr.pentagon.ugeoverflow.repository.*;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.service.ReviewService;
+import fr.pentagon.ugeoverflow.service.UserService;
 import fr.pentagon.ugeoverflow.testutils.LoginTestService;
 import fr.pentagon.ugeoverflow.testutils.UserTestProvider;
 import fr.pentagon.ugeoverflow.utils.Routes;
@@ -53,6 +54,9 @@ public class ReviewControllerTest {
     private ReviewVoteRepository reviewVoteRepository;
     @Autowired
     private TagRepository tagRepository;
+
+    @Autowired
+    private UserService userService;
 
 
     @BeforeEach
@@ -119,10 +123,10 @@ public class ReviewControllerTest {
         reviewMVC.perform(MockMvcRequestBuilders.get(Routes.Review.ROOT+Routes.Question.IDENT + "/{questionId}", questionId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].author").value("Sacane4"))
+                .andExpect(jsonPath("$[0].author").value("Sacane3"))
                 .andExpect(jsonPath("$[0].content").value("Ping"))
                 .andExpect(jsonPath("$[0].reviews").isNotEmpty())
-                .andExpect(jsonPath("$[0].reviews[0].author").value("Sacane3")) // Vérifie l'auteur de la première review
+                .andExpect(jsonPath("$[0].reviews[0].author").value("Sacane4")) // Vérifie l'auteur de la première review
                 .andExpect(jsonPath("$[0].reviews[0].content").value("Pong"))
                 .andDo(print());
     }

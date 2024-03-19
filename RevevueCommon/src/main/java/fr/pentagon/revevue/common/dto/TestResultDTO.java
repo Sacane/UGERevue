@@ -16,7 +16,7 @@ public record TestResultDTO(
     }
 
     public String result(){
-        return isSuccess ? "Succes ! Tous les tests ont été réussi !" : "Erreur, vous avez " + amountFailures + " tests écohué sur " + (amountFailures + amountValid);
+        return isSuccess ? "Succes ! Tous les tests ont été réussi !" : failuresDetails;
     }
 
     public static TestResultDTO zero() {

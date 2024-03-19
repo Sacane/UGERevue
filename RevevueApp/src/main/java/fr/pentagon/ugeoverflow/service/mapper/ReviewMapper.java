@@ -19,9 +19,9 @@ public class ReviewMapper {
         this.reviewVoteRepository = reviewVoteRepository;
     }
 
-    public ReviewResponseDTO entityToReviewResponseDTO(Review review, String authorName) {
+    public ReviewResponseDTO  entityToReviewResponseDTO(Review review) {
         return new ReviewResponseDTO(
-                authorName,
+                review.getAuthor().getUsername(),
                 review.getContent(),
                 reviewVoteRepository.findUpvoteNumberByReviewId(review.getId()),
                 reviewVoteRepository.findDownvoteNumberByReviewId(review.getId()),
