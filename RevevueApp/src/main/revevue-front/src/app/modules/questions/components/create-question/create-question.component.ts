@@ -33,7 +33,6 @@ export class CreateQuestionComponent {
     }
 
     onSubmit() {
-        console.warn(this.form.value);
         if (this.form.status === 'VALID') {
             this.questionService.createQuestion({
                 title: this.form.value.questionTitle as string,

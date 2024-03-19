@@ -1,6 +1,7 @@
 package fr.pentagon.ugeoverflow.utils;
-import com.vladsch.flexmark.parser.Parser;
+
 import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
 import org.springframework.stereotype.Component;
 
 @Component

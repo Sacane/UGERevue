@@ -1,8 +1,8 @@
-import {Component, OnInit, ViewEncapsulation, inject, signal} from '@angular/core';
-import { LoginService } from "../../shared/HttpServices";
-import { QuestionService } from '../../shared/question.service';
-import {Observable, catchError, concat, map, of, tap} from 'rxjs';
-import { Router } from '@angular/router';
+import {Component, inject, OnInit, signal, ViewEncapsulation} from '@angular/core';
+import {LoginService} from "../../shared/HttpServices";
+import {QuestionService} from '../../shared/question.service';
+import {catchError, concat, map, Observable, of} from 'rxjs';
+import {Router} from '@angular/router';
 import {UserService} from "../profil/services/user.service";
 import {UserInfo} from "../profil/models/UserInfo";
 

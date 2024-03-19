@@ -2,7 +2,6 @@ package fr.pentagon.ugeoverflow.repository;
 
 import fr.pentagon.ugeoverflow.model.vote.QuestionVote;
 import fr.pentagon.ugeoverflow.model.vote.QuestionVoteId;
-import fr.pentagon.ugeoverflow.model.vote.ReviewVote;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

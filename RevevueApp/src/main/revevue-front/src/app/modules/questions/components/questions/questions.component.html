@@ -8,5 +8,22 @@
     <span style="font-size: 17px;">
         {{numberQuestions()}} questions
     </span>
+    <div class="search-container" [formGroup]="form">
+        <mat-form-field appearance="outline">
+            <mat-label>Recherche une question...</mat-label>
+            <input matInput formControlName="labelSearch" placeholder="Par label">
+            <button mat-button matSuffix (click)="search()">
+                <mat-icon>search</mat-icon >
+            </button>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Recherche par utilisateur</mat-label>
+            <input matInput placeholder="Par utilisateur">
+            <button mat-button matSuffix>
+                <mat-icon>search</mat-icon>
+            </button>
+        </mat-form-field>
+    </div>
     <app-questions-displayer [questions]="questions()"></app-questions-displayer>
 </div>

@@ -1,10 +1,10 @@
 package fr.pentagon.ugeoverflow.algorithm;
 
 import org.apache.commons.text.similarity.CosineDistance;
-import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.apache.commons.text.similarity.JaccardDistance;
+import org.apache.commons.text.similarity.LevenshteinDistance;
 
-import java.util.*;
+import java.util.Objects;
 
 public final class QuestionMatcher {
 

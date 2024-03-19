@@ -1,7 +1,7 @@
-import { Component, ViewEncapsulation } from '@angular/core';
-import { Observable } from 'rxjs';
-import { UserFollowing } from '../../models/UserFollowing';
-import { UserService } from '../../services/user.service';
+import {Component, ViewEncapsulation} from '@angular/core';
+import {Observable} from 'rxjs';
+import {UserFollowing} from '../../models/UserFollowing';
+import {UserService} from '../../services/user.service';
 
 @Component({
     selector: 'app-profil-users',

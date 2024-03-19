@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Observable } from 'rxjs';
-import { UserInfo } from '../../models/UserInfo';
-import { UserService } from '../../services/user.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { UserPasswordUpdate } from '../../models/UserPasswordUpdate';
+import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Observable} from 'rxjs';
+import {UserInfo} from '../../models/UserInfo';
+import {UserService} from '../../services/user.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
+import {UserPasswordUpdate} from '../../models/UserPasswordUpdate';
 
 @Component({
     selector: 'app-profil-infos',

@@ -1,7 +1,7 @@
-import { Component, ViewEncapsulation } from '@angular/core';
-import { Observable } from 'rxjs';
-import { SimpleQuestion } from '../../../../shared/models/question';
-import { UserService } from '../../services/user.service';
+import {Component, ViewEncapsulation} from '@angular/core';
+import {Observable} from 'rxjs';
+import {SimpleQuestion} from '../../../../shared/models/question';
+import {UserService} from '../../services/user.service';
 
 @Component({
     selector: 'app-profil-questions',
