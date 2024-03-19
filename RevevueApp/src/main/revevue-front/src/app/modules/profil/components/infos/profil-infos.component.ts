@@ -20,16 +20,6 @@ export class ProfilInfosComponent implements OnInit {
         this.userInfo$ = this.userService.getCurrentUserInfo();
     }
 
-    saveUsername(username: string) {
-        this.userService.changeCurrentUserInfo({ username: username }).subscribe({
-            next: response => {
-                this.snackBar.open('Nom d\'utilisateur mis à jour', 'Fermer', { duration: 3000 });
-            }, error: error => {
-                this.snackBar.open('Erreur lors de mise à jour du nom d\'utilisateur', 'Fermer', { duration: 3000 })
-            }
-        });
-    }
-
     savePassword(userPasswordUpdate: UserPasswordUpdate) {
         console.log(userPasswordUpdate);
         this.userService.changeCurrentUserPassword(userPasswordUpdate).subscribe({
