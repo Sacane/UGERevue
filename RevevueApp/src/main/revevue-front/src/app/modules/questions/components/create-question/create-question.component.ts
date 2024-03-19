@@ -1,11 +1,9 @@
-import {Component, Inject, inject, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, inject, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {QuestionService} from "../../../../shared/question.service";
 import {Router} from "@angular/router";
 import {catchError, throwError} from "rxjs";
-import {HttpErrorResponse, HttpClient} from "@angular/common/http";
 import {ToastrService} from "ngx-toastr";
-import {HttpClient} from "@angular/common/http";
 import {LoginService} from "../../../../shared/HttpServices";
 
 @Component({

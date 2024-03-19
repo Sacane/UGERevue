@@ -52,7 +52,7 @@ public class ReviewController {
 
   @PostMapping(Routes.Review.ROOT)
   @RequireUser
-  public ResponseEntity<ReviewQuestionResponseDTO> addReview(@Valid @RequestBody ReviewOnReviewBodyDTO reviewOnReviewBodyDTO) {
+  public ResponseEntity<ReviewQuestionResponseDTO> addReview(@Valid @RequestBody ReviewOnReviewBodyDTO reviewOnReviewBodyDTO, BindingResult bindingResult) {
       var userDetail = AuthenticationChecker.checkAuthentication();
       if(bindingResult.hasErrors()) {
           throw HttpException.badRequest("La review est invalide");
