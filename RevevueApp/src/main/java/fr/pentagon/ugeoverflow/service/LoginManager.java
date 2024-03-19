@@ -1,6 +1,6 @@
 package fr.pentagon.ugeoverflow.service;
 
-import fr.pentagon.ugeoverflow.config.security.SecurityContext;
+import fr.pentagon.ugeoverflow.config.security.AuthenticationChecker;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.LoginResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,7 +39,7 @@ public class LoginManager {
         contextHolderStrategy.setContext(securityContext);
         this.securityContextRepository.saveContext(securityContext, request, response);
       }
-      var currentUser = SecurityContext.checkAuthentication();
+      var currentUser = AuthenticationChecker.checkAuthentication();
       var role = currentUser.getAuthorities().stream().findFirst().orElseThrow();
       return Optional.of(new LoginResponseDTO(currentUser.getUsername(), role.getAuthority(), currentUser.displayName()));
     } catch (AuthenticationException e) {

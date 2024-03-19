@@ -2,7 +2,7 @@ package fr.pentagon.ugeoverflow.controllers.rest;
 
 import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
-import fr.pentagon.ugeoverflow.config.security.SecurityContext;
+import fr.pentagon.ugeoverflow.config.security.AuthenticationChecker;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewContentDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserFollowingDTO;
@@ -44,7 +44,7 @@ public class UserController {
   @RequireUser
   public ResponseEntity<Void> followUser(@PathVariable("id") long id) {
     LOGGER.info("Trying to follow");
-    var user = SecurityContext.checkAuthentication();
+    var user = AuthenticationChecker.checkAuthentication();
     userService.follow(user.id(), id);
     return ResponseEntity.ok().build();
   }
@@ -53,7 +53,7 @@ public class UserController {
   @RequireUser
   public ResponseEntity<Void> unfollowUser(@PathVariable("id") long id) {
     LOGGER.info("Trying to unfollow");
-    var user = SecurityContext.checkAuthentication();
+    var user = AuthenticationChecker.checkAuthentication();
     userService.unfollow(user.id(), id);
     return ResponseEntity.ok().build();
   }
@@ -61,7 +61,7 @@ public class UserController {
   @GetMapping(Routes.User.FOLLOWING)
   @RequireUser
   public ResponseEntity<List<UserFollowingDTO>> getCurrentUserFollowing() {
-    var user = SecurityContext.checkAuthentication();
+    var user = AuthenticationChecker.checkAuthentication();
     return ResponseEntity.ok(userService.getUserFollowings(user.id()));
   }
 
@@ -69,7 +69,7 @@ public class UserController {
   @GetMapping(Routes.User.ROOT)
   public ResponseEntity<List<UserFollowInfoDTO>> getAllRegisteredUsers() {
     LOGGER.info("Trying to get all registered Users");
-    var auth = SecurityContext.authentication();
+    var auth = AuthenticationChecker.authentication();
     return auth.map(u -> ResponseEntity.ok(userService.userRegisteredList(u.id())))
         .orElse(ResponseEntity.ok(userService.userRegisteredList()));
 
@@ -78,7 +78,7 @@ public class UserController {
   @GetMapping(Routes.User.CURRENT_USER)
   @RequireUser
   public ResponseEntity<UserInfoDTO> getCurrentUserInformation() {
-    var userInfo = SecurityContext.checkAuthentication();
+    var userInfo = AuthenticationChecker.checkAuthentication();
     var user = userRepository.findById(userInfo.id()).orElseThrow();
     return ResponseEntity.ok(new UserInfoDTO(user.getUsername(), user.getLogin(), user.getEmail(), user.getRole()));
   }
@@ -86,7 +86,7 @@ public class UserController {
   @PatchMapping(Routes.User.CURRENT_USER)
   @RequireUser
   public ResponseEntity<Void> updateCurrentAuthenticatedUserInformation(@RequestBody @Valid UserInfoUpdateDTO userInfoUpdateDTO) {
-    var user = SecurityContext.checkAuthentication();
+    var user = AuthenticationChecker.checkAuthentication();
     userService.updateUser(user.id(), userInfoUpdateDTO);
     return ResponseEntity.ok().build();
   }
@@ -94,7 +94,7 @@ public class UserController {
   @PostMapping(Routes.User.PASSWORD)
   @RequireUser
   public ResponseEntity<Void> updateCurrentUserPassword(@RequestBody @Valid UserPasswordUpdateDTO userPasswordUpdateDTO) {
-    var user = SecurityContext.checkAuthentication();
+    var user = AuthenticationChecker.checkAuthentication();
     userService.updateUserPassword(user.id(), userPasswordUpdateDTO);
     return ResponseEntity.ok().build();
   }
@@ -102,7 +102,7 @@ public class UserController {
   @PostMapping(Routes.User.RECOMMENDED_REVIEW)
   @RequireUser
   public ResponseEntity<List<ReviewContentDTO>> getRecommendedReview(@RequestBody @Valid QuestionUserIdDTO questionUserIdDTO) {
-    var user = SecurityContext.checkAuthentication();
+    var user = AuthenticationChecker.checkAuthentication();
     var recommendedReview = userService.getRecommendedReviewForQuestion(user.id(), questionUserIdDTO.questionContent());
     return ResponseEntity.ok(recommendedReview);
   }

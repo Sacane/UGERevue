@@ -2,7 +2,7 @@ package fr.pentagon.ugeoverflow.controllers.mvc;
 
 import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
-import fr.pentagon.ugeoverflow.config.security.SecurityContext;
+import fr.pentagon.ugeoverflow.config.security.AuthenticationChecker;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.service.UserService;
 import org.springframework.stereotype.Controller;
@@ -26,7 +26,7 @@ public class MvcUserController {
   @GetMapping
   @RequireUser
   public String profilePage(Model model, Principal principal) {
-    var userResponse = SecurityContext.authentication();
+    var userResponse = AuthenticationChecker.authentication();
     if (userResponse.isEmpty()) {
       throw HttpException.unauthorized("Non connecté");
     }

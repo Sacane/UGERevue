@@ -1,7 +1,7 @@
 package fr.pentagon.ugeoverflow.controllers.rest;
 
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
-import fr.pentagon.ugeoverflow.config.security.SecurityContext;
+import fr.pentagon.ugeoverflow.config.security.AuthenticationChecker;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.VoteDTO;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.utils.Routes;
@@ -26,14 +26,14 @@ public class VoteController {
   @RequireUser
   public ResponseEntity<VoteDTO> howManyVotes(@PathVariable(name = "questionId") long questionId) {
     LOGGER.info("GET performed on " + Routes.Vote.ROOT + "/" + questionId);
-    SecurityContext.checkAuthentication();
+    AuthenticationChecker.checkAuthentication();
     return ResponseEntity.ok(questionService.getVoteOnQuestionById(questionId));
   }
 
   @PostMapping(Routes.Vote.UP_VOTE + "/questions/{questionId}")
   @RequireUser
   public ResponseEntity<Void> upVoteQuestion(@PathVariable(name = "questionId") long questionId) {
-    var user = SecurityContext.checkAuthentication();
+    var user = AuthenticationChecker.checkAuthentication();
     questionService.vote(user.id(), questionId, true);
     return ResponseEntity.ok().build();
   }
@@ -41,7 +41,7 @@ public class VoteController {
   @PostMapping(Routes.Vote.DOWN_VOTE + "/questions/{questionId}")
   @RequireUser
   public ResponseEntity<Void> downVoteQuestion(@PathVariable(name = "questionId") long questionId) {
-    var user = SecurityContext.checkAuthentication();
+    var user = AuthenticationChecker.checkAuthentication();
     questionService.vote(user.id(), questionId, false);
     return ResponseEntity.ok().build();
   }

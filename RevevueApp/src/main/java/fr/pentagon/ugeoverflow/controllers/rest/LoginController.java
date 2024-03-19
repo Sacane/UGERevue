@@ -2,6 +2,7 @@ package fr.pentagon.ugeoverflow.controllers.rest;
 
 import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
+import fr.pentagon.ugeoverflow.config.security.AuthenticationChecker;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.LoginResponseDTO;
 import fr.pentagon.ugeoverflow.service.LoginManager;
@@ -10,10 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin
@@ -37,4 +35,11 @@ public class LoginController {
   public void logout(HttpServletRequest request, HttpServletResponse response) {
     loginManager.logout(request, response);
   }
+
+  @GetMapping(Routes.Auth.LOGGED)
+  public ResponseEntity<Void> logged(){
+    AuthenticationChecker.checkAuthentication();
+    return ResponseEntity.ok().build();
+  }
+
 }

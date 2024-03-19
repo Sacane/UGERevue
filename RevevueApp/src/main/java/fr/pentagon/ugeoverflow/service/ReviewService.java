@@ -2,7 +2,7 @@ package fr.pentagon.ugeoverflow.service;
 
 import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.config.authorization.Role;
-import fr.pentagon.ugeoverflow.config.security.SecurityContext;
+import fr.pentagon.ugeoverflow.config.security.AuthenticationChecker;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewOnReviewDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewRemoveDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.*;
@@ -215,7 +215,7 @@ public class ReviewService {
 
     @Transactional
     public List<ReviewQuestionTitleDTO> findByTag(String tag) {
-        List<Review> reviews = reviewRepository.withTagsAndQuestion(SecurityContext.checkAuthentication().id());
+        List<Review> reviews = reviewRepository.withTagsAndQuestion(AuthenticationChecker.checkAuthentication().id());
         return reviews.stream().filter(e -> e.getTagsList().stream().anyMatch(reviewTag -> reviewTag.getName().contains(tag)))
                 .map(e -> new ReviewQuestionTitleDTO(e.getContent(), e.getQuestion().getTitle()))
                 .toList();

@@ -2,7 +2,7 @@ package fr.pentagon.ugeoverflow.controller;
 
 import fr.pentagon.ugeoverflow.DatasourceTestConfig;
 import fr.pentagon.ugeoverflow.config.authentication.RevevueUserDetail;
-import fr.pentagon.ugeoverflow.config.security.SecurityContext;
+import fr.pentagon.ugeoverflow.config.security.AuthenticationChecker;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
@@ -48,7 +48,7 @@ public class LoginControllerTest {
         .andExpect(status().isOk())
         .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("login"))
         .andDo(print());
-    Optional<RevevueUserDetail> authentication = SecurityContext.authentication();
+    Optional<RevevueUserDetail> authentication = AuthenticationChecker.authentication();
     assertTrue(authentication.isPresent());
     var auth = authentication.get();
     assertEquals("login", auth.getUsername());
@@ -81,10 +81,10 @@ public class LoginControllerTest {
     loginTestService.login(credentialsDTO)
         .andExpect(status().isOk())
         .andDo(print());
-    assertTrue(SecurityContext.authentication().isPresent());
+    assertTrue(AuthenticationChecker.authentication().isPresent());
     loginTestService.logout()
         .andExpect(status().isOk());
-    assertTrue(SecurityContext.authentication().isEmpty());
+    assertTrue(AuthenticationChecker.authentication().isEmpty());
   }
 
   @Test

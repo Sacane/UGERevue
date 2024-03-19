@@ -2,7 +2,7 @@ package fr.pentagon.ugeoverflow.controllers.rest;
 
 import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
-import fr.pentagon.ugeoverflow.config.security.SecurityContext;
+import fr.pentagon.ugeoverflow.config.security.AuthenticationChecker;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewOnReviewBodyDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewOnReviewDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewRemoveDTO;
@@ -32,14 +32,14 @@ public class ReviewController {
   @PatchMapping(Routes.Review.ROOT + "/{reviewId}")
   public ResponseEntity<ReviewUpdateDTO> updateById(@PathVariable(name = "reviewId") long reviewId, @RequestBody ReviewUpdateDTO reviewUpdateDTO){
     LOGGER.info("fetch on [PATCH] " + Routes.Review.ROOT + " with variable " + reviewId);
-    SecurityContext.checkAuthentication();
+    AuthenticationChecker.checkAuthentication();
 
     return ResponseEntity.ok(reviewService.updateById(reviewId, reviewUpdateDTO));
   }
   @GetMapping(Routes.Review.ROOT + "/{reviewId}")
   public ResponseEntity<DetailReviewResponseDTO> findDetailsReview(@PathVariable(name = "reviewId") long reviewId) {
     LOGGER.info("fetch on " + Routes.Review.ROOT + " => " + reviewId);
-    var auth = SecurityContext.authentication();
+    var auth = AuthenticationChecker.authentication();
       return auth.map(revevueUserDetail ->
                     ResponseEntity.ok(reviewService.findDetailFromReviewId(revevueUserDetail.id(), reviewId)))
             .orElseGet(() -> ResponseEntity.ok(reviewService.findDetailFromReviewId(null, reviewId)));
@@ -52,19 +52,19 @@ public class ReviewController {
 
   @PostMapping(Routes.Review.ROOT)
   @RequireUser
-  public ResponseEntity<ReviewQuestionResponseDTO> addReview(@Valid @RequestBody ReviewOnReviewBodyDTO reviewOnReviewBodyDTO, BindingResult bindingResult) {
-    var userDetail = SecurityContext.checkAuthentication();
-    if(bindingResult.hasErrors()) {
-      throw HttpException.badRequest("La review est invalide");
-    }
-    LOGGER.info("add review of review");
-    return ResponseEntity.ok(reviewService.addReview(new ReviewOnReviewDTO(userDetail.id(), reviewOnReviewBodyDTO.reviewId(), reviewOnReviewBodyDTO.content(), reviewOnReviewBodyDTO.tagList())));
+  public ResponseEntity<ReviewQuestionResponseDTO> addReview(@Valid @RequestBody ReviewOnReviewBodyDTO reviewOnReviewBodyDTO) {
+      var userDetail = AuthenticationChecker.checkAuthentication();
+      if(bindingResult.hasErrors()) {
+          throw HttpException.badRequest("La review est invalide");
+      }
+      LOGGER.info("add review of review");
+      return ResponseEntity.ok(reviewService.addReview(new ReviewOnReviewDTO(userDetail.id(), reviewOnReviewBodyDTO.reviewId(), reviewOnReviewBodyDTO.content(), reviewOnReviewBodyDTO.tagList())));
   }
 
   @DeleteMapping(Routes.Review.ROOT + "/{reviewId}")
   @RequireUser
   public ResponseEntity<Void> removeReview(@PathVariable(name = "reviewId") long reviewId) {
-    var user = SecurityContext.authentication().orElseThrow();
+    var user = AuthenticationChecker.authentication().orElseThrow();
     LOGGER.info("perform delete on " + Routes.Review.ROOT);
     reviewService.remove(new ReviewRemoveDTO(user.id(), reviewId));
 
@@ -74,7 +74,7 @@ public class ReviewController {
   @PostMapping(Routes.Review.ROOT + "/{reviewId}/vote")
   @RequireUser
   public ResponseEntity<Void> voteReview(@PathVariable(name = "reviewId") long reviewId, @Valid @RequestBody VoteBodyDTO voteBodyDTO) {
-    var user = SecurityContext.checkAuthentication();
+    var user = AuthenticationChecker.checkAuthentication();
 
     reviewService.vote(user.id(), reviewId, voteBodyDTO.up());
 
@@ -84,7 +84,7 @@ public class ReviewController {
   @DeleteMapping(Routes.Review.ROOT + "/{reviewId}/cancelVote")
   @RequireUser
   public ResponseEntity<Void> cancelVoteReview(@PathVariable(name = "reviewId") long reviewId) {
-    var user = SecurityContext.checkAuthentication();
+    var user = AuthenticationChecker.checkAuthentication();
 
     reviewService.cancelVote(user.id(), reviewId);
 

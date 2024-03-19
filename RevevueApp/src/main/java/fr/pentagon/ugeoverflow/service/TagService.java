@@ -1,6 +1,6 @@
 package fr.pentagon.ugeoverflow.service;
 
-import fr.pentagon.ugeoverflow.config.security.SecurityContext;
+import fr.pentagon.ugeoverflow.config.security.AuthenticationChecker;
 import fr.pentagon.ugeoverflow.model.Review;
 import fr.pentagon.ugeoverflow.model.Tag;
 import fr.pentagon.ugeoverflow.model.User;
@@ -20,7 +20,7 @@ public class TagService {
 
     @Transactional
     public List<String> tagByCurrentUser() {
-        var currentUser = SecurityContext.checkAuthentication();
+        var currentUser = AuthenticationChecker.checkAuthentication();
         return tagRepository.findByUser(currentUser.id())
                 .stream()
                 .map(Tag::getName)
