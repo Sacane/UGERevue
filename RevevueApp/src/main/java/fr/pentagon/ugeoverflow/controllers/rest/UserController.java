@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.controllers.rest;
 
+import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
@@ -12,6 +13,7 @@ import fr.pentagon.ugeoverflow.service.UserService;
 import fr.pentagon.ugeoverflow.utils.Routes;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,8 +32,11 @@ public class UserController {
   }
 
   @PostMapping(Routes.User.ROOT)
-  public ResponseEntity<UserIdDTO> registerUser(@Valid @RequestBody UserRegisterDTO userRegisterDTO) {
+  public ResponseEntity<UserIdDTO> registerUser(@Valid @RequestBody UserRegisterDTO userRegisterDTO, BindingResult bindingResult) {
     LOGGER.info("try to register");
+    if (bindingResult.hasErrors()) {
+      throw HttpException.badRequest("Une erreur est survenue, votre formulaire est invalide");
+    }
     return ResponseEntity.ok(userService.register(userRegisterDTO));
   }
 
