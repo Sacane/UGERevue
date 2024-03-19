@@ -3,7 +3,6 @@ package fr.pentagon.ugeoverflow.controllers.mvc;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,3 +37,4 @@ public class MvcHeaderController {
   public record LabelUserParameter(@NotNull String label, @NotNull String user) {
   }
 }
+
