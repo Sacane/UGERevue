@@ -140,8 +140,7 @@ class QuestionControllerTest {
     void getFilteredQuestionsByUser() throws Exception {
         userTestProvider.addSomeUserIntoDatabase();
         questionMVC.perform(MockMvcRequestBuilders.get(Routes.Question.SEARCH)
-                        .param("label", "hello world")
-                        .param("username", "Sacane4")
+                        .content(objectMapper.writeValueAsString(new SearchQuestionDTO("hello world", "Sacane4")))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(3))
@@ -354,7 +353,7 @@ class QuestionControllerTest {
         questionMVC.perform(MockMvcRequestBuilders.get(Routes.Question.ROOT+ "/followers")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(8))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(0))
                 .andDo(print());
     }
 }

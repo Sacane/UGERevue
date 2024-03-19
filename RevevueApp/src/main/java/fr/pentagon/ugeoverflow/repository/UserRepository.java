@@ -29,6 +29,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Set<User> findFollowers(@Param("user") User user);
     @Query("SELECT u.followers FROM User u WHERE u.id = :userId")
     List<User> findFollowsByUserId(@Param("userId") long userId);
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.follows WHERE u.id = :userId")
+    Optional<User> findUserWithFollowers(@Param("userId") long userId);
     @Query("SELECT u.follows FROM User u WHERE u = :user")
     Set<User> findFollowing(@Param("user") User user);
     @Query("SELECT u FROM User u")

@@ -374,6 +374,7 @@ public class QuestionServiceTest {
         userService.follow(quentin.getId(), quentin2.getId());
 
         var followQuestion = questionService.create(new NewQuestionDTO("TITLE2", "DESCRIPTION2", new byte[0], null, "test.java", "test.java"), quentin2.getId());
+        System.out.println(followQuestion);
         questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "test.java", "test.java"), quentin.getId());
 
         var questions = questionService.getQuestionsFromFollows(quentin.getId());

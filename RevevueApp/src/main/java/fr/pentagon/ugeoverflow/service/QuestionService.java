@@ -300,41 +300,33 @@ public class QuestionService {
 
     @Transactional
     public List<QuestionDTO> getQuestionsFromFollows(long userId) {
-        var questions = questionRepository.findAll();
-        var questionsWithScore = new HashMap<Question, Integer>();
-        var toVisitUsers = new ArrayDeque<ScoreFollower>();
-        var visitedUsers = new ArrayList<Long>();
-
-        questions.forEach(question -> questionsWithScore.put(question, 0));
-        userRepository.findFollowsById(userId).forEach(user -> toVisitUsers.add(new ScoreFollower(user.getId(), 1)));
+        var questionResult = new ArrayDeque<Question>();
+        var userWithFollows = userRepository.findUserWithFollowers(userId).orElseThrow();
+        var visitedUsers = new HashSet<Long>();
+        var toVisitUsers = new ArrayDeque<>(userWithFollows.getFollows().stream().map(User::getId).toList());
         visitedUsers.add(userId);
-
-        while (!toVisitUsers.isEmpty()) {
+        while (!toVisitUsers.isEmpty() || questionResult.size() > 50) {
             var visitScoreFollower = toVisitUsers.poll();
-            var userOptional = userRepository.findByIdWithQuestions(visitScoreFollower.userId);
-
+            if(visitScoreFollower == null) break;
+            var userOptional = userRepository.findByIdWithQuestions(visitScoreFollower);
             if (userOptional.isEmpty()) {
                 continue;
             }
             var user = userOptional.get();
 
             for (var question: user.getQuestions()) {
-                var questionScore = questionsWithScore.get(question);
-                if (questionScore == 0 || visitScoreFollower.score < questionScore) {
-                    questionsWithScore.put(question, visitScoreFollower.score);
-                }
+                questionResult.push(question);
             }
-
-            user.getFollows().stream().filter(e -> !visitedUsers.contains(e.getId())).forEach(follow -> {
-                toVisitUsers.add(new ScoreFollower(follow.getId(), visitScoreFollower.score + 1));
-            });
+            user.getFollows()
+                    .stream()
+                    .filter(e -> !visitedUsers.contains(e.getId())).forEach(follow -> toVisitUsers.add(follow.getId()));
             visitedUsers.add(user.getId());
         }
 
-        return questionsWithScore.entrySet().stream().sorted((entry1, entry2) -> (entry1.getValue() == 0) ? 1 : entry2.getValue() == 0 ? -1 : entry1.getValue() - entry2.getValue()).map(entrySet -> {
-            var question = entrySet.getKey();
-            return questionMapper.entityToQuestionDTO(question);
-        }).toList();
+        return questionResult
+                .stream()
+                .map(questionMapper::entityToQuestionDTO)
+                .toList();
     }
     @Transactional
     public VoteDTO getVoteOnQuestionById(long questionId) {
