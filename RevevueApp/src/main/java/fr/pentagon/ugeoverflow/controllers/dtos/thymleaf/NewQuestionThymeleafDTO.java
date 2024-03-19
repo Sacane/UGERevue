@@ -23,9 +23,9 @@ public record NewQuestionThymeleafDTO(
         title,
         description,
         javaFile.getBytes(),
-        testFile.getBytes(),
+            (testFile != null) ? testFile.getBytes() : null,
         javaFile.getOriginalFilename(),
-        testFile.getOriginalFilename()
+            (testFile != null) ? testFile.getOriginalFilename(): null
     );
   }
 }

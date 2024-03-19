@@ -89,11 +89,11 @@ public class QuestionService {
         var user = userRepository.findById(authorId)
                 .orElseThrow(() -> HttpException.notFound("User does not exists"));
         String testFilename = questionCreateDTO.testFilename();
-        if(!questionCreateDTO.javaFilename().endsWith(".java") || (testFilename != null && !testFilename.endsWith(".java"))){
+        if(!questionCreateDTO.javaFilename().endsWith(".java") || (testFilename != null && !testFilename.isBlank() && !testFilename.endsWith(".java"))){
             throw HttpException.badRequest("Le fichier enregistré n'est pas un fichier java.");
         }
         String result;
-        if(questionCreateDTO.testFile() != null) {
+        if(questionCreateDTO.testFile() != null && testFilename != null && !testFilename.isBlank()) {
             result = testServiceRunner.sendTestAndGetFeedback(
                     questionCreateDTO.javaFilename(),
                     questionCreateDTO.testFilename(),

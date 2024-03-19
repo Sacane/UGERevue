@@ -51,11 +51,24 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
         UsersModule,
         ReviewsModule,
         MarkdownModule,
-        MarkdownModule.forRoot(),
+        MarkdownModule.forRoot({
+            markedOptions: {
+                provide: undefined,
+                useValue: {
+                    gfm: true,
+                    tables: true,
+                    breaks: false,
+                    pedantic: true,
+                    sanitize: false,
+                    smartLists: true,
+                    smartypants: false,
+                },
+            },
+        }),
         BrowserAnimationsModule,
         ToastrModule.forRoot(),
         MatChipsModule,
-        MatAutocompleteModule
+        MatAutocompleteModule,
     ],
     bootstrap: [AppComponent]
 })
