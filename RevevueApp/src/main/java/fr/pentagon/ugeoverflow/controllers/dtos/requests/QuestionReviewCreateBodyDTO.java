@@ -8,9 +8,12 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 import java.util.List;
 
-public record QuestionReviewCreateBodyDTO(@Positive long questionId, @NotNull @NotBlank String content,
-                                          @Nullable @PositiveOrZero Integer lineStart, @Nullable @PositiveOrZero Integer lineEnd,
-                                          List<String> tags) {
+public record QuestionReviewCreateBodyDTO(
+        @Positive long questionId,
+        @NotNull @NotBlank String content,
+        @Nullable @PositiveOrZero(message = "La ligne de début doit être positive") Integer lineStart,
+        @Nullable @PositiveOrZero(message = "La ligne de fin doit être positive") Integer lineEnd,
+        List<String> tags) {
   public QuestionReviewCreateBodyDTO {
     if (tags == null) {
       tags = List.of();

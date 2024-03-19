@@ -31,7 +31,6 @@ export class SignupComponent{
                 email: this.signupForm.value.email as string
             }, err => {
                 this.toastService.error(err.error.message)
-                this.toastService.show(err.error.message)
             }).subscribe(response => {
                 console.log("User has been created : " + response.username);
                 this.router.navigateByUrl("/home").then();

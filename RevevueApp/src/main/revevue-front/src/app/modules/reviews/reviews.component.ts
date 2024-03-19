@@ -1,7 +1,7 @@
 import {Component, computed, inject, OnDestroy, signal, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {ReviewDialogComponent, ReviewService} from '../../shared';
-import {BehaviorSubject, catchError, concat, of, Subject, switchMap, takeUntil, tap} from 'rxjs';
+import {BehaviorSubject, catchError, concat, of, Subject, switchMap, takeUntil, tap, throwError} from 'rxjs';
 import {MatDialog} from '@angular/material/dialog';
 import {LoginService} from '../../shared/HttpServices';
 import {Role} from '../questions/models/role.model';
@@ -9,6 +9,7 @@ import {ConfirmDialogComponent} from '../../shared/components/confirm-dialog/con
 import {Location} from '@angular/common';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {DetailReviewResponseDTO, Review} from "./models/review.model";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
     selector: 'app-review-detail',
@@ -30,7 +31,7 @@ export class ReviewsComponent implements OnDestroy {
     private location: Location = inject(Location)
     reviewId: string = this.activatedRoute.snapshot.params['id'];
     canReview: boolean = this.userService.isLogin();
-
+    private toastService = inject(ToastrService)
     reviewDetail = signal<DetailReviewResponseDTO | undefined>(undefined)
 
 
@@ -74,12 +75,9 @@ export class ReviewsComponent implements OnDestroy {
         }).afterClosed().pipe(
             switchMap(reviewValue => {
                 if (reviewValue) {
-                    console.log('pitie')
-                    console.log(reviewValue)
                     return this.reviewService.addReview(this.reviewId, reviewValue.content, reviewValue.tags).pipe(tap(response => this.subReviews.update(old => [...old, response])),
                         catchError(err => {
-                            console.log(err);
-                            return of(err);
+                            return throwError(() => this.toastService.error(err.error.message));
                         })
                     );
                 }

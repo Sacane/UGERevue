@@ -2,6 +2,9 @@ import {Component, inject, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {QuestionService} from "../../../../shared/question.service";
 import {Router} from "@angular/router";
+import {catchError, throwError} from "rxjs";
+import {HttpErrorResponse} from "@angular/common/http";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
     selector: 'app-create-question',
@@ -16,6 +19,7 @@ export class CreateQuestionComponent {
         javaClass: new FormControl<File | null>(null, [Validators.required]),
         testClass: new FormControl<File | null>(null),
     });
+    private toastService = inject(ToastrService)
 
     private questionService = inject(QuestionService)
     private router = inject(Router)
@@ -39,7 +43,13 @@ export class CreateQuestionComponent {
                 description: this.form.value.questionContent as string,
                 javaFile: this.form.value.javaClass as File,
                 testFile: this.form.value.testClass as File | undefined
-            }).subscribe(() => this.gotoQuestion());
+            }).pipe(
+                catchError(err => {
+                    return throwError(() => this.toastService.error(err.error.message))
+                })
+            ).subscribe(questionId => {
+                this.router.navigateByUrl('/questions/' + questionId).then()
+            });
         }
     }
 

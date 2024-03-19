@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.controllers.rest;
 
+import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.ReviewOnReviewBodyDTO;
@@ -13,6 +14,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -50,8 +52,12 @@ public class ReviewController {
 
   @PostMapping(Routes.Review.ROOT)
   @RequireUser
-  public ResponseEntity<ReviewQuestionResponseDTO> addReview(@Valid @RequestBody ReviewOnReviewBodyDTO reviewOnReviewBodyDTO) {
+  public ResponseEntity<ReviewQuestionResponseDTO> addReview(@Valid @RequestBody ReviewOnReviewBodyDTO reviewOnReviewBodyDTO, BindingResult bindingResult) {
     var userDetail = SecurityContext.checkAuthentication();
+    if(bindingResult.hasErrors()) {
+      throw HttpException.badRequest("La review est invalide");
+    }
+    LOGGER.info("add review of review");
     return ResponseEntity.ok(reviewService.addReview(new ReviewOnReviewDTO(userDetail.id(), reviewOnReviewBodyDTO.reviewId(), reviewOnReviewBodyDTO.content(), reviewOnReviewBodyDTO.tagList())));
   }
 

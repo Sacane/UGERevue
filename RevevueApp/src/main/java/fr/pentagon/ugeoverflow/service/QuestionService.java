@@ -159,11 +159,13 @@ public class QuestionService {
     }
     @Transactional
     public ReviewQuestionResponseDTO addReview(QuestionReviewCreateDTO questionReviewCreateDTO) {
+        logger.info("test");
         var userQuestion = QuestionService.findQuestionFromId(userRepository, questionReviewCreateDTO.userId(), questionRepository, questionReviewCreateDTO.questionId());
         var user = userQuestion.user();
         var question = userQuestion.question();
         var lineStart = questionReviewCreateDTO.lineStart();
         var fileContent = new String(question.getFile(), StandardCharsets.UTF_8).split("\n");
+
         if(lineStart != null && lineStart < 0) {
             logger.severe("La ligne ne peut être négative");
             throw HttpException.badRequest("La ligne ne peut être négative");

@@ -14,6 +14,7 @@ import {ReviewService} from '../../../../shared';
 import {
     UpdateQuestionDialogComponent
 } from '../../../../shared/components/update-question-dialog/update-question-dialog.component';
+import {ToastrService} from "ngx-toastr";
 
 @Component({
     selector: 'app-question',
@@ -25,7 +26,7 @@ export class QuestionComponent {
     private questionService = inject(QuestionService);
     private reviewService = inject(ReviewService);
     private id = inject(ActivatedRoute).snapshot.params['id'];
-
+    private toastService = inject(ToastrService)
     question = toSignal(this.questionService.findQuestionById(this.id), {
         initialValue: null
     });
@@ -89,7 +90,7 @@ export class QuestionComponent {
                 if (reviewValue) {
                     return this.questionService.addReview(this.id, reviewValue.content, reviewValue.lineStart, reviewValue.lineEnd, reviewValue.tags).pipe(
                         catchError(err => {
-                            console.log(err);
+                            this.toastService.error(err.error.message);
                             return of(err);
                         })
                     );

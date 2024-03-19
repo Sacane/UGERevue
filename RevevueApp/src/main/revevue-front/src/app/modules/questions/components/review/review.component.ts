@@ -1,9 +1,9 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
 import {Review} from "../../models/review";
 import {LoginService} from '../../../../shared/HttpServices';
 import {MatDialog} from '@angular/material/dialog';
 import {ConfirmDialogComponent} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import {catchError, concat, of, switchMap, tap} from 'rxjs';
+import {catchError, concat, of, switchMap, tap, throwError} from 'rxjs';
 import {ReviewDialogComponent, ReviewService} from '../../../../shared';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Role} from '../../models/role.model';
@@ -11,6 +11,7 @@ import {Router} from '@angular/router';
 
 import 'prismjs'; // Import Prism.js
 import 'prismjs/components/prism-java.js';
+import {ToastrService} from "ngx-toastr";
 
 @Component({
     selector: 'app-review',
@@ -23,6 +24,7 @@ export class ReviewComponent implements OnInit {
     };
     @Output() onDelete: EventEmitter<void> = new EventEmitter();
 
+    private toastService = inject(ToastrService)
     canDelete: boolean = false;
     deleting: boolean = false;
     canUpdate: boolean = false;
@@ -48,15 +50,14 @@ export class ReviewComponent implements OnInit {
                         of({ deleting: true }),
                         this.reviewService.deleteReview(this.review.id).pipe(
                             catchError(err => {
-                                console.log(err);
+                                this.toastService.error(err.error.message)
                                 return of({ error: err });
                             })
                         )
                     );
                 }
-
                 return of();
-            })
+            }), catchError(err => throwError(() => this.toastService.error(err.error.message)))
         ).subscribe(response => {
             if (response && response.deleting) {
                 this.deleting = true;
@@ -94,7 +95,7 @@ export class ReviewComponent implements OnInit {
                             this.review.lineEnd = response.lineEnd;
                         }),
                         catchError(err => {
-                            console.log(err);
+                            this.toastService.error(err.error.message)
                             return of(err);
                         })
                     );

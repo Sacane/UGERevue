@@ -15,6 +15,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -99,9 +100,12 @@ public class QuestionController {
     }
   @PostMapping(Routes.Question.ROOT + "/reviews")
   @RequireUser
-  public ResponseEntity<ReviewQuestionResponseDTO> addReview(@Valid @RequestBody QuestionReviewCreateBodyDTO questionReviewCreateBodyDTO) {
+  public ResponseEntity<ReviewQuestionResponseDTO> addReview(@Valid @RequestBody QuestionReviewCreateBodyDTO questionReviewCreateBodyDTO, BindingResult bindingResult) {
     LOGGER.info("review => " + questionReviewCreateBodyDTO);
     var userDetail = SecurityContext.checkAuthentication();
+    if(bindingResult.hasErrors()) {
+      throw HttpException.badRequest("La review est invalide");
+    }
     return ok(questionService.addReview(new QuestionReviewCreateDTO(userDetail.id(), questionReviewCreateBodyDTO.questionId(), questionReviewCreateBodyDTO.content(), questionReviewCreateBodyDTO.lineStart(), questionReviewCreateBodyDTO.lineEnd(), questionReviewCreateBodyDTO.tags())));
   }
 
