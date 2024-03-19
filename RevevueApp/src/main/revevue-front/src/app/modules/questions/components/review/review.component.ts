@@ -3,14 +3,15 @@ import {Review} from "../../models/review";
 import {LoginService} from '../../../../shared/HttpServices';
 import {MatDialog} from '@angular/material/dialog';
 import {ConfirmDialogComponent} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import {catchError, concat, of, switchMap} from 'rxjs';
-import {ReviewService} from '../../../../shared';
+import {catchError, concat, of, switchMap, tap} from 'rxjs';
+import {ReviewDialogComponent, ReviewService} from '../../../../shared';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {Role} from '../../models/role.model';
 import {Router} from '@angular/router';
 
 import 'prismjs'; // Import Prism.js
-import 'prismjs/components/prism-java.js'; // Import the Java language syntax for Prism.js
+import 'prismjs/components/prism-java.js';
+
 @Component({
     selector: 'app-review',
     templateUrl: './review.component.html',
@@ -24,13 +25,13 @@ export class ReviewComponent implements OnInit {
 
     canDelete: boolean = false;
     deleting: boolean = false;
-
-    codeTest = "public record Point(int x, int y){\n}"
+    canUpdate: boolean = false;
 
     constructor(private userService: LoginService, private reviewService: ReviewService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) { }
 
     ngOnInit(): void {
         this.canDelete = this.review.author === this.userService.getLogin() || this.userService.getRole() === Role.ADMIN;
+        this.canUpdate = this.review.author === this.userService.getLogin()
     }
 
     deleteReview(): void {
@@ -73,5 +74,33 @@ export class ReviewComponent implements OnInit {
 
     detailsReview(): void {
         this.router.navigateByUrl(`/reviews/${this.review.id}`).then();
+    }
+
+    updateReview(): void {
+        this.dialog.open(ReviewDialogComponent, {data: {onQuestion: true, template: {
+                    content: this.review.content,
+                    tags: this.review.tags,
+                    lineStart: this.review.lineStart,
+                    lineEnd: this.review.lineEnd
+                }}, disableClose: true}).afterClosed().pipe(
+            switchMap(reviewValue => {
+                console.log(reviewValue);
+                if (reviewValue) {
+                    return this.reviewService.updateById(this.review.id, reviewValue.content, reviewValue.lineStart, reviewValue.lineEnd, reviewValue.tags).pipe(
+                        tap(response => {
+                            this.review.content = response.content;
+                            this.review.tags = response.tags;
+                            this.review.lineStart = response.lineStart;
+                            this.review.lineEnd = response.lineEnd;
+                        }),
+                        catchError(err => {
+                            console.log(err);
+                            return of(err);
+                        })
+                    );
+                }
+                return of();
+            })
+        ).subscribe()
     }
 }

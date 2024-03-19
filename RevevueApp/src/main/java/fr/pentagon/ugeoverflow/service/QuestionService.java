@@ -185,7 +185,7 @@ public class QuestionService {
         var reviews = List.copyOf(question.getReviews());
 
         for (var review : reviews) {
-            reviewService.removeWithoutUser(review.getId());
+            reviewService.removeWithoutUser(review.getId(), user);
         }
 
         questionVoteRepository.deleteAll(questionVoteRepository.findAllVoteByQuestionId(question.getId()));

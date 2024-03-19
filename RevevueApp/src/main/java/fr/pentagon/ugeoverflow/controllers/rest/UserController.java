@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.controllers.rest;
 
+import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
@@ -7,16 +8,14 @@ import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewContentDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserFollowingDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserInfoDTO;
-import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.UserService;
 import fr.pentagon.ugeoverflow.utils.Routes;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.Positive;
 import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
@@ -70,7 +69,7 @@ public class UserController {
     LOGGER.info("Trying to get all registered Users");
     var auth = SecurityContext.authentication();
     return auth.map(u -> ResponseEntity.ok(userService.userRegisteredList(u.id())))
-            .orElse(ResponseEntity.ok(userService.userRegisteredList()));
+        .orElse(ResponseEntity.ok(userService.userRegisteredList()));
 
   }
 

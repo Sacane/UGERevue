@@ -19,4 +19,7 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
 
     @Query("SELECT t FROM Tag t LEFT JOIN FETCH t.usersOf WHERE t.name = :name")
     Optional<Tag> findTagByNameWithUsers(@Param("name") String name);
+
+    @Query("SELECT t FROM Tag t WHERE t.name IN :names")
+    List<Tag> findAllByNames(@Param("names") List<String> names);
 }
