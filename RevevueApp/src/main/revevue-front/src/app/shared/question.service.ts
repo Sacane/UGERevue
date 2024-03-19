@@ -38,6 +38,14 @@ export class QuestionService {
             .pipe(tap(), catchError(err => throwError(() => onError(err))))
     }
 
+    public updateQuestion(questionId: string, question: any): Observable<any> {
+        const formData = new FormData();
+        formData.append('description', question.description);
+        formData.append('testFile', question.testFile);
+
+        return this.client.post<any>(`${this.ROOT}/${questionId}`, formData);
+    }
+
     public deleteQuestion(questionId: string): Observable<any> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
 

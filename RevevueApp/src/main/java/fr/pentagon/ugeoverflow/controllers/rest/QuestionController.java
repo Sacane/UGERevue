@@ -3,15 +3,12 @@ package fr.pentagon.ugeoverflow.controllers.rest;
 import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionRemoveDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateBodyDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsWithVotesDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponseDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.*;
+import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.utils.Routes;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -89,7 +86,17 @@ public class QuestionController {
 
     return ok(questionService.findByIdWithVotes(user, questionId));
   }
-
+    @PostMapping(value = Routes.Question.ROOT + "/{questionId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<QuestionUpdateResponseDTO> updateQuestion(@PathVariable(name = "questionId") long questionId,
+                                                                    @RequestPart(value = "description", required = false) @Nullable String description,
+                                                                    @RequestPart(value = "testFile", required = false) @Nullable MultipartFile testFile) {
+        var user = SecurityContext.checkAuthentication();
+        try {
+          return ok(questionService.update(user.id(), questionId, new QuestionUpdateDTO(description, (testFile != null) ? testFile.getBytes() : null, (testFile != null) ? testFile.getOriginalFilename() : null)));
+        }catch (IOException e){
+          throw HttpException.badRequest("Erreur lors de l'ouverture du fichier de test");
+        }
+    }
   @PostMapping(Routes.Question.ROOT + "/reviews")
   @RequireUser
   public ResponseEntity<ReviewQuestionResponseDTO> addReview(@Valid @RequestBody QuestionReviewCreateBodyDTO questionReviewCreateBodyDTO) {

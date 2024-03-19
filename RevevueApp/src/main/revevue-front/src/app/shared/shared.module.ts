@@ -8,12 +8,14 @@ import { MarkdownComponent } from "ngx-markdown";
 import { MatButtonToggle } from "@angular/material/button-toggle";
 import {MatChip, MatChipsModule} from "@angular/material/chips";
 import {MatAutocomplete, MatAutocompleteTrigger, MatOption} from "@angular/material/autocomplete";
+import { UpdateQuestionDialogComponent } from "./components/update-question-dialog/update-question-dialog.component";
 
 const COMPONENTS: any[] = [
     NavBarComponent,
     SideNavBarComponent,
     ReviewDialogComponent,
-    QuestionsDisplayerComponent
+    QuestionsDisplayerComponent,
+    UpdateQuestionDialogComponent
 ];
 
 @NgModule({

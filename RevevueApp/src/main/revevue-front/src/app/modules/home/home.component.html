@@ -45,7 +45,7 @@
     <div class="container" style="width: 100%; height: 100%;">
         <h2 style="margin: 20px">Bonjour {{userInfo()?.username}} !</h2>
         @if (questions$ | async; as questions) {
-            <h3 style="margin: 20px">Voici les questions de tes followers</h3>
+            <h3 style="margin: 20px">Voici les questions des gens que tu follows en priorité</h3>
             @if (!questions.loading) {
                 <div style="width: 100%; height: 100%; display: flex;">
                     <div style="background-color: whitesmoke; padding: 20px; flex-grow: 1; display: flex;">

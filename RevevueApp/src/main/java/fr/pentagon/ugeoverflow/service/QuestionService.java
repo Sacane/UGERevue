@@ -27,6 +27,7 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Logger;
@@ -105,14 +106,18 @@ public class QuestionService {
             result = "Pas de fichier de test fourni...";
         }
         var question = questionRepository.save(new Question(questionCreateDTO.title(), questionCreateDTO.description(), questionCreateDTO.javaFile(), questionCreateDTO.testFile(), result, true, new Date()));
+        question.setFileName(questionCreateDTO.javaFilename());
+        if (questionCreateDTO.testFile() != null) {
+            question.setTestFileName(questionCreateDTO.testFilename());
+        }
         user.addQuestion(question);
         return question.getId();
     }
 
     @Transactional
     @Retryable(retryFor = ObjectOptimisticLockingFailureException.class)
-    public void update(QuestionUpdateDTO questionUpdateDTO) {
-        var userQuestion = findQuestionFromId(userRepository, questionUpdateDTO.userId(), questionRepository, questionUpdateDTO.questionId());
+    public QuestionUpdateResponseDTO update(long userId, long questionId, QuestionUpdateDTO questionUpdateDTO) {
+        var userQuestion = findQuestionFromId(userRepository, userId, questionRepository, questionId);
         var user = userQuestion.user();
         var question = userQuestion.question();
 
@@ -120,19 +125,29 @@ public class QuestionService {
             throw HttpException.unauthorized("Not your question");
         }
 
-        if (questionUpdateDTO.title() != null) {
-            question.setTitle(questionUpdateDTO.title());
-        }
         if (questionUpdateDTO.description() != null) {
             question.setDescription(questionUpdateDTO.description());
         }
-        if (questionUpdateDTO.file() != null) {
-            question.setFile(questionUpdateDTO.file());
-        }
         if (questionUpdateDTO.testFile() != null) {
+
             question.setTestFile(questionUpdateDTO.testFile());
-            question.setTestResult(question.getTestResult());
+            question.setTestFileName(questionUpdateDTO.testFilename());
+            var result = testServiceRunner.sendTestAndGetFeedback(
+                    question.getFileName(),
+                    question.getTestFileName(),
+                    question.getFile(),
+                    question.getTestFile(),
+                    userId
+            );
+            question.setTestResult(result);
+
         }
+
+        return new QuestionUpdateResponseDTO(
+                questionUpdateDTO.description(),
+                question.getTestFile() != null ? new String(question.getTestFile(), StandardCharsets.UTF_8) : null,
+                question.getTestFile() != null ? question.getTestResult() : null
+        );
     }
 
     record UserQuestion(User user, Question question){}

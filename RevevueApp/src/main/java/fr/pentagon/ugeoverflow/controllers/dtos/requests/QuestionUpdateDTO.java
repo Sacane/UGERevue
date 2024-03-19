@@ -1,6 +1,7 @@
 package fr.pentagon.ugeoverflow.controllers.dtos.requests;
 
 import jakarta.annotation.Nullable;
+import org.springframework.web.multipart.MultipartFile;
 
-public record QuestionUpdateDTO(long userId, long questionId, @Nullable String title, @Nullable String description, @Nullable byte[] file, @Nullable byte[] testFile) {
+public record QuestionUpdateDTO(@Nullable String description, @Nullable byte[] testFile, String testFilename) {
 }

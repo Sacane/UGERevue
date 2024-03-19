@@ -9,6 +9,7 @@ public class TestKit {
     @Lob
     @Column(columnDefinition = "BLOB")
     private byte[] testFile;
+    private String testFileName;
 
     public TestKit(byte[] testFile, String testResult) {
         this.testFile = testFile;
@@ -31,5 +32,13 @@ public class TestKit {
 
     public void setTestResult(String testResult) {
         this.testResult = testResult;
+    }
+
+    public String getTestFileName() {
+        return testFileName;
+    }
+
+    public void setTestFileName(String testFileName) {
+        this.testFileName = testFileName;
     }
 }

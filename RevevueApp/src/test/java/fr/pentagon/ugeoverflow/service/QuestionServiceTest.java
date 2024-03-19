@@ -87,12 +87,11 @@ public class QuestionServiceTest {
         assertEquals("TITLE", question.getTitle());
         assertEquals("DESCRIPTION", question.getDescription());
 
-        questionService.update(new QuestionUpdateDTO(quentin.getId(), questionId, "NEW TITLE", "NEW DESCRIPTION", null, null));
+        questionService.update(quentin.getId(), questionId, new QuestionUpdateDTO("NEW DESCRIPTION", new byte[0], ""));
 
         questionOptional = questionRepository.findById(questionId);
         assertTrue(questionOptional.isPresent());
         question = questionOptional.get();
-        assertEquals("NEW TITLE", question.getTitle());
         assertEquals("NEW DESCRIPTION", question.getDescription());
     }
 
@@ -110,12 +109,12 @@ public class QuestionServiceTest {
         assertEquals("TITLE", question.getTitle());
         assertEquals("DESCRIPTION", question.getDescription());
 
-        byte[] file = "FILE CONTENT".getBytes(StandardCharsets.UTF_8);
         byte[] testFile = "TEST CONTENT".getBytes(StandardCharsets.UTF_8);
         for (int i = 0; i < 10; i++) {
+            final var number = i;
             var thread = new Thread(() -> {
                 for (int j = 0; j < 10; j++) {
-                    questionService.update(new QuestionUpdateDTO(quentin.getId(), questionId, "NEW TITLE", "NEW DESCRIPTION", file, testFile));
+                    questionService.update(quentin.getId(), questionId, new QuestionUpdateDTO("NEW DESCRIPTION", testFile, "test"+ number + ".java"));
                 }
             });
             threads.add(thread);
@@ -133,9 +132,7 @@ public class QuestionServiceTest {
         questionOptional = questionRepository.findById(questionId);
         assertTrue(questionOptional.isPresent());
         question = questionOptional.get();
-        assertEquals("NEW TITLE", question.getTitle());
         assertEquals("NEW DESCRIPTION", question.getDescription());
-        assertArrayEquals(file, question.getFile());
         assertArrayEquals(testFile, question.getTestFile());
     }
 
