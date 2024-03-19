@@ -95,7 +95,6 @@ export class ReviewDialogComponent {
         this.dialogRef.close();
     }
     confirm(): void {
-        console.log('confirm : ' + this.inputTags)
         this.dialogRef.close({
             content: this.form.value.content,
             lineStart: this.form.value.lineStart,
