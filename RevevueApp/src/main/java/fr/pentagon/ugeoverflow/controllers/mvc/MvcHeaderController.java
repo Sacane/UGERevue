@@ -35,6 +35,6 @@ public class MvcHeaderController {
     return "pages/questions/search";
   }
 
-  public record LabelUserParameter(@NotNull @NotBlank String label, @NotNull @NotBlank String user) {
+  public record LabelUserParameter(@NotNull String label, @NotNull String user) {
   }
 }
