@@ -117,7 +117,6 @@ public class QuestionService {
     @Transactional
     @Retryable(retryFor = ObjectOptimisticLockingFailureException.class)
     public QuestionUpdateResponseDTO update(long userId, long questionId, QuestionUpdateDTO questionUpdateDTO) {
-        System.out.println(questionUpdateDTO);
         var userQuestion = findQuestionFromId(userRepository, userId, questionRepository, questionId);
         var user = userQuestion.user();
         var question = userQuestion.question();
@@ -130,20 +129,18 @@ public class QuestionService {
             question.setDescription(questionUpdateDTO.description());
         }
         if (questionUpdateDTO.testFile() != null) {
-            try {
-                question.setTestFile(questionUpdateDTO.testFile().getBytes());
-                question.setTestFileName(questionUpdateDTO.testFile().getOriginalFilename());
-                var result = testServiceRunner.sendTestAndGetFeedback(
-                        question.getFileName(),
-                        question.getTestFileName(),
-                        question.getFile(),
-                        question.getTestFile(),
-                        userId
-                );
-                question.setTestResult(result);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+
+            question.setTestFile(questionUpdateDTO.testFile());
+            question.setTestFileName(questionUpdateDTO.testFilename());
+            var result = testServiceRunner.sendTestAndGetFeedback(
+                    question.getFileName(),
+                    question.getTestFileName(),
+                    question.getFile(),
+                    question.getTestFile(),
+                    userId
+            );
+            question.setTestResult(result);
+
         }
 
         return new QuestionUpdateResponseDTO(

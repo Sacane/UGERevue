@@ -91,8 +91,11 @@ public class QuestionController {
                                                                     @RequestPart(value = "description", required = false) @Nullable String description,
                                                                     @RequestPart(value = "testFile", required = false) @Nullable MultipartFile testFile) {
         var user = SecurityContext.checkAuthentication();
-
-        return ok(questionService.update(user.id(), questionId, new QuestionUpdateDTO(description, testFile)));
+        try {
+          return ok(questionService.update(user.id(), questionId, new QuestionUpdateDTO(description, (testFile != null) ? testFile.getBytes() : null, (testFile != null) ? testFile.getOriginalFilename() : null)));
+        }catch (IOException e){
+          throw HttpException.badRequest("Erreur lors de l'ouverture du fichier de test");
+        }
     }
   @PostMapping(Routes.Question.ROOT + "/reviews")
   @RequireUser

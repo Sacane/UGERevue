@@ -87,7 +87,7 @@ public class QuestionServiceTest {
         assertEquals("TITLE", question.getTitle());
         assertEquals("DESCRIPTION", question.getDescription());
 
-        questionService.update(quentin.getId(), questionId, new QuestionUpdateDTO("NEW DESCRIPTION", null));
+        questionService.update(quentin.getId(), questionId, new QuestionUpdateDTO("NEW DESCRIPTION", new byte[0], ""));
 
         questionOptional = questionRepository.findById(questionId);
         assertTrue(questionOptional.isPresent());
@@ -111,9 +111,10 @@ public class QuestionServiceTest {
 
         byte[] testFile = "TEST CONTENT".getBytes(StandardCharsets.UTF_8);
         for (int i = 0; i < 10; i++) {
+            final var number = i;
             var thread = new Thread(() -> {
                 for (int j = 0; j < 10; j++) {
-                    questionService.update(quentin.getId(), questionId, new QuestionUpdateDTO("NEW DESCRIPTION", testFile));
+                    questionService.update(quentin.getId(), questionId, new QuestionUpdateDTO("NEW DESCRIPTION", testFile, "test"+ number + ".java"));
                 }
             });
             threads.add(thread);
