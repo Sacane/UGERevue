@@ -37,8 +37,7 @@ public class MvcUserController {
 
     var questions = questionService.getQuestionsFromCurrentUser(principal.getName());
     model.addAttribute("questions", questions);
-
-    var followed = userService.getUserFollowings(principal.getName());
+    var followed = userService.getUserFollowings(userResponse.get().id());
     model.addAttribute("follows", followed);
     return "pages/users/profile";
   }

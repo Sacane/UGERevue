@@ -51,11 +51,9 @@ public class QuestionController {
     }
 
     @GetMapping(Routes.Question.CURRENT_USER)
-    public ResponseEntity<List<QuestionDTO>> getAllQuestionsFromCurrentUser(Principal principal) {
-        if (principal == null) {
-            throw HttpException.forbidden("No user currently authenticated");
-        }
-        return ResponseEntity.ok(questionService.getQuestionsFromCurrentUser(principal.getName()));
+    public ResponseEntity<List<QuestionDTO>> getAllQuestionsFromCurrentUser() {
+        var user = SecurityContext.checkAuthentication();
+        return ResponseEntity.ok(questionService.getQuestionsFromCurrentUser(user.getUsername()));
     }
 
     @PostMapping(

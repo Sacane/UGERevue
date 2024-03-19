@@ -122,6 +122,7 @@ final class TestExecutionTests {
                     () -> assertTrue(dummyTestTracker.allTestsPassed()),
                     () -> assertEquals(0, dummyTestTracker.passedCount()),
                     () -> assertEquals(0, dummyTestTracker.failuresCount()),
+                    () -> assertNotNull(dummyTestTracker.failureDetails()),
                     () -> assertTrue(dummyTestTracker.failureDetails().isEmpty())
             );
         }

@@ -33,7 +33,7 @@ public class MvcQuestionController {
   }
 
     @GetMapping("/{questionId}")
-    public String detail(@PathVariable("questionId") @Positive long questionId, Model model) {
+    public String detail(@PathVariable("questionId") long questionId, Model model) {
         var question = questionService.findById(questionId);
         var reviews = reviewService.findReviewsByQuestionId(questionId);
         model.addAttribute("question", question.withAnotherContent(markdownRenderer.markdownToHtml(question.questionContent())));

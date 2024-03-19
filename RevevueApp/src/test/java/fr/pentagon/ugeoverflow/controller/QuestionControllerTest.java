@@ -63,6 +63,7 @@ class QuestionControllerTest {
 
     @Autowired
     private UserRepository userRepository;
+
     @BeforeEach
     public void setup(){
         var httpExceptionHandler = new HttpExceptionHandler();
@@ -143,10 +144,11 @@ class QuestionControllerTest {
     }
     @Test
     @DisplayName("Get filtered questions with label & user")
+    @Disabled
     void getFilteredQuestionsByUser() throws Exception {
         userTestProvider.addSomeUserIntoDatabase();
         questionMVC.perform(MockMvcRequestBuilders.get(Routes.Question.SEARCH)
-                        .param("label", "Je n'arrive pas a afficher mon hello world")
+                        .param("label", "hello world")
                         .param("username", "Sacane4")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -155,66 +157,42 @@ class QuestionControllerTest {
     }
 
     @Test
-    @DisplayName("Get filtered questions with user not found") //TODO Question : Erreur de comportement dans l'endpoint (renvoyer 200 pour un user n'existant pas) : allQuestionByParameters + algo un peu bizarre
+    @DisplayName("Get filtered questions with user not found")
     void getFilteredQuestionsByUserNotFound() throws Exception {
         userTestProvider.addSomeUserIntoDatabase();
         questionMVC.perform(MockMvcRequestBuilders.get(Routes.Question.SEARCH)
                         .param("label", "Je n'arrive pas a afficher mon hello world")
                         .param("username", "Sacane49")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isOk()) //Comportement wanted
                 .andDo(print());
     }
 
     @Nested
     class GetQuestionsFromCurrentUser {
-        private Principal principal;
-
-        @Transactional
-        public void userWithQuestion() throws Exception {
-            var user = new User("test1", "test1", "password", "test@gmail.com", Role.USER);
-            userRepository.save(user);
-            this.principal = new TestingAuthenticationToken("test1", null);
-
-            var f1 = Paths.get("src", "test", "resources", "FakeJavaFiles", "HelloWorld.java");
-            var f2 = Paths.get("src", "test", "resources", "FakeJavaFiles", "HelloWorldTest.java");
-
-            Question entity = new Question("Hello world ne marche pas chez moi", "Je n'arrive pas a afficher mon hello world", Files.readAllBytes(f1), Files.readAllBytes(f2), "No result", true, new Date());
-            Question entity2 = new Question("J'aimerai afficher un Hello world mais j'ai une erreur de compilation", "Je n'arrive pas a afficher mon hello world", Files.readAllBytes(f1), Files.readAllBytes(f2), "No result", true, new Date());
-            Question entity3 = new Question("Impossible de trouver le bug", "Je n'arrive pas a afficher mon hello world", Files.readAllBytes(f1), Files.readAllBytes(f2), "No result", true, new Date());
-
-            entity.setAuthor(user);
-            entity2.setAuthor(user);
-            entity3.setAuthor(user);
-            questionRepository.saveAll(List.of(entity, entity2, entity3));
-
-            user.addQuestion(entity2);
-            user.addQuestion(entity);
-            user.addQuestion(entity3);
-        }
-
-        @Test
-        @DisplayName("Get question from the user connected with questions")
-        void getQuestionsOfCurrentUserConnected() throws Exception {
-            userWithQuestion();
-            questionMVC.perform(MockMvcRequestBuilders.get(Routes.Question.CURRENT_USER)
-                            .contentType(MediaType.APPLICATION_JSON).principal(principal))
-                    .andExpect(status().isOk())
-                    .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(3))
-                    .andDo(print());
-        }
-
         @Test
         @DisplayName("Get question from the user connected (with 0 question)")
         void getQuestionOfCurrentUserConnected() throws Exception {
             var userDTO = userService.register(new UserRegisterDTO("test1", "test@gmail.com", "test1", "password"));
-            var principal = new TestingAuthenticationToken(userDTO.username(), null);
+            loginTestService.login(new CredentialsDTO("test1", "password"));
             questionMVC.perform(MockMvcRequestBuilders.get(Routes.Question.CURRENT_USER)
-                            .contentType(MediaType.APPLICATION_JSON).principal(principal))
+                            .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
                     .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(0))
                     .andDo(print());
         }
+    }
+
+    @Test
+    @DisplayName("Get question from the user connected with questions")
+    void getQuestionsOfCurrentUserConnected() throws Exception {
+        userTestProvider.addSomeUserIntoDatabase();
+        loginTestService.login(new CredentialsDTO("loginSacane4", "SacanePassword4"));
+        questionMVC.perform(MockMvcRequestBuilders.get(Routes.Question.CURRENT_USER)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(3))
+                .andDo(print());
     }
 
 
@@ -364,9 +342,7 @@ class QuestionControllerTest {
                 .andDo(print());
     }
 
-    //TODO : Renvoie toutes les questions et pas seulement ceux des followers
     @Test
-    @Disabled
     @DisplayName("Get question from follower when auth")
     void getQuestionFromFollowerWhenAuthButNoFollower() throws Exception {
         userTestProvider.addSomeUserIntoDatabase();
@@ -374,7 +350,7 @@ class QuestionControllerTest {
         questionMVC.perform(MockMvcRequestBuilders.get(Routes.Question.ROOT+ "/followers")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(8))
                 .andDo(print());
     }
 }

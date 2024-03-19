@@ -41,35 +41,27 @@ public class UserController {
 
   @PostMapping(Routes.User.FOLLOW + "/{id}")
   @RequireUser
-  public ResponseEntity<Void> followUser(@PathVariable("id") @Positive long id, Principal principal) {
+  public ResponseEntity<Void> followUser(@PathVariable("id") long id) {
     LOGGER.info("Trying to follow");
-    if (principal == null) {
-      throw HttpException.unauthorized("no user logged in");
-    }
-    var user = userRepository.findByLogin(principal.getName()).orElseThrow();
-    userService.follow(user.getId(), id);
+    var user = SecurityContext.checkAuthentication();
+    userService.follow(user.id(), id);
     return ResponseEntity.ok().build();
   }
 
   @PostMapping(Routes.User.UNFOLLOW + "/{id}")
   @RequireUser
-  public ResponseEntity<Void> unfollowUser(@PathVariable("id") @Positive long id, Principal principal) {
+  public ResponseEntity<Void> unfollowUser(@PathVariable("id") long id) {
     LOGGER.info("Trying to unfollow");
-    if (principal == null) {
-      throw HttpException.unauthorized("no user logged in");
-    }
-    var user = userRepository.findByLogin(principal.getName()).orElseThrow();
-    userService.unfollow(user.getId(), id);
+    var user = SecurityContext.checkAuthentication();
+    userService.unfollow(user.id(), id);
     return ResponseEntity.ok().build();
   }
 
   @GetMapping(Routes.User.FOLLOWING)
   @RequireUser
-  public ResponseEntity<List<UserFollowingDTO>> getCurrentUserFollowing(Principal principal) {
-    if (principal == null) {
-      throw HttpException.forbidden("No user currently authenticated");
-    }
-    return ResponseEntity.ok(userService.getUserFollowings(principal.getName()));
+  public ResponseEntity<List<UserFollowingDTO>> getCurrentUserFollowing() {
+    var user = SecurityContext.checkAuthentication();
+    return ResponseEntity.ok(userService.getUserFollowings(user.id()));
   }
 
 
@@ -84,33 +76,25 @@ public class UserController {
 
   @GetMapping(Routes.User.CURRENT_USER)
   @RequireUser
-  public ResponseEntity<UserInfoDTO> getCurrentUserInformation(Principal principal) {
-    if (principal == null) {
-      throw HttpException.forbidden("No user currently authenticated");
-    }
-    var user = userRepository.findByLogin(principal.getName()).orElseThrow();
+  public ResponseEntity<UserInfoDTO> getCurrentUserInformation() {
+    var userInfo = SecurityContext.checkAuthentication();
+    var user = userRepository.findById(userInfo.id()).orElseThrow();
     return ResponseEntity.ok(new UserInfoDTO(user.getUsername(), user.getLogin(), user.getEmail(), user.getRole()));
   }
 
   @PatchMapping(Routes.User.CURRENT_USER)
   @RequireUser
-  public ResponseEntity<Void> updateCurrentAuthenticatedUserInformation(@RequestBody @Valid UserInfoUpdateDTO userInfoUpdateDTO,
-                                                                        Principal principal) {
-    if (principal == null) {
-      throw HttpException.forbidden("No user currently authenticated");
-    }
-    userService.updateUser(principal.getName(), userInfoUpdateDTO);
+  public ResponseEntity<Void> updateCurrentAuthenticatedUserInformation(@RequestBody @Valid UserInfoUpdateDTO userInfoUpdateDTO) {
+    var user = SecurityContext.checkAuthentication();
+    userService.updateUser(user.id(), userInfoUpdateDTO);
     return ResponseEntity.ok().build();
   }
 
   @PostMapping(Routes.User.PASSWORD)
   @RequireUser
-  public ResponseEntity<Void> updateCurrentUserPassword(@RequestBody @Valid UserPasswordUpdateDTO userPasswordUpdateDTO,
-                                                        Principal principal) {
-    if (principal == null) {
-      throw HttpException.forbidden("No user currently authenticated");
-    }
-    userService.updateUserPassword(principal.getName(), userPasswordUpdateDTO);
+  public ResponseEntity<Void> updateCurrentUserPassword(@RequestBody @Valid UserPasswordUpdateDTO userPasswordUpdateDTO) {
+    var user = SecurityContext.checkAuthentication();
+    userService.updateUserPassword(user.id(), userPasswordUpdateDTO);
     return ResponseEntity.ok().build();
   }
 
