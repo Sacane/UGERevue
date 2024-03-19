@@ -201,7 +201,7 @@ public class ReviewService {
             if (review.getCodePart() != null) {
                 var lineStart = review.getCodePart().getLineStart();
                 var lineEnd = review.getCodePart().getLineEnd();
-                citedCode = Arrays.stream(fileContent, lineStart - 1, lineEnd)
+                citedCode = Arrays.stream(fileContent, Math.max(lineStart - 1, 0), lineEnd)
                         .collect(Collectors.joining("\n"));
             }
         }
