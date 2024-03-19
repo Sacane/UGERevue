@@ -4,8 +4,10 @@ import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.*;
-import fr.pentagon.revevue.common.exception.HttpException;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsWithVotesDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionUpdateResponseDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponseDTO;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.utils.Routes;
 import jakarta.annotation.Nullable;
@@ -18,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.List;
 import java.util.logging.Logger;
 

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, computed, inject, OnInit, signal, Signal, ViewEncapsulation} from '@angular/core';
+import {Component, computed, inject, signal, Signal, ViewEncapsulation} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Review} from "../../models/review";
 import {Role} from "../../models/role.model";
@@ -7,12 +7,13 @@ import {toSignal} from "@angular/core/rxjs-interop";
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatDialog} from '@angular/material/dialog';
 import {ConfirmDialogComponent} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
-import {catchError, concat, map, of, switchMap} from 'rxjs';
+import {catchError, concat, of, switchMap} from 'rxjs';
 import {LoginService} from '../../../../shared/HttpServices';
 import {ReviewDialogComponent} from '../../../../shared/components/review-dialog/review-dialog.component';
 import {ReviewService} from '../../../../shared';
-import { U } from '@angular/cdk/keycodes';
-import { UpdateQuestionDialogComponent } from '../../../../shared/components/update-question-dialog/update-question-dialog.component';
+import {
+    UpdateQuestionDialogComponent
+} from '../../../../shared/components/update-question-dialog/update-question-dialog.component';
 
 @Component({
     selector: 'app-question',

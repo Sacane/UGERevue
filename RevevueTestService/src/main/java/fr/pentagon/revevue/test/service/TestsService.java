@@ -1,7 +1,7 @@
 package fr.pentagon.revevue.test.service;
 
-import fr.pentagon.revevue.common.dto.TestResultDTO;
 import fr.pentagon.revevue.common.dto.TestBundle;
+import fr.pentagon.revevue.common.dto.TestResultDTO;
 import fr.pentagon.revevue.test.exception.CompilationException;
 import org.springframework.stereotype.Service;
 

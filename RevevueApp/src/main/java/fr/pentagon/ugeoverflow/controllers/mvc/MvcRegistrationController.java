@@ -1,7 +1,7 @@
 package fr.pentagon.ugeoverflow.controllers.mvc;
 
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.revevue.common.exception.HttpException;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;

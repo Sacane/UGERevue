@@ -2,7 +2,6 @@ package fr.pentagon.ugeoverflow.service;
 
 import fr.pentagon.revevue.common.dto.TestBundle;
 import fr.pentagon.revevue.common.dto.TestResultDTO;
-import jakarta.persistence.*;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.EnableAsync;

@@ -1,6 +1,9 @@
 package fr.pentagon.ugeoverflow.algorithm;
 
-import fr.pentagon.ugeoverflow.algorithm.search.*;
+import fr.pentagon.ugeoverflow.algorithm.search.CommonJavaQuestionSearchAlgorithm;
+import fr.pentagon.ugeoverflow.algorithm.search.OnDescriptionContainsAlgorithmQuestion;
+import fr.pentagon.ugeoverflow.algorithm.search.OnTitleContainsAlgorithmQuestion;
+import fr.pentagon.ugeoverflow.algorithm.search.QuestionSearchAlgorithm;
 import fr.pentagon.ugeoverflow.model.Question;
 
 import java.util.*;

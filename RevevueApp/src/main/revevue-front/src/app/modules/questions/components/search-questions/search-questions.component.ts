@@ -1,7 +1,7 @@
-import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
-import { QuestionService } from "../../../../shared/question.service";
-import { ActivatedRoute } from "@angular/router";
-import { catchError, Observable, of } from 'rxjs';
+import {Component, inject, OnInit, ViewEncapsulation} from '@angular/core';
+import {QuestionService} from "../../../../shared/question.service";
+import {ActivatedRoute} from "@angular/router";
+import {catchError, Observable, of} from 'rxjs';
 
 @Component({
   selector: 'app-search-questions',

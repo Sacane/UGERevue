@@ -4,7 +4,6 @@ import fr.pentagon.ugeoverflow.algorithm.search.QuestionSearchAlgorithm;
 import fr.pentagon.ugeoverflow.model.Question;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 

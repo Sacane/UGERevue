@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
-import { UserInfo } from '../../../models/UserInfo';
-import { UserPasswordUpdate } from '../../../models/UserPasswordUpdate';
-import { FormControl, Validators } from '@angular/forms';
+import {Component, EventEmitter, Input, Output, ViewEncapsulation} from '@angular/core';
+import {UserInfo} from '../../../models/UserInfo';
+import {UserPasswordUpdate} from '../../../models/UserPasswordUpdate';
+import {FormControl, Validators} from '@angular/forms';
 
 @Component({
     selector: 'app-profil-infos-content',

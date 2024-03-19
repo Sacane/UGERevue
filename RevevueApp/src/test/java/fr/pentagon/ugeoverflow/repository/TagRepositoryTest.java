@@ -1,7 +1,6 @@
 package fr.pentagon.ugeoverflow.repository;
 
 import fr.pentagon.ugeoverflow.model.Tag;
-import fr.pentagon.ugeoverflow.service.QuestionService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

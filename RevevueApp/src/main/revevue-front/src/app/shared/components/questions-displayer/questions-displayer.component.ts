@@ -1,8 +1,17 @@
-import { AfterViewInit, Component, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild, ViewEncapsulation } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MatPaginator } from '@angular/material/paginator';
-import { Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import {
+    AfterViewInit,
+    Component,
+    Input,
+    OnChanges,
+    OnDestroy,
+    SimpleChanges,
+    ViewChild,
+    ViewEncapsulation
+} from '@angular/core';
+import {FormControl} from '@angular/forms';
+import {MatPaginator} from '@angular/material/paginator';
+import {Router} from '@angular/router';
+import {Subject, takeUntil} from 'rxjs';
 
 @Component({
     selector: 'app-questions-displayer',

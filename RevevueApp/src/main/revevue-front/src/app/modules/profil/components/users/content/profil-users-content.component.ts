@@ -1,5 +1,5 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
-import { UserFollowing } from '../../../models/UserFollowing';
+import {Component, Input, ViewEncapsulation} from '@angular/core';
+import {UserFollowing} from '../../../models/UserFollowing';
 
 @Component({
     selector: 'app-profil-users-content',
