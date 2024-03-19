@@ -31,7 +31,7 @@ For all this section, the ```mvn``` command line instruction can be replace by t
 
 **We highly recommend you to use Docker even in a development environment, for security and reduce the margin of errors after deployment**
 
-## How to run
+## How to deploy
 
 ### In dev mode
 
