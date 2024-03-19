@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.pentagon.ugeoverflow.DatasourceTestConfig;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateBodyDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.SearchQuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.rest.QuestionController;
@@ -107,8 +108,9 @@ class QuestionControllerTest {
     void getFilteredQuestionsByLabel() throws Exception {
         var searchLabel = "hello world";
         userTestProvider.addSomeUserIntoDatabase();
-        var request = questionMVC.perform(MockMvcRequestBuilders.get(Routes.Question.SEARCH)
-                .param("label", searchLabel)
+        var request = questionMVC.perform(MockMvcRequestBuilders.post(Routes.Question.SEARCH)
+                //.param("label", searchLabel)
+                .content(objectMapper.writeValueAsString(new SearchQuestionDTO("hello world", "")))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(3))
@@ -150,9 +152,8 @@ class QuestionControllerTest {
     @DisplayName("Get filtered questions with user not found")
     void getFilteredQuestionsByUserNotFound() throws Exception {
         userTestProvider.addSomeUserIntoDatabase();
-        questionMVC.perform(MockMvcRequestBuilders.get(Routes.Question.SEARCH)
-                        .param("label", "Je n'arrive pas a afficher mon hello world")
-                        .param("username", "Sacane49")
+        questionMVC.perform(MockMvcRequestBuilders.post(Routes.Question.SEARCH)
+                        .content(this.objectMapper.writeValueAsString(new SearchQuestionDTO("Je n'arrive pas a afficher mon hello world", "Sacane49")))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()) //Comportement wanted
                 .andDo(print());
