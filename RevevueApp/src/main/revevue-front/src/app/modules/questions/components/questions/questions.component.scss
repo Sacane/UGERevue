@@ -10,7 +10,23 @@ app-questions {
         row-gap: 30px;
         flex-grow: 1;
         padding: 20px;
+        .search-container {
+            display: flex;
+            align-items: center;
 
+            .mat-form-field {
+                margin: 0 10px;
+                width: 100%;
+
+                input {
+                    font-size: 1rem;
+                }
+
+                button {
+                    margin-left: -10px;
+                }
+            }
+        }
         .info {
             display: flex;
             flex-direction: column;

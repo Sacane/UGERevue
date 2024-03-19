@@ -12,17 +12,15 @@ import {catchError, Observable, of} from 'rxjs';
 export class SearchQuestionsComponent implements OnInit {
     private questionService = inject(QuestionService);
     private activatedRoute = inject(ActivatedRoute);
-
     questions$: Observable<any[]>;
 
     ngOnInit(): void {
-        this.activatedRoute.params.subscribe(params => {
-            const label = params['label'];
-            const username = params['username'];
+        console.log('onInit')
+        const label = localStorage.getItem('labelSearch')
+        const username = localStorage.getItem('usernameSearch')
+        this.questions$ = this.questionService.searchQuestion(label ?? '', username ?? '').pipe(
+            catchError(() => of([]))
+        );
 
-            this.questions$ = this.questionService.searchQuestion(label === 'undefined' ? '' : label, username === 'undefined' ? undefined : username).pipe(
-                catchError(() => of([]))
-            );
-        });
     }
 }

@@ -17,11 +17,7 @@ export class QuestionService {
     private client = inject(HttpClient)
 
     public searchQuestion(label: string, username?: string, onError: (error: Error) => any = (err) => console.error(err)): Observable<SimpleQuestion[]> {
-        let params = new HttpParams().append('label', label)
-        if (username !== undefined) {
-            params = params.append('username', username)
-        }
-        return this.client.get<SimpleQuestion[]>(this.SEARCH, {params: params})
+        return this.client.post<SimpleQuestion[]>(this.SEARCH, {questionLabelSearch: label, usernameSearch: username})
             .pipe(tap(), catchError(err => throwError(() => onError(err))))
     }
 

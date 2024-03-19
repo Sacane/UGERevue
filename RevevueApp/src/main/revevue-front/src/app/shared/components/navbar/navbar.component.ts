@@ -13,8 +13,9 @@ export class NavBarComponent {
     loginService = inject(LoginService)
     userService = inject(UserService)
     private router = inject(Router)
-    label = signal('undefined')
-    username = signal('undefined')
+    label = signal('')
+    username = signal('')
+    private cdRef = inject(ChangeDetectorRef)
     login(): void {
         this.router.navigateByUrl('/login').then();
     }
@@ -38,8 +39,12 @@ export class NavBarComponent {
     }
 
     search(): void {
-        const finalLabel = this.label() === '' ? 'undefined' : this.label()
-        this.router.navigateByUrl('/questions/search/' + finalLabel + '/' + this.username(), { skipLocationChange: true }).then();
+        localStorage.setItem('labelSearch', this.label())
+        localStorage.setItem('usernameSearch', this.username())
+        const currentUrl = this.router.url;
+        this.router.navigateByUrl('/questions/search', { skipLocationChange: true }).then(() => {
+            this.cdRef.detectChanges();
+         });
     }
 
     updateLabel($event: any): void {

@@ -41,10 +41,10 @@ public class QuestionController {
     return ok(questionService.getQuestions());
   }
 
-  @GetMapping(Routes.Question.SEARCH)
-  public ResponseEntity<List<QuestionDTO>> allQuestionByParameters(@RequestParam("label") @NotBlank String label, @RequestParam(required = false, value = "username") String username) {
-    LOGGER.info("Get performed on " + Routes.Question.SEARCH);
-    return ok(questionService.getQuestions(label, username));
+  @PostMapping(Routes.Question.SEARCH)
+  public ResponseEntity<List<QuestionDTO>> allQuestionByParameters(@RequestBody SearchQuestionDTO searchQuestionDTO) {
+    LOGGER.info("Get performed on " + Routes.Question.SEARCH + " WITH BODY " + searchQuestionDTO);
+    return ok(questionService.getQuestions(searchQuestionDTO.questionLabelSearch(), searchQuestionDTO.usernameSearch()));
   }
 
     @GetMapping(Routes.Question.CURRENT_USER)
