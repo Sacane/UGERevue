@@ -24,7 +24,6 @@ export class QuestionsComponent {
         usernameSearch: new FormControl('')
     });
     public search() {
-        console.log(this.form.value.labelSearch)
         this.questionService.searchQuestion(this.form.value.labelSearch as string, this.form.value.usernameSearch as string)
             .subscribe(questions => this.questions = signal(questions))
     }
