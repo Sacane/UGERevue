@@ -25,7 +25,7 @@ public class MvcLoginController {
   }
 
   @GetMapping("/login")
-  public String loginPage(@Valid @ModelAttribute("credentialsDTO") CredentialsDTO credentialsDTO, Authentication authentication) {
+  public String loginPage(@ModelAttribute("credentialsDTO") CredentialsDTO credentialsDTO, Authentication authentication) {
     if (authentication != null) {
       return "redirect:/light/home";
     }

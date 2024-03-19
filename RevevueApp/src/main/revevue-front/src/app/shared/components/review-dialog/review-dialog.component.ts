@@ -11,6 +11,7 @@ import {COMMA, ENTER} from "@angular/cdk/keycodes";
 import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {MatChipInputEvent} from "@angular/material/chips";
 import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
+import {UpdateReviewDTO} from "../../models/reviews.model";
 
 @Component({
     selector: 'review-dialog',
@@ -23,9 +24,9 @@ export class ReviewDialogComponent {
 
 
     form = new FormGroup({
-        content: new FormControl('', [Validators.required]),
-        lineStart: new FormControl(''),
-        lineEnd: new FormControl(''),
+        content: new FormControl(this.data.template?.content ?? '', [Validators.required]),
+        lineStart: new FormControl(this.data.template?.lineStart?.toString() ?? ''),
+        lineEnd: new FormControl(this.data.template?.lineEnd?.toString() ?? ''),
         tag: new FormControl('')
     });
 
@@ -44,16 +45,17 @@ export class ReviewDialogComponent {
         startWith(null),
         map((tag: string | null) => tag ? this._filter(tag) : this.selfTags().map(t => t.tag).slice())
     ))
-    inputTags: string[] = []
+    inputTags: string[]
 
     @ViewChild('inputTag') inputTag: ElementRef<HTMLInputElement>;
 
     announcer = inject(LiveAnnouncer);
 
     /* ================================================================ */
-    constructor(public dialogRef: MatDialogRef<ReviewDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { onQuestion: boolean },
+    constructor(public dialogRef: MatDialogRef<ReviewDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { onQuestion: boolean, template?: UpdateReviewDTO },
                 private formBuilder: FormBuilder) {
         this.tags = this.formBuilder.array<string>([]);
+        this.inputTags = this.data.template?.tags ?? []
     }
 
 
@@ -64,7 +66,7 @@ export class ReviewDialogComponent {
         if (value) {
             this.inputTags.push(value);
         }
-        event.chipInput!.clear();
+        event.chipInput.clear();
 
         this.tagCtrl.setValue(null);
     }
@@ -93,6 +95,7 @@ export class ReviewDialogComponent {
         this.dialogRef.close();
     }
     confirm(): void {
+        console.log('confirm : ' + this.inputTags)
         this.dialogRef.close({
             content: this.form.value.content,
             lineStart: this.form.value.lineStart,

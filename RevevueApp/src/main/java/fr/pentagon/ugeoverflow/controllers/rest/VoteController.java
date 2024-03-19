@@ -12,10 +12,7 @@ import java.util.logging.Logger;
 
 @RestController
 public class VoteController {
-
   private static final Logger LOGGER = Logger.getLogger(VoteController.class.getName());
-
-  //private final VoteServiceAdapter voteService;
   private final QuestionService questionService;
 
   public VoteController(QuestionService questionService) {

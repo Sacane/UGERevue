@@ -176,7 +176,6 @@ public class UserTestProvider {
         reviewRepository.save(review1);
         user2.addReview(review1);
 
-        reviewOf1.setAuthor(user3);
         var tag = new Tag("Obscure");
         var tag1 = new Tag("RequireNull");
         user3.addTag(tag);

@@ -5,7 +5,10 @@ import fr.pentagon.ugeoverflow.algorithm.QuestionSorterStrategy;
 import fr.pentagon.ugeoverflow.algorithm.SearchQuestionByLabelStrategy;
 import fr.pentagon.ugeoverflow.config.authentication.RevevueUserDetail;
 import fr.pentagon.ugeoverflow.config.authorization.Role;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionRemoveDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionUpdateDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.*;
 import fr.pentagon.ugeoverflow.model.Question;
 import fr.pentagon.ugeoverflow.model.Review;
@@ -13,7 +16,6 @@ import fr.pentagon.ugeoverflow.model.User;
 import fr.pentagon.ugeoverflow.model.embed.CodePart;
 import fr.pentagon.ugeoverflow.model.vote.QuestionVote;
 import fr.pentagon.ugeoverflow.model.vote.QuestionVoteId;
-import fr.pentagon.ugeoverflow.model.vote.ReviewVoteId;
 import fr.pentagon.ugeoverflow.repository.QuestionRepository;
 import fr.pentagon.ugeoverflow.repository.QuestionVoteRepository;
 import fr.pentagon.ugeoverflow.repository.ReviewRepository;
@@ -87,6 +89,10 @@ public class QuestionService {
     public long create(NewQuestionDTO questionCreateDTO, long authorId) {
         var user = userRepository.findById(authorId)
                 .orElseThrow(() -> HttpException.notFound("User does not exists"));
+        String testFilename = questionCreateDTO.testFilename();
+        if(!questionCreateDTO.javaFilename().endsWith(".java") || (testFilename != null && !testFilename.endsWith(".java"))){
+            throw HttpException.badRequest("Le fichier enregistré n'est pas un fichier java.");
+        }
         String result;
         if(questionCreateDTO.testFile() != null) {
             result = testServiceRunner.sendTestAndGetFeedback(
@@ -203,7 +209,7 @@ public class QuestionService {
         var reviews = List.copyOf(question.getReviews());
 
         for (var review : reviews) {
-            reviewService.removeWithoutUser(review.getId());
+            reviewService.removeWithoutUser(review.getId(), user);
         }
 
         questionVoteRepository.deleteAll(questionVoteRepository.findAllVoteByQuestionId(question.getId()));

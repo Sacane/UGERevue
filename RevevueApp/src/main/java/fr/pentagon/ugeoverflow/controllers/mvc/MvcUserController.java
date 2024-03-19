@@ -1,5 +1,6 @@
 package fr.pentagon.ugeoverflow.controllers.mvc;
 
+import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
 import fr.pentagon.ugeoverflow.service.QuestionService;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.security.Principal;
 
 @Controller
-@RequestMapping("/light/profile/")
+@RequestMapping("/light/profile")
 public class MvcUserController {
   private final UserService userService;
   private final QuestionService questionService;
@@ -27,7 +28,7 @@ public class MvcUserController {
   public String profilePage(Model model, Principal principal) {
     var userResponse = SecurityContext.authentication();
     if (userResponse.isEmpty()) {
-      return "redirect:/light/forbidden";
+      throw HttpException.unauthorized("Non connecté");
     }
     var user = userService.findById(userResponse.get().id());
     model.addAttribute("username", user.username());
@@ -37,8 +38,7 @@ public class MvcUserController {
 
     var questions = questionService.getQuestionsFromCurrentUser(principal.getName());
     model.addAttribute("questions", questions);
-
-    var followed = userService.getUserFollowings(principal.getName());
+    var followed = userService.getUserFollowings(userResponse.get().id());
     model.addAttribute("follows", followed);
     return "pages/users/profile";
   }

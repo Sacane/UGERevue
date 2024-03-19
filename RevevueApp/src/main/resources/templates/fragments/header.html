@@ -14,23 +14,23 @@
     <div class="site-identity">
         <h1><a href="/light/">Revevue</a></h1>
     </div>
-    <form class="search-form" method="POST" action="/light/search">
+    <form action="/light/search" class="search-form" method="POST">
         <div class="search-input">
             <label for="searchByLabel">Rechercher par label:</label>
-            <input id="searchByLabel" type="text" name="label">
+            <input id="searchByLabel" name="label" type="text">
         </div>
         <div class="search-input">
             <label for="searchByUser">Rechercher par utilisateur:</label>
-            <input id="searchByUser" type="text" name="user">
+            <input id="searchByUser" name="user" type="text">
         </div>
         <button type="submit">Rechercher</button>
     </form>
     <nav class="site-navigation">
         <ul class="nav">
-            <li th:if="${#authentication == null}"><a href="/light/login">Se connecter</a></li>
-            <li th:if="${#authentication == null}"><a href="/light/register">S'enregistrer</a></li>
-            <li sec:authorize="isAuthenticated()"><a href="/light/profile/" sec:authentication="name"></a></li>
-            <li sec:authorize="isAuthenticated()"><a href="/light/logout">Se déconnecter</a></li>
+            <li th:if="${#authentication == null}"><a th:href="@{/light/login}">Se connecter</a></li>
+            <li th:if="${#authentication == null}"><a th:href="@{/light/register}">S'enregistrer</a></li>
+            <li sec:authorize="isAuthenticated()"><a sec:authentication="name" th:href="@{/light/profile}"></a></li>
+            <li sec:authorize="isAuthenticated()"><a th:href="@{/light/logout}">Se déconnecter</a></li>
         </ul>
     </nav>
 </header>

@@ -101,16 +101,16 @@ public class UserService {
 
     @Transactional
     @Retryable(retryFor = ObjectOptimisticLockingFailureException.class)
-    public void updateUser(String userId, UserInfoUpdateDTO userInfoUpdateDTO) {
-        var user = userRepository.findByLogin(userId).orElseThrow();
+    public void updateUser(long userId, UserInfoUpdateDTO userInfoUpdateDTO) {
+        var user = userRepository.findById(userId).orElseThrow();
         user.setUsername(userInfoUpdateDTO.username());
         userRepository.save(user);
     }
 
     @Transactional
     @Retryable(retryFor = ObjectOptimisticLockingFailureException.class)
-    public void updateUserPassword(String userId, UserPasswordUpdateDTO userPasswordUpdateDTO) {
-        var user = userRepository.findByLogin(userId).orElseThrow();
+    public void updateUserPassword(long userId, UserPasswordUpdateDTO userPasswordUpdateDTO) {
+        var user = userRepository.findById(userId).orElseThrow();
         if (!passwordEncoder.matches(userPasswordUpdateDTO.oldPassword(), user.getPassword())) {
             throw HttpException.badRequest("Bad password");
         }
@@ -119,8 +119,8 @@ public class UserService {
     }
 
     @Transactional
-    public List<UserFollowingDTO> getUserFollowings(String userId) {
-        var user = userRepository.findByLogin(userId).orElseThrow();
+    public List<UserFollowingDTO> getUserFollowings(long userId) {
+        var user = userRepository.findById(userId).orElseThrow();
         return userRepository.findFollowing(user).stream()
                 .map(following -> new UserFollowingDTO(following.getId(), following.getUsername()))
                 .toList();

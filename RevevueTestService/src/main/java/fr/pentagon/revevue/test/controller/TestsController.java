@@ -1,5 +1,6 @@
 package fr.pentagon.revevue.test.controller;
 
+import fr.pentagon.revevue.common.FailurePayload;
 import fr.pentagon.revevue.common.dto.TestBundle;
 import fr.pentagon.revevue.common.dto.TestResultDTO;
 import fr.pentagon.revevue.common.exception.HttpException;
@@ -48,11 +49,11 @@ public final class TestsController {
             return ResponseEntity.ok(results);
         } catch (CompilationException e) {
             logger.severe(e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
-            throw HttpException.badRequest(e.getMessage().lines().limit(MAX_ERROR_DESCRIPTION)
+            throw new HttpException(400, FailurePayload.COMPILATION_ERROR, e.getMessage().lines().limit(MAX_ERROR_DESCRIPTION)
                     .collect(Collectors.joining("\n", "", "...")));
-        }catch (ClassNotFoundException | IOException e){
+        }catch (ClassNotFoundException | IOException | IllegalArgumentException e){
             logger.severe(e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
-            throw new HttpException(500);
+            throw new HttpException(500, FailurePayload.UNSUPPORTED_FORMAT_FILE, "Le format du fichier n'est pas correct");
         }
     }
 

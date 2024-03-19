@@ -68,10 +68,6 @@
                         <b>Commentaires:</b> {{ question()?.commentCount }}
                     </mat-list-item>
                     <mat-divider></mat-divider>
-                    <mat-list-item>
-                        <b>Resultat des tests : {{question()?.testResults}}</b>
-                    </mat-list-item>
-                    <button mat-button (click)="test()">test</button>
                 </mat-list>
                 <mat-chip-set>
                     @for (tag of question()?.tags; track tag) {

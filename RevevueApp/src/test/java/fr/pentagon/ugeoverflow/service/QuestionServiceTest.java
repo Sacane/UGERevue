@@ -53,7 +53,7 @@ public class QuestionServiceTest {
     @Test
     @DisplayName("Create a question with non-existent user")
     void createWithNonExistentUser() {
-        assertThrows(HttpException.class, () -> questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "", ""), 9999));
+        assertThrows(HttpException.class, () -> questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "test.java", "test.java"), 9999));
     }
 
     @Test
@@ -62,7 +62,7 @@ public class QuestionServiceTest {
         var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123", Role.USER));
 
         byte[] file = "FILE CONTENT".getBytes(StandardCharsets.UTF_8);
-        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", file, null, "", ""), quentin.getId());
+        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", file, null, "test.java", "test.java"), quentin.getId());
 
         assertEquals(1, questionRepository.findAll().size());
 
@@ -79,7 +79,7 @@ public class QuestionServiceTest {
     void update() {
         var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123", Role.USER));
 
-        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "", ""), quentin.getId());
+        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "test.java", "test.java"), quentin.getId());
         assertEquals(1, questionRepository.findAll().size());
         var questionOptional = questionRepository.findById(questionId);
         assertTrue(questionOptional.isPresent());
@@ -101,7 +101,7 @@ public class QuestionServiceTest {
         var threads = new ArrayList<Thread>();
         var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123", Role.USER));
 
-        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "", ""), quentin.getId());
+        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "test.java", "test.java"), quentin.getId());
         assertEquals(1, questionRepository.findAll().size());
         var questionOptional = questionRepository.findById(questionId);
         assertTrue(questionOptional.isPresent());
@@ -208,7 +208,7 @@ public class QuestionServiceTest {
         var userSaved2 = userRepository.save(user2);
         var userSaved3 = userRepository.save(user3);
         var userSaved4 = userRepository.save(user4);
-        var question = new NewQuestionDTO("I DONT KNOW", "IDJZAODIJZD", new byte[0], new byte[0], "", "");
+        var question = new NewQuestionDTO("I DONT KNOW", "IDJZAODIJZD", new byte[0], new byte[0], "test.java", "test.java");
         var id = questionService.create(question, userSaved.getId());
         var savedQuestion = questionRepository.findById(id);
         assertTrue(savedQuestion.isPresent());
@@ -227,7 +227,7 @@ public class QuestionServiceTest {
     void getReviewsFromQuestion() {
         var quentinResponse = userService.register(new UserRegisterDTO("qtdrake", "qt@email.com", "qtellier", "123"));
         assertNotNull(quentinResponse);
-        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", "LINE1\nLINE2\nLINE3\n".getBytes(StandardCharsets.UTF_8), null, "", ""), quentinResponse.id());
+        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", "LINE1\nLINE2\nLINE3\n".getBytes(StandardCharsets.UTF_8), null, "test.java", "test.java"), quentinResponse.id());
 
         for (var i = 0; i < 3; i++) {
             questionService.addReview(new QuestionReviewCreateDTO(quentinResponse.id(), questionId, "CONTENT:" + i, i + 1, i + 1, List.of()));
@@ -269,7 +269,7 @@ public class QuestionServiceTest {
     @DisplayName("Remove a question with non-existent user")
     void removeNonExistentUser() {
         var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123", Role.USER));
-        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "", ""), quentin.getId());
+        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "test.java", "test.java"), quentin.getId());
 
         assertThrows(HttpException.class, () -> questionService.remove(new QuestionRemoveDTO(50, questionId)));
     }
@@ -279,7 +279,7 @@ public class QuestionServiceTest {
     void removeUnauthorizedUser() {
         var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123", Role.USER));
         var quentin2 = userRepository.save(new User("qtdrake2", "qt@email.com", "qtellier", "123", Role.USER));
-        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], new byte[0], "", ""), quentin.getId());
+        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], new byte[0], "test.java", "test.java"), quentin.getId());
 
         assertThrows(HttpException.class, () -> questionService.remove(new QuestionRemoveDTO(quentin2.getId(), questionId)));
     }
@@ -288,7 +288,7 @@ public class QuestionServiceTest {
     @DisplayName("Remove a question")
     void remove() {
         var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123", Role.USER));
-        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], new byte[0], "", ""), quentin.getId());
+        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], new byte[0], "test.java", "test.java"), quentin.getId());
         assertEquals(1, questionRepository.findAll().size());
 
         for (var i = 0; i < 3; i++) {
@@ -317,7 +317,7 @@ public class QuestionServiceTest {
     @DisplayName("Remove a question with review on review")
     void removeWithReviewOnReview() {
         var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123", Role.USER));
-        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], new byte[0], "", ""), quentin.getId());
+        var questionId = questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], new byte[0], "test.java", "test.java"), quentin.getId());
         assertEquals(1, questionRepository.findAll().size());
 
         var reviewResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), questionId, "CONTENT", null, null, List.of()));
@@ -351,8 +351,8 @@ public class QuestionServiceTest {
                         "ma classe de test ne marche plus",
                         questionContentBytes,
                         null,
-                        "",
-                        ""
+                        "test.java",
+                        "test.java"
                 ),
                 sacaneUser.getId()
         );
@@ -372,8 +372,8 @@ public class QuestionServiceTest {
 
         userService.follow(quentin.getId(), quentin2.getId());
 
-        var followQuestion = questionService.create(new NewQuestionDTO("TITLE2", "DESCRIPTION2", new byte[0], null, "", ""), quentin2.getId());
-        questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "", ""), quentin.getId());
+        var followQuestion = questionService.create(new NewQuestionDTO("TITLE2", "DESCRIPTION2", new byte[0], null, "test.java", "test.java"), quentin2.getId());
+        questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "test.java", "test.java"), quentin.getId());
 
         var questions = questionService.getQuestionsFromFollows(quentin.getId());
 
@@ -392,7 +392,7 @@ public class QuestionServiceTest {
             lastUser = user;
 
             if (i == 999) {
-                questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "", ""), user.getId());
+                questionService.create(new NewQuestionDTO("TITLE", "DESCRIPTION", new byte[0], null, "test.java", "test.java"), user.getId());
             }
         }
 

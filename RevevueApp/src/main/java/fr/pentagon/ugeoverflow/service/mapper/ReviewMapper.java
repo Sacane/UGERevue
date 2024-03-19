@@ -4,6 +4,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.responses.DetailReviewResponseDT
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponseDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewResponseDTO;
 import fr.pentagon.ugeoverflow.model.Review;
+import fr.pentagon.ugeoverflow.model.Tag;
 import fr.pentagon.ugeoverflow.repository.ReviewVoteRepository;
 import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Component;
@@ -18,9 +19,9 @@ public class ReviewMapper {
         this.reviewVoteRepository = reviewVoteRepository;
     }
 
-    public ReviewResponseDTO entityToReviewResponseDTO(Review review, String authorName) {
+    public ReviewResponseDTO  entityToReviewResponseDTO(Review review) {
         return new ReviewResponseDTO(
-                authorName,
+                review.getAuthor().getUsername(),
                 review.getContent(),
                 reviewVoteRepository.findUpvoteNumberByReviewId(review.getId()),
                 reviewVoteRepository.findDownvoteNumberByReviewId(review.getId()),
@@ -43,7 +44,9 @@ public class ReviewMapper {
         );
     }
     public DetailReviewResponseDTO entityToDetailReviewResponseDTO(Review review, String citedCode, @Nullable Boolean doesUserVote, List<DetailReviewResponseDTO> list) {
-        System.out.println(doesUserVote);
+        var start = review.getCodePart() != null ? review.getCodePart().getLineStart() : null;
+        var end = review.getCodePart() != null ? review.getCodePart().getLineEnd() : null;
+        System.out.println("start => " + start + " end => " + end);
         return new DetailReviewResponseDTO(
                 review.getId(),
                 review.getAuthor().getUsername(),
@@ -53,7 +56,10 @@ public class ReviewMapper {
                 reviewVoteRepository.findUpvoteNumberByReviewId(review.getId()),
                 reviewVoteRepository.findDownvoteNumberByReviewId(review.getId()),
                 doesUserVote,
-                list
+                list,
+                review.getTagsList().stream().map(Tag::getName).toList(),
+                start,
+                end
         );
     }
 }

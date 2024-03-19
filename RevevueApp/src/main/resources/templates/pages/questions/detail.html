@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+<html lang="en"
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Revevue</title>
     <link href="../../static/styles/main.css" rel="stylesheet" th:href="@{/styles/main.css}"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism-okaidia.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism-okaidia.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 </head>
@@ -51,12 +51,26 @@
                     <div class="code-title">Code Java</div>
                     <pre><code class="language-java" th:text="${question.classContent}"></code></pre>
                 </div>
-                <div th:if="${question.testClassContent}" class="code-container">
+                <div class="code-container" th:if="${question.testClassContent}">
                     <div class="code-title">Code de test</div>
                     <pre><code class="language-java" th:text="${question.testClassContent}"></code></pre>
                 </div>
             </div>
-            <button class="button" th:data-question-id="${question.id}" onclick="gotoCreateReview(this)">Créer une Review</button>
+            <div class="row">
+                <form method="post" th:action="@{/light/questions/upvote/{id}(id=${question.id})}">
+                    <button class="upvote-button" type="submit">
+                        <i class="material-icons">thumb_up</i>
+                    </button>
+                </form>
+                <form method="post" th:action="@{/light/questions/downvote/{id}(id=${question.id})}">
+                    <button class="downvote-button">
+                        <i class="material-icons">thumb_down</i>
+                    </button>
+                </form>
+            </div>
+            <button class="button" onclick="gotoCreateReview(this)" th:data-question-id="${question.id}">Créer une
+                Review
+            </button>
             <div class="review-section">
                 <h2>Reviews</h2>
                 <div th:each="review : ${reviews}">
@@ -64,18 +78,23 @@
                         <div class="review-author" th:text="${review.author}">Author</div>
                         <div class="review-content" th:utext="${review.content}">Review Content</div>
                         <div th:if="${review.citedCode}">
-                            <pre><code class="review-cited-code language-java" th:text="${review.citedCode}">Cited Code</code></pre>
+                            <pre><code class="review-cited-code language-java"
+                                       th:text="${review.citedCode}">Cited Code</code></pre>
                         </div>
                         <div class="review-votes">
-                            <button class="upvote-button">
-                                <i class="material-icons">thumb_up</i>
-                                <span th:text="${review.upvotes}">0</span>
-                            </button>
-                            <button class="downvote-button">
-                                <i class="material-icons">thumb_down</i>
-                                <span th:text="${review.downvotes}">0</span>
-                            </button>
-                            <button class="details-button" th:data-review-id="${review.id}" onclick="goto(this)">
+                            <form method="post" th:action="@{/light/reviews/upvote/{id}(id=${review.id})}">
+                                <button class="upvote-button" type="submit">
+                                    <i class="material-icons">thumb_up</i>
+                                    <span th:text="${review.upvotes}">0</span>
+                                </button>
+                            </form>
+                            <form method="post" th:action="@{/light/reviews/downvote/{id}(id=${review.id})}">
+                                <button class="downvote-button">
+                                    <i class="material-icons">thumb_down</i>
+                                    <span th:text="${review.downvotes}">0</span>
+                                </button>
+                            </form>
+                            <button class="details-button" onclick="goto(this)" th:data-review-id="${review.id}">
                                 Détails de la Review
                             </button>
                         </div>
