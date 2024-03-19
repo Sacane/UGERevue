@@ -12,6 +12,7 @@ import {LoginService} from '../../../../shared/HttpServices';
 import {ReviewDialogComponent} from '../../../../shared/components/review-dialog/review-dialog.component';
 import {ReviewService} from '../../../../shared';
 import { U } from '@angular/cdk/keycodes';
+import { UpdateQuestionDialogComponent } from '../../../../shared/components/update-question-dialog/update-question-dialog.component';
 
 @Component({
     selector: 'app-question',
@@ -106,6 +107,39 @@ export class QuestionComponent {
 
     onUpdateDelete(reviews: Review[]): void {
         this.reviews = signal(reviews);
+    }
+
+    update(): void {
+        this.dialog.open(UpdateQuestionDialogComponent, {
+            data: {
+                content: this.question()!!.questionContent
+            },
+            disableClose: true
+        }).afterClosed().pipe(
+            switchMap(response => {
+                if (response) {
+                    return this.questionService.updateQuestion(this.question()!!.id.toString(), response).pipe(
+                        catchError(err => {
+                            console.log(err);
+                            return of(err);
+                        })
+                    );
+                }
+
+                return of();
+            })
+        ).subscribe(response => {
+            if (!response.error) {
+                this.question()!!.questionContent = response.description;
+                this.question()!!.testClassContent = response.testFile ? response.testFile : this.question()!!.testClassContent;
+                this.question()!!.testResults = response.testFileResult ? response.testFileResult : this.question()!!.testResults;
+
+                this.snackBar.open('Mise à jour effectué', 'OK', { duration: 5000 });
+            }
+            else {
+                this.snackBar.open('Erreur lors de la mise à jour', 'OK', { duration: 5000 });
+            }
+        });
     }
 
     test() {

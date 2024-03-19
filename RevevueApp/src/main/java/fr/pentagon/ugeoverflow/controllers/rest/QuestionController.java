@@ -2,17 +2,12 @@ package fr.pentagon.ugeoverflow.controllers.rest;
 
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.SecurityContext;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionRemoveDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateBodyDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsWithVotesDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewQuestionResponseDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.*;
 import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.utils.Routes;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -91,6 +86,15 @@ public class QuestionController {
         var user = SecurityContext.authentication();
 
         return ok(questionService.findByIdWithVotes(user, questionId));
+    }
+
+    @PostMapping(value = Routes.Question.ROOT + "/{questionId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<QuestionUpdateResponseDTO> updateQuestion(@PathVariable(name = "questionId") long questionId,
+                                                                    @RequestPart(value = "description", required = false) @Nullable String description,
+                                                                    @RequestPart(value = "testFile", required = false) @Nullable MultipartFile testFile) {
+        var user = SecurityContext.checkAuthentication();
+
+        return ok(questionService.update(user.id(), questionId, new QuestionUpdateDTO(description, testFile)));
     }
 
     @PostMapping(Routes.Question.ROOT + "/reviews")

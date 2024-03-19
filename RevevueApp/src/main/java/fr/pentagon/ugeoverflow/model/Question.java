@@ -20,6 +20,7 @@ public class Question {
     @Lob
     @Column(columnDefinition = "BLOB")
     private byte[] file;
+    private String fileName;
     @Embedded
     private TestKit testKit;
 
@@ -80,6 +81,14 @@ public class Question {
         this.file = file;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     @Nullable
     public byte[] getTestFile() {
         return (testKit == null) ? null : testKit.getTestFile();
@@ -87,6 +96,14 @@ public class Question {
 
     public void setTestFile(@Nullable byte[] testFile) {
         this.testKit.setTestFile(testFile);
+    }
+
+    public String getTestFileName() {
+        return (testKit == null) ? "" : testKit.getTestFileName();
+    }
+
+    public void setTestFileName(String name) {
+        testKit.setTestFileName(name);
     }
 
     @Nullable
