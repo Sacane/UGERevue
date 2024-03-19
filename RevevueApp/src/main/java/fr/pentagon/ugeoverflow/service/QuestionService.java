@@ -162,6 +162,23 @@ public class QuestionService {
         var userQuestion = QuestionService.findQuestionFromId(userRepository, questionReviewCreateDTO.userId(), questionRepository, questionReviewCreateDTO.questionId());
         var user = userQuestion.user();
         var question = userQuestion.question();
+        var lineStart = questionReviewCreateDTO.lineStart();
+        var fileContent = new String(question.getFile(), StandardCharsets.UTF_8).split("\n");
+        if(lineStart != null && lineStart < 0) {
+            logger.severe("La ligne ne peut être négative");
+            throw HttpException.badRequest("La ligne ne peut être négative");
+        }
+        var lineEnd = questionReviewCreateDTO.lineEnd();
+        if(lineEnd != null) {
+            if(lineEnd < 0){
+                logger.severe("La ligne de fin est inférieur à 0");
+                throw HttpException.badRequest("La ligne de fin est inférieur à 0");
+            }
+            if(lineEnd > fileContent.length) {
+                logger.severe("La ligne de fin est supérieur au nombre de ligne total du fichier");
+                throw HttpException.badRequest("La ligne de fin est supérieur au nombre de ligne total du fichier");
+            }
+        }
         var codePart = (questionReviewCreateDTO.lineStart() == null || questionReviewCreateDTO.lineEnd() == null)
                 ? null
                 :  new CodePart(questionReviewCreateDTO.lineStart(), questionReviewCreateDTO.lineEnd());
@@ -169,20 +186,8 @@ public class QuestionService {
         question.addReview(review);
         user.addReview(review);
 
-        var fileContent = new String(question.getFile(), StandardCharsets.UTF_8).split("\n");
-        var lineStart = questionReviewCreateDTO.lineStart();
-        if(lineStart != null && lineStart < 0) {
-            throw HttpException.badRequest("La ligne ne peut être négative");
-        }
-        var lineEnd = questionReviewCreateDTO.lineEnd();
-        if(lineEnd != null) {
-            if(lineEnd < 0){
-                throw HttpException.badRequest("La ligne de fin est inférieur à 0");
-            }
-            if(lineEnd > fileContent.length) {
-                throw HttpException.badRequest("La ligne de fin est supérieur au nombre de ligne total du fichier");
-            }
-        }
+
+
         String citedCode = null;
         if (lineStart != null && lineEnd != null && lineStart > 0) {
             citedCode = Arrays.stream(fileContent, lineStart - 1, lineEnd).collect(Collectors.joining("\n"));
