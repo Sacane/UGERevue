@@ -12,7 +12,9 @@ import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {MatChipInputEvent} from "@angular/material/chips";
 import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
 import {UpdateReviewDTO} from "../../models/reviews.model";
-import { UserService } from "../../../modules/profil/services/user.service";
+import {UserService} from "../../../modules/profil/services/user.service";
+import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
+
 
 @Component({
     selector: 'review-dialog',
@@ -22,7 +24,10 @@ import { UserService } from "../../../modules/profil/services/user.service";
 export class ReviewDialogComponent {
     @ViewChild('contentRef', { static: false }) contentRef!: ElementRef<HTMLTextAreaElement>;
     @ViewChild('tagSearchBar', { static: false }) tagContentRef!: ElementRef<HTMLTextAreaElement>;
-
+    public domSanitizer = inject(DomSanitizer)
+    transform(): SafeHtml {
+        return this.domSanitizer.bypassSecurityTrustHtml(this.form.value.content as string)
+    }
 
     form = new FormGroup({
         content: new FormControl(this.data.template?.content ?? '', [Validators.required]),

@@ -29,11 +29,11 @@
                         <mat-error>Required</mat-error>
                     }
                 </mat-form-field>
+
                 <div style="width: 100%; height: 200px;">
                     <h2>Preview</h2>
-                    <markdown  [data]="form.value.content"></markdown>
+                    <markdown [data]="form.value.content"></markdown>
                 </div>
-
             </form>
         </mat-dialog-content>
         <mat-dialog-actions align="center">
