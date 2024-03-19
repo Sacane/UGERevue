@@ -34,5 +34,9 @@ export class UserService {
     getCurrentUserFollowing(): Observable<Array<UserFollowing>> {
         return this.http.get<Array<UserFollowing>>(environment.apiUrl + 'users/current/following');
     }
+
+    getRecommendedReviews(questionContent: string): Observable<any> {
+        return this.http.post<any>(environment.apiUrl + 'users/current/recommendedReview', { questionContent });
+    }
 }
 

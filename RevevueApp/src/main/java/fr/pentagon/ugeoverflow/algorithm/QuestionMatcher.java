@@ -8,7 +8,7 @@ import java.util.*;
 
 public final class QuestionMatcher {
 
-    private static final double COSINUS_DISTANCE_ACCEPTATION = 0.8;
+    private static final double COSINUS_DISTANCE_ACCEPTATION = 0.5;
     private static final int LEVENSHTEIN_ACCEPTATION = 200;
     private static final double JACCARD_ACCEPTATION = 0.2;
 
@@ -36,7 +36,7 @@ public final class QuestionMatcher {
     public static boolean isPertinentRecommendation(String question1, String question2){
         Objects.requireNonNull(question1);
         Objects.requireNonNull(question2);
-        return cosinusDistanceImplementation(question1, question2) > COSINUS_DISTANCE_ACCEPTATION
-                || jaccardDistanceImplementation(question1, question2) < JACCARD_ACCEPTATION;
+        return /*cosinusDistanceImplementation(question1, question2) > COSINUS_DISTANCE_ACCEPTATION
+                ||*/ jaccardDistanceImplementation(question1, question2) < JACCARD_ACCEPTATION;
     }
 }

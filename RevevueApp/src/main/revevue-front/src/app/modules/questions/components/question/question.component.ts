@@ -79,14 +79,12 @@ export class QuestionComponent {
     addReview(): void {
         this.dialog.open(ReviewDialogComponent, {
             data: {
-                onQuestion: true
+                onQuestion: true,
+                questionContent: this.question()!!.questionContent
             },
-            width: '50%',
             disableClose: true
         }).afterClosed().pipe(
             switchMap(reviewValue => {
-                console.log(reviewValue);
-
                 if (reviewValue) {
                     return this.questionService.addReview(this.id, reviewValue.content, reviewValue.lineStart, reviewValue.lineEnd, reviewValue.tags).pipe(
                         catchError(err => {

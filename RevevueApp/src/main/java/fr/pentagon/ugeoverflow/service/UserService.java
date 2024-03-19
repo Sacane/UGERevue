@@ -133,7 +133,7 @@ public class UserService {
         return reviewList
                 .stream()
                 .filter(review -> QuestionMatcher.isPertinentRecommendation(questionContent,
-                        review.getQuestion().getDescription()) && review.comparedWithAnotherReviewListBasedOnContent(reviewList))
+                        review.getQuestion().getDescription()) /*&& review.comparedWithAnotherReviewListBasedOnContent(reviewList)*/)
                 .map(review -> new ReviewContentDTO(review.getContent()))
                 .toList();
     }

@@ -96,7 +96,23 @@
     </div>
     @if (data.onQuestion) {
         <div style="padding: 10px;">
-            test
+            @if (recommendedReviews$ | async; as recommendedReviews) {
+                <div style="display: flex; flex-direction: column; row-gap: 5px;">
+                    <span style="font-weight: 500;">Recommandations:</span>
+
+                    @for (recommendedReview of recommendedReviews; track recommendedReview) {
+                        <mat-chip style="background-color: rgb(123, 156, 255);" (click)="fillContent(recommendedReview.content)">
+                            {{ recommendedReview.content }}
+                        </mat-chip>
+                    }
+                    @empty {
+                        Aucune recommandation
+                    }
+                </div>
+            }
+            @else {
+                <mat-spinner></mat-spinner>
+            }
         </div>
     }
 </div>

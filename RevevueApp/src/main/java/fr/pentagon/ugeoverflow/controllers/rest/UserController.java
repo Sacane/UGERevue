@@ -97,7 +97,7 @@ public class UserController {
     return ResponseEntity.ok().build();
   }
 
-  @GetMapping(Routes.User.RECOMMENDED_REVIEW)
+  @PostMapping(Routes.User.RECOMMENDED_REVIEW)
   @RequireUser
   public ResponseEntity<List<ReviewContentDTO>> getRecommendedReview(@RequestBody @Valid QuestionUserIdDTO questionUserIdDTO) {
     var user = SecurityContext.checkAuthentication();

@@ -2,7 +2,7 @@ import {Component, ElementRef, inject, Inject, signal, ViewChild} from "@angular
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {ReviewService} from "../../services";
-import {map, startWith, tap} from "rxjs";
+import {catchError, map, Observable, of, startWith, tap} from "rxjs";
 import {ReviewQuestionTitleDTO} from "../../../modules/reviews/models/review.model";
 import {TagService} from "../../services/tag.service";
 import {toSignal} from "@angular/core/rxjs-interop";
@@ -12,6 +12,7 @@ import {LiveAnnouncer} from "@angular/cdk/a11y";
 import {MatChipInputEvent} from "@angular/material/chips";
 import {MatAutocompleteSelectedEvent} from "@angular/material/autocomplete";
 import {UpdateReviewDTO} from "../../models/reviews.model";
+import { UserService } from "../../../modules/profil/services/user.service";
 
 @Component({
     selector: 'review-dialog',
@@ -46,18 +47,31 @@ export class ReviewDialogComponent {
         map((tag: string | null) => tag ? this._filter(tag) : this.selfTags().map(t => t.tag).slice())
     ))
     inputTags: string[]
+    recommendedReviews$: Observable<any[]>;
 
     @ViewChild('inputTag') inputTag: ElementRef<HTMLInputElement>;
 
     announcer = inject(LiveAnnouncer);
 
     /* ================================================================ */
-    constructor(public dialogRef: MatDialogRef<ReviewDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { onQuestion: boolean, template?: UpdateReviewDTO },
-                private formBuilder: FormBuilder) {
+    constructor(public dialogRef: MatDialogRef<ReviewDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { onQuestion: boolean, questionContent?: string, template?: UpdateReviewDTO },
+                private formBuilder: FormBuilder, private userService: UserService) {
         this.tags = this.formBuilder.array<string>([]);
         this.inputTags = this.data.template?.tags ?? []
+
+        if (data.onQuestion) {
+            this.recommendedReviews$ = this.userService.getRecommendedReviews(data.questionContent!!).pipe(
+                catchError(err => {
+                    console.log(err);
+                    return of([]);
+                })
+            );
+        }
     }
 
+    fillContent(content: string): void {
+        this.form.patchValue({ content });
+    }
 
     /* Input tag functions */
 
@@ -95,7 +109,6 @@ export class ReviewDialogComponent {
         this.dialogRef.close();
     }
     confirm(): void {
-        console.log('confirm : ' + this.inputTags)
         this.dialogRef.close({
             content: this.form.value.content,
             lineStart: this.form.value.lineStart,

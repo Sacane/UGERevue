@@ -70,7 +70,6 @@ export class ReviewsComponent implements OnDestroy {
             data: {
                 onQuestion: false
             },
-            width: '60%',
             disableClose: true
         }).afterClosed().pipe(
             switchMap(reviewValue => {
