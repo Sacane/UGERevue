@@ -2,7 +2,7 @@ package fr.pentagon.ugeoverflow.controllers.rest;
 
 import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
-import fr.pentagon.ugeoverflow.config.security.SecurityContext;
+import fr.pentagon.ugeoverflow.config.security.AuthenticationChecker;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDetailsWithVotesDTO;
@@ -49,7 +49,7 @@ public class QuestionController {
 
     @GetMapping(Routes.Question.CURRENT_USER)
     public ResponseEntity<List<QuestionDTO>> getAllQuestionsFromCurrentUser() {
-        var user = SecurityContext.checkAuthentication();
+        var user = AuthenticationChecker.checkAuthentication();
         return ResponseEntity.ok(questionService.getQuestionsFromCurrentUser(user.getUsername()));
     }
 
@@ -64,7 +64,7 @@ public class QuestionController {
       @RequestPart(value = "testFile", required = false) MultipartFile testFile
   ) throws IOException {
     LOGGER.info("POST performed on /api/questions");
-    var userDetail = SecurityContext.checkAuthentication();
+    var userDetail = AuthenticationChecker.checkAuthentication();
     return ResponseEntity.ok(questionService.create(new NewQuestionDTO(
         new String(title, StandardCharsets.UTF_8), new String(description, StandardCharsets.UTF_8), javaFile.getBytes(), testFile == null ? null : testFile.getBytes(), javaFile.getOriginalFilename(), testFile == null ? null : testFile.getOriginalFilename()
     ), userDetail.id()));
@@ -74,7 +74,7 @@ public class QuestionController {
   @RequireUser
   public ResponseEntity<Void> removeQuestion(@PathVariable(name = "questionId") long questionId) {
     LOGGER.info("DELETE performed on /api/questions/" + questionId);
-    var user = SecurityContext.checkAuthentication();
+    var user = AuthenticationChecker.checkAuthentication();
     questionService.remove(new QuestionRemoveDTO(user.id(), questionId));
     return ok().build();
   }
@@ -82,7 +82,7 @@ public class QuestionController {
   @GetMapping(Routes.Question.ROOT + "/{questionId}")
   public ResponseEntity<QuestionDetailsWithVotesDTO> getQuestion(@PathVariable(name = "questionId") long questionId) {
     LOGGER.info("GET performed on /api/questions/" + questionId);
-    var user = SecurityContext.authentication();
+    var user = AuthenticationChecker.authentication();
 
     return ok(questionService.findByIdWithVotes(user, questionId));
   }
@@ -90,7 +90,7 @@ public class QuestionController {
     public ResponseEntity<QuestionUpdateResponseDTO> updateQuestion(@PathVariable(name = "questionId") long questionId,
                                                                     @RequestPart(value = "description", required = false) @Nullable String description,
                                                                     @RequestPart(value = "testFile", required = false) @Nullable MultipartFile testFile) {
-        var user = SecurityContext.checkAuthentication();
+        var user = AuthenticationChecker.checkAuthentication();
         try {
           return ok(questionService.update(user.id(), questionId, new QuestionUpdateDTO(description, (testFile != null) ? testFile.getBytes() : null, (testFile != null) ? testFile.getOriginalFilename() : null)));
         }catch (IOException e){
@@ -101,14 +101,14 @@ public class QuestionController {
   @RequireUser
   public ResponseEntity<ReviewQuestionResponseDTO> addReview(@Valid @RequestBody QuestionReviewCreateBodyDTO questionReviewCreateBodyDTO) {
     LOGGER.info("review => " + questionReviewCreateBodyDTO);
-    var userDetail = SecurityContext.checkAuthentication();
+    var userDetail = AuthenticationChecker.checkAuthentication();
     return ok(questionService.addReview(new QuestionReviewCreateDTO(userDetail.id(), questionReviewCreateBodyDTO.questionId(), questionReviewCreateBodyDTO.content(), questionReviewCreateBodyDTO.lineStart(), questionReviewCreateBodyDTO.lineEnd(), questionReviewCreateBodyDTO.tags())));
   }
 
   @GetMapping(Routes.Question.ROOT + "/followers")
   @RequireUser
   public ResponseEntity<List<QuestionDTO>> getQuestionsFromFollowers() {
-    var userDetail = SecurityContext.checkAuthentication();
+    var userDetail = AuthenticationChecker.checkAuthentication();
 
     return ResponseEntity.ok(questionService.getQuestionsFromFollows(userDetail.id()));
   }
@@ -116,7 +116,7 @@ public class QuestionController {
   @DeleteMapping(Routes.Question.ROOT + "/{questionId}/cancelVote")
   @RequireUser
   public ResponseEntity<Void> cancelVoteQuestion(@PathVariable(name = "questionId") long questionId) {
-    var user = SecurityContext.checkAuthentication();
+    var user = AuthenticationChecker.checkAuthentication();
 
     questionService.cancelVote(user.id(), questionId);
 

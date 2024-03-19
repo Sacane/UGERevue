@@ -1,7 +1,9 @@
-import {Component, inject, ViewEncapsulation} from '@angular/core';
+import {Component, Inject, inject, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {QuestionService} from "../../../../shared/question.service";
 import {Router} from "@angular/router";
+import {HttpClient} from "@angular/common/http";
+import {LoginService} from "../../../../shared/HttpServices";
 
 @Component({
     selector: 'app-create-question',
@@ -9,7 +11,14 @@ import {Router} from "@angular/router";
     styleUrl: './create-question.component.scss',
     encapsulation: ViewEncapsulation.None,
 })
-export class CreateQuestionComponent {
+export class CreateQuestionComponent implements OnInit {
+
+    private loginService = inject(LoginService)
+
+    ngOnInit(): void {
+        this.loginService.isLogged()
+    }
+
     form = new FormGroup({
         questionTitle: new FormControl('', [Validators.required]),
         questionContent: new FormControl('', [Validators.required]),

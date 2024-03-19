@@ -6,9 +6,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 
-public final class SecurityContext {
+public final class AuthenticationChecker {
 
-    private SecurityContext() {
+    private AuthenticationChecker() {
         throw new AssertionError("Cannot instantiate this class.");
     }
 

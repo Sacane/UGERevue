@@ -2,7 +2,7 @@ package fr.pentagon.ugeoverflow.controllers.mvc;
 
 import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
-import fr.pentagon.ugeoverflow.config.security.SecurityContext;
+import fr.pentagon.ugeoverflow.config.security.AuthenticationChecker;
 import fr.pentagon.ugeoverflow.controllers.dtos.thymleaf.NewQuestionThymeleafDTO;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.service.ReviewMarkdownService;
@@ -44,7 +44,7 @@ public class MvcQuestionController {
   @PostMapping("/upvote/{questionId}")
   @RequireUser
   public String upvoteQuestion(@PathVariable("questionId") @Positive long questionId) {
-    var user = SecurityContext.checkAuthentication();
+    var user = AuthenticationChecker.checkAuthentication();
     questionService.vote(user.id(), questionId, true);
     return "pages/return";
   }
@@ -52,7 +52,7 @@ public class MvcQuestionController {
   @PostMapping("/downvote/{questionId}")
   @RequireUser
   public String downvoteQuestion(@PathVariable("questionId") @Positive long questionId) {
-    var user = SecurityContext.checkAuthentication();
+    var user = AuthenticationChecker.checkAuthentication();
     questionService.vote(user.id(), questionId, false);
     return "pages/return";
   }
@@ -66,7 +66,7 @@ public class MvcQuestionController {
 
   @GetMapping("/ask")
   public String askPage(@ModelAttribute("newQuestion") NewQuestionThymeleafDTO newQuestionDTO) {
-    if (SecurityContext.authentication().isEmpty()) {
+    if (AuthenticationChecker.authentication().isEmpty()) {
       throw HttpException.unauthorized("Non connecté");
     }
     return "pages/questions/ask";
@@ -83,7 +83,7 @@ public class MvcQuestionController {
       return "pages/questions/ask";
     }
     try {
-      questionService.create(newQuestionDTO.toNewQuestionDTO(), SecurityContext.checkAuthentication().id());
+      questionService.create(newQuestionDTO.toNewQuestionDTO(), AuthenticationChecker.checkAuthentication().id());
     } catch (IOException e) {
       logger.severe(e.getMessage());
       throw HttpException.badRequest("Le fichier n'a pas été correctement ouvert");

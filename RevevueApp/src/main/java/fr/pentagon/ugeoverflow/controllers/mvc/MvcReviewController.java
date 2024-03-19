@@ -2,7 +2,7 @@ package fr.pentagon.ugeoverflow.controllers.mvc;
 
 import fr.pentagon.ugeoverflow.config.authentication.RevevueUserDetail;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
-import fr.pentagon.ugeoverflow.config.security.SecurityContext;
+import fr.pentagon.ugeoverflow.config.security.AuthenticationChecker;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateBodyDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.QuestionReviewCreateDTO;
 import fr.pentagon.ugeoverflow.service.QuestionService;
@@ -34,7 +34,7 @@ public class MvcReviewController {
 
   @GetMapping("/{reviewId}")
   public String detailPage(@PathVariable("reviewId") @Positive long reviewId, Model model) {
-    Long userId = SecurityContext.authentication().map(RevevueUserDetail::id).orElse(null);
+    Long userId = AuthenticationChecker.authentication().map(RevevueUserDetail::id).orElse(null);
     var reviews = reviewService.findDetailFromReviewId(userId, reviewId);
     model.addAttribute("review", reviews);
     model.addAttribute("content", markdownRenderer.markdownToHtml(reviews.content()));
@@ -45,7 +45,7 @@ public class MvcReviewController {
   @PostMapping("/upvote/{reviewId}")
   @RequireUser
   public String upvoteReview(@PathVariable("reviewId") @Positive long reviewId) {
-    var user = SecurityContext.checkAuthentication();
+    var user = AuthenticationChecker.checkAuthentication();
     reviewService.vote(user.id(), reviewId, true);
     return "pages/return";
   }
@@ -53,7 +53,7 @@ public class MvcReviewController {
   @PostMapping("/downvote/{reviewId}")
   @RequireUser
   public String downvoteReview(@PathVariable("reviewId") @Positive long reviewId) {
-    var user = SecurityContext.checkAuthentication();
+    var user = AuthenticationChecker.checkAuthentication();
     reviewService.vote(user.id(), reviewId, false);
     return "pages/return";
   }
@@ -68,7 +68,7 @@ public class MvcReviewController {
   @PostMapping("/create")
   @RequireUser
   public String createReview(@Valid @ModelAttribute("request") QuestionReviewCreateBodyDTO questionReviewCreateDTO) {
-    var currentUser = SecurityContext.checkAuthentication();
+    var currentUser = AuthenticationChecker.checkAuthentication();
     questionService.addReview(new QuestionReviewCreateDTO(currentUser.id(), questionReviewCreateDTO.questionId(), questionReviewCreateDTO.content(), questionReviewCreateDTO.lineStart(), questionReviewCreateDTO.lineEnd(), questionReviewCreateDTO.tags() == null ? List.of() : questionReviewCreateDTO.tags()));
     return "redirect:../../light/questions/" + questionReviewCreateDTO.questionId();
   }

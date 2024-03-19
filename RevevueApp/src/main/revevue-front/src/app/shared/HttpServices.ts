@@ -15,6 +15,7 @@ export class LoginService {
     private readonly LOGOUT = environment.apiUrl + 'logout'
     private readonly FOLLOW = this.ROOT + '/follow'
     private readonly UNFOLLOW = this.ROOT + '/unfollow'
+    private readonly IS_LOGGED = environment.apiUrl + 'logged'
 
     constructor(private http: HttpClient) {
     }
@@ -134,4 +135,9 @@ export class LoginService {
                 });
             }));
     }
+
+    public isLogged(){
+        this.http.get(this.IS_LOGGED).subscribe();
+    }
+
 }
