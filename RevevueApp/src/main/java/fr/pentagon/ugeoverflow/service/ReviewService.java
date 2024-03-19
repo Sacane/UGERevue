@@ -82,16 +82,19 @@ public class ReviewService {
     public void remove(ReviewRemoveDTO reviewRemoveDTO) {
         var userFind = userRepository.findByIdWithTag(reviewRemoveDTO.userId());
         if (userFind.isEmpty()) {
+            logger.severe("review does not exists");
             throw HttpException.notFound("User not exist");
         }
         var reviewFind = reviewRepository.findByIdWithTags(reviewRemoveDTO.reviewId());
         if (reviewFind.isEmpty()) {
+            logger.severe("Review does not exists");
             throw HttpException.notFound("Review not exist");
         }
         var user = userFind.get();
         Review review = reviewFind.get();
 
         if (user.getRole() != Role.ADMIN && !userRepository.containsReview(user.getId(), review)) {
+            logger.severe("You are trying to delete a review that is not yours");
             throw HttpException.unauthorized("Not your review");
         }
 
@@ -182,7 +185,7 @@ public class ReviewService {
             }
             var start = review.getCodePart() == null ? null : review.getCodePart().getLineStart();
             var end = review.getCodePart() == null ? null : review.getCodePart().getLineEnd();
-            return new ReviewResponseChildrenDTO(review.getId(), author.getUsername(), review.getContent(), citedCode, reviewVoteRepository.findUpvoteNumberByReviewId(review.getId()), reviewVoteRepository.findDownvoteNumberByReviewId(review.getId()), review.getCreatedAt(), getReviews(review.getId()), start, end, review.getTagsList().stream().map(Tag::getName).toList());
+            return new ReviewResponseChildrenDTO(review.getId(), review.getAuthor().getUsername(), review.getContent(), citedCode, reviewVoteRepository.findUpvoteNumberByReviewId(review.getId()), reviewVoteRepository.findDownvoteNumberByReviewId(review.getId()), review.getCreatedAt(), getReviews(review.getId()), start, end, review.getTagsList().stream().map(Tag::getName).toList());
         }).toList();
     }
 
