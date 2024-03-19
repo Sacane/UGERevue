@@ -171,9 +171,20 @@ public class QuestionService {
 
         var fileContent = new String(question.getFile(), StandardCharsets.UTF_8).split("\n");
         var lineStart = questionReviewCreateDTO.lineStart();
+        if(lineStart != null && lineStart < 0) {
+            throw HttpException.badRequest("La ligne ne peut être négative");
+        }
         var lineEnd = questionReviewCreateDTO.lineEnd();
+        if(lineEnd != null) {
+            if(lineEnd < 0){
+                throw HttpException.badRequest("La ligne de fin est inférieur à 0");
+            }
+            if(lineEnd > fileContent.length) {
+                throw HttpException.badRequest("La ligne de fin est supérieur au nombre de ligne total du fichier");
+            }
+        }
         String citedCode = null;
-        if (lineStart != null && lineEnd != null && lineStart > 0 && lineEnd <= fileContent.length) {
+        if (lineStart != null && lineEnd != null && lineStart > 0) {
             citedCode = Arrays.stream(fileContent, lineStart - 1, lineEnd).collect(Collectors.joining("\n"));
         }
         tagRepository.addTag(user, review, questionReviewCreateDTO.tagList());
