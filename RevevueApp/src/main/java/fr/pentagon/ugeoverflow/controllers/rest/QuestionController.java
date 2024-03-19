@@ -12,7 +12,6 @@ import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.utils.Routes;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -54,20 +54,19 @@ public class QuestionController {
     }
 
   @PostMapping(
-      value = Routes.Question.ROOT,
-      consumes = MediaType.MULTIPART_FORM_DATA_VALUE
+      value = Routes.Question.ROOT
   )
   @RequireUser
   public ResponseEntity<Long> createQuestion(
-      @RequestPart("title") @NotBlank @NotNull String title,
-      @RequestPart("description") @NotBlank @NotNull String description,
+      @RequestPart("title") @NotNull byte[] title,
+      @RequestPart("description") @NotNull byte[] description,
       @RequestPart("javaFile") @NotNull MultipartFile javaFile,
       @RequestPart(value = "testFile", required = false) MultipartFile testFile
   ) throws IOException {
     LOGGER.info("POST performed on /api/questions");
     var userDetail = SecurityContext.checkAuthentication();
     return ResponseEntity.ok(questionService.create(new NewQuestionDTO(
-        title, description, javaFile.getBytes(), testFile == null ? null : testFile.getBytes(), javaFile.getOriginalFilename(), testFile == null ? null : testFile.getOriginalFilename()
+        new String(title, StandardCharsets.UTF_8), new String(description, StandardCharsets.UTF_8), javaFile.getBytes(), testFile == null ? null : testFile.getBytes(), javaFile.getOriginalFilename(), testFile == null ? null : testFile.getOriginalFilename()
     ), userDetail.id()));
   }
 

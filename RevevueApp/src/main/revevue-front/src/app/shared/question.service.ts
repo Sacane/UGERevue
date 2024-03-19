@@ -1,5 +1,5 @@
 import {inject, Injectable} from "@angular/core";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {catchError, Observable, tap, throwError} from "rxjs";
 import {NewQuestionDTO} from "./models-out";
 import {Question, SimpleQuestion} from "./models/question";
@@ -23,8 +23,8 @@ export class QuestionService {
 
     public createQuestion(newQuestionDTO: NewQuestionDTO, onError: (error: Error) => any = (err) => console.error(err)): Observable<number> {
         const formData = new FormData();
-        formData.append('title', newQuestionDTO.title);
-        formData.append('description', newQuestionDTO.description);
+        formData.append(encodeURIComponent('title'), newQuestionDTO.title);
+        formData.append(encodeURIComponent('description'), newQuestionDTO.description);
         formData.append('javaFile', newQuestionDTO.javaFile);
         if (newQuestionDTO.testFile) {
             formData.append('testFile', newQuestionDTO.testFile);
