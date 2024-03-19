@@ -160,7 +160,7 @@ public class QuestionServiceTest {
         var quentin = userRepository.save(new User("qtdrake", "qt@email.com", "qtellier", "123", Role.USER));
         var question = questionRepository.save(new Question("TITLE", "DESCRIPTION", new byte[0], null, null, true, new Date()));
 
-        var reviewResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT", 1, 2, List.of()));
+        var reviewResponse = questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT", null, null, List.of()));
         assertEquals(1, reviewRepository.findAll().size());
 
         var userOptional = userRepository.findByIdWithReviews(quentin.getId());
@@ -184,7 +184,7 @@ public class QuestionServiceTest {
         var question = questionRepository.save(new Question("TITLE", "DESCRIPTION", new byte[0], null, null, true, new Date()));
 
         for (var i = 0; i < 10; i++) {
-            questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT:" + i, 1, 2, List.of()));
+            questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), question.getId(), "CONTENT:" + i, null, null, List.of()));
         }
 
         var userOptional = userRepository.findByIdWithReviews(quentin.getId());
@@ -293,7 +293,7 @@ public class QuestionServiceTest {
         assertEquals(1, questionRepository.findAll().size());
 
         for (var i = 0; i < 3; i++) {
-            questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), questionId, "CONTENT:" + i, i + 1, i + 1, List.of()));
+            questionService.addReview(new QuestionReviewCreateDTO(quentin.getId(), questionId, "CONTENT:" + i, null, null, List.of()));
         }
 
         var user = userRepository.findByIdWithQuestions(quentin.getId());

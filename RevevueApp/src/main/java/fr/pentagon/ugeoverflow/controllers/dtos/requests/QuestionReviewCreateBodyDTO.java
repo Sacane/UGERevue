@@ -8,7 +8,7 @@ import jakarta.validation.constraints.Positive;
 import java.util.List;
 
 public record QuestionReviewCreateBodyDTO(@Positive long questionId, @NotNull @NotBlank String content,
-                                          @Nullable Integer lineStart, @Nullable Integer lineEnd,
+                                          @Nullable @Positive Integer lineStart, @Nullable @Positive Integer lineEnd,
                                           List<String> tags) {
   public QuestionReviewCreateBodyDTO {
     if (tags == null) {
