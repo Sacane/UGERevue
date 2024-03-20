@@ -10,7 +10,6 @@ import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
 import fr.pentagon.ugeoverflow.repository.*;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.service.ReviewService;
-import fr.pentagon.ugeoverflow.service.UserService;
 import fr.pentagon.ugeoverflow.testutils.LoginTestService;
 import fr.pentagon.ugeoverflow.testutils.UserTestProvider;
 import fr.pentagon.ugeoverflow.utils.Routes;
@@ -59,10 +58,6 @@ public class ReviewControllerTest {
     @Autowired
     private TagRepository tagRepository;
 
-    @Autowired
-    private UserService userService;
-
-
     @BeforeEach
     public void setup(){
         var httpExceptionHandler = new HttpExceptionHandler();
@@ -72,11 +67,11 @@ public class ReviewControllerTest {
     }
     @AfterEach
     void clearUp() {
+        questionRepository.deleteAll();
         reviewVoteRepository.deleteAll();
         userRepository.deleteAll();
         tagRepository.deleteAll();
         reviewRepository.deleteAll();
-        questionRepository.deleteAll();
     }
 
     @Test

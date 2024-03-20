@@ -25,7 +25,9 @@ export class CreateQuestionComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.loginService.isLogged()
+        if(this.loginService.isLogin()) {
+            this.loginService.isLogged()
+        }
     }
 
     onJavaClassPicked(event: Event) {
@@ -49,7 +51,6 @@ export class CreateQuestionComponent implements OnInit {
                 javaFile: this.form.value.javaClass as File,
                 testFile: this.form.value.testClass as File | undefined
             }, err => this.toastService.error(err.error.message)).subscribe(questionId => {
-                console.log('??')
                 this.router.navigateByUrl('/questions/' + questionId).then()
             });
         }

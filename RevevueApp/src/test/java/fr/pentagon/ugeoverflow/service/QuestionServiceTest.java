@@ -10,6 +10,7 @@ import fr.pentagon.ugeoverflow.repository.QuestionRepository;
 import fr.pentagon.ugeoverflow.repository.QuestionVoteRepository;
 import fr.pentagon.ugeoverflow.repository.ReviewRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
+import fr.pentagon.ugeoverflow.testutils.UserTestProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,8 @@ public class QuestionServiceTest {
     private UserService userService;
     @Autowired
     private QuestionVoteRepository questionVoteRepository;
+    @Autowired
+    private UserTestProvider userTestProvider;
 
     @AfterEach
     void purge() {
@@ -401,4 +404,47 @@ public class QuestionServiceTest {
 
         assertEquals(questions.getFirst().title(), "TITLE");
     }
+
+    @Test
+    @DisplayName("Check the representation of question with positive score")
+    public void scoreQuestionTest1() throws Exception {
+        userTestProvider.addSomeUsersIntoDbWithQuestionVote();
+        var questions = questionService.getQuestions();
+        assertFalse(questions.isEmpty());
+        var questionTest = questions.getFirst();
+        assertEquals(questionTest.nbVotes(), 3L);
+    }
+
+    @Test
+    @DisplayName("Check the representation of question neutral score")
+    public void scoreQuestionTest2() throws Exception {
+        userTestProvider.addSomeUsersIntoDbWithQuestionVote();
+        var questions = questionService.getQuestions();
+        assertTrue(questions.size() >= 2);
+        var questionTest = questions.get(1);
+        assertEquals(questionTest.nbVotes(), 0L);
+    }
+
+    @Test
+    @DisplayName("Check the representation of question negative score")
+    public void scoreQuestionTest3() throws Exception {
+        userTestProvider.addSomeUsersIntoDbWithQuestionVote();
+        var questions = questionService.getQuestions();
+        assertTrue(questions.size() >= 2);
+        var questionTest = questions.get(2);
+        assertEquals(questionTest.nbVotes(), -3L);
+    }
+
+    @Test
+    @DisplayName("Check the representation of question score mixed")
+    public void scoreQuestionTest4() throws Exception {
+        userTestProvider.addSomeUsersIntoDbWithQuestionVote();
+        var questions = questionService.getQuestions();
+        assertTrue(questions.size() >= 3);
+        var questionTest = questions.get(3);
+        assertEquals(questionTest.nbVotes(), 1L);
+    }
+
+
+
 }
