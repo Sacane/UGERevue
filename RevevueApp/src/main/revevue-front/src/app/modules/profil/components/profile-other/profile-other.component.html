@@ -1,40 +1,29 @@
-<div *ngIf="profile">
-    <h1>{{ profile.username }}</h1>
-    <p>{{ profile.role | role }}</p>
+@if (profile) {
+    <div style="display: flex; column-gap: 5px; align-items: center; color: #3f51b5">
+        <mat-icon>account_circle</mat-icon>
+        <span style="font-weight: 500; font-size: 24px;">Profil de {{ profile.username }}</span>
+    </div>
 
-    <h2>Revues</h2>
-    <table>
-        <thead>
-        <tr>
-            <th>Titre de la question</th>
-            <th>Date de création</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let review of reviews">
-            <td>{{ review.questionTitle }}</td>
-            <td>{{ review.creationDate | date: 'dd/MM/yyyy' }}</td>
-        </tr>
-        </tbody>
-    </table>
+    <div style="display: flex; flex-direction: column;">
+        <h2>Revues</h2>
+        <div style="display: flex; column-gap: 10px; overflow-x: scroll;">
+            @for (review of reviews; track review) {
+                <mat-card>
+                    <mat-card-header>
+                        <mat-card-title>{{ review.reviewContent }}</mat-card-title>
+                        <mat-card-subtitle>Poster le {{ review.creationDate | date: 'dd/MM/yyyy' }} sur la question "{{ review.questionTitle }}"</mat-card-subtitle>
+                    </mat-card-header>
+                </mat-card>
+            }
+        </div>
+    </div>
 
-    <h2>Questions</h2>
-    <table>
-        <thead>
-        <tr>
-            <th>Titre</th>
-            <th>Date</th>
-            <th>Nombre de votes</th>
-            <th>Nombre de réponses</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let question of questions">
-            <td>{{ question.title }}</td>
-            <td>{{ question.date | date: 'dd/MM/yyyy' }}</td>
-            <td>{{ question.nbVotes }}</td>
-            <td>{{ question.nbAnswers }}</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+    <div style="display: flex; flex-direction: column;">
+        <h2>Questions</h2>
+        <div style="display: flex;">
+            @if (questions) {
+                <app-questions-displayer [questions]="questions"></app-questions-displayer>
+            }
+        </div>
+    </div>
+}
