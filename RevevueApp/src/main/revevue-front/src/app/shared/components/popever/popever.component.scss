@@ -1,0 +1,47 @@
+button {
+    background-color: #0073df;
+    color: #FFFFFF;
+    border-radius: 50px;
+    border: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+.elements {
+    position: relative;
+    margin: 10px;
+}
+
+.text-display {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: white; /* Couleur de fond */
+    opacity: 0.8;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s, max-height 0.3s ease-in-out, width 0.3s ease-in-out; /* Ajout de width à la transition */
+    overflow: hidden;
+    max-height: 0;
+    width: 100%;
+}
+
+.text-display.show {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease-in-out, visibility 0s, max-height 0.3s ease-in-out, width 0.3s ease-in-out; /* Ajout de width à la transition */
+    max-height: 200px;
+    width: 100%;
+}

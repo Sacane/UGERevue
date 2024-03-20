@@ -1,0 +1,11 @@
+<div class="elements">
+    @if (isTextShowingUp()){
+        <div class="text-display" [class.show]="isTextShowingUp()">
+            {{ displayText }}
+        </div>
+    }
+    <button (click)="showText()">?</button>
+</div>
+
+
+

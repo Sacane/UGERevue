@@ -10,6 +10,7 @@ import {MatChip, MatChipsModule} from "@angular/material/chips";
 import {MatAutocomplete, MatAutocompleteTrigger, MatOption} from "@angular/material/autocomplete";
 import {UpdateQuestionDialogComponent} from "./components/update-question-dialog/update-question-dialog.component";
 import {PopoverModule} from "ngx-bootstrap/popover";
+import {PopeverComponent} from "./components/popever/popever.component";
 
 const COMPONENTS: any[] = [
     NavBarComponent,
@@ -33,7 +34,8 @@ const COMPONENTS: any[] = [
         MatAutocompleteTrigger,
         MatAutocomplete,
         MatOption,
-        PopoverModule
+        PopoverModule,
+        PopeverComponent
     ],
     declarations: [
         COMPONENTS

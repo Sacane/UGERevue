@@ -2,6 +2,7 @@
 
 html, body {
     height: 100%;
+    width: 100%;
 }
 
 body {
@@ -11,4 +12,3 @@ body {
 
 @import 'assets/styles/androidstudio.css';
 @import 'ngx-toastr/toastr';
-@import "@coreui/coreui/scss/coreui";

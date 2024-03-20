@@ -22,7 +22,7 @@ public final class AuthenticationChecker {
 
     public static Optional<RevevueUserDetail> authentication(){
         var auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.isAuthenticated()) {
+        if (auth == null || auth.getName().equalsIgnoreCase("anonymousUser") || !auth.isAuthenticated()) {
             return Optional.empty();
         }
         return Optional.of((RevevueUserDetail) auth.getPrincipal());

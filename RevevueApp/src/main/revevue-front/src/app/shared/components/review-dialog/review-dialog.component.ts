@@ -26,7 +26,7 @@ export class ReviewDialogComponent {
     @ViewChild('tagSearchBar', { static: false }) tagContentRef!: ElementRef<HTMLTextAreaElement>;
     public domSanitizer = inject(DomSanitizer)
 
-    helpContent = 'Vous pouvez appliquer du gras en entourant votre texte de la base "b"\nVous pouvez également écrire du code comme ceci : ```java public final class Foo{}```';
+    helpContent = 'Vous pouvez appliquer du gras en entourant votre texte de la balise html <b> ou <i> pour afficher en italique.\nVous pouvez également afficher du code comme ceci : ```java public final class Foo{}```';
 
     transform(): SafeHtml {
         return this.domSanitizer.bypassSecurityTrustHtml(this.form.value.content as string)

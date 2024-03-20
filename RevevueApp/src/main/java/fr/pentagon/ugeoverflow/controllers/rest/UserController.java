@@ -103,6 +103,10 @@ public class UserController {
   @RequireUser
   public ResponseEntity<List<ReviewContentDTO>> getRecommendedReview(@RequestBody @Valid QuestionUserIdDTO questionUserIdDTO) {
     var user = AuthenticationChecker.checkAuthentication();
+    if(questionUserIdDTO.questionContent() == null || questionUserIdDTO.questionContent().isBlank()){
+      LOGGER.info("empty string");
+      return ResponseEntity.ok(List.of());
+    }
     var recommendedReview = userService.getRecommendedReviewForQuestion(user.id(), questionUserIdDTO.questionContent());
     return ResponseEntity.ok(recommendedReview);
   }
