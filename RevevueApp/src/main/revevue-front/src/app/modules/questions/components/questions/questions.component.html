@@ -19,11 +19,17 @@
 
         <mat-form-field appearance="outline">
             <mat-label>Recherche par utilisateur</mat-label>
-            <input matInput placeholder="Par utilisateur">
-            <button mat-button matSuffix formControlName="usernameSearch" (click)="search()">
+            <input matInput placeholder="Par utilisateur" formControlName="usernameSearch">
+            <button mat-button matSuffix (click)="search()">
                 <mat-icon>search</mat-icon>
             </button>
         </mat-form-field>
+        <div class="sort-buttons">
+            <button mat-button color="primary" (click)="sortByDate()">Trié par date</button>
+            <button mat-button color="primary">Trié par score</button>
+        </div>
     </div>
-    <app-questions-displayer [questions]="questions()"></app-questions-displayer>
+    <div style="display: flex; flex-grow: 1;">
+        <app-questions-displayer [questions]="questions()"></app-questions-displayer>
+    </div>
 </div>

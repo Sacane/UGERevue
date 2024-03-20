@@ -5,6 +5,7 @@ import {UserCredentials, UserFollowInfo, UserRegister} from "./models-in";
 import {UserConnectedDTO, UserIdDTO} from "./models-out";
 import {environment} from "../../environments/environment";
 import {ToastrService} from "ngx-toastr";
+import {Router} from "@angular/router";
 
 @Injectable({
     providedIn: 'root'
@@ -18,6 +19,7 @@ export class LoginService {
     private readonly UNFOLLOW = this.ROOT + '/unfollow'
     private readonly IS_LOGGED = environment.apiUrl + 'logged'
 
+    private router = inject(Router)
     private toastrService = inject(ToastrService)
     constructor(private http: HttpClient) {
     }
@@ -141,7 +143,15 @@ export class LoginService {
     }){
         this.http.get(this.IS_LOGGED).pipe(
             tap(() => onSuccess()),
-            catchError(err => throwError(() => onError(err)))
+            catchError(err => throwError(() => {
+                this.toastrService.error('Votre session a expiré')
+                localStorage.setItem("isLoggin", "false");
+                localStorage.setItem('username', '');
+                localStorage.setItem('role', '');
+                localStorage.setItem('id', '')
+                localStorage.clear();
+                this.router.navigateByUrl('/login').then()
+            }))
         ).subscribe();
     }
 

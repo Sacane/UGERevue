@@ -55,8 +55,8 @@ export class ChildReviewComponent implements OnInit {
     deleteReview(): void {
         this.dialog.open(ConfirmDialogComponent, {
             data: {
-                title: 'Delete a review',
-                message: 'Confirm that you want to delete this review ?'
+                title: 'Supprimer une review',
+                message: 'Confirmer la suppression de cette review ?'
             },
             disableClose: true
         }).afterClosed().pipe(
@@ -79,11 +79,11 @@ export class ChildReviewComponent implements OnInit {
             if (response && response.deleting) {
             }
             else if (response && response.error) {
-                this.snackBar.open('Error occurs while deleting the review', 'OK');
+                this.snackBar.open('Erreur survenue pendant la suppression de la review', 'OK');
             }
             else {
                 this.onDelete.emit(this.review.id);
-                this.snackBar.open('The review have been deleted', 'OK');
+                this.snackBar.open('La review a été supprimée', 'OK');
             }
         });
     }

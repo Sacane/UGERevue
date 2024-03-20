@@ -31,7 +31,7 @@
         <tbody>
         <tr *ngFor="let question of questions">
             <td>{{ question.title }}</td>
-            <td>{{ question.date }}</td>
+            <td>{{ question.date | date: 'dd/MM/yyyy' }}</td>
             <td>{{ question.nbVotes }}</td>
             <td>{{ question.nbAnswers }}</td>
         </tr>

@@ -29,7 +29,7 @@ export class QuestionService {
         if (newQuestionDTO.testFile) {
             formData.append('testFile', newQuestionDTO.testFile);
         }
-        const headers = new HttpHeaders().set('Content-Type', 'multipart/form-data');
+        new HttpHeaders().set('Content-Type', 'multipart/form-data');
         return this.client.post<number>(this.ROOT, formData)
             .pipe(tap(), catchError(err => throwError(() => onError(err))))
     }

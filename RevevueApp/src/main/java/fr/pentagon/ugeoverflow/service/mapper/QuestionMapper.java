@@ -19,7 +19,7 @@ public class QuestionMapper {
                 question.getTitle(),
                 question.getDescription(),
                 question.getAuthor().getUsername(),
-                question.getCreatedAt().toString(),
+                question.getCreatedAt(),
                 questionVoteRepository.findUpvoteNumberByQuestionId(question.getId()) - questionVoteRepository.findDownvoteNumberByQuestionId(question.getId()),
                 question.getReviews().size()
         );

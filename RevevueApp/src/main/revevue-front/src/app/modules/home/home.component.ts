@@ -32,7 +32,6 @@ export class HomeComponent implements OnInit {
                 this.questionService.getQuestionsFromFollowers().pipe(
                     map(response => ({ lines: response, loading: false })),
                     catchError(err => {
-                        console.log(err);
                         return of([]);
                     })
                 )

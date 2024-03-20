@@ -1,8 +1,9 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import {UserService} from "../../services/user.service";
-import {ProfileModelDTO, SimpleQuestion} from "../../models/profile.model";
+import {ProfileModelDTO} from "../../models/profile.model";
 import {ActivatedRoute} from "@angular/router";
 import {UserReview} from "../../models/UserReview";
+import {SimpleQuestion} from "../../../../shared/models/question";
 
 @Component({
     selector: 'app-profile-other',
