@@ -1,24 +1,68 @@
 app-question {
-    padding: 20px;
-    flex-grow: 1;
-    width: 85%;
+  padding: 20px;
+  flex-grow: 1;
+  width: 85%;
 
-    .green-badge .mat-badge-content {
-        background-color: green;
-    }
+  .green-badge .mat-badge-content {
+    background-color: green;
+  }
 
-    .red-badge .mat-badge-content {
-        background-color: red;
-    }
-    
-    .title {
-        font-size: 25px;
-        font-weight: 500;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+  .red-badge .mat-badge-content {
+    background-color: red;
+  }
 
-        button {
+  .title {
+    font-size: 25px;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+    padding-bottom: 20px;
+  }
+
+  .main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+
+    .upperSection {
+      display: flex;
+      gap: 10px;
+      width: 90%;
+
+      .questionSection {
+        background-color: #f0f0f0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        padding: 20px;
+        width: 80%;
+        box-sizing: border-box;
+
+        pre {
+          max-height: 500px;
+          overflow: auto;
+          background-color: #e8e8e8;
+          border-radius: 5px;
+          padding: 10px;
+          margin-top: 10px;
+        }
+      }
+
+      .stats {
+        width: 20%;
+        min-width: 280px;
+        background-color: #e6e6e6;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        padding: 20px;
+        box-sizing: border-box;
+
+        .editSection {
+          display: flex;
+          align-items: center;
+          column-gap: 10px;
+
+          button {
             background-color: #1976d2;
             color: white;
             border: none;
@@ -28,81 +72,42 @@ app-question {
             transition: background-color 0.3s;
 
             &:hover {
-                background-color: #1565c0;
+              background-color: #1565c0;
             }
+          }
         }
+      }
     }
 
-    .main {
-        width: 100%;
+    .reviewsSection {
+      background-color: #f0f0f0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      width: 90%;
+      padding: 20px;
+      box-sizing: border-box;
+
+      .title {
+        font-size: 20px;
+        font-weight: 500;
         display: flex;
-        flex-direction: column;
+        justify-content: space-between;
         align-items: center;
-        gap: 10px;
 
-        .upperSection {
-            display: flex;
-            gap: 10px;
-            width: 90%;
+        button {
+          background-color: #1976d2;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          padding: 10px;
+          cursor: pointer;
+          transition: background-color 0.3s;
 
-            .questionSection {
-                background-color: #f0f0f0;
-                border-radius: 5px;
-                border: 1px solid #ccc;
-                padding: 20px;
-                width: 80%;
-                box-sizing: border-box;
-
-                pre {
-                    max-height: 500px;
-                    overflow: auto;
-                    background-color: #e8e8e8;
-                    border-radius: 5px;
-                    padding: 10px;
-                    margin-top: 10px;
-                }
-            }
-
-            .stats {
-                width: 20%;
-                min-width: 280px;
-                background-color: #e6e6e6;
-                border-radius: 5px;
-                border: 1px solid #ccc;
-                padding: 20px;
-                box-sizing: border-box;
-            }
+          &:hover {
+            background-color: #1565c0;
+          }
         }
-
-        .reviewsSection {
-            background-color: #f0f0f0;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            width: 90%;
-            padding: 20px;
-            box-sizing: border-box;
-
-            .title {
-                font-size: 20px;
-                font-weight: 500;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-
-                button {
-                    background-color: #1976d2;
-                    color: white;
-                    border: none;
-                    border-radius: 5px;
-                    padding: 10px;
-                    cursor: pointer;
-                    transition: background-color 0.3s;
-
-                    &:hover {
-                        background-color: #1565c0;
-                    }
-                }
-            }
-        }
+      }
     }
+  }
 }

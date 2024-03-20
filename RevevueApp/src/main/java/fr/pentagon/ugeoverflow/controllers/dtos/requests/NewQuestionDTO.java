@@ -3,6 +3,7 @@ package fr.pentagon.ugeoverflow.controllers.dtos.requests;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.Length;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -10,6 +11,7 @@ import java.util.Objects;
 public record NewQuestionDTO(
     @NotNull
     @NotBlank(message = "Un titre ne peut être vide.")
+    @Length(max = 255)
     String title,
     @NotNull
     @NotBlank(message = "Une description ne peut être vide")
