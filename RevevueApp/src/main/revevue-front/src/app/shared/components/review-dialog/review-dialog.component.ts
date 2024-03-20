@@ -1,4 +1,4 @@
-import {Component, ElementRef, inject, Inject, signal, ViewChild} from "@angular/core";
+import {Component, ElementRef, HostListener, inject, Inject, signal, ViewChild} from "@angular/core";
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {ReviewService} from "../../services";
@@ -22,33 +22,24 @@ import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
     styleUrl: './review-dialog.component.scss',
 })
 export class ReviewDialogComponent {
-    @ViewChild('contentRef', { static: false }) contentRef!: ElementRef<HTMLTextAreaElement>;
-    @ViewChild('tagSearchBar', { static: false }) tagContentRef!: ElementRef<HTMLTextAreaElement>;
+    @ViewChild('contentRef', {static: false}) contentRef!: ElementRef<HTMLTextAreaElement>;
+    @ViewChild('tagSearchBar', {static: false}) tagContentRef!: ElementRef<HTMLTextAreaElement>;
     public domSanitizer = inject(DomSanitizer)
 
     helpContent = 'Vous pouvez appliquer du gras en entourant votre texte de la balise html <b> ou <i> pour afficher en italique.\nVous pouvez également afficher du code comme ceci : ```java public final class Foo{}```';
-
-    transform(): SafeHtml {
-        return this.domSanitizer.bypassSecurityTrustHtml(this.form.value.content as string)
-    }
-
     form = new FormGroup({
         content: new FormControl(this.data.template?.content ?? '', [Validators.required]),
         lineStart: new FormControl(this.data.template?.lineStart?.toString() ?? ''),
         lineEnd: new FormControl(this.data.template?.lineEnd?.toString() ?? ''),
         tag: new FormControl('')
     });
-
-    private reviewService = inject(ReviewService)
     tags = new FormArray<FormControl<string | null>>([])
     tagService = inject(TagService)
     selfTags = toSignal(this.tagService.getTags(), {initialValue: [] as TagWrapperDTO[]})
-    //questions = toSignal(this.questionService.getQuestions(), {initialValue: [] as SimpleQuestion[]})
-
     reviews = signal<ReviewQuestionTitleDTO[]>([])
-
     /* ====================== chips management  ====================== */
     separatorKeysCodes: number[] = [ENTER, COMMA];
+    //questions = toSignal(this.questionService.getQuestions(), {initialValue: [] as SimpleQuestion[]})
     tagCtrl = new FormControl('');
     filteredTag = toSignal(this.tagCtrl.valueChanges.pipe(
         startWith(null),
@@ -56,16 +47,20 @@ export class ReviewDialogComponent {
     ))
     inputTags: string[]
     recommendedReviews$: Observable<any[]>;
-
     @ViewChild('inputTag') inputTag: ElementRef<HTMLInputElement>;
-
     announcer = inject(LiveAnnouncer);
+    private reviewService = inject(ReviewService)
 
     /* ================================================================ */
-    constructor(public dialogRef: MatDialogRef<ReviewDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { onQuestion: boolean, questionContent?: string, template?: UpdateReviewDTO },
+    constructor(public dialogRef: MatDialogRef<ReviewDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: {
+                    onQuestion: boolean,
+                    questionContent?: string,
+                    template?: UpdateReviewDTO
+                },
                 private formBuilder: FormBuilder, private userService: UserService) {
         this.tags = this.formBuilder.array<string>([]);
         this.inputTags = this.data.template?.tags ?? []
+        dialogRef.disableClose = false;
 
         if (data.onQuestion) {
             this.recommendedReviews$ = this.userService.getRecommendedReviews(data.questionContent!!).pipe(
@@ -77,8 +72,12 @@ export class ReviewDialogComponent {
         }
     }
 
+    transform(): SafeHtml {
+        return this.domSanitizer.bypassSecurityTrustHtml(this.form.value.content as string)
+    }
+
     fillContent(content: string): void {
-        this.form.patchValue({ content });
+        this.form.patchValue({content});
     }
 
     /* Input tag functions */
@@ -92,6 +91,7 @@ export class ReviewDialogComponent {
 
         this.tagCtrl.setValue(null);
     }
+
     remove(tag: string): void {
         const index = this.inputTags.indexOf(tag);
 
@@ -100,22 +100,19 @@ export class ReviewDialogComponent {
             this.announcer.announce(`Removed ${tag}`).then();
         }
     }
+
     selected(event: MatAutocompleteSelectedEvent): void {
         this.inputTags.push(event.option.viewValue);
         this.inputTag.nativeElement.value = '';
         this.tagCtrl.setValue(null);
     }
-    private _filter(value: string): string[] {
-        const filterValue = value.toLowerCase();
-
-        return this.selfTags().map(tag => tag.tag).filter(tag => tag.toLowerCase().includes(filterValue));
-    }
-
-    /* =================== */
 
     close(): void {
         this.dialogRef.close();
     }
+
+    /* =================== */
+
     confirm(): void {
         this.dialogRef.close({
             content: this.form.value.content,
@@ -124,6 +121,7 @@ export class ReviewDialogComponent {
             tags: this.inputTags
         });
     }
+
     searchReviewsByTag() {
         this.reviewService
             .findByTag(this.form.value.tag as string)
@@ -144,5 +142,15 @@ export class ReviewDialogComponent {
     searchTag(tag: TagWrapperDTO): void {
         this.form.value.tag = tag.tag;
         this.tagContentRef.nativeElement.value = tag.tag
+    }
+
+    @HostListener('window:keyup.esc') onKeyUp() {
+        this.dialogRef.close();
+    }
+
+    private _filter(value: string): string[] {
+        const filterValue = value.toLowerCase();
+
+        return this.selfTags().map(tag => tag.tag).filter(tag => tag.toLowerCase().includes(filterValue));
     }
 }
