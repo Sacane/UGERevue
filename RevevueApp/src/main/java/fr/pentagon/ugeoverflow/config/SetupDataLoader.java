@@ -16,9 +16,9 @@ import java.util.logging.Logger;
 // Source used: https://www.baeldung.com/role-and-privilege-for-spring-security-registration
 @Component
 public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
+  private static final Logger LOGGER = Logger.getLogger(SetupDataLoader.class.getName());
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
-  private static final Logger LOGGER = Logger.getLogger(SetupDataLoader.class.getName());
   boolean alreadySetup = false;
 
   public SetupDataLoader(PasswordEncoder passwordEncoder, UserRepository userRepository) {
@@ -33,6 +33,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     createAdminIfNotFound();
+    createArnaudIfNotFound();
     alreadySetup = true;
   }
 
@@ -41,8 +42,18 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     var admin = userRepository.findByLogin("admin").orElse(null);
     if (admin == null) {
       LOGGER.info("Creating admin..");
-      admin = new User("admin", "admin", passwordEncoder.encode("password"), "admin@admin.fr", Role.ADMIN);
+      admin = new User("admin", "admin", passwordEncoder.encode("admin"), "admin@admin.com", Role.ADMIN);
       userRepository.save(admin);
+    }
+  }
+
+  @Transactional
+  public void createArnaudIfNotFound() {
+    var arnaud = userRepository.findByLogin("arnaud").orElse(null);
+    if (arnaud == null) {
+      LOGGER.info("Creating arnaud..");
+      arnaud = new User("arnaud", "arnaud", passwordEncoder.encode("arnaud"), "arnaud.carayol@u-pem.fr", Role.USER);
+      userRepository.save(arnaud);
     }
   }
 }
