@@ -26,7 +26,7 @@
         </mat-form-field>
         <div class="sort-buttons">
             <button (click)="sortByDate()" color="primary" mat-button>Trié par date</button>
-            <button color="primary" mat-button>Trié par score</button>
+            <button color="primary" mat-button (click)="sortByScore()">Trié par score</button>
         </div>
     </div>
     <app-questions-displayer [questions]="questions()"></app-questions-displayer>
