@@ -12,7 +12,7 @@
         @for (userInfo of getPagedUserFollowedInfos(); track userInfo){
         <div class="col">
             <mat-card class="card-size">
-                <mat-card-content class="card-content-container">
+                <mat-card-content class="card-content-container" (click)="gotoProfileUser(userInfo)">
                     <div>
                         {{ userInfo.username }}
                     </div>

@@ -2,6 +2,7 @@ import {AfterViewInit, Component, inject, OnInit, ViewChild, ViewEncapsulation} 
 import {UserFollowInfo} from "../../shared/models-in";
 import {MatPaginator} from "@angular/material/paginator";
 import {LoginService} from "../../shared/HttpServices";
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-users',
@@ -18,6 +19,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
     readonly pageSize = 9;
     private currentPage = 0;
+    private route = inject(Router)
 
     ngAfterViewInit() {
         this.paginator.pageSize = this.pageSize;
@@ -65,5 +67,9 @@ export class UsersComponent implements OnInit, AfterViewInit {
     }
     isLogged(){
         return this.userService.isLogin();
+    }
+    gotoProfileUser(user: UserFollowInfo){
+        console.log('test=')
+        this.route.navigateByUrl('/profile/' + user.id).then()
     }
 }

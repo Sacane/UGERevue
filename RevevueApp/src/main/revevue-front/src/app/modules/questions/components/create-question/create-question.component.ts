@@ -2,7 +2,6 @@ import {Component, inject, OnInit, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {QuestionService} from "../../../../shared/question.service";
 import {Router} from "@angular/router";
-import {catchError, throwError} from "rxjs";
 import {ToastrService} from "ngx-toastr";
 import {LoginService} from "../../../../shared/HttpServices";
 
@@ -51,6 +50,7 @@ export class CreateQuestionComponent implements OnInit {
                 javaFile: this.form.value.javaClass as File,
                 testFile: this.form.value.testClass as File | undefined
             }, err => this.toastService.error(err.error.message)).subscribe(questionId => {
+                console.log('??')
                 this.router.navigateByUrl('/questions/' + questionId).then()
             });
         }

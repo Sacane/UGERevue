@@ -11,6 +11,7 @@ import {
     ProfilUsersContentComponent
 } from "./components";
 import {RolePipe} from "./pipes/role.pipe";
+import {ProfileOtherComponent} from "./components/profile-other/profile-other.component";
 
 @NgModule({
     declarations: [
@@ -19,7 +20,8 @@ import {RolePipe} from "./pipes/role.pipe";
         ProfilInfosContentComponent,
         ProfilQuestionsComponent,
         ProfilUsersComponent,
-        ProfilUsersContentComponent
+        ProfilUsersContentComponent,
+        ProfileOtherComponent
     ],
     imports: [
         ReactiveFormsModule,
@@ -27,9 +29,9 @@ import {RolePipe} from "./pipes/role.pipe";
         SharedModule,
         RolePipe,
         ReactiveFormsModule,
-        FormsModule
+        FormsModule,
     ],
-    exports: [ProfilComponent, ProfilInfosComponent, ProfilInfosContentComponent, ProfilQuestionsComponent, ProfilUsersComponent, ProfilUsersContentComponent],
+    exports: [ProfilComponent, ProfilInfosComponent, ProfilInfosContentComponent, ProfilQuestionsComponent, ProfilUsersComponent, ProfilUsersContentComponent, ProfileOtherComponent],
     bootstrap: [ProfilComponent, ProfilInfosComponent, ProfilInfosContentComponent, ProfilQuestionsComponent, ProfilUsersComponent, ProfilUsersContentComponent]
 })
 export class ProfilModule { }

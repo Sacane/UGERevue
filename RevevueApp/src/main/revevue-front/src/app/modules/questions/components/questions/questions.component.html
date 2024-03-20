@@ -20,7 +20,7 @@
         <mat-form-field appearance="outline">
             <mat-label>Recherche par utilisateur</mat-label>
             <input matInput placeholder="Par utilisateur">
-            <button mat-button matSuffix>
+            <button mat-button matSuffix formControlName="usernameSearch" (click)="search()">
                 <mat-icon>search</mat-icon>
             </button>
         </mat-form-field>
