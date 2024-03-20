@@ -21,6 +21,7 @@ import {MarkdownModule} from "ngx-markdown";
 import {provideToastr, ToastrModule} from "ngx-toastr";
 import {MatChipsModule} from "@angular/material/chips";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {PopoverModule} from "ngx-bootstrap/popover";
 
 @NgModule({
     declarations: [
@@ -69,6 +70,7 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
         ToastrModule.forRoot(),
         MatChipsModule,
         MatAutocompleteModule,
+        PopoverModule.forRoot()
     ],
     bootstrap: [AppComponent]
 })

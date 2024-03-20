@@ -40,7 +40,6 @@
                         <mat-icon>thumb_up</mat-icon>
                     </button>
                     {{ review.upvotes }}
-
                     <button color="downvote" mat-mini-fab>
                         <mat-icon>thumb_down</mat-icon>
                     </button>
@@ -53,6 +52,8 @@
                 }
                 <markdown [data]="review.content"></markdown>
             </td>
+            <button type="button" class="btn btn-primary" [popover]="'Ok je crois que c est bon'" [popoverContext]="'yes'" popoverTitle="My title">Click me for a popover</button>
+
         </tr>
         @if (review.reviews.length > 0) {
         <tr>

@@ -5,19 +5,22 @@
             <form [formGroup]="form" class="review-create-form">
                 @if (data.onQuestion) {
                     <mat-form-field>
-                        <mat-label>Ligne de début</mat-label>
+                        <mat-label>Première ligne du fichier</mat-label>
                         <input matInput type="number" formControlName="lineStart">
                         @if (form.controls.lineStart.hasError('required')) {
                             <mat-error>Required</mat-error>
                         }
                     </mat-form-field>
                     <mat-form-field>
-                        <mat-label>Ligne de fin</mat-label>
+                        <mat-label>Dernière ligne du fichier</mat-label>
                         <input matInput type="number" formControlName="lineEnd">
                         @if (form.controls.lineEnd.hasError('required')) {
                             <mat-error>Required</mat-error>
                         }
                     </mat-form-field>
+                    <button type="button" class="popover" [popover]="helpContent">
+                        ?
+                    </button>
                 }
 
                 <mat-form-field>
@@ -29,6 +32,9 @@
                         <mat-error>Required</mat-error>
                     }
                 </mat-form-field>
+                <button type="button" class="popover" [popover]="'Regardez en direct le rendu de votre review !'" popoverTitle="Rendu">
+                    ?
+                </button>
 
                 <div style="width: 100%; height: 200px;">
                     <h2>Preview</h2>

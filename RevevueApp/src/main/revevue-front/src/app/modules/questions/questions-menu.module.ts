@@ -16,6 +16,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {MarkdownComponent} from "ngx-markdown";
 import {SearchQuestionsComponent} from "./components/search-questions/search-questions.component";
 import {MatTableModule} from "@angular/material/table";
+import {PopoverModule} from "ngx-bootstrap/popover";
 
 @NgModule({
     providers: [
@@ -51,7 +52,8 @@ import {MatTableModule} from "@angular/material/table";
         JsonPipe,
         AsyncPipe,
         MarkdownComponent,
-        MatTableModule
+        MatTableModule,
+        PopoverModule
     ],
     exports: [
         QuestionsMenuComponent,
