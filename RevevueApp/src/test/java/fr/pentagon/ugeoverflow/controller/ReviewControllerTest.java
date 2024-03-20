@@ -59,10 +59,6 @@ public class ReviewControllerTest {
     @Autowired
     private TagRepository tagRepository;
 
-    @Autowired
-    private UserService userService;
-
-
     @BeforeEach
     public void setup(){
         var httpExceptionHandler = new HttpExceptionHandler();
@@ -72,11 +68,11 @@ public class ReviewControllerTest {
     }
     @AfterEach
     void clearUp() {
+        questionRepository.deleteAll();
         reviewVoteRepository.deleteAll();
         userRepository.deleteAll();
         tagRepository.deleteAll();
         reviewRepository.deleteAll();
-        questionRepository.deleteAll();
     }
 
     @Test

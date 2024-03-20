@@ -11,6 +11,7 @@ import fr.pentagon.ugeoverflow.controllers.dtos.responses.QuestionDTO;
 import fr.pentagon.ugeoverflow.controllers.rest.QuestionController;
 import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
 import fr.pentagon.ugeoverflow.repository.QuestionRepository;
+import fr.pentagon.ugeoverflow.repository.QuestionVoteRepository;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.service.UserService;
@@ -54,6 +55,8 @@ class QuestionControllerTest {
 
   @Autowired
   private UserRepository userRepository;
+  @Autowired
+  private QuestionVoteRepository questionVoteRepository;
 
   @BeforeEach
   public void setup() {
@@ -65,8 +68,10 @@ class QuestionControllerTest {
 
   @AfterEach
   void clearUp() {
+    questionVoteRepository.deleteAll();
     userRepository.deleteAll();
     questionRepository.deleteAll();
+
   }
 
   @Test
@@ -102,12 +107,11 @@ class QuestionControllerTest {
   }
 
   @Test
-  @DisplayName("Get filtered questions with label & user")
-  @Disabled
-  void getFilteredQuestionsByUser() throws Exception {
+  @DisplayName("Filtered questions with label & user")
+  void postFilteredQuestionsByUser() throws Exception {
     userTestProvider.addSomeUserIntoDatabase();
-    questionMVC.perform(MockMvcRequestBuilders.get(Routes.Question.SEARCH)
-            .content(objectMapper.writeValueAsString(new SearchQuestionDTO("hello world", "Sacane4")))
+    questionMVC.perform(MockMvcRequestBuilders.post(Routes.Question.SEARCH)
+            .content(objectMapper.writeValueAsString(new SearchQuestionDTO("afficher mon hello world", "Sacane4")))
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(3))
