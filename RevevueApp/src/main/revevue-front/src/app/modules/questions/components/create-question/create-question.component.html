@@ -1,10 +1,10 @@
 <div class="main">
     <div class="section">
         <div class="title" style="margin-bottom: 15px">Poser une question</div>
-        <div class="form-section" [formGroup]="form">
+        <form [formGroup]="form" class="form-section">
             <mat-form-field>
                 <mat-label>Titre</mat-label>
-                <input formControlName="questionTitle" matInput required>
+                <input formControlName="questionTitle" matInput maxlength="255" required>
             </mat-form-field>
             <mat-form-field>
                 <mat-label>Question</mat-label>
@@ -17,9 +17,9 @@
                     <mat-icon>folder</mat-icon>
                 </button>
                 @if (form.value.javaClass !== null) {
-                <button (click)="onJavaClassWipe()" mat-icon-button matSuffix>
-                    <mat-icon>delete</mat-icon>
-                </button>
+                    <button (click)="onJavaClassWipe()" mat-icon-button matSuffix>
+                        <mat-icon>delete</mat-icon>
+                    </button>
                 }
             </mat-form-field>
             <mat-form-field>
@@ -29,17 +29,18 @@
                     <mat-icon>folder</mat-icon>
                 </button>
                 @if (form.value.testClass !== null) {
-                <button (click)="onTestClassWipe()" mat-icon-button matSuffix>
-                    <mat-icon>delete</mat-icon>
-                </button>
+                    <button (click)="onTestClassWipe()" mat-icon-button matSuffix>
+                        <mat-icon>delete</mat-icon>
+                    </button>
                 }
             </mat-form-field>
-            <button mat-button [disabled]="!form.valid" color="primary" mat-raised-button (click)="onSubmit()">Poster</button>
+            <button (click)="onSubmit()" [disabled]="!form.valid" color="primary" mat-button mat-raised-button>Poster
+            </button>
             <input #javaClassUpload (change)="onJavaClassPicked($event)" style="display: none" type="file">
             <input #testClassUpload (change)="onTestClassPicked($event)" style="display: none" type="file">
-        </div>
+        </form>
     </div>
-    <button mat-button (click)="gotoQuestion()">
+    <button (click)="gotoQuestion()" mat-button>
         Retour à la liste des questions
     </button>
 </div>
