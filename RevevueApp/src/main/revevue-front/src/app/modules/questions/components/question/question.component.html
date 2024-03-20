@@ -1,81 +1,88 @@
 <div class="questionLayout">
     <div class="main">
         @if (question()) {
-        <div class="upperSection">
-            <div class="questionSection">
-                <div class="title">
-                    <span>{{ question()?.title }}</span>
-                    @if (canDelete()) {
-                        <div style="display: flex; align-items: center; column-gap: 10px;">
-                            <button mat-raised-button color="primary" (click)="deleteQuestion()" [disabled]="deleting">
-                                <div style="display: flex; column-gap: 10px;">
-                                    <span>Delete question</span>
-                                    @if (deleting) {
-                                    <mat-spinner [diameter]="20"></mat-spinner>
-                                    }
-                                </div>
-                            </button>
-                            <button mat-mini-fab color="primary" (click)="update()">
-                                <mat-icon>edit</mat-icon>
-                            </button>
-                        </div>
+            <div class="upperSection">
+                <div class="questionSection">
+                    <div class="title">
+                        <span>{{ question()?.title }}</span>
+                        @if (canDelete()) {
+                            <div style="display: flex; align-items: center; column-gap: 10px;">
+                                <button mat-raised-button color="primary" (click)="deleteQuestion()"
+                                        [disabled]="deleting">
+                                    <div style="display: flex; column-gap: 10px;">
+                                        <span>Delete question</span>
+                                        @if (deleting) {
+                                            <mat-spinner [diameter]="20"></mat-spinner>
+                                        }
+                                    </div>
+                                </button>
+                                <button mat-mini-fab color="primary" (click)="update()">
+                                    <mat-icon>edit</mat-icon>
+                                </button>
+                            </div>
+                        }
+                    </div>
+                    <p style="white-space: pre-wrap">
+                        {{ question()?.questionContent }}
+                    </p>
+                    <pre><code [highlight]="(question()!!.classContent)" [languages]="['java']"
+                               [lineNumbers]="true"></code></pre>
+                    @if (question()?.testResults !== undefined && question()?.testResults!!.length > 0) {
+                        <div class="title">Tests</div>
+                        <pre><code [highlight]="question()!!.testClassContent || ''"
+                                   [languages]="['java']"></code></pre>
+                        <b>Results</b>
+                        <pre><code>{{ question()?.testResults }}</code></pre>
+                    } @else {
+                        <h2 mat-dialog-title>Erreur lors du lancement des tests</h2>
                     }
                 </div>
-                <p style="margin-top: 20px">
-                    {{ question()?.questionContent }}
-                </p>
-                <pre><code [highlight]="(question()!!.classContent)" [languages]="['java']" [lineNumbers]="true"></code></pre>
-                @if (question()?.testResults !== undefined && question()?.testResults!!.length > 0) {
-                <div class="title">Tests</div>
-                <pre><code [highlight]="question()!!.testClassContent || ''" [languages]="['java']"></code></pre>
-                <b>Results</b>
-                <pre><code>{{ question()?.testResults }}</code></pre>
-                } @else {
-                    <h2 mat-dialog-title>Erreur lors du lancement des tests</h2>
-                }
+                <div class="stats">
+                    <mat-list>
+                        <mat-list-item>
+                            <div>
+                                <button mat-icon-button
+                                        [ngStyle]="{ 'color': question()?.vote === true ? 'white': 'green', 'background-color': question()?.vote === true ? 'green': '#e6e6e6' }"
+                                        (click)="vote(true)">
+                                    <mat-icon aria-hidden="false" matBadge="{{ question()?.upvotes }}"
+                                              matBadgeSize="small"
+                                              class="green-badge">thumb_up
+                                    </mat-icon>
+                                </button>
+                                <button mat-icon-button
+                                        [ngStyle]="{ 'color': question()?.vote === false ? 'white': 'red', 'background-color': question()?.vote === false ? 'red': '#e6e6e6' }"
+                                        (click)="vote(false)">
+                                    <mat-icon aria-hidden="false" matBadge="{{ question()?.downvotes }}"
+                                              matBadgeSize="small"
+                                              class="red-badge">thumb_down
+                                    </mat-icon>
+                                </button>
+                            </div>
+                        </mat-list-item>
+                        <mat-list-item>
+                            <b>Auteur:</b> {{ question()?.author }}
+                        </mat-list-item>
+                        <mat-divider></mat-divider>
+                        <mat-list-item>
+                            <b>Date:</b> {{ question()?.creationDate }}
+                        </mat-list-item>
+                        <mat-divider></mat-divider>
+                        <mat-list-item>
+                            <b>Votes:</b> {{ question()?.voteCount }}
+                        </mat-list-item>
+                        <mat-divider></mat-divider>
+                        <mat-list-item>
+                            <b>Commentaires:</b> {{ question()?.commentCount }}
+                        </mat-list-item>
+                        <mat-divider></mat-divider>
+                    </mat-list>
+                    <mat-chip-set>
+                        @for (tag of question()?.tags; track tag) {
+                            <mat-chip>{{ tag }}</mat-chip>
+                        }
+                    </mat-chip-set>
+                </div>
             </div>
-            <div class="stats">
-                <mat-list>
-                    <mat-list-item>
-                        <div>
-                            <button mat-icon-button
-                                [ngStyle]="{ 'color': question()?.vote === true ? 'white': 'green', 'background-color': question()?.vote === true ? 'green': '#e6e6e6' }"
-                                (click)="vote(true)">
-                                <mat-icon aria-hidden="false" matBadge="{{ question()?.upvotes }}" matBadgeSize="small"
-                                    class="green-badge">thumb_up</mat-icon>
-                            </button>
-                            <button mat-icon-button
-                                [ngStyle]="{ 'color': question()?.vote === false ? 'white': 'red', 'background-color': question()?.vote === false ? 'red': '#e6e6e6' }"
-                                (click)="vote(false)">
-                                <mat-icon aria-hidden="false" matBadge="{{ question()?.downvotes }}" matBadgeSize="small"
-                                    class="red-badge">thumb_down</mat-icon>
-                            </button>
-                        </div>
-                    </mat-list-item>
-                    <mat-list-item>
-                        <b>Auteur:</b> {{ question()?.author }}
-                    </mat-list-item>
-                    <mat-divider></mat-divider>
-                    <mat-list-item>
-                        <b>Date:</b> {{ question()?.creationDate }}
-                    </mat-list-item>
-                    <mat-divider></mat-divider>
-                    <mat-list-item>
-                        <b>Votes:</b> {{ question()?.voteCount }}
-                    </mat-list-item>
-                    <mat-divider></mat-divider>
-                    <mat-list-item>
-                        <b>Commentaires:</b> {{ question()?.commentCount }}
-                    </mat-list-item>
-                    <mat-divider></mat-divider>
-                </mat-list>
-                <mat-chip-set>
-                    @for (tag of question()?.tags; track tag) {
-                    <mat-chip>{{ tag }}</mat-chip>
-                    }
-                </mat-chip-set>
-            </div>
-        </div>
         }
 
         <div class="reviewsSection">
@@ -83,13 +90,13 @@
                 <span>Revues</span>
 
                 @if (canReview) {
-                <button mat-mini-fab color="primary" (click)="addReview()">
-                    <mat-icon>add</mat-icon>
-                </button>
+                    <button mat-mini-fab color="primary" (click)="addReview()">
+                        <mat-icon>add</mat-icon>
+                    </button>
                 }
             </div>
             <div>
-                <app-reviews [reviews]="reviews()" (onDelete)="onUpdateDelete($event)"></app-reviews>
+                <app-reviews (onDelete)="onUpdateDelete($event)" [reviews]="reviews()"></app-reviews>
             </div>
         </div>
     </div>
