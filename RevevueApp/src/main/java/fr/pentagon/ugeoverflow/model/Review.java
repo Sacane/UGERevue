@@ -129,8 +129,6 @@ public class Review {
     public boolean comparedWithAnotherReviewListBasedOnContent(List<Review> reviewList){
         for (var review : reviewList) {
             if (review.content.equalsIgnoreCase(this.content)) {
-                System.out.println(review.content);
-                System.out.println(content);
                 return false;
             }
         }
