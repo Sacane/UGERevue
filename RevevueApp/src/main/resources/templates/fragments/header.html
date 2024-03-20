@@ -27,8 +27,8 @@
     </form>
     <nav class="site-navigation">
         <ul class="nav">
-            <li th:if="${#authentication == null}"><a th:href="@{/light/login}">Se connecter</a></li>
-            <li th:if="${#authentication == null}"><a th:href="@{/light/register}">S'enregistrer</a></li>
+            <li sec:authorize="isAnonymous()"><a th:href="@{/light/login}">Se connecter</a></li>
+            <li sec:authorize="isAnonymous()"><a th:href="@{/light/register}">S'enregistrer</a></li>
             <li sec:authorize="isAuthenticated()"><a sec:authentication="name" th:href="@{/light/profile}"></a></li>
             <li sec:authorize="isAuthenticated()"><a th:href="@{/light/logout}">Se déconnecter</a></li>
         </ul>
