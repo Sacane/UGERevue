@@ -1,18 +1,23 @@
 app-profil-users-content {
-    .container {
-        padding: 20px;
-        display: flex;
-        flex-grow: 1;
-        gap: 20px;
-      
-        .user {
-            padding: 10px;
-            font-size: medium;
-            font-weight: bold;
-            border: #282b2e 2px solid;
-            border-radius: 10px;
-            background-color: #eeeeee;
-        }
+  .container {
+    padding: 20px;
+    display: flex;
+    flex-grow: 1;
+    gap: 20px;
+
+    .user {
+      padding: 10px;
+      font-size: medium;
+      font-weight: bold;
+      border: #282b2e 2px solid;
+      border-radius: 10px;
+      background-color: #eeeeee;
+
+      &:hover {
+        background-color: #ffffff;
+        cursor: pointer;
+      }
     }
+  }
 }
   
