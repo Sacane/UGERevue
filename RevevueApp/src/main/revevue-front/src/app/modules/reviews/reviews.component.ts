@@ -88,8 +88,8 @@ export class ReviewsComponent implements OnDestroy {
     deleteReview(): void {
         this.dialog.open(ConfirmDialogComponent, {
             data: {
-                title: 'Delete a review',
-                message: 'Confirm that you want to delete this review ?'
+                title: 'Supprimer une review',
+                message: 'Confirmer la suppression de cette review ?'
             },
             disableClose: true
         }).afterClosed().pipe(
@@ -114,10 +114,10 @@ export class ReviewsComponent implements OnDestroy {
             }
             else if (response && response.error) {
                 this.deleting = false;
-                this.snackBar.open('Error occurs while deleting the review', 'OK');
+                this.snackBar.open('Erreur survenue lors de la suppression de la review', 'OK');
             }
             else {
-                this.snackBar.open('The review have been deleted', 'OK');
+                this.snackBar.open('La review a été supprimée', 'OK');
                 this.location.back();
             }
         });

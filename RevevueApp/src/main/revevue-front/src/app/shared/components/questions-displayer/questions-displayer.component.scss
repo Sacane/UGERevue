@@ -1,5 +1,4 @@
 app-questions-displayer {
-
     background-color: #f8f9fa;
     display: flex;
     flex-direction: column;
@@ -7,9 +6,10 @@ app-questions-displayer {
     padding: 20px;
     justify-content: space-between;
     align-content: center;
-    width: 100%;
+    
     .question-list {
         display: flex;
+        flex-grow: 1;
         flex-wrap: wrap;
         gap: 30px;
         justify-content: center;
@@ -17,10 +17,10 @@ app-questions-displayer {
     }
 
     .question-item {
-
         &:hover {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
         overflow: hidden;
         display: flex;
         flex-direction: column;
@@ -74,11 +74,9 @@ app-questions-displayer {
     }
 }
 
-
 $primary-color: #0622a7;
 $accent-color: #ffc107;
 $gray-text-color: #757575;
-
 
 .votes-and-answers,
 .gray-text,
@@ -96,4 +94,3 @@ $gray-text-color: #757575;
         width: 100%;
     }
 }
-
