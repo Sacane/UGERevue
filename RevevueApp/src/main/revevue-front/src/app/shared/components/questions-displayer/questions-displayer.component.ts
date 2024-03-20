@@ -12,6 +12,7 @@ import {FormControl} from '@angular/forms';
 import {MatPaginator} from '@angular/material/paginator';
 import {Router} from '@angular/router';
 import {Subject, takeUntil} from 'rxjs';
+import {SimpleQuestion} from "../../models/question";
 
 @Component({
     selector: 'app-questions-displayer',
@@ -22,10 +23,10 @@ import {Subject, takeUntil} from 'rxjs';
 export class QuestionsDisplayerComponent implements AfterViewInit, OnDestroy, OnChanges {
     @ViewChild(MatPaginator) paginator: MatPaginator;
 
-    @Input() questions: any[];
+    @Input() questions: SimpleQuestion[];
 
     titleFilter = new FormControl('');
-    displayedQuestions: any[] = [];
+    displayedQuestions: SimpleQuestion[] = [] as SimpleQuestion[];
     private _onDestroy = new Subject<void>();
 
     constructor(private router: Router) { }
@@ -34,7 +35,7 @@ export class QuestionsDisplayerComponent implements AfterViewInit, OnDestroy, On
         this.titleFilter.valueChanges.pipe(
             takeUntil(this._onDestroy)
         ).subscribe(value => {
-            this.displayedQuestions = this.questions.filter(question => question.title.includes(value));
+            this.displayedQuestions = this.questions.filter(question => question.title.includes(value as string));
         });
     }
 
