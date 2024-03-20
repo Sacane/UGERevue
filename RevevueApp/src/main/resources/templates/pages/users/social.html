@@ -32,7 +32,7 @@
         <h1 style="align-self: center">Utilisateurs</h1>
         <ul>
             <li th:each="user : ${peoples}">
-                <a th:href="@{'/light/user/' + ${user.id}}" th:text="${user.username}"></a>
+                <p th:text="${user.username}"></p>
             </li>
         </ul>
     </div>

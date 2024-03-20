@@ -38,6 +38,9 @@ export class QuestionsComponent implements OnInit{
         this.questions.set(this.questions().sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
         ))
     }
+    sortByScore() {
+        this.questions.set(this.questions().sort((a, b) => b.nbVotes - a.nbVotes));
+    }
 
     ngOnInit(): void {
         this.questionService.getQuestions().subscribe(questions => this.questions.set(questions))

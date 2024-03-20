@@ -4,7 +4,7 @@
             <div class="question-item" (click)="navigateTo('/questions/' + displayedQuestions[i + (paginator.pageSize * paginator.pageIndex)].id)">
                 <div class="question-info">
                     <div class="votes-and-answers">
-                        <span>{{ displayedQuestions[i + (paginator.pageSize * paginator.pageIndex)].nbVotes }} votes</span>
+                        <span>Score : <b>{{ displayedQuestions[i + (paginator.pageSize * paginator.pageIndex)].nbVotes }}</b></span>
                         <span class="gray-text">{{ displayedQuestions[i + (paginator.pageSize * paginator.pageIndex)].nbAnswers }} réponses</span>
                     </div>
                     <div class="question-title">
