@@ -1,35 +1,33 @@
 <div class="content">
     <div style="display: flex; justify-content: space-between; align-items: center;">
         <h2>Toutes les questions</h2>
-        @if(isLogin()){
-        <button mat-raised-button color="primary" (click)="navigateTo('/questions/ask')">Créer une question</button>
+        @if (isLogin()) {
+            <button mat-raised-button color="primary" (click)="navigateTo('/questions/ask')">Créer une question</button>
         }
     </div>
     <span style="font-size: 17px;">
-        {{numberQuestions()}} questions
+        {{ numberQuestions() }} questions
     </span>
-    <div class="search-container" [formGroup]="form">
+    <div [formGroup]="form" class="search-container">
         <mat-form-field appearance="outline">
             <mat-label>Recherche une question...</mat-label>
-            <input matInput formControlName="labelSearch" placeholder="Par label">
-            <button mat-button matSuffix (click)="search()">
-                <mat-icon>search</mat-icon >
+            <input formControlName="labelSearch" matInput placeholder="Par label">
+            <button (click)="search()" mat-button matSuffix>
+                <mat-icon>search</mat-icon>
             </button>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
             <mat-label>Recherche par utilisateur</mat-label>
             <input matInput placeholder="Par utilisateur">
-            <button mat-button matSuffix formControlName="usernameSearch" (click)="search()">
+            <button (click)="search()" formControlName="usernameSearch" mat-button matSuffix>
                 <mat-icon>search</mat-icon>
             </button>
         </mat-form-field>
         <div class="sort-buttons">
-            <button mat-button color="primary" (click)="sortByDate()">Trié par date</button>
-            <button mat-button color="primary">Trié par score</button>
+            <button (click)="sortByDate()" color="primary" mat-button>Trié par date</button>
+            <button color="primary" mat-button>Trié par score</button>
         </div>
     </div>
-    <div style="display: flex; flex-grow: 1;">
-        <app-questions-displayer [questions]="questions()"></app-questions-displayer>
-    </div>
+    <app-questions-displayer [questions]="questions()"></app-questions-displayer>
 </div>
