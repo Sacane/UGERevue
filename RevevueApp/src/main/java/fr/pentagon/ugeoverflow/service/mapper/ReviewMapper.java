@@ -46,7 +46,6 @@ public class ReviewMapper {
     public DetailReviewResponseDTO entityToDetailReviewResponseDTO(Review review, String citedCode, @Nullable Boolean doesUserVote, List<DetailReviewResponseDTO> list) {
         var start = review.getCodePart() != null ? review.getCodePart().getLineStart() : null;
         var end = review.getCodePart() != null ? review.getCodePart().getLineEnd() : null;
-        System.out.println("start => " + start + " end => " + end);
         return new DetailReviewResponseDTO(
                 review.getId(),
                 review.getAuthor().getUsername(),

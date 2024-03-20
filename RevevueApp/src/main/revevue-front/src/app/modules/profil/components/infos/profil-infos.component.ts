@@ -21,7 +21,6 @@ export class ProfilInfosComponent implements OnInit {
     }
 
     savePassword(userPasswordUpdate: UserPasswordUpdate) {
-        console.log(userPasswordUpdate);
         this.userService.changeCurrentUserPassword(userPasswordUpdate).subscribe({
             next: response => {
                 this.snackBar.open('Mot de passe mis à jour', 'Fermer', { duration: 3000 });

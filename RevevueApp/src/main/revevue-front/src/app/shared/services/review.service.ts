@@ -38,7 +38,6 @@ export class ReviewService {
 
     public addReview(reviewId: string, content: string, tagList: Array<string> = []): Observable<Review> {
         const headers = new HttpHeaders().set('Content-Type', 'application/json');
-        console.log('tagList' + tagList)
         return this.httpclient.post<Review>(this.url, {
             reviewId: reviewId,
             content: content,

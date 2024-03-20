@@ -114,7 +114,6 @@ export class LoginService {
     public follow(id: string, onError: (error: Error) => any = (err) => {
         console.error(err)
     }) {
-        console.log(this.FOLLOW + '/' + id);
         return this.http.post(this.FOLLOW + '/' + id, null, {headers: this.HEADERS})
             .pipe(
                 tap(response => console.log('Response from server:', response)),
@@ -129,7 +128,6 @@ export class LoginService {
     public unfollow(userId: string, onError: (error: Error) => any = (err) => {
         console.error(err)
     }) {
-        console.log(this.UNFOLLOW + '/' + userId)
         return this.http.post(this.UNFOLLOW + '/' + userId, null, {headers: this.HEADERS})
             .pipe(catchError(err => {
                 return throwError(() => {

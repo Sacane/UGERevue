@@ -85,7 +85,6 @@ export class ReviewComponent implements OnInit {
                     lineEnd: this.review.lineEnd
                 }}, disableClose: true}).afterClosed().pipe(
             switchMap(reviewValue => {
-                console.log(reviewValue);
                 if (reviewValue) {
                     return this.reviewService.updateById(this.review.id, reviewValue.content, reviewValue.lineStart, reviewValue.lineEnd, reviewValue.tags).pipe(
                         tap(response => {

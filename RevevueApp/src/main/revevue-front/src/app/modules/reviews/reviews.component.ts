@@ -59,7 +59,6 @@ export class ReviewsComponent implements OnDestroy {
     initData(): void {
         this.reviewId = this.activatedRoute.snapshot.params['id'];
         this.reviewService.getDetails(this.reviewId).subscribe(response => {
-            console.log(response);
             this.reviewDetail.set(response)
             this.subReviews.set(response.reviews as Review[])
             this.canDelete = response.author === this.userService.getLogin() || this.userService.getRole() === Role.ADMIN;
