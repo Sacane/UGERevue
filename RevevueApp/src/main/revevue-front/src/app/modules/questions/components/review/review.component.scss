@@ -1,61 +1,58 @@
 @import 'prismjs/themes/prism-okaidia.css';
+
 .review {
-    border-radius: 5px;
-    padding: 5px;
-    border: solid black 1px;
-    background-color: white;
+  border-radius: 5px;
+  padding: 5px;
+  border: solid black 1px;
+  background-color: white;
 }
 
 .reviewTable {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.reviewTable>tr>td {
-    text-align: left;
-    vertical-align: top;
-    padding: 4px;
+.reviewTable > tr > td {
+  text-align: left;
+  vertical-align: top;
+  padding: 4px;
 }
 
-.reviewTable>tr>td:first-child {
-    border-right: solid 1px grey;
-    vertical-align: center;
+.reviewTable > tr > th {
+  border-bottom: solid 1px grey;
+  text-align: left;
+  padding: 4px;
+  font-weight: normal;
 }
 
-.reviewTable>tr>th {
-    border-bottom: solid 1px grey;
-    text-align: left;
-    padding: 4px;
-    font-weight: normal;
-}
-
-.reviewTable>tr:nth-child(3) {
-    border-top: solid 1px grey;
+.reviewTable > tr:nth-child(3) {
+  border-top: solid 1px grey;
 }
 
 .voteSection {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 8%;
-    min-width: 60px;
-    button{
-        &:hover{
-            cursor: auto;
-        }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 8%;
+  min-width: 60px;
+
+  button {
+    &:hover {
+      cursor: auto;
     }
+  }
 }
 
 .commentSection {
-    display: flex;
+  display: flex;
 }
 
 .mat-upvote {
-    background-color: #43A047;
-    color: #ffffff;
+  background-color: #43A047;
+  color: #ffffff;
 }
 
 .mat-downvote {
-    background-color: #E53935;
-    color: #fff;
+  background-color: #E53935;
+  color: #fff;
 }
