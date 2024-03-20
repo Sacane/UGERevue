@@ -6,14 +6,14 @@
                 @if (data.onQuestion) {
                     <mat-form-field>
                         <mat-label>Ligne de début</mat-label>
-                        <input matInput type="text" formControlName="lineStart">
+                        <input matInput type="number" formControlName="lineStart">
                         @if (form.controls.lineStart.hasError('required')) {
                             <mat-error>Required</mat-error>
                         }
                     </mat-form-field>
                     <mat-form-field>
                         <mat-label>Ligne de fin</mat-label>
-                        <input matInput type="text" formControlName="lineEnd">
+                        <input matInput type="number" formControlName="lineEnd">
                         @if (form.controls.lineEnd.hasError('required')) {
                             <mat-error>Required</mat-error>
                         }

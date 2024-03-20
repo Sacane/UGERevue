@@ -38,6 +38,7 @@ public class LoginController {
 
   @GetMapping(Routes.Auth.LOGGED)
   public ResponseEntity<Void> logged(){
+    System.err.println("logged");
     AuthenticationChecker.checkAuthentication();
     return ResponseEntity.ok().build();
   }

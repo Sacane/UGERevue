@@ -25,9 +25,9 @@ export class NavBarComponent {
     }
 
     logout(): void {
-        this.loginService.logout().subscribe(() => {
+        this.loginService.isLogged(() => this.loginService.logout().subscribe(() => {
             this.router.navigateByUrl('/home').then();
-        });
+        }))
     }
 
     profile(): void {

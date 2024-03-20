@@ -55,7 +55,6 @@ public class SecurityConfig {
                 .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler()))
         .addFilterBefore(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
         .httpBasic(AbstractHttpConfigurer::disable)
-        .anonymous(AbstractHttpConfigurer::disable)
         .build();
   }
 
@@ -74,7 +73,6 @@ public class SecurityConfig {
         .headers(c -> c.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
         .formLogin(c -> c.loginPage("http://localhost:4200/login"))
         .httpBasic(AbstractHttpConfigurer::disable)
-        .anonymous(AbstractHttpConfigurer::disable)
         .build();
   }
 }

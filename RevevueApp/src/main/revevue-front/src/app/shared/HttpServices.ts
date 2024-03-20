@@ -1,9 +1,10 @@
-import {Injectable} from '@angular/core';
+import {Injectable, inject} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {catchError, Observable, switchMap, tap, throwError} from 'rxjs';
 import {UserCredentials, UserFollowInfo, UserRegister} from "./models-in";
 import {UserConnectedDTO, UserIdDTO} from "./models-out";
 import {environment} from "../../environments/environment";
+import {ToastrService} from "ngx-toastr";
 
 @Injectable({
     providedIn: 'root'
@@ -17,6 +18,7 @@ export class LoginService {
     private readonly UNFOLLOW = this.ROOT + '/unfollow'
     private readonly IS_LOGGED = environment.apiUrl + 'logged'
 
+    private toastrService = inject(ToastrService)
     constructor(private http: HttpClient) {
     }
 
@@ -136,8 +138,14 @@ export class LoginService {
             }));
     }
 
-    public isLogged(){
-        this.http.get(this.IS_LOGGED).subscribe();
+    public isLogged(onSuccess: () => void = () => {}, onError: (error: HttpErrorResponse) => any = (err) => {
+        this.toastrService.error(err.error.message)
+    }){
+        console.log('isLogged')
+        this.http.get(this.IS_LOGGED).pipe(
+            tap(() => onSuccess()),
+            catchError(err => throwError(() => onError(err)))
+        ).subscribe();
     }
 
 }

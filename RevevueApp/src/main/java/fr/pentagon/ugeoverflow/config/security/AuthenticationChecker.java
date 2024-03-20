@@ -14,7 +14,7 @@ public final class AuthenticationChecker {
 
     public static RevevueUserDetail checkAuthentication() throws HttpException {
         var auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.isAuthenticated()) {
+        if (auth == null || auth.getName().equalsIgnoreCase("anonymousUser") || !auth.isAuthenticated()) {
             throw HttpException.unauthorized("User is not authenticated");
         }
         return (RevevueUserDetail) auth.getPrincipal();

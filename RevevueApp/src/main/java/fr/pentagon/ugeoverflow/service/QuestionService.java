@@ -159,7 +159,6 @@ public class QuestionService {
     }
     @Transactional
     public ReviewQuestionResponseDTO addReview(QuestionReviewCreateDTO questionReviewCreateDTO) {
-        logger.info("test");
         var userQuestion = QuestionService.findQuestionFromId(userRepository, questionReviewCreateDTO.userId(), questionRepository, questionReviewCreateDTO.questionId());
         var user = userQuestion.user();
         var question = userQuestion.question();
