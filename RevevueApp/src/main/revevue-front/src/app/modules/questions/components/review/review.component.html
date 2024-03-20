@@ -4,8 +4,8 @@
             <th>
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span>
-                        <b>{{ review.author }}</b>, {{ score(review) }}
-                        , {{ review.creationDate | date:'dd/MM/yyyy, HH:mm' }}
+                        <b>{{ review.author }}</b>, {{ score(review) }},
+                        {{ review.creationDate | date:'dd/MM/yyyy, HH:mm' }}
                     </span>
 
                     <div style="display: flex; align-items: center; column-gap: 10px;">
@@ -50,8 +50,8 @@
                             <table class="reviewTable">
                                 <tr>
                                     <th>
-                                        <b>{{ subReview.author }}</b>, {{ score(subReview) }}
-                                        , {{ subReview.creationDate | date:'dd/MM/yyyy, HH:mm' }}
+                                        <b>{{ subReview.author }}</b>, {{ score(subReview) }},
+                                        {{ subReview.creationDate | date:'dd/MM/yyyy, HH:mm' }}
                                     </th>
                                 </tr>
                                 <tr>
