@@ -94,7 +94,7 @@ public class UserTestProvider {
         questionRepository.save(entity7);
         questionRepository.save(entity8);
 
-        users.get(0).addQuestion(entity);
+        users.getFirst().addQuestion(entity);
         user1.addQuestion(entity3);
         user1.addQuestion(entity4);
         user1.addQuestion(entity2);
@@ -150,7 +150,7 @@ public class UserTestProvider {
         questionRepository.save(entity7);
         questionRepository.save(entity8);
 
-        users.get(0).addQuestion(entity);
+        users.getFirst().addQuestion(entity);
         user1.addQuestion(entity3);
         user1.addQuestion(entity4);
         user1.addQuestion(entity2);
@@ -225,7 +225,7 @@ public class UserTestProvider {
         questionRepository.save(entity7);
         questionRepository.save(entity8);
 
-        users.get(0).addQuestion(entity);
+        users.getFirst().addQuestion(entity);
         user1.addQuestion(entity3);
         user1.addQuestion(entity4);
         user1.addQuestion(entity2);

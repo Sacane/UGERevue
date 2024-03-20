@@ -173,7 +173,7 @@ class QuestionControllerTest {
   }
 
   @Test
-  @DisplayName("Add review to from a negative questionId should send badRequest")
+  @DisplayName("Add review to a negative questionId should send badRequest")
   void addReviewWhenQuestionIdIsNegative() throws Exception {
     userTestProvider.addSomeUserIntoDatabase();
     loginTestService.login(new CredentialsDTO("loginSacane", "SacanePassword"));
@@ -259,7 +259,7 @@ class QuestionControllerTest {
     @Test
     @DisplayName("Get question from the user connected (with 0 question)")
     void getQuestionOfCurrentUserConnected() throws Exception {
-      var userDTO = userService.register(new UserRegisterDTO("test1", "test@gmail.com", "test1", "password"));
+      userService.register(new UserRegisterDTO("test1", "test@gmail.com", "test1", "password"));
       loginTestService.login(new CredentialsDTO("test1", "password"));
       questionMVC.perform(MockMvcRequestBuilders.get(Routes.Question.CURRENT_USER)
               .contentType(MediaType.APPLICATION_JSON))
