@@ -1,5 +1,6 @@
 import {Component, ViewEncapsulation, inject} from '@angular/core';
 import {UserService} from "../../services/user.service";
+import {ProfileModelDTO, ReviewWithTitleAndIdDTO, SimpleQuestion} from "../../models/profile.model";
 
 @Component({
   selector: 'app-profile-other',
@@ -10,5 +11,25 @@ import {UserService} from "../../services/user.service";
 export class ProfileOtherComponent {
     userService = inject(UserService)
 
+    profile: ProfileModelDTO;
+    reviews: ReviewWithTitleAndIdDTO[];
+    questions: SimpleQuestion[];
 
+    ngOnInit(): void {
+        this.loadProfile();
+        this.loadReviews();
+        this.loadQuestions();
+    }
+
+    loadProfile() {
+
+    }
+
+    loadReviews() {
+
+    }
+
+    loadQuestions() {
+
+    }
 }
