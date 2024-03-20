@@ -48,11 +48,11 @@ public class QuestionController {
     return ok(questionService.getQuestions(searchQuestionDTO.questionLabelSearch(), searchQuestionDTO.usernameSearch()));
   }
 
-    @GetMapping(Routes.Question.CURRENT_USER)
-    public ResponseEntity<List<QuestionDTO>> getAllQuestionsFromCurrentUser() {
-        var user = AuthenticationChecker.checkAuthentication();
-        return ResponseEntity.ok(questionService.getQuestionsFromCurrentUser(user.getUsername()));
-    }
+  @GetMapping(Routes.Question.CURRENT_USER)
+  public ResponseEntity<List<QuestionDTO>> getAllQuestionsFromCurrentUser() {
+    var user = AuthenticationChecker.checkAuthentication();
+    return ResponseEntity.ok(questionService.getQuestionsFromUserByLogin(user.getUsername()));
+  }
 
   @PostMapping(
       value = Routes.Question.ROOT
@@ -87,25 +87,27 @@ public class QuestionController {
 
     return ok(questionService.findByIdWithVotes(user, questionId));
   }
-    @PostMapping(value = Routes.Question.ROOT + "/{questionId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<QuestionUpdateResponseDTO> updateQuestion(@PathVariable(name = "questionId") long questionId,
-                                                                    @RequestPart(value = "description", required = false) @Nullable String description,
-                                                                    @RequestPart(value = "testFile", required = false) @Nullable MultipartFile testFile) {
-        var user = AuthenticationChecker.checkAuthentication();
-        try {
-          return ok(questionService.update(user.id(), questionId, new QuestionUpdateDTO(description, (testFile != null) ? testFile.getBytes() : null, (testFile != null) ? testFile.getOriginalFilename() : null)));
-        }catch (IOException e){
-          throw HttpException.badRequest("Erreur lors de l'ouverture du fichier de test");
-        }
+
+  @PostMapping(value = Routes.Question.ROOT + "/{questionId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<QuestionUpdateResponseDTO> updateQuestion(@PathVariable(name = "questionId") long questionId,
+                                                                  @RequestPart(value = "description", required = false) @Nullable String description,
+                                                                  @RequestPart(value = "testFile", required = false) @Nullable MultipartFile testFile) {
+    var user = AuthenticationChecker.checkAuthentication();
+    try {
+      return ok(questionService.update(user.id(), questionId, new QuestionUpdateDTO(description, (testFile != null) ? testFile.getBytes() : null, (testFile != null) ? testFile.getOriginalFilename() : null)));
+    } catch (IOException e) {
+      throw HttpException.badRequest("Erreur lors de l'ouverture du fichier de test");
     }
+  }
+
   @PostMapping(Routes.Question.ROOT + "/reviews")
   @RequireUser
   public ResponseEntity<ReviewQuestionResponseDTO> addReview(@Valid @RequestBody QuestionReviewCreateBodyDTO questionReviewCreateBodyDTO, BindingResult bindingResult) {
     LOGGER.info("review => " + questionReviewCreateBodyDTO);
     var userDetail = AuthenticationChecker.checkAuthentication();
-      if(bindingResult.hasErrors()) {
-          throw HttpException.badRequest("La review est invalide");
-      }
+    if (bindingResult.hasErrors()) {
+      throw HttpException.badRequest("La review est invalide");
+    }
     return ok(questionService.addReview(new QuestionReviewCreateDTO(userDetail.id(), questionReviewCreateBodyDTO.questionId(), questionReviewCreateBodyDTO.content(), questionReviewCreateBodyDTO.lineStart(), questionReviewCreateBodyDTO.lineEnd(), questionReviewCreateBodyDTO.tags())));
   }
 

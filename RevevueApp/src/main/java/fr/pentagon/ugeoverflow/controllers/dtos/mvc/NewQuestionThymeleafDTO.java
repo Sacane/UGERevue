@@ -1,4 +1,4 @@
-package fr.pentagon.ugeoverflow.controllers.dtos.thymleaf;
+package fr.pentagon.ugeoverflow.controllers.dtos.mvc;
 
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.NewQuestionDTO;
 import jakarta.validation.constraints.NotBlank;
@@ -23,9 +23,9 @@ public record NewQuestionThymeleafDTO(
         title,
         description,
         javaFile.getBytes(),
-            (testFile != null) ? testFile.getBytes() : null,
+        (testFile != null) ? testFile.getBytes() : null,
         javaFile.getOriginalFilename(),
-            (testFile != null) ? testFile.getOriginalFilename(): null
+        (testFile != null) ? testFile.getOriginalFilename() : null
     );
   }
 }

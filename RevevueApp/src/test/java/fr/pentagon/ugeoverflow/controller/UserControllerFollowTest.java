@@ -6,6 +6,8 @@ import fr.pentagon.ugeoverflow.controllers.dtos.requests.UserRegisterDTO;
 import fr.pentagon.ugeoverflow.controllers.rest.UserController;
 import fr.pentagon.ugeoverflow.exception.HttpExceptionHandler;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
+import fr.pentagon.ugeoverflow.service.QuestionService;
+import fr.pentagon.ugeoverflow.service.ReviewService;
 import fr.pentagon.ugeoverflow.service.UserService;
 import fr.pentagon.ugeoverflow.testutils.LoginTestService;
 import fr.pentagon.ugeoverflow.utils.Routes;
@@ -36,10 +38,14 @@ public class UserControllerFollowTest {
   private UserService userService;
   @Autowired
   private LoginTestService loginTestService;
+  @Autowired
+  private QuestionService questionService;
+  @Autowired
+  private ReviewService reviewService;
 
   @BeforeEach
   void setUp() {
-    mockMvc = MockMvcBuilders.standaloneSetup(new UserController(userService, userRepository))
+    mockMvc = MockMvcBuilders.standaloneSetup(new UserController(userService, userRepository, questionService, reviewService))
         .setControllerAdvice(new HttpExceptionHandler())
         .build();
   }
@@ -78,7 +84,7 @@ public class UserControllerFollowTest {
 
   @Test
   @DisplayName("Following while not connected")
-  //@WithMockUser
+    //@WithMockUser
   void testFollowNotConnected() throws Exception {
     mockMvc.perform(post(Routes.User.FOLLOW + "/" + 1))
         .andExpect(MockMvcResultMatchers.status().isUnauthorized());
