@@ -37,7 +37,10 @@ For all this section, the ```mvn``` command line instruction can be replace by t
 
 In dev mode you can either launch the packaged jar in your local environment or in your favorite IDEA (or eclipse) by loading a maven project.
 
+You must run the jar or your environment with the dev profile (--spring.active.profiles=dev)
+
 To run the front you can go to the ```RevevueApp/src/main/revevue-front/package.json``` file and run the ```ng serve``` command. This will launch the front server listening into the 4200 port.
+
 
 
 ### For deployment
