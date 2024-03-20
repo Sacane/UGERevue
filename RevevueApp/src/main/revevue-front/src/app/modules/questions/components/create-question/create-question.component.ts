@@ -17,11 +17,7 @@ export class CreateQuestionComponent implements OnInit {
 
     ngOnInit(): void {
         if(this.loginService.isLogin()) {
-            this.loginService.isLogged(() => {
-            }, err => {
-                this.loginService.logout().subscribe()
-                this.router.navigateByUrl('/login').then()
-            })
+            this.loginService.isLogged()
         }
     }
 

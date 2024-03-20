@@ -26,10 +26,7 @@ export class HomeComponent implements OnInit {
 
     ngOnInit(): void {
         if (this.isLogged()) {
-            this.loginService.isLogged(()  => {}, err => {
-                this.loginService.logout().subscribe()
-                this.router.navigateByUrl('/login').then()
-            })
+            this.loginService.isLogged()
             this.questions$ = concat(
                 of({ lines: [], loading: true }),
                 this.questionService.getQuestionsFromFollowers().pipe(
