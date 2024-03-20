@@ -12,12 +12,6 @@
 </head>
 
 <body>
-<script>
-    function respond(row) {
-        const reviewId = row.getAttribute('data-review-id');
-        window.location.href = '/light/reviews/answer/' + reviewId;
-    }
-</script>
 
 <header th:replace="~{fragments/header :: header}">
     <div class="site-identity">
@@ -39,25 +33,17 @@
         </ul>
     </div>
     <div class="content">
-        <div class="content">
-            <h1 th:text="${review.author}"></h1>
-            <div th:utext="${content}"></div>
-            <div class="cited-code" th:if="${review.citedCode}">
-                <h4>Cited Code:</h4>
-                <pre><code class="language-java" th:text="${review.citedCode}"></code></pre>
+        <h2>Répondre à une revue</h2>
+        <form method="post" th:action="@{/light/reviews/answer}" th:object="${request}">
+            <input name="reviewId" th:value="${reviewId}" type="hidden"/>
+            <div class="form-group">
+                <label for="content">Contenu de la revue :</label>
+                <textarea class="form-control" id="content" name="content" required th:field="*{content}"></textarea>
             </div>
-            <button class="btn btn-primary" onclick="respond(this)" th:data-review-id="${review.id}">Répondre</button>
-            <div class="sub-review-list">
-                <h2>Sub Reviews:</h2>
-                <div class="sub-review" th:each="subReview : ${subReviews}">
-                    <a class="sub-review-link" th:href="@{'../../light/reviews/' + ${subReview.id}}">
-                        <div class="sub-review-author" th:text="${subReview.author}"></div>
-                        <div class="sub-review-content" th:utext="${subReview.content}"></div>
-                    </a>
-                </div>
-            </div>
-        </div>
+            <button class="btn btn-primary" type="submit">Répondre</button>
+        </form>
     </div>
+
 </main>
 
 <footer th:replace="~{fragments/footer :: footer}">
