@@ -10,7 +10,7 @@ mvn package
 
 echo "Etape 2 : Création de l'image Docker"
 if ! docker ps -a --format '{{.Image}}' | grep -q "$dockerImageName"; then
-    docker build -t "$dockerImageName" -f .
+    docker build -t "$dockerImageName" .
 else
     echo "L'image Docker existe déjà."
 fi
