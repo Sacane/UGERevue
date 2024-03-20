@@ -49,10 +49,10 @@ To deploy you must follow the *build section*, specially for the docker-part.
 
 After packaging the jars and make sure that the docker container runs your micro service, you can run the following command : 
 ```sh
-java -jar /path/to/your/RevevueApp-0.0.1-SNAPSHOT.jar --spring.active.profiles=prod
+java -jar /path/to/your/RevevueApp-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
 ```
 
-*Beware the --spring.active.profiles is necessary to specify that you are running your application in production mode.*
+*Beware the --spring.profiles.active=prod is necessary to specify that you are running your application in production mode.*
 
 ***DO NOT*** deploy the microservice without using a docker container, with it you servers are prevent for any future security issues using coding injection.
 
