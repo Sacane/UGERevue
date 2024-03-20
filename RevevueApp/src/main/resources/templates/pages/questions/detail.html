@@ -71,6 +71,7 @@
             <button class="button" onclick="gotoCreateReview(this)" th:data-question-id="${question.id}">Créer une
                 Review
             </button>
+            <p th:if="${question.testResults()}" th:text="${question.testResults()}"></p>
             <div class="review-section">
                 <h2>Reviews</h2>
                 <div th:each="review : ${reviews}">

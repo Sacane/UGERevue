@@ -23,7 +23,6 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Configuration
 @EnableMethodSecurity
-@EnableScheduling
 public class SecurityConfig {
   @Bean
   public PasswordEncoder passwordEncoder() {
