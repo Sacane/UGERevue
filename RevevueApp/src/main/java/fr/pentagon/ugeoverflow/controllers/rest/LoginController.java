@@ -25,7 +25,7 @@ public class LoginController {
   public ResponseEntity<LoginResponseDTO> login(@Valid @RequestBody CredentialsDTO credentialsDTO, HttpServletRequest request, HttpServletResponse response) {
     return ResponseEntity.ok(
         loginManager.login(credentialsDTO, request, response)
-            .orElseThrow(() -> HttpException.unauthorized("Bad credentials"))
+            .orElseThrow(() -> HttpException.unauthorized("Le nom de compte et le mot de passe ne correspondent pas"))
     );
   }
 
