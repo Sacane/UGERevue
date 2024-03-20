@@ -38,7 +38,7 @@
             <input name="questionId" th:value="${questionId}" type="hidden"/>
             <div class="form-group">
                 <label for="content">Contenu de la revue :</label>
-                <textarea class="form-control" id="content" name="content" required th:field="*{content}"></textarea>
+                <input class="form-control" id="content" name="content" required th:text="*{content}"></input>
             </div>
             <div class="form-group">
                 <label for="lineStart">Ligne de début :</label>

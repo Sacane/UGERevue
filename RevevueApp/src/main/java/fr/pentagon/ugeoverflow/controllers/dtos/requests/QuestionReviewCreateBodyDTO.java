@@ -15,6 +15,7 @@ public record QuestionReviewCreateBodyDTO(
         @Nullable @PositiveOrZero(message = "La ligne de fin doit être positive") Integer lineEnd,
         List<String> tags) {
   public QuestionReviewCreateBodyDTO {
+    if(content != null) content = content.replace("<script>", "");
     if (tags == null) {
       tags = List.of();
     }

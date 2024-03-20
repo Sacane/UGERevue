@@ -44,7 +44,7 @@
     </div>
     <div class="content">
         <h1 th:text="${question.title}"></h1>
-        <p th:utext="${question.questionContent}"></p>
+        <p th:text="${question.questionContent}"></p>
         <div class="detail-container">
             <div class="container">
                 <div class="code-container">
@@ -77,7 +77,7 @@
                 <div th:each="review : ${reviews}">
                     <div class="review-container">
                         <div class="review-author" th:text="${review.author}">Author</div>
-                        <div class="review-content" th:utext="${review.content}">Review Content</div>
+                        <div class="review-content" th:text="${review.content}">Review Content</div>
                         <div th:if="${review.citedCode}">
                             <pre><code class="review-cited-code language-java"
                                        th:text="${review.citedCode}">Cited Code</code></pre>
