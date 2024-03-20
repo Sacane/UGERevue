@@ -16,7 +16,13 @@ export class CreateQuestionComponent implements OnInit {
     private loginService = inject(LoginService)
 
     ngOnInit(): void {
-        this.loginService.isLogged()
+        if(this.loginService.isLogin()) {
+            this.loginService.isLogged(() => {
+            }, err => {
+                this.loginService.logout().subscribe()
+                this.router.navigateByUrl('/login').then()
+            })
+        }
     }
 
     form = new FormGroup({
