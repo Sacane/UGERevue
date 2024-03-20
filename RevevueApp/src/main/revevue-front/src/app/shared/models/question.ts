@@ -14,7 +14,6 @@ export interface Question {
     downvotes?: number;
     vote?: boolean | null;
 }
-//TODO rajouter les tags plus tard
 export interface SimpleQuestion {
     id: number,
     title: string,

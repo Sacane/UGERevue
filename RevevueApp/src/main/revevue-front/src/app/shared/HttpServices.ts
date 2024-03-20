@@ -1,4 +1,4 @@
-import {Injectable, inject} from '@angular/core';
+import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {catchError, Observable, switchMap, tap, throwError} from 'rxjs';
 import {UserCredentials, UserFollowInfo, UserRegister} from "./models-in";
@@ -105,7 +105,7 @@ export class LoginService {
         console.error(err)
     }) {
         return this.http.get<UserFollowInfo[]>(this.ROOT, {headers: this.HEADERS})
-            .pipe(tap(data => console.log('Data received:', data)),
+            .pipe(tap(data => {}),
                 catchError(err => {
                     return throwError(() => {
                         onError(err);
@@ -118,7 +118,6 @@ export class LoginService {
     }) {
         return this.http.post(this.FOLLOW + '/' + id, null, {headers: this.HEADERS})
             .pipe(
-                tap(response => console.log('Response from server:', response)),
                 catchError(err => {
                     return throwError(() => {
                         onError(err);

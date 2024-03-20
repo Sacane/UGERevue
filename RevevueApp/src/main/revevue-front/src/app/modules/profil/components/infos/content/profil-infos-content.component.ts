@@ -2,8 +2,8 @@ import {AfterViewInit, Component, EventEmitter, Input, Output, ViewEncapsulation
 import {UserInfo} from '../../../models/UserInfo';
 import {UserPasswordUpdate} from '../../../models/UserPasswordUpdate';
 import {FormControl, Validators} from '@angular/forms';
-import { UserService } from '../../../services/user.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import {UserService} from '../../../services/user.service';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
     selector: 'app-profil-infos-content',

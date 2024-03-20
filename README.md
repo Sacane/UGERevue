@@ -64,3 +64,5 @@ In localhost, your server run now on the following link : http://localhost:8080/
 - USERNAME_DB - Username of the database.
 - PASSWORD_DB - Password of the database.
 - CONSOLE_H2 - In the case you're using H2, boolean to set the console, false by default.
+
+**Warn** If you want to run the tests you must stop the docker container (and free the 7777 port ip)

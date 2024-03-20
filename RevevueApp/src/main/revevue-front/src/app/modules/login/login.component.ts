@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation, inject} from '@angular/core';
+import {Component, inject, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {LoginService} from "../../shared/HttpServices";
 import {Router} from "@angular/router";
