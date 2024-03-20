@@ -1,94 +1,109 @@
 
 .wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 80em;
+
+  .dialog-content {
+    flex-grow: 1;
+
+    .review-create-form {
+      display: flex;
+      flex-direction: column;
+
+      .popover {
+        width: 10%;
+
+        &:hover {
+          background-color: #2c3e50;
+          color: white;
+        }
+      }
+    }
+
+    .content-field {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      overflow-y: scroll;
+      max-height: 300px;
+    }
+
+    .add-tag-button {
+      width: 30%;
+    }
+  }
+
+  .review-suggestion {
+    flex-grow: 1;
     display: flex;
-    width: 100%;
-    .dialog-content{
-        flex-grow: 1;
-        .review-create-form{
-            display: flex;
-            flex-direction: column;
-            .popover{
-                width: 10%;
-                &:hover{
-                    background-color: #2c3e50;
-                    color: white;
-                }
-            }
-        }
-        .content-field {
-            display: flex;
-            flex-direction: column;
-        }
-        .tag-list {
-            display: flex;
-            flex-wrap: wrap;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            overflow-y: scroll;
-            max-height: 300px;
-        }
-        .add-tag-button{
-            width: 30%;
-        }
-    }
+    flex-direction: column;
+    justify-content: center;
 
-    .review-suggestion{
-        flex-grow: 1;
+    .selfTags {
+      display: flex;
+
+      .tag-card {
+        width: 20%;
+        background-color: #fff;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+        margin: 8px;
+        padding: 8px;
         display: flex;
-        flex-direction: column;
-        .selfTags{
-            display: flex;
-            .tag-card {
-                width: 20%;
-                background-color: #fff;
-                border-radius: 4px;
-                box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-                margin: 8px;
-                padding: 8px;
-                display: flex;
-                justify-content: center;
-                align-items: center;
+        justify-content: center;
+        align-items: center;
 
-            }
-            .tag-card:hover {
-                transform: scale(1.1); /* Augmente la taille de 10% */
-                transition: transform 0.2s ease-in-out; /* Définis une transition fluide */
-                cursor: pointer;
-            }
-        }
-        .review-card {
-            background-color: #fff;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
-            margin: 16px;
-            padding: 16px;
-            overflow-y: scroll;
-            h2 {
-                margin-top: 0;
-                margin-bottom: 8px;
-            }
+      }
 
-            .review-container {
-                border-bottom: 1px solid #ddd;
-                padding: 8px 0;
-
-                b {
-                    font-weight: bold;
-                }
-
-                p {
-                    margin-top: 4px;
-                    margin-bottom: 0;
-                }
-            }
-        }
-        .review-card:hover {
-            transform: scale(1.05); /* Augmente la taille de 10% */
-            transition: transform 0.2s ease-in-out; /* Définis une transition fluide */
-            cursor: pointer;
-        }
+      .tag-card:hover {
+        transform: scale(1.1); /* Augmente la taille de 10% */
+        transition: transform 0.2s ease-in-out; /* Définis une transition fluide */
+        cursor: pointer;
+      }
     }
+
+    .review-card {
+      background-color: #fff;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+      margin: 16px;
+      padding: 16px;
+      overflow-y: scroll;
+
+      h2 {
+        margin-top: 0;
+        margin-bottom: 8px;
+      }
+
+      .review-container {
+        border-bottom: 1px solid #ddd;
+        padding: 8px 0;
+
+        b {
+          font-weight: bold;
+        }
+
+        p {
+          margin-top: 4px;
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    .review-card:hover {
+      transform: scale(1.05); /* Augmente la taille de 10% */
+      transition: transform 0.2s ease-in-out; /* Définis une transition fluide */
+      cursor: pointer;
+    }
+  }
 }
 
 
