@@ -5,22 +5,6 @@
                 <div class="questionSection">
                     <div class="title">
                         <span>{{ question()?.title }}</span>
-                        @if (canDelete()) {
-                            <div style="display: flex; align-items: center; column-gap: 10px;">
-                                <button mat-raised-button color="primary" (click)="deleteQuestion()"
-                                        [disabled]="deleting">
-                                    <div style="display: flex; column-gap: 10px;">
-                                        <span>Delete question</span>
-                                        @if (deleting) {
-                                            <mat-spinner [diameter]="20"></mat-spinner>
-                                        }
-                                    </div>
-                                </button>
-                                <button mat-mini-fab color="primary" (click)="update()">
-                                    <mat-icon>edit</mat-icon>
-                                </button>
-                            </div>
-                        }
                     </div>
                     <p style="white-space: pre-wrap; overflow-wrap: break-word">
                         {{ question()?.questionContent }}
@@ -39,6 +23,24 @@
                 </div>
                 <div class="stats">
                     <mat-list>
+                        @if (canDelete()) {
+                            <mat-list-item>
+                                <div class="editSection">
+                                    <button mat-raised-button color="primary" (click)="deleteQuestion()"
+                                            [disabled]="deleting">
+                                        <div style="display: flex; column-gap: 10px;">
+                                            <span>Delete question</span>
+                                            @if (deleting) {
+                                                <mat-spinner [diameter]="20"></mat-spinner>
+                                            }
+                                        </div>
+                                    </button>
+                                    <button mat-mini-fab color="primary" (click)="update()">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                </div>
+                            </mat-list-item>
+                        }
                         <mat-list-item>
                             <div>
                                 <button mat-icon-button
