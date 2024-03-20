@@ -34,13 +34,21 @@
                     </button>
                 }
             </mat-form-field>
-            <button (click)="onSubmit()" [disabled]="!form.valid" color="primary" mat-button mat-raised-button>Poster
-            </button>
+            @if(!isLoading()){
+                <button (click)="onSubmit()" [disabled]="!form.valid" color="primary" mat-button mat-raised-button>Poster
+                </button>
+            }
             <input #javaClassUpload (change)="onJavaClassPicked($event)" style="display: none" type="file">
             <input #testClassUpload (change)="onTestClassPicked($event)" style="display: none" type="file">
         </form>
     </div>
-    <button (click)="gotoQuestion()" mat-button>
-        Retour à la liste des questions
-    </button>
+    @if(isLoading()){
+        <mat-spinner></mat-spinner>
+        <p>Création de la question et lancement des tests...</p>
+    } @else {
+        <button  (click)="gotoQuestion()" mat-button>
+            Retour à la liste des questions
+        </button>
+    }
 </div>
+

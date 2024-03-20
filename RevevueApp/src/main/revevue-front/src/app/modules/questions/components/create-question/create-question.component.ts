@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewEncapsulation} from '@angular/core';
+import {Component, OnInit, signal, ViewEncapsulation} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {QuestionService} from "../../../../shared/question.service";
 import {Router} from "@angular/router";
@@ -19,7 +19,7 @@ export class CreateQuestionComponent implements OnInit {
         javaClass: new FormControl<File | null>(null, [Validators.required]),
         testClass: new FormControl<File | null>(null),
     });
-
+    public isLoading = signal(false)
     constructor(private loginService: LoginService, private toastService: ToastrService,
                 private questionService: QuestionService, private router: Router) {
     }
@@ -45,12 +45,14 @@ export class CreateQuestionComponent implements OnInit {
 
     onSubmit() {
         if (this.form.status === 'VALID') {
+            this.isLoading.set(true)
             this.questionService.createQuestion({
                 title: this.form.value.questionTitle as string,
                 description: this.form.value.questionContent as string,
                 javaFile: this.form.value.javaClass as File,
                 testFile: this.form.value.testClass as File | undefined
             }, err => this.toastService.error(err.error.message)).subscribe(questionId => {
+                this.isLoading.set(false)
                 this.router.navigateByUrl('/questions/' + questionId).then()
             });
         }
