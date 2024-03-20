@@ -39,6 +39,11 @@
     align-items: center;
     width: 8%;
     min-width: 60px;
+    button{
+        &:hover{
+            cursor: auto;
+        }
+    }
 }
 
 .commentSection {
