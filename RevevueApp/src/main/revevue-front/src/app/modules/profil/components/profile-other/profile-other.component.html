@@ -1,8 +1,8 @@
 <div *ngIf="profile">
     <h1>{{ profile.username }}</h1>
-    <p>{{ profile.role }}</p>
+    <p>{{ profile.role | role }}</p>
 
-    <h2>Mes critiques</h2>
+    <h2>Revues</h2>
     <table>
         <thead>
         <tr>
@@ -17,12 +17,12 @@
             <td>{{ review.reviewId }}</td>
             <td>{{ review.reviewContent }}</td>
             <td>{{ review.questionTitle }}</td>
-            <td>{{ review.creationDate }}</td>
+            <td>{{ review.creationDate | date: 'dd/MM/yyyy' }}</td>
         </tr>
         </tbody>
     </table>
 
-    <h2>Mes questions</h2>
+    <h2>Questions</h2>
     <table>
         <thead>
         <tr>

@@ -13,11 +13,9 @@ import {Router} from "@angular/router";
 export class UsersComponent implements OnInit, AfterViewInit {
     userList: UserFollowInfo[] = [];
     usersFiltered: UserFollowInfo[] = [];
-    private readonly userService: LoginService = inject(LoginService)
-
     @ViewChild(MatPaginator) paginator!: MatPaginator;
-
     readonly pageSize = 9;
+    private readonly userService: LoginService = inject(LoginService)
     private currentPage = 0;
     private route = inject(Router)
 
@@ -39,9 +37,9 @@ export class UsersComponent implements OnInit, AfterViewInit {
 
     filter(event: Event): void {
         const query = (event.target as HTMLInputElement).value;
-        if(query.length==0){
+        if (query.length == 0) {
             this.usersFiltered = this.userList;
-        }else{
+        } else {
             this.usersFiltered = this.usersFiltered.filter(infos => infos.username.toLowerCase().includes(query.toLowerCase()));
         }
         this.paginator.firstPage();
@@ -52,7 +50,7 @@ export class UsersComponent implements OnInit, AfterViewInit {
         return this.usersFiltered.slice(startIndex, startIndex + this.pageSize);
     }
 
-    onPageChange(event: any) : void {
+    onPageChange(event: any): void {
         this.currentPage = event.pageIndex;
     }
 
@@ -65,11 +63,12 @@ export class UsersComponent implements OnInit, AfterViewInit {
         user.isFollowing = false;
         this.userService.unfollow(user.id).subscribe();
     }
-    isLogged(){
+
+    isLogged() {
         return this.userService.isLogin();
     }
-    gotoProfileUser(user: UserFollowInfo){
-        console.log('test=')
+
+    gotoProfileUser(user: UserFollowInfo) {
         this.route.navigateByUrl('/profile/' + user.id).then()
     }
 }

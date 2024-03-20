@@ -114,19 +114,19 @@ public class UserController {
     return ResponseEntity.ok(recommendedReview);
   }
 
-  @PostMapping(Routes.User.ROOT + "/{id:[0-9]+}" + "/profile")
+  @GetMapping(Routes.User.ROOT + "/{id:[0-9]+}" + "/profile")
   @RequireUser
   public ResponseEntity<UserInfoSecureDTO> getUserProfile(@PathVariable("id") long id) {
     return ResponseEntity.of(userService.getUserInfoSecure(id));
   }
 
-  @PostMapping(Routes.User.ROOT + "/{id:[0-9]+}" + "/questions")
+  @GetMapping(Routes.User.ROOT + "/{id:[0-9]+}" + "/questions")
   @RequireUser
   public ResponseEntity<List<QuestionDTO>> getUserQuestions(@PathVariable("id") long id) {
     return ResponseEntity.ok(questionService.getQuestionsFromUser(id));
   }
 
-  @PostMapping(Routes.User.ROOT + "/{id:[0-9]+}" + "/reviews")
+  @GetMapping(Routes.User.ROOT + "/{id:[0-9]+}" + "/reviews")
   @RequireUser
   public ResponseEntity<List<UserReviewDTO>> getUserReviews(@PathVariable("id") long id) {
     return ResponseEntity.ok(reviewService.getReviewsFromUser(id));
