@@ -50,11 +50,7 @@ export class CreateQuestionComponent implements OnInit {
                 description: this.form.value.questionContent as string,
                 javaFile: this.form.value.javaClass as File,
                 testFile: this.form.value.testClass as File | undefined
-            }).pipe(
-                catchError(err => {
-                    return throwError(() => this.toastService.error(err.error.message))
-                })
-            ).subscribe(questionId => {
+            }, err => this.toastService.error(err.error.message)).subscribe(questionId => {
                 this.router.navigateByUrl('/questions/' + questionId).then()
             });
         }

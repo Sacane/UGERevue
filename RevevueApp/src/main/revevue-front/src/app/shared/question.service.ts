@@ -1,5 +1,5 @@
 import {inject, Injectable} from "@angular/core";
-import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpHeaders} from "@angular/common/http";
 import {catchError, Observable, tap, throwError} from "rxjs";
 import {NewQuestionDTO} from "./models-out";
 import {Question, SimpleQuestion} from "./models/question";
@@ -16,12 +16,12 @@ export class QuestionService {
     private readonly SEARCH = this.ROOT + '/search'
     private client = inject(HttpClient)
 
-    public searchQuestion(label: string, username?: string, onError: (error: Error) => any = (err) => console.error(err)): Observable<SimpleQuestion[]> {
+    public searchQuestion(label: string, username?: string, onError: (error: HttpErrorResponse) => any = (err) => console.error(err)): Observable<SimpleQuestion[]> {
         return this.client.post<SimpleQuestion[]>(this.SEARCH, {questionLabelSearch: label, usernameSearch: username})
             .pipe(tap(), catchError(err => throwError(() => onError(err))))
     }
 
-    public createQuestion(newQuestionDTO: NewQuestionDTO, onError: (error: Error) => any = (err) => console.error(err)): Observable<number> {
+    public createQuestion(newQuestionDTO: NewQuestionDTO, onError: (error: HttpErrorResponse) => any = (err) => console.error(err)): Observable<number> {
         const formData = new FormData();
         formData.append(encodeURIComponent('title'), newQuestionDTO.title);
         formData.append(encodeURIComponent('description'), newQuestionDTO.description);
