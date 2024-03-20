@@ -1,5 +1,5 @@
 import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
-import {Review} from "../../models/review";
+import {Review, ReviewFromReview} from "../../models/review";
 import {LoginService} from '../../../../shared/HttpServices';
 import {MatDialog} from '@angular/material/dialog';
 import {ConfirmDialogComponent} from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -23,17 +23,22 @@ export class ReviewComponent implements OnInit {
         id: "", author: "", creationDate: '', content: "", downvotes: 0, reviews: [], upvotes: 0
     };
     @Output() onDelete: EventEmitter<void> = new EventEmitter();
-
-    private toastService = inject(ToastrService)
     canDelete: boolean = false;
     deleting: boolean = false;
     canUpdate: boolean = false;
+    private toastService = inject(ToastrService)
 
-    constructor(private userService: LoginService, private reviewService: ReviewService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) { }
+    constructor(private userService: LoginService, private reviewService: ReviewService, private router: Router, private snackBar: MatSnackBar, protected dialog: MatDialog) {
+    }
 
     ngOnInit(): void {
         this.canDelete = this.review.author === this.userService.getLogin() || this.userService.getRole() === Role.ADMIN;
         this.canUpdate = this.review.author === this.userService.getLogin()
+    }
+
+    score(review: Review | ReviewFromReview): string {
+        const score = review.upvotes - review.downvotes;
+        return `${score} point${score < -1 || score > 1 ? 's' : ''}`;
     }
 
     deleteReview(): void {
@@ -47,11 +52,11 @@ export class ReviewComponent implements OnInit {
             switchMap(confirm => {
                 if (confirm) {
                     return concat(
-                        of({ deleting: true }),
+                        of({deleting: true}),
                         this.reviewService.deleteReview(this.review.id).pipe(
                             catchError(err => {
                                 this.toastService.error(err.error.message)
-                                return of({ error: err });
+                                return of({error: err});
                             })
                         )
                     );
@@ -61,12 +66,10 @@ export class ReviewComponent implements OnInit {
         ).subscribe(response => {
             if (response && response.deleting) {
                 this.deleting = true;
-            }
-            else if (response && response.error) {
+            } else if (response && response.error) {
                 this.deleting = false;
                 this.snackBar.open('Une erreur est survenue pendant la suppression de la review', 'OK');
-            }
-            else {
+            } else {
                 this.onDelete.emit();
                 this.snackBar.open('La review a été supprimée', 'OK');
             }
@@ -78,12 +81,16 @@ export class ReviewComponent implements OnInit {
     }
 
     updateReview(): void {
-        this.dialog.open(ReviewDialogComponent, {data: {onQuestion: true, template: {
+        this.dialog.open(ReviewDialogComponent, {
+            data: {
+                onQuestion: true, template: {
                     content: this.review.content,
                     tags: this.review.tags,
                     lineStart: this.review.lineStart,
                     lineEnd: this.review.lineEnd
-                }}, disableClose: true}).afterClosed().pipe(
+                }
+            }, disableClose: true
+        }).afterClosed().pipe(
             switchMap(reviewValue => {
                 if (reviewValue) {
                     return this.reviewService.updateById(this.review.id, reviewValue.content, reviewValue.lineStart, reviewValue.lineEnd, reviewValue.tags).pipe(

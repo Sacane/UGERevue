@@ -1,0 +1,40 @@
+<div *ngIf="profile">
+    <h1>{{ profile.username }}</h1>
+    <p>{{ profile.role | role }}</p>
+
+    <h2>Revues</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Titre de la question</th>
+            <th>Date de création</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let review of reviews">
+            <td>{{ review.questionTitle }}</td>
+            <td>{{ review.creationDate | date: 'dd/MM/yyyy' }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <h2>Questions</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Titre</th>
+            <th>Date</th>
+            <th>Nombre de votes</th>
+            <th>Nombre de réponses</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let question of questions">
+            <td>{{ question.title }}</td>
+            <td>{{ question.date }}</td>
+            <td>{{ question.nbVotes }}</td>
+            <td>{{ question.nbAnswers }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,6 +1,6 @@
 <div class="wrapper">
     <div class="dialog-content">
-        <h2 mat-dialog-title align="center">Ajouter une revue</h2>
+        <h2 mat-dialog-title style="text-align: center">Ajouter une revue</h2>
         <mat-dialog-content>
             <form [formGroup]="form" class="review-create-form">
                 @if (data.onQuestion) {
@@ -24,7 +24,8 @@
                 <mat-form-field>
                     <mat-label>Contenu</mat-label>
                     <div class="content-field">
-                        <textarea #contentRef style="width: 100%; height: 200px;" matInput formControlName="content"></textarea>
+                        <textarea #contentRef formControlName="content" matInput
+                                  style="width: 100%; height: 200px;"></textarea>
                     </div>
                     @if (form.controls.content.hasError('required')) {
                         <mat-error>Required</mat-error>
@@ -35,88 +36,91 @@
                     <markdown [data]="form.value.content"></markdown>
                 </div>
             </form>
-        </mat-dialog-content>
-
-        <app-popever [text]="'Saisissez un ou plusieurs tag(s) pour votre revue !\n Utile pour pouvoir la retrouver facilement plus tard'"></app-popever>
-
-        <mat-dialog-actions align="center">
-            <button mat-button color="primary" (click)="close()">Annuler</button>
-            <button mat-raised-button [disabled]="!form.valid" color="primary" (click)="confirm()">Confirmer</button>
-        </mat-dialog-actions>
-
-        <form>
-            <mat-form-field class="chip-list">
-                <mat-label>Tags de la review</mat-label>
-                <mat-chip-grid #chipGrid aria-label="Tag selection">
-                    @for (tag of inputTags; track tag) {
-                        <mat-chip-row (removed)="remove(tag)">
-                            {{tag}}
-                            <button matChipRemove [attr.aria-label]="'remove ' + tag">
-                                <mat-icon>cancel</mat-icon>
-                            </button>
-                        </mat-chip-row>
-                    }
-                </mat-chip-grid>
-                <input placeholder="Ajouter un tag..." #inputTag [formControl]="tagCtrl"
-                [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
-                       [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                       (matChipInputTokenEnd)="add($event)"/>
-                <mat-autocomplete #auto="matAutocomplete"
-                                  (optionSelected)="selected($event)">
-                    @for(tag of filteredTag(); track tag){
-                        <mat-option [value]="tag">{{tag}}</mat-option>
-                    }
-                </mat-autocomplete>
-            </mat-form-field>
-        </form>
-    </div>
-    <div class="review-suggestion">
-        @if (selfTags().length > 0){
-            <h2 mat-dialog-title>Cliquer sur un tag pour récupérer les reviews concernés</h2>
-            <div class="selfTags">
-                @for(tag of selfTags(); track tag.tag){
-                    <div class="tag-card" (click)="searchTag(tag)">
-                        <p>{{tag.tag}}</p>
+            <app-popever
+                    [text]="'Saisissez un ou plusieurs tag(s) pour votre revue !\n Utile pour pouvoir la retrouver facilement plus tard'"></app-popever>
+            <form style="display: flex">
+                <mat-form-field class="chip-list" style="width: 100%">
+                    <mat-label>Tags de la review</mat-label>
+                    <mat-chip-grid #chipGrid aria-label="Tag selection">
+                        @for (tag of inputTags; track tag) {
+                            <mat-chip-row (removed)="remove(tag)">
+                                {{ tag }}
+                                <button matChipRemove [attr.aria-label]="'remove ' + tag">
+                                    <mat-icon>cancel</mat-icon>
+                                </button>
+                            </mat-chip-row>
+                        }
+                    </mat-chip-grid>
+                    <input #inputTag (matChipInputTokenEnd)="add($event)" [formControl]="tagCtrl"
+                           [matAutocomplete]="auto" [matChipInputFor]="chipGrid"
+                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                           placeholder="Ajouter un tag..."/>
+                    <mat-autocomplete #auto="matAutocomplete"
+                                      (optionSelected)="selected($event)">
+                        @for (tag of filteredTag(); track tag) {
+                            <mat-option [value]="tag">{{ tag }}</mat-option>
+                        }
+                    </mat-autocomplete>
+                </mat-form-field>
+            </form>
+            <div class="review-suggestion">
+                @if (selfTags().length > 0) {
+                    <h2 mat-dialog-title>Cliquer sur un tag pour récupérer les reviews concernés</h2>
+                    <div class="selfTags">
+                        @for (tag of selfTags(); track tag.tag) {
+                            <div class="tag-card" (click)="searchTag(tag)">
+                                <p>{{ tag.tag }}</p>
+                            </div>
+                        }
                     </div>
                 }
+                <div style="display: flex; justify-content: center; align-content: center; gap: 20px;">
+                    <mat-form-field>
+                        <input #tagSearchBar (keyup)="updateInputTag($event)" matInput placeholder="Rechercher par tag"
+                               type="text">
+                    </mat-form-field>
+                    <button (click)="searchReviewsByTag()" mat-raised-button>Rechercher</button>
+                </div>
+                @if (reviews().length > 0) {
+                    @for (review of reviews(); track review.reviewContent) {
+                        <div class="review-card" (click)="handleReviewClick(review)">
+                            <div class="review-container">
+                                <b>Question : {{ review.questionTitle }}</b>
+                                <p>{{ review.reviewContent }}</p>
+                            </div>
+                        </div>
+                    }
+                }
             </div>
-        }
-        <div style="display: flex; align-items: center">
-            <mat-form-field>
-                <input matInput #tagSearchBar type="text" placeholder="Rechercher par tag" (keyup)="updateInputTag($event)">
-            </mat-form-field>
-            <button mat-raised-button (click)="searchReviewsByTag()">Rechercher</button>
-        </div>
-        @if (reviews().length > 0) {
-            @for(review of reviews(); track review.reviewContent) {
-                <div class="review-card" (click)="handleReviewClick(review)">
-                    <div class="review-container">
-                        <b>Question : {{ review.questionTitle }}</b>
-                        <p>{{ review.reviewContent }}</p>
-                    </div>
-                </div>
-            }
-        }
-    </div>
-    @if (data.onQuestion) {
-        <div style="padding: 10px;">
-            @if (recommendedReviews$ | async; as recommendedReviews) {
-                <div style="display: flex; flex-direction: column; row-gap: 5px;">
-                    <span style="font-weight: 500;">Recommandations:</span>
+            @if (data.onQuestion) {
+                <div style="padding: 10px;">
+                    @if (recommendedReviews$ | async; as recommendedReviews) {
+                        <div style="display: flex; flex-direction: column; row-gap: 5px;">
+                            <span style="font-weight: 500;">Recommandations:</span>
 
-                    @for (recommendedReview of recommendedReviews; track recommendedReview) {
-                        <mat-chip style="background-color: rgb(123, 156, 255);" (click)="fillContent(recommendedReview.content)">
-                            {{ recommendedReview.content }}
-                        </mat-chip>
-                    }
-                    @empty {
-                        Aucune recommandation
+                            @for (recommendedReview of recommendedReviews; track recommendedReview) {
+                                <mat-chip style="background-color: rgb(123, 156, 255);"
+                                          (click)="fillContent(recommendedReview.content)">
+                                    {{ recommendedReview.content }}
+                                </mat-chip>
+                            } @empty {
+                                Aucune recommandation
+                            }
+                        </div>
+                    } @else {
+                        <mat-spinner></mat-spinner>
                     }
                 </div>
             }
-            @else {
-                <mat-spinner></mat-spinner>
-            }
-        </div>
-    }
+        </mat-dialog-content>
+
+
+        <mat-dialog-actions align="center">
+            <button (click)="close()" color="primary" mat-button>Annuler</button>
+            <button (click)="confirm()" [disabled]="!form.valid" color="primary" mat-raised-button>Confirmer</button>
+        </mat-dialog-actions>
+
+
+    </div>
+
 </div>

@@ -4,11 +4,10 @@ import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.AuthenticationChecker;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.*;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.ReviewContentDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserFollowingDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserIdDTO;
-import fr.pentagon.ugeoverflow.controllers.dtos.responses.UserInfoDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.responses.*;
 import fr.pentagon.ugeoverflow.repository.UserRepository;
+import fr.pentagon.ugeoverflow.service.QuestionService;
+import fr.pentagon.ugeoverflow.service.ReviewService;
 import fr.pentagon.ugeoverflow.service.UserService;
 import fr.pentagon.ugeoverflow.utils.Routes;
 import jakarta.validation.Valid;
@@ -25,10 +24,14 @@ public class UserController {
   private static final Logger LOGGER = Logger.getLogger(UserController.class.getName());
   private final UserService userService;
   private final UserRepository userRepository;
+  private final QuestionService questionService;
+  private final ReviewService reviewService;
 
-  public UserController(UserService userService, UserRepository userRepository) {
+  public UserController(UserService userService, UserRepository userRepository, QuestionService questionService, ReviewService reviewService) {
     this.userService = Objects.requireNonNull(userService);
     this.userRepository = Objects.requireNonNull(userRepository);
+    this.questionService = Objects.requireNonNull(questionService);
+    this.reviewService = Objects.requireNonNull(reviewService);
   }
 
   @PostMapping(Routes.User.ROOT)
@@ -103,11 +106,26 @@ public class UserController {
   @RequireUser
   public ResponseEntity<List<ReviewContentDTO>> getRecommendedReview(@RequestBody @Valid QuestionUserIdDTO questionUserIdDTO) {
     var user = AuthenticationChecker.checkAuthentication();
-    if(questionUserIdDTO.questionContent() == null || questionUserIdDTO.questionContent().isBlank()){
+    if (questionUserIdDTO.questionContent() == null || questionUserIdDTO.questionContent().isBlank()) {
       LOGGER.info("empty string");
       return ResponseEntity.ok(List.of());
     }
     var recommendedReview = userService.getRecommendedReviewForQuestion(user.id(), questionUserIdDTO.questionContent());
     return ResponseEntity.ok(recommendedReview);
+  }
+
+  @GetMapping(Routes.User.ROOT + "/{id:[0-9]+}" + "/profile")
+  public ResponseEntity<UserInfoSecureDTO> getUserProfile(@PathVariable("id") long id) {
+    return ResponseEntity.of(userService.getUserInfoSecure(id));
+  }
+
+  @GetMapping(Routes.User.ROOT + "/{id:[0-9]+}" + "/questions")
+  public ResponseEntity<List<QuestionDTO>> getUserQuestions(@PathVariable("id") long id) {
+    return ResponseEntity.ok(questionService.getQuestionsFromUser(id));
+  }
+
+  @GetMapping(Routes.User.ROOT + "/{id:[0-9]+}" + "/reviews")
+  public ResponseEntity<List<UserReviewDTO>> getUserReviews(@PathVariable("id") long id) {
+    return ResponseEntity.ok(reviewService.getReviewsFromUser(id));
   }
 }

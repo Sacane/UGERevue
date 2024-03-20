@@ -1,7 +1,8 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component, ViewEncapsulation, inject} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {LoginService} from "../../shared/HttpServices";
 import {Router} from "@angular/router";
+import {ToastrService} from "ngx-toastr";
 
 @Component({
     selector: 'app-login',
@@ -10,6 +11,8 @@ import {Router} from "@angular/router";
     encapsulation: ViewEncapsulation.None
 })
 export class LoginComponent {
+
+    private toast = inject(ToastrService)
     loginForm = new FormGroup({
         accountName: new FormControl('', [Validators.required]),
         password: new FormControl('', [Validators.required])
@@ -23,7 +26,7 @@ export class LoginComponent {
             this.loginService.login({
                 login: this.loginForm.value.accountName as string,
                 password: this.loginForm.value.password as string
-            }).subscribe(result => {
+            }, err => this.toast.error(err.error.message)).subscribe(result => {
                 this.router.navigateByUrl("/home").then()
             })
         }

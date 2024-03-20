@@ -3,7 +3,7 @@ package fr.pentagon.ugeoverflow.controllers.mvc;
 import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
 import fr.pentagon.ugeoverflow.config.security.AuthenticationChecker;
-import fr.pentagon.ugeoverflow.controllers.dtos.thymleaf.NewQuestionThymeleafDTO;
+import fr.pentagon.ugeoverflow.controllers.dtos.mvc.NewQuestionThymeleafDTO;
 import fr.pentagon.ugeoverflow.service.QuestionService;
 import fr.pentagon.ugeoverflow.service.ReviewMarkdownService;
 import fr.pentagon.ugeoverflow.utils.MarkdownRenderer;
@@ -32,14 +32,14 @@ public class MvcQuestionController {
     this.markdownRenderer = markdownRenderer;
   }
 
-    @GetMapping("/{questionId}")
-    public String detail(@PathVariable("questionId") long questionId, Model model) {
-        var question = questionService.findById(questionId);
-        var reviews = reviewService.findReviewsByQuestionId(questionId);
-        model.addAttribute("question", question.withAnotherContent(markdownRenderer.markdownToHtml(question.questionContent())));
-        model.addAttribute("reviews", reviews);
-        return "pages/questions/detail";
-    }
+  @GetMapping("/{questionId}")
+  public String detail(@PathVariable("questionId") long questionId, Model model) {
+    var question = questionService.findById(questionId);
+    var reviews = reviewService.findReviewsByQuestionId(questionId);
+    model.addAttribute("question", question.withAnotherContent(markdownRenderer.markdownToHtml(question.questionContent())));
+    model.addAttribute("reviews", reviews);
+    return "pages/questions/detail";
+  }
 
   @PostMapping("/upvote/{questionId}")
   @RequireUser

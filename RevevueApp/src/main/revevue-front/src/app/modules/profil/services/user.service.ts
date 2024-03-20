@@ -7,6 +7,8 @@ import {SimpleQuestion} from "../../../shared/models/question";
 import {UserPasswordUpdate} from "../models/UserPasswordUpdate"
 import {UserFollowing} from "../models/UserFollowing";
 import {environment} from "../../../../environments/environment";
+import {UserInfoSecure} from "../models/UserInfoSecure";
+import {UserReview} from "../models/UserReview";
 
 @Injectable({
     providedIn: 'root'
@@ -36,7 +38,19 @@ export class UserService {
     }
 
     getRecommendedReviews(questionContent: string): Observable<any> {
-        return this.http.post<any>(environment.apiUrl + 'users/current/recommendedReview', { questionContent });
+        return this.http.post<any>(environment.apiUrl + 'users/current/recommendedReview', {questionContent});
+    }
+
+    getUserInfo(userId: number): Observable<UserInfoSecure> {
+        return this.http.get<UserInfoSecure>(environment.apiUrl + `users/${userId}/profile`);
+    }
+
+    getUserQuestions(userId: number): Observable<Array<SimpleQuestion>> {
+        return this.http.get<Array<SimpleQuestion>>(environment.apiUrl + `users/${userId}/questions`);
+    }
+
+    getUserReviews(userId: number): Observable<Array<UserReview>> {
+        return this.http.get<Array<UserReview>>(environment.apiUrl + `users/${userId}/reviews`);
     }
 }
 

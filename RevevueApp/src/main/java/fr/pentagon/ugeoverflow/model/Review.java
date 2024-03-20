@@ -12,6 +12,7 @@ public class Review {
     @Id
     @GeneratedValue
     private long id;
+    @Column(columnDefinition="text")
     private String content;
     @ManyToOne(fetch = FetchType.LAZY)
     private Question question;

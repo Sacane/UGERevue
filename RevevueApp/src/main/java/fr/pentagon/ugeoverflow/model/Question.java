@@ -16,6 +16,7 @@ public class Question {
     @GeneratedValue
     private long id;
     private String title;
+    @Column(columnDefinition="text")
     private String description;
     @Lob
     @Column(columnDefinition = "BLOB")

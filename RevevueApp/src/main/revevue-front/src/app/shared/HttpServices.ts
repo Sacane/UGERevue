@@ -47,7 +47,7 @@ export class LoginService {
         );
     }
 
-    public login(userCredentials: UserCredentials, onError: (error: Error) => any = (err) => {
+    public login(userCredentials: UserCredentials, onError: (error: HttpErrorResponse) => any = (err) => {
         console.error(err)
     }): Observable<UserConnectedDTO> {
         return this.http.post<UserConnectedDTO>(this.LOGIN, userCredentials, {headers: this.HEADERS}).pipe(

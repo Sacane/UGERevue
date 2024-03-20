@@ -27,7 +27,7 @@ For all this section, the ```mvn``` command line instruction can be replace by t
 - To download dependencies use the following command ```mvn clean install -U```
 - This project is divide in 2 sub-modules, one for the web application, the other for a micro services used by the main application. The following command line will generate the jars for each modules : ```mvn package```
 - After packaging your jars you must run the dockerFile into your environment with this command ```docker build -t <imageName> .```
-- Then run the following docker cmd to deploy in a container ```docker run -p 7777:7777 --add-host=<your_host> <imageName>``` by replacing "imageName" and "<your_host>" variables
+- Then run the following docker cmd to deploy in a container ```docker run -p 7777:7777 <imageName>``` by replacing "imageName" and "<your_host>" variables
 
 **We highly recommend you to use Docker even in a development environment, for security and reduce the margin of errors after deployment**
 
