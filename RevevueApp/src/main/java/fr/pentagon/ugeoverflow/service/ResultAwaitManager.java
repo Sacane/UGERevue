@@ -36,7 +36,7 @@ public class ResultAwaitManager {
         this.webClient = webClient;
     }
 
-    @Scheduled(fixedRate = 60 * 1_000 * 5)
+    @Scheduled(fixedDelayString = "${RETRY_MICRO_SERVICE_DELAY:300000}")
     private void retry() {
         logger.info("Retry test service...");
         synchronized (lock){
