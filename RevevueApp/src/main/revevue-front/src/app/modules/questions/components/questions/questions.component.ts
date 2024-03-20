@@ -35,4 +35,7 @@ export class QuestionsComponent {
     navigateTo(url: string): void {
         this.router.navigateByUrl(url).then();
     }
+    sortByDate() {
+
+    }
 }

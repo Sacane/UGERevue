@@ -9,13 +9,3 @@ export interface ReviewWithTitleAndIdDTO{
     questionTitle: string,
     creationDate: Date
 }
-
-export interface SimpleQuestion {
-    id: number,
-    title: string,
-    description: string,
-    userName: string,
-    date: string,
-    nbVotes: number,
-    nbAnswers: number
-}
