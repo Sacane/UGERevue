@@ -142,10 +142,6 @@ export class QuestionComponent {
         });
     }
 
-    test() {
-        console.log(this.question())
-    }
-
     vote(up: boolean): void {
         if (this.userService.isLogin()) {
             if (this.question()!!.vote === null || (this.question()!!.vote !== null && this.question()!!.vote !== up)) {

@@ -15,7 +15,6 @@ export class SearchQuestionsComponent implements OnInit {
     questions$: Observable<any[]>;
 
     ngOnInit(): void {
-        console.log('onInit')
         const label = localStorage.getItem('labelSearch')
         const username = localStorage.getItem('usernameSearch')
         this.questions$ = this.questionService.searchQuestion(label ?? '', username ?? '').pipe(
