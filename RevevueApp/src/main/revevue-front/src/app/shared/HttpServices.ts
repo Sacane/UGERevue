@@ -139,7 +139,7 @@ export class LoginService {
     }
 
     public isLogged(onSuccess: () => void = () => {}, onError: (error: HttpErrorResponse) => any = (err) => {
-        this.toastrService.error(err.error.message)
+        this.toastrService.error('Votre session a expiré')
     }){
         console.log('isLogged')
         this.http.get(this.IS_LOGGED).pipe(

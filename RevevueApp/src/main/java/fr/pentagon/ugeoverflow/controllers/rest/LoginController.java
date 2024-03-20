@@ -2,7 +2,6 @@ package fr.pentagon.ugeoverflow.controllers.rest;
 
 import fr.pentagon.revevue.common.exception.HttpException;
 import fr.pentagon.ugeoverflow.config.authorization.RequireUser;
-import fr.pentagon.ugeoverflow.config.security.AuthenticationChecker;
 import fr.pentagon.ugeoverflow.controllers.dtos.requests.CredentialsDTO;
 import fr.pentagon.ugeoverflow.controllers.dtos.responses.LoginResponseDTO;
 import fr.pentagon.ugeoverflow.service.LoginManager;
@@ -37,9 +36,8 @@ public class LoginController {
   }
 
   @GetMapping(Routes.Auth.LOGGED)
+  @RequireUser
   public ResponseEntity<Void> logged(){
-    System.err.println("logged");
-    AuthenticationChecker.checkAuthentication();
     return ResponseEntity.ok().build();
   }
 
