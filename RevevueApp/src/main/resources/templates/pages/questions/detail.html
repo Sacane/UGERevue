@@ -44,7 +44,7 @@
     </div>
     <div class="content">
         <h1 th:text="${question.title}"></h1>
-        <p th:utext="${question.questionContent}"></p>
+        <div th:text="${question.questionContent}"></div>
         <div class="detail-container">
             <div class="container">
                 <div class="code-container">
@@ -71,12 +71,13 @@
             <button class="button" onclick="gotoCreateReview(this)" th:data-question-id="${question.id}">Créer une
                 Review
             </button>
+            <p th:if="${question.testResults()}" th:text="${question.testResults()}"></p>
             <div class="review-section">
                 <h2>Reviews</h2>
                 <div th:each="review : ${reviews}">
                     <div class="review-container">
                         <div class="review-author" th:text="${review.author}">Author</div>
-                        <div class="review-content" th:utext="${review.content}">Review Content</div>
+                        <div class="review-content" th:text="${review.content}">Review Content</div>
                         <div th:if="${review.citedCode}">
                             <pre><code class="review-cited-code language-java"
                                        th:text="${review.citedCode}">Cited Code</code></pre>

@@ -45,3 +45,18 @@ To run the front you can go to the ```RevevueApp/src/main/revevue-front/package.
 To deploy you must follow the *build section*, specially for the docker-part.
 
 ***DO NOT*** deploy the microservice without using a container, with it you servers are prevent for any future security issues using coding injection.
+
+
+### __If you want, there is a script (build.sh) which build the projet, create the docket image, launch a container and run the application.__
+
+## Customization
+
+### Environment variables
+
+- DATASOURCE_URL - Data Source Url of the database used, H2 by default.
+- DATASOURCE_DRIVER - Driver of the database used, H2 driver by default.
+- USERNAME_DB - Username of the database.
+- PASSWORD_DB - Password of the database.
+- CONSOLE_H2 - In the case you're using H2, boolean to set the console, false by default.
+
+

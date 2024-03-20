@@ -41,7 +41,7 @@
     <div class="content">
         <div class="content">
             <h1 th:text="${review.author}"></h1>
-            <div th:utext="${content}"></div>
+            <div th:text="${content}"></div>
             <div class="cited-code" th:if="${review.citedCode}">
                 <h4>Cited Code:</h4>
                 <pre><code class="language-java" th:text="${review.citedCode}"></code></pre>
@@ -52,7 +52,7 @@
                 <div class="sub-review" th:each="subReview : ${subReviews}">
                     <a class="sub-review-link" th:href="@{'../../light/reviews/' + ${subReview.id}}">
                         <div class="sub-review-author" th:text="${subReview.author}"></div>
-                        <div class="sub-review-content" th:utext="${subReview.content}"></div>
+                        <div class="sub-review-content" th:text="${subReview.content}"></div>
                     </a>
                 </div>
             </div>
