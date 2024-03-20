@@ -38,7 +38,7 @@ export class ReviewComponent implements OnInit {
 
     score(review: Review | ReviewFromReview): string {
         const score = review.upvotes - review.downvotes;
-        return `${score >= 0 ? '+' : ''}${score} point${score < -1 || score > 1 ? 's' : ''}`;
+        return `${score} point${score < -1 || score > 1 ? 's' : ''}`;
     }
 
     deleteReview(): void {

@@ -6,16 +6,12 @@
     <table>
         <thead>
         <tr>
-            <th>Id</th>
-            <th>Contenu de la critique</th>
             <th>Titre de la question</th>
             <th>Date de création</th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let review of reviews">
-            <td>{{ review.reviewId }}</td>
-            <td>{{ review.reviewContent }}</td>
             <td>{{ review.questionTitle }}</td>
             <td>{{ review.creationDate | date: 'dd/MM/yyyy' }}</td>
         </tr>
@@ -26,10 +22,7 @@
     <table>
         <thead>
         <tr>
-            <th>Id</th>
             <th>Titre</th>
-            <th>Description</th>
-            <th>Nom de l'utilisateur</th>
             <th>Date</th>
             <th>Nombre de votes</th>
             <th>Nombre de réponses</th>
@@ -37,10 +30,7 @@
         </thead>
         <tbody>
         <tr *ngFor="let question of questions">
-            <td>{{ question.id }}</td>
             <td>{{ question.title }}</td>
-            <td>{{ question.description }}</td>
-            <td>{{ question.userName }}</td>
             <td>{{ question.date }}</td>
             <td>{{ question.nbVotes }}</td>
             <td>{{ question.nbAnswers }}</td>
