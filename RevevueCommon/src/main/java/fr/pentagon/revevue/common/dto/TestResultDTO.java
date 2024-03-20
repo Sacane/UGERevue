@@ -8,7 +8,6 @@ public record TestResultDTO(
         long amountFailures,
         String failuresDetails
 ) {
-    public static String UNDEFINED_RESULT = "UNDEFINED";
     public TestResultDTO {
         Objects.requireNonNull(failuresDetails);
         if(amountValid < 0) throw new IllegalArgumentException("Must me positive");
@@ -17,15 +16,5 @@ public record TestResultDTO(
 
     public String result(){
         return isSuccess ? "Succes ! Tous les tests ont été réussi !" : failuresDetails;
-    }
-
-    public static TestResultDTO zero() {
-        return zero(UNDEFINED_RESULT);
-    }
-    public static TestResultDTO zero(String result) {
-        return new TestResultDTO(false, 0, 0, result);
-    }
-    public boolean isZero() {
-        return failuresDetails.equals(UNDEFINED_RESULT);
     }
 }
