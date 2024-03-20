@@ -26,6 +26,15 @@ app-questions {
                     margin-left: -10px;
                 }
             }
+            .sort-buttons {
+                display: flex;
+                margin-left: auto;
+                gap: 10px;
+            }
+
+            .sort-buttons button {
+                font-size: 14px;
+            }
         }
         .info {
             display: flex;

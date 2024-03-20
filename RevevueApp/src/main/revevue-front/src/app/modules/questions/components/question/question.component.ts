@@ -44,8 +44,8 @@ export class QuestionComponent {
     deleteQuestion(): void {
         this.dialog.open(ConfirmDialogComponent, {
             data: {
-                title: 'Delete a question',
-                message: 'Confirm that you want to delete this question ?'
+                title: 'Supprimer une question',
+                message: 'Confirmer la suppression de cette question ?'
             },
             disableClose: true
         }).afterClosed().pipe(

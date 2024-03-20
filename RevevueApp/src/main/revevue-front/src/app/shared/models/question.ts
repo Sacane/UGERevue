@@ -20,7 +20,7 @@ export interface SimpleQuestion {
     title: string,
     description: string,
     userName: string,
-    date: string,
+    date: Date,
     nbVotes: number,
     nbAnswers: number
 }

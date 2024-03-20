@@ -68,10 +68,10 @@ export class ReviewComponent implements OnInit {
                 this.deleting = true;
             } else if (response && response.error) {
                 this.deleting = false;
-                this.snackBar.open('Error occurs while deleting the review', 'OK');
+                this.snackBar.open('Une erreur est survenue pendant la suppression de la review', 'OK');
             } else {
                 this.onDelete.emit();
-                this.snackBar.open('The review have been deleted', 'OK');
+                this.snackBar.open('La review a été supprimée', 'OK');
             }
         });
     }
