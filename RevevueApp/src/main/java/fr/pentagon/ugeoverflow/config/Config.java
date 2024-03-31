@@ -15,7 +15,7 @@ public class Config {
     return new StandardServletMultipartResolver();
   }
   @Bean
-  public WebClient getWebClient(WebClient.Builder defaultBuilder) {
+  public WebClient getWebClient() {
     return WebClient.create("http://localhost:7777/api");
   }
 }
